@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.epam.jdi</groupId>
+        <artifactId>jdi-http-project</artifactId>
+        <version>2.0.0</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <artifactId>jdi-httpTests</artifactId>
+    <name>Epam JDI HTTP Tests</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.epam.jdi</groupId>
+            <artifactId>jdi-http</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.11</version>
+        </dependency>
+    </dependencies>
+
+</project>

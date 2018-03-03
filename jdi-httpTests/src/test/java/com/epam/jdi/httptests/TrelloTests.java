@@ -33,7 +33,7 @@ public class TrelloTests {
     @Test
     public void getBoardById() {
         RestResponse response = getBoardById
-                .call(requestParams("board_id", BOARD_ID));
+            .call(requestParams("board_id", BOARD_ID));
         response.isOk().body("id", equalTo(BOARD_ID));
     }
 

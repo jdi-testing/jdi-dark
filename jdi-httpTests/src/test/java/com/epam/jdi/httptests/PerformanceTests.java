@@ -14,7 +14,7 @@ public class PerformanceTests {
     @Test
     public void isAliveTest() {
         init(ServiceExample.class);
-        Assert.assertTrue(getInfo.isAlive());
+        getInfo.isAlive();
     }
     @Test
     public void printTest() {

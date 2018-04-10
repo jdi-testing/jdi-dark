@@ -18,6 +18,8 @@ import java.util.function.Function;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.logger;
+import static com.epam.http.response.ResponseStatusType.ERROR;
+import static com.epam.http.response.ResponseStatusType.OK;
 import static com.epam.jdi.tools.StringUtils.LINE_BREAK;
 import static java.lang.String.format;
 
@@ -55,26 +57,23 @@ public class RestResponse{
     public boolean verify(Function<RestResponse, Boolean> validator) {
         return validator.apply(this);
     }
-    public void validate(Function<RestResponse, Boolean> validator) {
+    public ValidatableResponse validate(Function<RestResponse, Boolean> validator) {
         if (!verify(validator))
             throw exception("Bad raResponse: " + toString());
+        return assertThat();
     }
 
     public ValidatableResponse isOk() {
-        isStatus(ResponseStatusType.OK);
-        return assertThat();
+        return isStatus(OK);
     }
     public ValidatableResponse hasErrors() {
-        isStatus(ResponseStatusType.ERROR);
-        return assertThat();
+        return isStatus(ERROR);
     }
     public ValidatableResponse isStatus(ResponseStatusType type) {
-        validate(r -> status.type == type);
-        return assertThat();
+        return validate(r -> status.type == type);
     }
     public ValidatableResponse isEmpty() {
-        validate(r -> body.equals(""));
-        return assertThat();
+        return validate(r -> body.equals(""));
     }
     public ValidatableResponse assertBody(MapArray<String, Matcher<?>> params) {
         ValidatableResponse vr = assertThat();

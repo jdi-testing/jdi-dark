@@ -10,20 +10,21 @@ import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
-import com.epam.jdi.tools.pairs.Pair;
 import com.google.gson.Gson;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.time.StopWatch;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
+import static com.epam.jdi.tools.PrintUtils.formatParams;
 import static com.epam.jdi.tools.PrintUtils.print;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
+import static org.apache.commons.lang3.time.StopWatch.createStarted;
 
 public class RestMethod<T> {
     public RequestSpecification spec = given();
@@ -118,8 +119,7 @@ public class RestMethod<T> {
         if (data == null)
             return spec;
         if (data.pathParams.any() && data.url.contains("{"))
-            for (Pair<String, String> param : data.pathParams)
-                data.url = data.url.replaceAll("\\{" + param.key + "}", param.value);
+            data.url = formatParams(data.url, data.pathParams);
         spec.contentType(data.contentType);
         spec.baseUri(data.url);
         if (data.queryParams.any()) {
@@ -132,14 +132,14 @@ public class RestMethod<T> {
             spec.headers(data.headers.toMap());
         return spec;
     }
-    public boolean isAlive() {
-        return isAlive(2000);
+    public void isAlive() {
+        isAlive(2000);
     }
-    public boolean isAlive(int liveTimeMSec) {
-        long start = currentTimeMillis();
+    public void isAlive(int liveTimeMSec) {
+        StopWatch watch = createStarted();
         ResponseStatusType status;
         do { status = call().status.type;
-        } while (status != OK && currentTimeMillis() - start < liveTimeMSec);
-        return status == OK;
+        } while (status != OK && watch.getTime() < liveTimeMSec);
+        call().isOk();
     }
 }

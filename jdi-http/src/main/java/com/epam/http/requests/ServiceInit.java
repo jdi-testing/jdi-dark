@@ -16,7 +16,8 @@ import static com.epam.http.requests.RestMethodTypes.*;
 import static java.lang.reflect.Modifier.isStatic;
 
 /**
- * Created by Roman_Iovlev on 12/19/2016.
+ * Created by Roman Iovlev on 14.02.2018
+ * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
  */
 public class ServiceInit {
     public static <T> T init(Class<T> c) {

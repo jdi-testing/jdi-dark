@@ -6,7 +6,8 @@ import io.restassured.specification.RequestSpecification;
 import static com.epam.http.requests.RestMethodTypes.*;
 
 /**
- * Created by Roman_Iovlev on 12/15/2017.
+ * Created by Roman Iovlev on 14.02.2018
+ * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
  */
 public class RestMethods {
     public static RestResponse GET(RequestData data) {

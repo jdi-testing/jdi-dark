@@ -10,7 +10,8 @@ import static com.epam.http.JdiHttpSettigns.verifyOkStatus;
 import static java.lang.System.currentTimeMillis;
 
 /**
- * Created by Roman_Iovlev on 12/19/2016.
+ * Created by Roman Iovlev on 14.02.2018
+ * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
  */
 public class RestRequest {
     public static RestResponse doRequest(

@@ -1,10 +1,5 @@
 package com.epam.http.requests;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import com.epam.http.annotations.*;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
@@ -15,11 +10,15 @@ import com.epam.http.annotations.PUT;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static com.epam.commons.LinqUtils.where;
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.requests.RestMethodTypes.*;
-import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
 
+/**
+ * Created by Roman Iovlev on 14.02.2018
+ * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
+ */
 public class ServiceInit {
     public static <T> T init(Class<T> c) {
         List<Field> methods = where(c.getDeclaredFields(),
@@ -56,6 +55,10 @@ public class ServiceInit {
             method.addHeader(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
             method.addHeaders(field.getAnnotation(Headers.class).value());
+        if (field.isAnnotationPresent(Cookie.class))
+            method.addCookie(field.getAnnotation(Cookie.class));
+        if (field.isAnnotationPresent(Cookies.class))
+            method.addCookies(field.getAnnotation(Cookies.class).value());
         /* Case for class annotations*/
         if (c.isAnnotationPresent(QueryParameter.class))
             method.addQueryParameters(c.getAnnotation(QueryParameter.class));
@@ -80,6 +83,10 @@ public class ServiceInit {
             return new MethodData(method.getAnnotation(DELETE.class).value(),DELETE);
         if (method.isAnnotationPresent(PATCH.class))
             return new MethodData(method.getAnnotation(PATCH.class).value(),PATCH);
+        if (method.isAnnotationPresent(HEAD.class))
+            return new MethodData(method.getAnnotation(HEAD.class).value(), HEAD);
+        if (method.isAnnotationPresent(OPTIONS.class))
+            return new MethodData(method.getAnnotation(OPTIONS.class).value(), OPTIONS);
         return new MethodData(null, GET);
     }
     private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {

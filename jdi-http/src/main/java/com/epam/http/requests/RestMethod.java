@@ -5,12 +5,14 @@ package com.epam.http.requests;
  * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
  */
 
+import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.google.gson.Gson;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
@@ -27,7 +29,7 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
 
 public class RestMethod<T> {
-    public RequestSpecification spec = given();
+    public RequestSpecification spec = given().filter(new AllureRestAssured());;
     private RequestData data;
     private RestMethodTypes type;
     private Gson gson = new Gson();
@@ -44,6 +46,10 @@ public class RestMethod<T> {
     public RestMethod(RestMethodTypes type, RequestData data) {
         this.data = data;
         this.type = type;
+    }
+    public RestMethod(RestMethodTypes type, String url, RequestSpecification requestSpecification) {
+        this(type, url);
+        this.spec = spec.spec(requestSpecification);
     }
     public void addHeader(String name, String value) {
         data.headers.add(name, value);
@@ -65,6 +71,17 @@ public class RestMethod<T> {
         for(Header header : headers)
             addHeader(header);
     }
+    public void addCookie(String name, String value) {
+        data.cookies.add(name, value);
+    }
+    public void addCookie(Cookie cookie) {
+        addCookie(cookie.name(), cookie.value());
+    }
+    public void addCookies(Cookie... cookies) {
+        for (Cookie cookie : cookies) {
+            addCookie(cookie);
+        }
+    }
     public RestMethod expectStatus(ResponseStatusType status) {
         expectedStatus = status; return this;
     }
@@ -77,7 +94,7 @@ public class RestMethod<T> {
     public RestResponse call() {
         if (type == null)
             throw exception("HttpMethodType not specified");
-        RequestSpecification spec = getSpec();
+        RequestSpecification spec = getSpec().log().all();
         logger.info(format("Do %s request %s", type, data.url));
         return doRequest(type, spec, expectedStatus);
     }
@@ -113,7 +130,17 @@ public class RestMethod<T> {
             data.queryParams.addAll(requestData.queryParams);
         if (requestData.body != null)
             data.body = requestData.body;
+        if (!requestData.headers.isEmpty()) {
+            data.headers.addAll(requestData.headers);
+        }
+        if (!requestData.cookies.isEmpty()) {
+            data.cookies.addAll(requestData.cookies);
+        }
        return call();
+    }
+    public RestResponse call(RequestSpecification requestSpecification) {
+        this.spec = spec.spec(requestSpecification);
+        return call();
     }
     public RequestSpecification getSpec() {
         if (data == null)
@@ -130,6 +157,8 @@ public class RestMethod<T> {
             spec.body(data.body);
         if (data.headers.any())
             spec.headers(data.headers.toMap());
+        if (data.cookies.any())
+            spec.cookies(data.cookies.toMap());
         return spec;
     }
     public void isAlive() {

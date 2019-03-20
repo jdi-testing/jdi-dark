@@ -1,16 +1,16 @@
 package com.epam.http.requests;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSenderOptions;
 import io.restassured.specification.RequestSpecification;
 
 import java.util.function.Function;
 
+/**
+ * Enumeration of HTTP methods supported by JDI HTTP.
+ *
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
+ */
 public enum RestMethodTypes {
     GET(RequestSenderOptions::get),
     POST(RequestSenderOptions::post),

@@ -6,8 +6,29 @@ import io.restassured.specification.RequestSpecification;
 import static com.epam.http.requests.RestMethodTypes.*;
 
 /**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
+ * <p>
+ *     Supported HTTP methods that might be called directly from tests.
+ *     Contains methods to be called with different types of data.
+ *     Arguments to those methods can be:
+ * </p>
+ * <ul>
+ *     <li>Request data</li>
+ *     <pre>
+ *      <code>
+ *          GET(requestData(
+ *              rd -> { rd.url = "http://httpbin.org/get";
+ *              rd.headers = new MapArray<>(new Object[][] {
+ *                  {"test", "test"},
+ *                  {"test1", "test1"}
+ *              });}
+ *          ));
+ *     </code>
+ *     </pre>
+ *     <li>Url</li>
+ *     <li>Url, Rest Assured RequestSpecification</li>
+ * </ul>
+ *
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestMethods {
     public static RestResponse GET(RequestData data) {

@@ -1,10 +1,5 @@
 package com.epam.http.performance;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import com.epam.http.requests.RestMethod;
 
 import java.util.Map;
@@ -12,8 +7,17 @@ import java.util.Random;
 
 import static java.lang.System.currentTimeMillis;
 
+/**
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
+ */
 public class RestLoad {
-
+    /**
+     * Send HTTP requests and measure the time.
+     *
+     * @param liveTimeSec       time limits requests should succeed
+     * @param requests          requests
+     * @return                  results of loading the service
+     */
     public static PerformanceResult loadService(long liveTimeSec, RestMethod... requests) {
         Random rnd = new Random();
         int Length = requests.length;

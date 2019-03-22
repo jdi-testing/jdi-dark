@@ -1,10 +1,5 @@
 package com.epam.http;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Source;
@@ -16,6 +11,9 @@ import java.io.StringReader;
 
 import static javax.xml.validation.SchemaFactory.newInstance;
 
+/**
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
+ */
 public class XSDValidator {
     private static Validator getValidator(File schemaFile) throws SAXException {
         return newInstance("http://www.w3.org/2001/XMLSchema")

@@ -10,9 +10,9 @@ import com.epam.http.annotations.PUT;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static com.epam.commons.LinqUtils.where;
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.requests.RestMethodTypes.*;
+import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
 
 /**

@@ -10,10 +10,17 @@ import static com.epam.http.JdiHttpSettigns.verifyOkStatus;
 import static java.lang.System.currentTimeMillis;
 
 /**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestRequest {
+    /**
+     * Perform an HTTP request with provided data.
+     * Used in call().
+     * @param methodType        of HTTP request
+     * @param spec              Request Specification
+     * @param expectedStatus    of request
+     * @return                  response
+     */
     public static RestResponse doRequest(
             RestMethodTypes methodType, RequestSpecification spec, ResponseStatusType expectedStatus) {
         Response response;

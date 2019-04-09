@@ -9,7 +9,7 @@ import static io.restassured.http.ContentType.JSON;
 /**
  * Created by Roman_Iovlev on 9/25/2016.
  */
-@ServiceDomain("http://httpbin.org/")
+@ServiceDomain("http://httpbin.org:80/")
 public class ServiceExample {
     @ContentType(JSON) @GET("/get")
     @Headers({
@@ -29,4 +29,12 @@ public class ServiceExample {
 
     @ContentType(HTML) @GET("/html")
     RestMethod getHTMLMethod;
+
+    @Cookies({
+            @Cookie(name = "session_id", value = "1234"),
+            @Cookie(name = "hello", value = "world")
+    })
+    @GET("/cookies") RestMethod getCookies;
+
+    @GET("/basic-auth/user/password") RestMethod getWithAuth;
 }

@@ -99,11 +99,7 @@ public class RestMethod<T> {
         return doRequest(type, spec, expectedStatus);
     }
     public T callAsData(Class<T> c) {
-        try {
-            return call().raResponse().body().as(c);
-        } catch (Exception ex) {
-            throw new RuntimeException("Can't convert response in " + c.getSimpleName());
-        }
+        return call().raResponse().body().as(c);
     }
     public T asData(Class<T> c) {
         return callAsData(c);

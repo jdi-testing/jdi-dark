@@ -10,6 +10,7 @@ import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
 import static com.epam.jdi.httptests.ServiceExample.getInfo;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
@@ -27,7 +28,7 @@ public class ServiceTest {
     public void simpleRestTest() {
         RestResponse resp = ServiceExample.getInfo.call();
         resp.isOk().
-            body("url", equalTo("http://httpbin.org/get")).
+            body("url", equalTo("https://httpbin.org/get")).
             body("headers.Host", equalTo("httpbin.org")).
             body("headers.Id", equalTo("Test"));
         resp.assertThat().header("Connection", "keep-alive");
@@ -44,7 +45,7 @@ public class ServiceTest {
         ));
         resp.isOk().header("Connection", "keep-alive");
         resp.assertBody(new Object[][] {
-            {"url", equalTo("http://httpbin.org/get")},
+            {"url", equalTo("https://httpbin.org/get")},
             {"headers.Host", equalTo("httpbin.org")},
             {"headers.Id", equalTo("TestTest")}
         });
@@ -52,7 +53,7 @@ public class ServiceTest {
     @Test
     public void entityTest() {
         Info e = getInfo.asData(Info.class);
-        assertEquals(e.url, "http://httpbin.org/get");
+        assertEquals(e.url, "https://httpbin.org/get");
         assertEquals(e.headers.Host, "httpbin.org");
         assertEquals(e.headers.Id, "Test");
         assertEquals(e.headers.Name, "Roman");
@@ -70,7 +71,7 @@ public class ServiceTest {
         init(ServiceExample.class);
         RestResponse resp = getInfo.call();
         resp.isOk().assertThat().
-                body("url", equalTo("http://httpbin.org/get")).
+                body("url", equalTo("https://httpbin.org/get")).
                 body("headers.Host", equalTo("httpbin.org"));
     }
     @Test
@@ -78,7 +79,7 @@ public class ServiceTest {
         ServiceExample service = init(ServiceExample.class);
         RestResponse resp = service.postMethod.call();
         resp.isOk().assertThat().
-                body("url", equalTo("http://httpbin.org/post")).
+                body("url", equalTo("https://httpbin.org/post")).
                 body("headers.Host", equalTo("httpbin.org"));
     }
 
@@ -88,5 +89,29 @@ public class ServiceTest {
         RestResponse resp = service.getHTMLMethod.call();
         resp.isOk();
         assertEquals(resp.getFromHtml("html.body.h1"), "Herman Melville - Moby-Dick");
+    }
+
+    @Test
+    public void cookiesTest() {
+        ServiceExample service = init(ServiceExample.class);
+        RestResponse response = service.getCookies.call(
+                requestData(requestData ->
+                        requestData.cookies = new MapArray<>(new Object[][] {
+                                {"additionalCookie", "test"}
+                        })));
+        response.isOk()
+                .body("cookies.additionalCookie", equalTo("test"))
+                .body("cookies.session_id", equalTo("1234"))
+                .body("cookies.hello", equalTo("world"));
+    }
+
+    @Test
+    public void getWithRaRequestSpecification() {
+        ServiceExample service = init(ServiceExample.class);
+        service.getWithAuth.call(
+                given().auth().basic("user", "password")
+        ).assertThat()
+                .body("authenticated", equalTo(true))
+                .body("user", equalTo("user"));
     }
 }

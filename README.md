@@ -2,3 +2,5 @@
 
 # JDI Http
 Powerful framework for services testing
+
+Documentation: https://jdi-docs.github.io/jdi-dark/

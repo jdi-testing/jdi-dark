@@ -3,4 +3,6 @@
 # JDI Dark
 Powerful framework for services testing
 
-Documentation: https://jdi-docs.github.io/jdi-dark/
+## Documentation
+
+Can be found [here](https://jdi-docs.github.io/jdi-dark)

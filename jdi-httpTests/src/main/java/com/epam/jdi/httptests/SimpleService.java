@@ -9,7 +9,7 @@ import static io.restassured.http.ContentType.JSON;
 /**
  * Created by Roman_Iovlev on 9/25/2016.
  */
-@ServiceDomain("http://httpbin.org/")
+@ServiceDomain("https://httpbin.org/")
 public class SimpleService {
     @ContentType(JSON) @GET("/get")
     @Headers({

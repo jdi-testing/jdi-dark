@@ -27,7 +27,7 @@ public class ServiceTest {
     public void simpleRestTest() {
         RestResponse resp = ServiceExample.getInfo.call();
         resp.isOk().
-            body("url", equalTo("http://httpbin.org/get")).
+            body("url", equalTo("https://httpbin.org/get")).
             body("headers.Host", equalTo("httpbin.org")).
             body("headers.Id", equalTo("Test"));
         resp.assertThat().header("Connection", "keep-alive");
@@ -36,7 +36,7 @@ public class ServiceTest {
     @Test
     public void noServiceObjectTest() {
         RestResponse resp = GET(requestData(
-            rd -> { rd.url = "http://httpbin.org/get";
+            rd -> { rd.url = "https://httpbin.org/get";
                 rd.headers = new MapArray<>(new Object[][] {
                     {"Name", "Roman"},
                     {"Id", "TestTest"}
@@ -44,7 +44,7 @@ public class ServiceTest {
         ));
         resp.isOk().header("Connection", "keep-alive");
         resp.assertBody(new Object[][] {
-            {"url", equalTo("http://httpbin.org/get")},
+            {"url", equalTo("https://httpbin.org/get")},
             {"headers.Host", equalTo("httpbin.org")},
             {"headers.Id", equalTo("TestTest")}
         });
@@ -52,7 +52,7 @@ public class ServiceTest {
     @Test
     public void entityTest() {
         Info e = getInfo.asData(Info.class);
-        assertEquals(e.url, "http://httpbin.org/get");
+        assertEquals(e.url, "https://httpbin.org/get");
         assertEquals(e.headers.Host, "httpbin.org");
         assertEquals(e.headers.Id, "Test");
         assertEquals(e.headers.Name, "Roman");
@@ -70,7 +70,7 @@ public class ServiceTest {
         init(ServiceExample.class);
         RestResponse resp = getInfo.call();
         resp.isOk().assertThat().
-                body("url", equalTo("http://httpbin.org/get")).
+                body("url", equalTo("https://httpbin.org/get")).
                 body("headers.Host", equalTo("httpbin.org"));
     }
     @Test
@@ -78,7 +78,7 @@ public class ServiceTest {
         ServiceExample service = init(ServiceExample.class);
         RestResponse resp = service.postMethod.call();
         resp.isOk().assertThat().
-                body("url", equalTo("http://httpbin.org/post")).
+                body("url", equalTo("https://httpbin.org/post")).
                 body("headers.Host", equalTo("httpbin.org"));
     }
 

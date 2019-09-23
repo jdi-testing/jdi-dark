@@ -1,10 +1,5 @@
 package com.epam.http.response;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
@@ -23,6 +18,11 @@ import static com.epam.http.response.ResponseStatusType.OK;
 import static com.epam.jdi.tools.StringUtils.LINE_BREAK;
 import static java.lang.String.format;
 
+/**
+ * Represents full HTTP response.
+ *
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
+ */
 public class RestResponse{
     private final Response raResponse;
     private final long responseTimeMSec;
@@ -53,28 +53,54 @@ public class RestResponse{
         valueFunc.execute(thisObj);
         return thisObj;
     }
-
     public boolean verify(Function<RestResponse, Boolean> validator) {
         return validator.apply(this);
     }
+
+    /**
+     * Check the validity of the response.
+     * @param validator     function to validate assuming the result would be boolean
+     * @return              Rest Assured validatable response
+     */
     public ValidatableResponse validate(Function<RestResponse, Boolean> validator) {
         if (!verify(validator))
             throw exception("Bad raResponse: " + toString());
         return assertThat();
     }
 
+    /**
+     * Check if response status is OK(code starts with 2).
+     * @return          result of assertion
+     */
     public ValidatableResponse isOk() {
         return isStatus(OK);
     }
+
+    /**
+     * Check if response status has any errors.
+     * @return          result of assertion
+     */
     public ValidatableResponse hasErrors() {
         return isStatus(ERROR);
     }
+
+    /**
+     * Validate the status.
+     * @param type      of status as enumeration value
+     * @return          result of assertion
+     */
     public ValidatableResponse isStatus(ResponseStatusType type) {
         return validate(r -> status.type == type);
     }
     public ValidatableResponse isEmpty() {
         return validate(r -> body.equals(""));
     }
+
+    /**
+     * Check response body according to expected values.
+     * @param params    key name and matcher with expected value for that key
+     * @return          Rest Assured response
+     */
     public ValidatableResponse assertBody(MapArray<String, Matcher<?>> params) {
         ValidatableResponse vr = assertThat();
         try {
@@ -83,22 +109,63 @@ public class RestResponse{
             return vr;
         } catch (Exception ex) { throw new RuntimeException("Only <String, Matcher> pairs available for assertBody"); }
     }
+
+    /**
+     * Check response body according to expected values.
+     * @param params    key name and matcher with expected value for that key
+     * @return          Rest Assured response
+     */
     public ValidatableResponse assertBody(Object[][] params) {
         return assertBody(new MapArray<>(params));
     }
 
+    /**
+     * Get text/html media type content by path.
+     * @param path      the HTML path
+     * @return          string matching the provided HTML path
+     */
     public String getFromHtml(String path) {
         return raResponse.body().htmlPath().getString(path);
     }
 
+    /**
+     * Get response headers.
+     *
+     * @return      response headers list
+     */
     public List<Header> headers() { return raResponse.getHeaders().asList(); }
+
+    /**
+     * Get response cookie associated by the given name.
+     * @param name      cookie key name
+     * @return          cookie value
+     */
     public String cookie(String name) { return raResponse.getCookie(name); }
 
+    /**
+     * Get Rest Assured response.
+     * @return          Rest Assured response
+     */
     public Response raResponse() { return raResponse; }
+
+    /**
+     * Time taken to perform HTTP request.
+     *
+     * @return      time
+     */
     public long responseTime() { return responseTimeMSec; }
 
+    /**
+     * Returns validatable response.
+     * @return          validatable Rest Assured response
+     */
     public ValidatableResponse assertThat() { return raResponse.then(); }
 
+    /**
+     * Verify the status of response.
+     * @param rs        expected response status containing code, type and text message
+     * @return          response
+     */
     public RestResponse assertStatus(ResponseStatus rs) {
         String errors = "";
         if (status.code != rs.code)

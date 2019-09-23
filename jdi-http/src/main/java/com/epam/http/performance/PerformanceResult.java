@@ -1,14 +1,12 @@
 package com.epam.http.performance;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import com.epam.http.response.RestResponse;
 
 import static com.epam.http.response.ResponseStatusType.ERROR;
 
+/**
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
+ */
 public class PerformanceResult {
 
     public long AverageResponseTime = 0;
@@ -18,6 +16,10 @@ public class PerformanceResult {
         return NumberOfFails == 0;
     }
 
+    /**
+     * Construct the results of performance tests.
+     * @param response          response
+     */
     public void addResult(RestResponse response) {
         AverageResponseTime = (AverageResponseTime * NumberOfRequests + response.responseTime())
                 / (NumberOfRequests + 1);

@@ -1,10 +1,5 @@
 package com.epam.http.requests;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import com.epam.http.annotations.*;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
@@ -20,7 +15,22 @@ import static com.epam.http.requests.RestMethodTypes.*;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
 
+/**
+ * The entry point for initialising the Service Object classes.
+ * In order to effectively use JDI HTTP it's recommended to statically import:
+ * <pre>
+ *     {@code com.epam.http.requests.ServiceInit.init}
+ * </pre>
+ *
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
+ */
 public class ServiceInit {
+
+    /**
+     * Initialise the Service Object class.
+     * @param c     class describing Service
+     * @return      initialised Service Object
+     */
     public static <T> T init(Class<T> c) {
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> f.getType().equals(RestMethod.class));
@@ -37,6 +47,12 @@ public class ServiceInit {
         return getService(c);
     }
     private static Object service;
+
+    /**
+     * Helper method to instantiate the class.
+     * @param c     class describing Service
+     * @return      instantiated service
+     */
     private static <T> T getService(Class<T> c) {
         if (service != null) return (T) service;
         try {
@@ -46,6 +62,13 @@ public class ServiceInit {
                 "Can't instantiate class %s, Service class should have empty constructor",
                     c.getSimpleName()); }
     }
+
+    /**
+     * Check whether the annotation present and add these values to request data.
+     * @param field     HTTP method described in Service Object class as a field
+     * @param c         class describing service
+     * @return          http method with request data
+     */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c) {
         MethodData mtData = getMethodData(field);
         String url = getUrlFromDomain(getDomain(c), mtData.getUrl(), field.getName(), c.getSimpleName());
@@ -56,6 +79,10 @@ public class ServiceInit {
             method.addHeader(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
             method.addHeaders(field.getAnnotation(Headers.class).value());
+        if (field.isAnnotationPresent(Cookie.class))
+            method.addCookie(field.getAnnotation(Cookie.class));
+        if (field.isAnnotationPresent(Cookies.class))
+            method.addCookies(field.getAnnotation(Cookies.class).value());
         /* Case for class annotations*/
         if (c.isAnnotationPresent(QueryParameter.class))
             method.addQueryParameters(c.getAnnotation(QueryParameter.class));
@@ -69,6 +96,11 @@ public class ServiceInit {
         return method;
     }
 
+    /**
+     * Create method data.
+     * @param method    annotated method field
+     * @return          method data with url and type of request
+     */
     private static MethodData getMethodData(Field method) {
         if (method.isAnnotationPresent(GET.class))
             return new MethodData(method.getAnnotation(GET.class).value(),GET);
@@ -80,8 +112,21 @@ public class ServiceInit {
             return new MethodData(method.getAnnotation(DELETE.class).value(),DELETE);
         if (method.isAnnotationPresent(PATCH.class))
             return new MethodData(method.getAnnotation(PATCH.class).value(),PATCH);
+        if (method.isAnnotationPresent(HEAD.class))
+            return new MethodData(method.getAnnotation(HEAD.class).value(), HEAD);
+        if (method.isAnnotationPresent(OPTIONS.class))
+            return new MethodData(method.getAnnotation(OPTIONS.class).value(), OPTIONS);
         return new MethodData(null, GET);
     }
+
+    /**
+     * Get and check URL from request data.
+     * @param domain
+     * @param uri
+     * @param methodName
+     * @param className
+     * @return normalized URL
+     */
     private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
         if (uri == null)
             return null;
@@ -94,6 +139,12 @@ public class ServiceInit {
                     methodName, className);
         return domain.replaceAll("/*$", "") + "/" + uri.replaceAll("^/*", "");
     }
+
+    /**
+     * Get service domain.
+     * @param c     Service Object class
+     * @return      service domain string
+     */
     private static <T> String getDomain(Class<T> c) {
         return c.isAnnotationPresent(ServiceDomain.class)
                 ? c.getAnnotation(ServiceDomain.class).value()

@@ -29,4 +29,12 @@ public class ServiceExample {
 
     @ContentType(HTML) @GET("/html")
     RestMethod getHTMLMethod;
+
+    @Cookies({
+            @Cookie(name = "session_id", value = "1234"),
+            @Cookie(name = "hello", value = "world")
+    })
+    @GET("/cookies") RestMethod getCookies;
+
+    @GET("/basic-auth/user/password") RestMethod getWithAuth;
 }

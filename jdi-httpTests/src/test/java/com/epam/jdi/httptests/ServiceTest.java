@@ -10,6 +10,7 @@ import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
 import static com.epam.jdi.httptests.ServiceExample.getInfo;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
@@ -88,5 +89,29 @@ public class ServiceTest {
         RestResponse resp = service.getHTMLMethod.call();
         resp.isOk();
         assertEquals(resp.getFromHtml("html.body.h1"), "Herman Melville - Moby-Dick");
+    }
+
+    @Test
+    public void cookiesTest() {
+        ServiceExample service = init(ServiceExample.class);
+        RestResponse response = service.getCookies.call(
+                requestData(requestData ->
+                        requestData.cookies = new MapArray<>(new Object[][] {
+                                {"additionalCookie", "test"}
+                        })));
+        response.isOk()
+                .body("cookies.additionalCookie", equalTo("test"))
+                .body("cookies.session_id", equalTo("1234"))
+                .body("cookies.hello", equalTo("world"));
+    }
+
+    @Test
+    public void getWithRaRequestSpecification() {
+        ServiceExample service = init(ServiceExample.class);
+        service.getWithAuth.call(
+                given().auth().basic("user", "password")
+        ).assertThat()
+                .body("authenticated", equalTo(true))
+                .body("user", equalTo("user"));
     }
 }

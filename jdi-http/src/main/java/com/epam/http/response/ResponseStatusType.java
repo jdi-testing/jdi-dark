@@ -1,15 +1,15 @@
 package com.epam.http.response;
 
-/**
- * Created by Roman Iovlev on 14.02.2018
- * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
- */
-
 import java.util.List;
 
 import static com.epam.jdi.tools.EnumUtils.getAllEnumValues;
 import static com.epam.jdi.tools.LinqUtils.first;
 
+/**
+ * Enumeration of response codes.
+ *
+ * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
+ */
 public enum ResponseStatusType {
     OK(2), REDIRECT(3), ERROR(4), SERVER_ERROR(5);
 

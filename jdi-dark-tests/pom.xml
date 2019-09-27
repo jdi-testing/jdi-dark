@@ -6,7 +6,7 @@
 
     <groupId>com.epam.jdi</groupId>
     <version>1.0.1</version>
-    <artifactId>jdi-httpTests</artifactId>
+    <artifactId>jdi-dark-tests</artifactId>
     <name>JDI HTTP Tests</name>
 
     <dependencies>

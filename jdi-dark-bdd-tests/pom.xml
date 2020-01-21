@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.epam.jdi</groupId>
+    <artifactId>jdi-dark-bdd-tests</artifactId>
+    <name>EPAM JDI HTTP Cucumber Tests</name>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <aspectj.version>1.9.1</aspectj.version>
+        <cucumber.version>1.2.5</cucumber.version>
+        <allure.maven>2.9</allure.maven>
+        <allure.cucumber.jvm>2.12.1</allure.cucumber.jvm>
+    </properties>
+
+    <dependencies>
+        <!--JDI-->
+        <dependency>
+            <groupId>com.epam.jdi</groupId>
+            <artifactId>jdi-dark-bdd</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber-jvm</artifactId>
+            <version>${allure.cucumber.jvm}</version>
+        </dependency>
+<!--        &lt;!&ndash;JDI&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.epam.jdi</groupId>-->
+<!--            <artifactId>jdi-http</artifactId>-->
+<!--            <version>1.1.34</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.epam.jdi</groupId>-->
+<!--            <artifactId>jdi-http-cucumber</artifactId>-->
+<!--            <version>1.1.34</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash;Allure&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>ru.yandex.qatools.allure</groupId>-->
+<!--            <artifactId>allure-testng-adaptor</artifactId>-->
+<!--            <version>RELEASE</version>-->
+<!--        </dependency>-->
+
+        <!--CucumberTestNG-->
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
+        <!--CucumberJava-->
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/general.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <properties>
+                        <property>
+                            <name>usedefaultlisteners</name>
+                            <value>true</value>
+                            <!-- disabling default listeners is optional -->
+                        </property>
+                    </properties>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${allure.maven}</version>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

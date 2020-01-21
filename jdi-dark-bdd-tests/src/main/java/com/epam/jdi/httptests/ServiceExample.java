@@ -2,7 +2,7 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
-import com.epam.jdi.http.cucumber.IRestService;
+import com.epam.jdi.http.IRestService;
 
 import static io.restassured.http.ContentType.JSON;
 

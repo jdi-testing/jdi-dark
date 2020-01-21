@@ -12,8 +12,8 @@ import org.testng.Assert;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.commons.LinqUtils.first;
 import static com.epam.jdi.http.Utils.*;
+import static com.epam.jdi.tools.LinqUtils.first;
 import static io.restassured.http.ContentType.values;
 
 public class RequestStepsEN {
@@ -21,7 +21,7 @@ public class RequestStepsEN {
     @Then("^I verify that ([^\"]*) method is alive$")
     public void theGetMethodIsAlive(String methodName){
         RestMethod getMethod = getRestMethod(methodName);
-        Assert.assertTrue(getMethod.isAlive());
+        getMethod.isAlive();
     }
 
     @When("^I do ([^\"]*) request$")

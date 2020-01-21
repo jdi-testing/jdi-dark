@@ -5,10 +5,9 @@ Feature: GET and POST check
     When I do <method> request
     Then Response status type is <responseStatus>
     And Response body has values
-      | url         | <url>         |
-      | headers.Host| httpbin.org |
-
-  Examples:
-    | method | responseStatus | url                     |
-    | get    | OK             | http://httpbin.org/get  |
-    | post   | OK             | http://httpbin.org/post |
+      | url          | <url>       |
+      | headers.Host | httpbin.org |
+    Examples:
+      | method | responseStatus | url                      |
+      | get    | OK             | https://httpbin.org/get  |
+      | post   | OK             | https://httpbin.org/post |

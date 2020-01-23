@@ -7,14 +7,17 @@
     <groupId>com.epam.jdi</groupId>
     <artifactId>jdi-dark-bdd-tests</artifactId>
     <name>EPAM JDI HTTP Cucumber Tests</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1</version>
 
     <properties>
+        <includeTags>@smoke</includeTags>
+        <excludeTags>@skip</excludeTags>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aspectj.version>1.9.1</aspectj.version>
-        <cucumber.version>1.2.5</cucumber.version>
-        <allure.maven>2.9</allure.maven>
-        <allure.cucumber.jvm>2.12.1</allure.cucumber.jvm>
+        <allure.maven.version>2.9</allure.maven.version>
+        <allure.cucumber.jvm.version>2.12.1</allure.cucumber.jvm.version>
+        <junit.version>4.12</junit.version>
+        <surefire.version>2.22.1</surefire.version>
     </properties>
 
     <dependencies>
@@ -27,39 +30,7 @@
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-cucumber-jvm</artifactId>
-            <version>${allure.cucumber.jvm}</version>
-        </dependency>
-<!--        &lt;!&ndash;JDI&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.epam.jdi</groupId>-->
-<!--            <artifactId>jdi-http</artifactId>-->
-<!--            <version>1.1.34</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.epam.jdi</groupId>-->
-<!--            <artifactId>jdi-http-cucumber</artifactId>-->
-<!--            <version>1.1.34</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash;Allure&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>ru.yandex.qatools.allure</groupId>-->
-<!--            <artifactId>allure-testng-adaptor</artifactId>-->
-<!--            <version>RELEASE</version>-->
-<!--        </dependency>-->
-
-        <!--CucumberTestNG-->
-        <dependency>
-            <groupId>info.cukes</groupId>
-            <artifactId>cucumber-testng</artifactId>
-            <version>RELEASE</version>
-        </dependency>
-
-        <!--CucumberJava-->
-        <dependency>
-            <groupId>info.cukes</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <version>RELEASE</version>
+            <version>${allure.cucumber.jvm.version}</version>
         </dependency>
     </dependencies>
 
@@ -77,35 +48,28 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>${surefire.version}</version>
                 <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/general.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                    <properties>
-                        <property>
-                            <name>usedefaultlisteners</name>
-                            <value>true</value>
-                            <!-- disabling default listeners is optional -->
-                        </property>
-                    </properties>
+                    <includes>
+                        <include>**/*CucumberTestRunner.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <cucumber.options>--tags '${includeTags}' --tags 'not ${excludeTags}'</cucumber.options>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
-                <version>${allure.maven}</version>
+                <version>${allure.maven.version}</version>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-            </resource>
-            <resource>
+        <testResources>
+            <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
     </build>
 
     <reporting>

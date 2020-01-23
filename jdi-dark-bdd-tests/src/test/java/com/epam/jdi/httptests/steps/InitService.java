@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.steps;
 
 import com.epam.jdi.httptests.ServiceExample;
-import cucumber.api.java.en.Given;
+import io.cucumber.java.en.Given;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.http.Utils.*;

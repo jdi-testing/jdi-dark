@@ -1,0 +1,57 @@
+language: java
+jdk:
+- openjdk8
+before_install:
+- sudo apt-get -y install jq
+
+env:
+  global:
+  - BDD_TESTS="com.epam.jdi:jdi-dark-bdd-tests"
+  
+stages:
+- prepare
+- compile
+- test
+- reports
+
+jobs:
+  include:
+  - stage: prepare
+    name: Welcome to jdi
+    script:
+    - echo ------------------- WELCOME TO JDI DARK ----------------------
+    - mvn --version #it is helpful
+
+  - stage: compile
+    name: Compile jdi code
+    script:
+    - mvn install -DskipTests
+    - mvn versions:use-latest-releases
+
+  - stage: test
+    name: Run tests - bdd
+    script:
+    - mvn install -DskipTests
+    - mvn verify -pl $BDD_TESTS
+
+  - stage: reports
+    name: Deploy allure reports to netlify
+    script:
+    - npm install -g allure-commandline
+    - npm install -g netlify-cli
+    - allure --version
+    - source reports.sh
+    - deployAllureResults
+after_failure:
+- echo "Build was failed"
+after_success:
+- echo "Build was successful"
+after_script:
+- source reports.sh
+- grubAllureResults
+- du -d 1 -h ./
+- ls -la
+# extra time during long builds
+install:
+- travis_wait
+

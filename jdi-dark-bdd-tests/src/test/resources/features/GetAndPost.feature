@@ -9,5 +9,5 @@ Feature: GET and POST check
       | headers.Host | httpbin.org |
     Examples:
       | method | responseStatus | url                      |
-      | get    | OK             | https://httpbin.org/get  |
-      | post   | OK             | https://httpbin.org/post |
+      | get    | OK             | http://httpbin.org/get  |
+      | post   | OK             | http://httpbin.org/post |

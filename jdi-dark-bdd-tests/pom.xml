@@ -50,13 +50,18 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
-                    <includes>
-                        <include>**/*CucumberTestRunner.java</include>
-                    </includes>
-                    <systemPropertyVariables>
-                        <cucumber.options>--tags '${includeTags}' --tags 'not ${excludeTags}'</cucumber.options>
-                    </systemPropertyVariables>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
+<!--                <configuration>-->
+<!--                    <includes>-->
+<!--                        <include>**/*CucumberTestRunner.java</include>-->
+<!--                    </includes>-->
+<!--                    <systemPropertyVariables>-->
+<!--                        <cucumber.options>&#45;&#45;tags '${includeTags}' &#45;&#45;tags 'not ${excludeTags}'</cucumber.options>-->
+<!--                    </systemPropertyVariables>-->
+<!--                </configuration>-->
             </plugin>
             <plugin>
                 <groupId>io.qameta.allure</groupId>

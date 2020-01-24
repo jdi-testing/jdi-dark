@@ -19,15 +19,15 @@ import static io.restassured.http.ContentType.values;
 public class RequestStepsEN {
 
     @Then("^I verify that ([^\"]*) method is alive$")
-    public void theGetMethodIsAlive(String methodName){
+    public void theGetMethodIsAlive(String methodName) {
         RestMethod getMethod = getRestMethod(methodName);
         getMethod.isAlive();
     }
 
     @When("^I do ([^\"]*) request$")
-    public void iCallMethod(String methodName){
+    public void iCallMethod(String methodName) {
         RestMethod restMethod;
-        switch(methodName.toUpperCase()){
+        switch (methodName.toUpperCase()) {
             case "POST":
                 restMethod = service.get().getPostMethod();
                 break;
@@ -49,10 +49,9 @@ public class RequestStepsEN {
             default:
                 return;
         }
-        if (preparedHeader.get() != null)
-        {
-            for (Map.Entry<String, String> entry : preparedHeader.get().entrySet()){
-                restMethod.addHeader(entry.getKey(), entry.getValue());
+        if (preparedHeader.get() != null) {
+            for (Map.Entry<String, String> entry : preparedHeader.get().entrySet()) {
+                restMethod.addOrReplaceHeader(entry.getKey(), entry.getValue());
             }
         }
         if (requestContentType.get() != null)
@@ -64,7 +63,7 @@ public class RequestStepsEN {
     public void iHaveTheFollowingHeaders(DataTable headers) {
         preparedHeader.set(null);
         HashMap<String, String> hashMap = new HashMap<>();
-        for (Map.Entry<String, String> entry : headers.asMap(String.class, String.class).entrySet()){
+        for (Map.Entry<String, String> entry : headers.asMap(String.class, String.class).entrySet()) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
         preparedHeader.set(hashMap);
@@ -73,7 +72,7 @@ public class RequestStepsEN {
     @And("^I set ([^\"]*) request content type$")
     public void iSetJSONRequestContentType(String type) {
         ContentType contentType = first(values(),
-            ct -> type.equalsIgnoreCase(ct.name()));
+                ct -> type.equalsIgnoreCase(ct.name()));
         requestContentType.set(contentType);
     }
 }

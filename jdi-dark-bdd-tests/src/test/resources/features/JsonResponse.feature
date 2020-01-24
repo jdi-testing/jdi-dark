@@ -6,6 +6,6 @@ Feature: Json response check
     When I do get request
     Then Response status type is OK
     And Response body has values
-      | url          | https://httpbin.org/get |
+      | url          | http://httpbin.org/get |
       | headers.Host | httpbin.org             |
     And Response header "Connection" is "keep-alive"

@@ -29,13 +29,15 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestMethod<T> {
-    public RequestSpecification spec = given().filter(new AllureRestAssured());;
+    public RequestSpecification spec = given().filter(new AllureRestAssured());
     private RequestData data;
     private RestMethodTypes type;
     private Gson gson = new Gson();
     private ResponseStatusType expectedStatus = OK;
 
-    public RestMethod() {}
+    public RestMethod() {
+    }
+
     public RestMethod(JAction1<RequestSpecification> specFunc, RestMethodTypes type) {
         specFunc.execute(spec);
         this.type = type;
@@ -43,8 +45,9 @@ public class RestMethod<T> {
 
     /**
      * Constructor for forming HTTP request.
-     * @param type      of HTTP request
-     * @param url       to send HTTP request to
+     *
+     * @param type of HTTP request
+     * @param url  to send HTTP request to
      */
     public RestMethod(RestMethodTypes type, String url) {
         this(type, new RequestData().set(d -> d.url = url));
@@ -52,8 +55,9 @@ public class RestMethod<T> {
 
     /**
      * Constructor for forming HTTP request.
-     * @param type      of HTTP request
-     * @param data      of request
+     *
+     * @param type of HTTP request
+     * @param data of request
      */
     public RestMethod(RestMethodTypes type, RequestData data) {
         this.data = data;
@@ -62,9 +66,10 @@ public class RestMethod<T> {
 
     /**
      * Constructor for forming HTTP request with given Rest Assured Request Specification.
-     * @param type                      of HTTP request
-     * @param url                       of request
-     * @param requestSpecification      Rest Assured request specification
+     *
+     * @param type                 of HTTP request
+     * @param url                  of request
+     * @param requestSpecification Rest Assured request specification
      */
     public RestMethod(RestMethodTypes type, String url, RequestSpecification requestSpecification) {
         this(type, url);
@@ -73,16 +78,28 @@ public class RestMethod<T> {
 
     /**
      * Set header to HTTP request.
-     * @param name      of header field
-     * @param value     of header field
+     *
+     * @param name  of header field
+     * @param value of header field
      */
     public void addHeader(String name, String value) {
         data.headers.add(name, value);
     }
 
     /**
+     * Set header to HTTP request or replace the value of header if it had been added before.
+     *
+     * @param name  of header field
+     * @param value of header field
+     */
+    public void addOrReplaceHeader(String name, String value) {
+        data.headers.addOrReplace(name, value);
+    }
+
+    /**
      * Set header to HTTP request.
-     * @param header    field name and value presented as annotation
+     *
+     * @param header field name and value presented as annotation
      */
     public void addHeader(com.epam.http.annotations.Header header) {
         addHeader(header.name(), header.value());
@@ -90,7 +107,8 @@ public class RestMethod<T> {
 
     /**
      * Set header to HTTP request from given Rest Assured header.
-     * @param header    Rest Assured header
+     *
+     * @param header Rest Assured header
      */
     public void addHeader(Header header) {
         addHeader(header.getName(), header.getValue());
@@ -98,29 +116,33 @@ public class RestMethod<T> {
 
     /**
      * Set headers to HTTP request from field annotation.
-     * @param headers   collection of header annotations
+     *
+     * @param headers collection of header annotations
      */
     public void addHeaders(com.epam.http.annotations.Header... headers) {
-        for(com.epam.http.annotations.Header header : headers)
+        for (com.epam.http.annotations.Header header : headers)
             addHeader(header);
     }
 
     /**
      * Set Content-Type to HTTP request.
-     * @param ct    Rest Assured Content-Type
+     *
+     * @param ct Rest Assured Content-Type
      */
     public void setContentType(ContentType ct) {
         data.contentType = ct;
     }
+
     public void addHeaders(Header[] headers) {
-        for(Header header : headers)
+        for (Header header : headers)
             addHeader(header);
     }
 
     /**
      * Set cookie to HTTP request.
-     * @param name      of cookie
-     * @param value     of cookie
+     *
+     * @param name  of cookie
+     * @param value of cookie
      */
     public void addCookie(String name, String value) {
         data.cookies.add(name, value);
@@ -128,7 +150,8 @@ public class RestMethod<T> {
 
     /**
      * Set cookie to HTTP request from annotated field.
-     * @param cookie    from HTTP method field annotation
+     *
+     * @param cookie from HTTP method field annotation
      */
     public void addCookie(Cookie cookie) {
         addCookie(cookie.name(), cookie.value());
@@ -136,29 +159,34 @@ public class RestMethod<T> {
 
     /**
      * Set cookies to HTTP request.
-     * @param cookies   collection of cookies from HTTP method field annotation
+     *
+     * @param cookies collection of cookies from HTTP method field annotation
      */
     public void addCookies(Cookie... cookies) {
         for (Cookie cookie : cookies) {
             addCookie(cookie);
         }
     }
+
     public RestMethod expectStatus(ResponseStatusType status) {
-        expectedStatus = status; return this;
+        expectedStatus = status;
+        return this;
     }
 
     /**
      * Set query parameters to HTTP request.
-     * @param params    collection of query parameters from HTTP method field annotation
+     *
+     * @param params collection of query parameters from HTTP method field annotation
      */
     void addQueryParameters(QueryParameter... params) {
         data.queryParams.addAll(new MapArray<>(params,
-            QueryParameter::name, QueryParameter::value));
+                QueryParameter::name, QueryParameter::value));
     }
 
     /**
      * Send HTTP request
-     * @return      response
+     *
+     * @return response
      */
     public RestResponse call() {
         if (type == null)
@@ -170,15 +198,18 @@ public class RestMethod<T> {
 
     /**
      * Send HTTP request and map response to Java object.
-     * @param c     class to make mapping to
-     * @return      Java object
+     *
+     * @param c class to make mapping to
+     * @return Java object
      */
     public T callAsData(Class<T> c) {
         return call().raResponse().body().as(c);
     }
+
     public T asData(Class<T> c) {
         return callAsData(c);
     }
+
     public RestResponse postData(T data) {
         this.data.body = gson.toJson(data);
         getSpec().body(this.data.body);
@@ -187,22 +218,25 @@ public class RestMethod<T> {
 
     /**
      * Send HTTP request with specific path parameters.
-     * @param params    path parameters
-     * @return          response
+     *
+     * @param params path parameters
+     * @return response
      */
     public RestResponse call(String... params) {
         if (data.url.contains("%s") && params.length > 0)
             data.url = format(data.url, params);
         return call();
     }
+
     public RestResponse post(String body) {
         return call(new RequestData().set(rd -> rd.body = body));
     }
 
     /**
      * Send HTTP request with invoked request data.
+     *
      * @param requestData
-     * @return          response
+     * @return response
      */
     public RestResponse call(RequestData requestData) {
         if (!requestData.pathParams.isEmpty())
@@ -217,13 +251,14 @@ public class RestMethod<T> {
         if (!requestData.cookies.isEmpty()) {
             data.cookies.addAll(requestData.cookies);
         }
-       return call();
+        return call();
     }
 
     /**
      * Send HTTP request with Rest Assured Request Specification.
-     * @param requestSpecification      Rest Assured request specification
-     * @return                          response
+     *
+     * @param requestSpecification Rest Assured request specification
+     * @return response
      */
     public RestResponse call(RequestSpecification requestSpecification) {
         this.spec = spec.spec(requestSpecification);
@@ -232,7 +267,8 @@ public class RestMethod<T> {
 
     /**
      * Get request specification to be able to log it.
-     * @return      request specification
+     *
+     * @return request specification
      */
     public RequestSpecification getSpec() {
         if (data == null)
@@ -263,12 +299,14 @@ public class RestMethod<T> {
 
     /**
      * Check response time is less than the parameter value.
-     * @param liveTimeMSec      Msec value
+     *
+     * @param liveTimeMSec Msec value
      */
     public void isAlive(int liveTimeMSec) {
         StopWatch watch = createStarted();
         ResponseStatusType status;
-        do { status = call().status.type;
+        do {
+            status = call().status.type;
         } while (status != OK && watch.getTime() < liveTimeMSec);
         call().isOk();
     }

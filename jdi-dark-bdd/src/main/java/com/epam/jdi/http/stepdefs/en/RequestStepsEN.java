@@ -50,7 +50,7 @@ public class RequestStepsEN {
         }
         if (preparedHeader.get() != null) {
             for (Map.Entry<String, String> entry : preparedHeader.get().entrySet()) {
-                restMethod.addHeader(entry.getKey(), entry.getValue());
+                restMethod.addOrReplaceHeader(entry.getKey(), entry.getValue());
             }
         }
         if (requestContentType.get() != null)

@@ -20,4 +20,7 @@ public class IdName {
 
     @JsonProperty("User-Agent")
     public String UserAgent;
+
+    @JsonProperty("X-Amzn-Trace-Id")
+    public String xAmznTraceId;
 }

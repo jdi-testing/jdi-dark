@@ -10,8 +10,11 @@ import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
+
+import java.util.Set;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.logger;
@@ -277,16 +280,25 @@ public class RestMethod<T> {
             data.url = formatParams(data.url, data.pathParams);
         spec.contentType(data.contentType);
         spec.baseUri(data.url);
+
+        Set<String> keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet();
+        for (String key : keys) {
+            ((FilterableRequestSpecification) spec).removeQueryParam(key);
+        }
         if (data.queryParams.any()) {
             spec.queryParams(data.queryParams.toMap());
             data.url += "?" + print(data.queryParams.toMap(), "&", "{0}={1}");
         }
         if (data.body != null)
             spec.body(data.body);
-        if (data.headers.any())
+        ((FilterableRequestSpecification) spec).removeHeaders();
+        if (data.headers.any()) {
             spec.headers(data.headers.toMap());
-        if (data.cookies.any())
+        }
+        ((FilterableRequestSpecification) spec).removeCookies();
+        if (data.cookies.any()) {
             spec.cookies(data.cookies.toMap());
+        }
         return spec;
     }
 

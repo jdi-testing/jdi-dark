@@ -1,3 +1,4 @@
+@smoke
 Feature: GET and POST check
 
   Scenario Outline: Check response
@@ -8,6 +9,6 @@ Feature: GET and POST check
       | url          | <url>       |
       | headers.Host | httpbin.org |
     Examples:
-      | method | responseStatus | url                      |
+      | method | responseStatus | url                     |
       | get    | OK             | http://httpbin.org/get  |
       | post   | OK             | http://httpbin.org/post |

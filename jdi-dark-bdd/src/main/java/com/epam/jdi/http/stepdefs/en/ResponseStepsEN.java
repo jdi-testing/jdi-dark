@@ -2,9 +2,9 @@ package com.epam.jdi.http.stepdefs.en;
 
 import com.epam.http.response.ResponseStatusType;
 import com.epam.jdi.tools.map.MapArray;
-import cucumber.api.DataTable;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Then;
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 import org.hamcrest.Matcher;
 import org.testng.Assert;
 
@@ -58,7 +58,7 @@ public class ResponseStepsEN {
     @And("^Response body has values$")
     public void responseBodyHasValues(DataTable params) {
         MapArray<String, Matcher<?>> map =
-            new MapArray<>(params.raw(), p -> p.get(0), p -> equalTo(p.get(1)));
+            new MapArray<>(params.asLists(), p -> p.get(0), p -> equalTo(p.get(1)));
         restResponse.get().assertBody(map);
     }
 

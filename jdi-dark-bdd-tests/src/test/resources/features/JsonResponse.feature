@@ -1,3 +1,4 @@
+@smoke
 Feature: Json response check
 
   Scenario: Check json response
@@ -7,5 +8,5 @@ Feature: Json response check
     Then Response status type is OK
     And Response body has values
       | url          | http://httpbin.org/get |
-      | headers.Host | httpbin.org             |
+      | headers.Host | httpbin.org            |
     And Response header "Connection" is "keep-alive"

@@ -1,13 +1,12 @@
 package com.epam.jdi.http.stepdefs.en;
 
 import com.epam.http.requests.RestMethod;
-import cucumber.api.DataTable;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
-import org.testng.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +62,8 @@ public class RequestStepsEN {
     public void iHaveTheFollowingHeaders(DataTable headers) {
         preparedHeader.set(null);
         HashMap<String, String> hashMap = new HashMap<>();
-        for (Map.Entry<String, String> entry : headers.asMap(String.class, String.class).entrySet()) {
-            hashMap.put(entry.getKey(), entry.getValue());
+        for (Map.Entry<Object, Object> entry : headers.asMap(String.class, String.class).entrySet()) {
+            hashMap.put((String) entry.getKey(), (String) entry.getValue());
         }
         preparedHeader.set(hashMap);
     }

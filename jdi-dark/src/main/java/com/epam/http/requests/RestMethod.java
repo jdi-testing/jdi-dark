@@ -278,7 +278,6 @@ public class RestMethod<T> {
             return spec;
         if (data.pathParams.any() && data.url.contains("{"))
             data.url = formatParams(data.url, data.pathParams);
-        spec.contentType(data.contentType);
         spec.baseUri(data.url);
 
         Set<String> keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet();
@@ -295,6 +294,7 @@ public class RestMethod<T> {
         if (data.headers.any()) {
             spec.headers(data.headers.toMap());
         }
+        spec.contentType(data.contentType);
         ((FilterableRequestSpecification) spec).removeCookies();
         if (data.cookies.any()) {
             spec.cookies(data.cookies.toMap());

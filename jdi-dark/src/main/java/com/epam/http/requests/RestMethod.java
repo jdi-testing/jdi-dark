@@ -291,12 +291,14 @@ public class RestMethod<T> {
         }
         if (data.body != null)
             spec.body(data.body);
-        if (data.headers.any())
+        if (data.headers.any()) {
             ((FilterableRequestSpecification) spec).removeHeaders();
-        spec.headers(data.headers.toMap());
-        if (data.cookies.any())
+            spec.headers(data.headers.toMap());
+        }
+        if (data.cookies.any()) {
             ((FilterableRequestSpecification) spec).removeCookies();
-        spec.cookies(data.cookies.toMap());
+            spec.cookies(data.cookies.toMap());
+        }
         return spec;
     }
 

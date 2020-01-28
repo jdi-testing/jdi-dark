@@ -3,21 +3,26 @@ package com.epam.jdi.httptests;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
 import io.restassured.response.Response;
+import org.apache.http.client.utils.DateUtils;
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static io.restassured.RestAssured.get;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
+import static io.restassured.matcher.RestAssuredMatchers.detailedCookie;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.Matchers.*;
 
 public class CookiesTests {
 
@@ -26,126 +31,213 @@ public class CookiesTests {
         init(JettyService.class);
     }
 
+    // 1 - rename methods
+    // 2- check all
+    // 3 - check all together
+    // 4 - clarify logic
     @Test
-    public void multivalueCookieReturnsTheLastValue()  {
+    public void multiValueCookieReturnsTheLastValueInMap() {
         RestResponse response = JettyService.getMultiCookie.call();
-        resp.isOk();
-        final Map<String,String> cookies = response
-
-        final Map<String,String> cookies = get("/multiCookie").cookies();
-        assertThat(cookies, hasEntry("cookie1", "cookieValue2"));
-    }
-
-    @Test
-    public void requestSpecificationAllowsSpecifyingCookieWithNoValue() throws Exception {
-      //  given().cookie("some_cookie").expect().body(Matchers.equalTo("some_cookie")).when().get("/cookie_with_no_value");
-
-        final Map<String,String> cookies = get("http://localhost:8080/multiCookie").cookies();
-     //   Thread.sleep(100000);
-        System.out.println("cookies size: " + cookies.size());
-        assertThat(cookies, hasEntry("cookie1", "cookieValue2"));
-        for (String key : cookies.keySet()) {
-            System.out.println("\n this key is " + key + " value: " + cookies.get(key));
-        }
-
-        ServiceExample service = init(ServiceExample.class);
-        //RestResponse response = service.getCookies2.addCookie("cookie");
-        // TODO - no method to add cookie without value
-
-/*                call(
-                requestData(requestData ->
-                        requestData.cookies = new MapArray<>(new Object[][] {
-                                {"additionalCookie", "test"}
-                        })));*/
-      //  response.isOk();
-    }
-
-    @Test
-    public void requestSpecificationAllowsSpecifyingCookies() throws Exception {
-        given().cookies("username", "John", "token", "1234").then().expect().body(Matchers.equalTo("username, token")).when().get("/cookie");
-    }
-
-    @Test
-    public void requestSpecificationAllowsSpecifyingCookieUsingMap() throws Exception {
-        Map<String, String> cookies = new HashMap<String, String>();
-        cookies.put("username", "John");
-        cookies.put("token", "1234");
-        given().cookies(cookies).then().expect().body(Matchers.equalTo("username, token")).when().get("/cookie");
-    }
-
-    @Test
-    public void requestSpecificationAllowsSpecifyingMultipleCookies() throws Exception {
-        Map<String, String> cookies = new HashMap<String, String>();
-        cookies.put("username", "John");
-        cookies.put("token", "1234");
-        given().cookies(cookies).and().cookies("key1", "value1").then().expect().body(Matchers.equalTo("username, token, key1")).when().get("/cookie");
-    }
-
-
-/*    @Test
-    public void cookiesTest() {
-        ServiceExample service = init(ServiceExample.class);
-        RestResponse response = service.getCookies.call(
-                requestData(requestData ->
-                        requestData.cookies = new MapArray<>(new Object[][] {
-                                {"additionalCookie", "test"}
-                        })));
-        response.isOk()
-                .body("cookies.additionalCookie", equalTo("test"))
-                .body("cookies.session_id", equalTo("1234"))
-                .body("cookies.hello", equalTo("world"));
-    }*/
-
-    @Test
-    public void cookiesReturnsAMapWhereTheLastValueOfAMultiValueCookieIsUsed() {
-
- /*       ServiceExample service = init(ServiceExample.class);
-        RestResponse response = service.getCookies.call(
-                requestData(requestData ->
-                        requestData.cookies = new MapArray<>(new Object[][] {
-                                {"additionalCookie", "test"}
-                        })));
         response.isOk();
+        final Map<String, String> cookies = response.cookies();
+        assertThat(cookies, hasEntry("cookie1", "cookieValue2"));
+    }
 
-        RestResponse response2 = service.getCookies.call(
-                requestData(requestData ->
-                        requestData.cookies = new MapArray<>(new Object[][] {
-                                {"additionalCookie", "test"}
-                        })));
+    @Test
+    public void multiValueCookieReturnsTheLastValueInDsl() {
+        RestResponse response = JettyService.getMultiCookie.call();
+        response.isOk();
+        assertThat(response.cookie("cookie1"), equalTo("cookieValue2"));
+    }
 
-
-        String cookieVal = response.cookie("additionalCookie");
-        System.out.println("\n cookie value " + cookieVal);
-        System.out.println("\n cookie value " + response.cookie("session_id"));
-*/
-        //  assertThat(cookies, hasEntry("cookie1", "cookieValue2"));
-
-
-    //    Response resp = given().cookie("session_id", "1234").get("https://httpbin.org/cookies");
-        Response resp = given().cookie("session_id", "1234")
-                .post("https://api.trello.com/1/cards/5a27e722e2f04f3ab6924931/actions/comments?key=3445103a21ddca2619eaceb0e833d0db&token=a9b951262e529821308e7ecbc3e4b7cfb14a24fef5ea500a68c69d374009fcc0");
-
-     //   given().cookie("session_id", "1234").when().get("/users/eugenp")
-       //         .then().statusCode(200);
-    //    System.out.println("\n boyd" + resp.getBody().asString());
-        System.out.println("\n cookies are::: " +resp.cookies().size());
-        final Map<String, String> cookies = resp.cookies();
-        System.out.println("\n cookies are::: ");
-        for (String key : cookies.keySet()) {
-            System.out.println("\n key is: " + key + "\n value: " + cookies.get(key));
-        }
+    @Test
+    public void supportsCookieStringMatchingViaDsl() {
+        RestResponse response = JettyService.setCookies.call();
+        response.assertThat().cookie("key1", "value1");
+    }
 
 
-        Response resp2 = given().cookie("session_id", "1234").auth().basic("user", "password")
-                .post("https://httpbin.org/basic-auth/user/password");
+    @Test
+    public void multipleCookieStatementsAreConcatenated() {
+        RestResponse response = JettyService.setCookies.call();
+        response.assertThat().cookie("key1", "value1").and().cookie("key2", "value2");
+    }
 
+    @Test
+    public void multipleCookiesShortVersionUsingPlainStrings() {
+        RestResponse response = JettyService.setCookies.call();
+        response.assertThat().cookies("key1", "value1", "key3", "value3");
+    }
 
-        final Map<String, String> cookies2 = resp2.cookies();
-        System.out.println("\n cookies are::: " +resp2.cookies().size());
-        for (String key : cookies2.keySet()) {
-            System.out.println("\n key is: " + key + "\n value: " + cookies2.get(key));
+    @Test
+    public void multipleCookiesShortVersionUsingHamcrestMatching() {
+        RestResponse response = JettyService.setCookies.call();
+        response.assertThat().cookies("key2", containsString("2"), "key3", equalTo("value3"));
+    }
+
+    @Test
+    public void multipleCookiesShortVersionUsingMixOfHamcrestMatchingAndStringMatching() {
+        JettyService.setCookies.call().assertThat().cookies("key1", containsString("1"), "key2", "value2");
+    }
+
+    @Test
+    public void multipleCookiesUsingMap() {
+        Map<String, String> expectedCookies = new HashMap<>();
+        expectedCookies.put("key1", "value1");
+        expectedCookies.put("key2", "value2");
+
+        JettyService.setCookies.call().assertThat().cookies(expectedCookies);
+    }
+
+    @Test
+    public void multipleCookiesUsingMapWithHamcrestMatcher() {
+        Map<String, Matcher<String>> expectedCookies = new HashMap<>();
+        expectedCookies.put("key1", containsString("1"));
+        expectedCookies.put("key3", equalTo("value3"));
+
+        JettyService.setCookies.call().assertThat().cookies(expectedCookies);
+    }
+
+    @Test
+    public void multipleCookiesUsingMapWithMixOfStringAndHamcrestMatcher() {
+        Map expectedCookies = new HashMap();
+        expectedCookies.put("key1", containsString("1"));
+        expectedCookies.put("key2", "value2");
+
+        JettyService.setCookies.call().assertThat().cookies(expectedCookies);
+    }
+
+    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*1 expectation failed.*")
+    public void whenExpectedCookieDoesntMatchAnAssertionThenAssertionErrorIsThrown() {
+        JettyService.setCookies.call().assertThat().cookie("key1", "value2");
+    }
+
+    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*1 expectation failed.*")
+    public void whenExpectedCookieIsNotFoundThenAnAssertionErrorIsThrown() {
+        JettyService.setCookies.call().assertThat().cookie("Not-Defined", "something");
+    }
+
+    // TODO - I AM HERE
+    @Test
+    public void cookiesSupportEqualCharacterInCookieValue() throws Exception {
+        given().
+                cookie("jsessionid", "9HTaCatOIaiO7ccHojDzuxwVoIU=").
+                expect().
+                cookie("JSESSIONID", "9HTaCatOIaiO7ccHojDzuxwVoIU=").
+                when().
+                post("/reflect");
+    }
+
+    @Test
+    public void cookiesParsingSupportsNoValueCookies() throws Exception {
+        given().
+                cookie("no-value-cookie").
+                expect().
+                cookie("no-value-cookie").
+                when().
+                post("/reflect");
+    }
+
+    @Test
+    public void detailedCookieWorks() throws Exception {
+        final Response response = get("/html_with_cookie");
+        final Cookie detailedCookieJsessionId = response.detailedCookie("JSESSIONID");
+
+        assertThat(detailedCookieJsessionId, notNullValue());
+        assertThat(detailedCookieJsessionId.getPath(), equalTo("/"));
+        assertThat(detailedCookieJsessionId.getValue(), equalTo("B3134D534F40968A3805968207273EF5"));
+    }
+
+    @Test
+    public void getDetailedCookieWorks() throws Exception {
+        final Response response = get("/html_with_cookie");
+        final Cookie detailedCookieJsessionId = response.getDetailedCookie("JSESSIONID");
+
+        assertThat(detailedCookieJsessionId, notNullValue());
+        assertThat(detailedCookieJsessionId.getPath(), equalTo("/"));
+        assertThat(detailedCookieJsessionId.getValue(), equalTo("B3134D534F40968A3805968207273EF5"));
+    }
+    @Test
+    public void multipleCookiesWithSameKey() throws Exception {
+        final Response response = get("/setCommonIdCookies");
+        Map<String, String> map = new HashMap<String, String>();
+        map = response.cookies();
+        assertThat(map.get("key1"), equalTo("value3"));
+    }
+
+    @Test
+    public void usesCookiesDefinedInAStaticRequestSpecification() throws Exception {
+        RestAssured.requestSpecification = new RequestSpecBuilder().addCookie("my-cookie", "1234").build();
+
+        try {
+            when().
+                    post("/reflect").
+                    then().
+                    log().ifValidationFails().
+                    cookie("my-cookie", "1234");
+        } finally {
+            RestAssured.reset();
         }
     }
+
+    @Test
+    public void parsesValidExpiresDateCorrectly() throws Exception {
+        Cookies cookies =
+                when().
+                        get("/cookieWithValidExpiresDate").
+                        then().
+                        extract().detailedCookies();
+
+        assertThat(cookies.asList(), hasSize(1));
+        Cookie cookie = cookies.get("name");
+        assertThat(cookie.getExpiryDate(), equalTo(DateUtils.parseDate("Sat, 02 May 2009 23:38:25 GMT")));
+    }
+
+    @Test
+    public void removesDoubleQuotesFromCookieWithExpiresDate() throws Exception {
+        Cookies cookies =
+                when().
+                        get("/cookieWithDoubleQuoteExpiresDate").
+                        then().
+                        extract().detailedCookies();
+
+        assertThat(cookies.asList(), hasSize(1));
+        Cookie cookie = cookies.get("name");
+        assertThat(cookie.getExpiryDate(), equalTo(DateUtils.parseDate("Sat, 02 May 2009 23:38:25 GMT")));
+    }
+
+    @Test
+    public void setsExpiresPropertyToNullWhenCookieHasInvalidExpiresDate() throws Exception {
+        Cookies cookies =
+                when().
+                        get("/cookieWithInvalidExpiresDate").
+                        then().
+                        extract().detailedCookies();
+
+        assertThat(cookies.asList(), hasSize(1));
+        Cookie cookie = cookies.get("name");
+        assertThat(cookie.getExpiryDate(), nullValue());
+    }
+
+    @Test
+    public void canGetCookieSameSiteAttribute() {
+        Cookies cookies = when().get("/sameSiteCookie").then().extract().detailedCookies();
+
+        assertThat(cookies.asList(), hasSize(1));
+        final Cookie cookie = cookies.get("name");
+        assertThat(cookie.getValue(), equalTo("value"));
+        assertThat(cookie.isSecured(), is(true));
+        assertThat(cookie.getSameSite(), equalTo("None"));
+    }
+
+    @Test
+    public void detailedCookieMatcherSupportsSameSiteAttribute() {
+        given()
+                .get("/sameSiteCookie")
+                .then()
+                .cookie("name", detailedCookie().value(Matchers.notNullValue()).secured(true).sameSite("None"));
+    }
+
 
 
 }

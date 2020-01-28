@@ -36,5 +36,7 @@ public class ServiceExample {
     })
     @GET("/cookies") RestMethod getCookies;
 
+    @GET("/cookies") RestMethod getCookies2;
+
     @GET("/basic-auth/user/password") RestMethod getWithAuth;
 }

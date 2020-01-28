@@ -3,9 +3,11 @@ package com.epam.jdi.httptests;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.response.Response;
+import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.RequestData.requestData;
@@ -19,7 +21,44 @@ public class CookiesTests {
 
     @BeforeTest
     public void before() {
-        init(ServiceExample.class);
+        //init(ServiceExample.class);
+    }
+
+    @Test
+    public void requestSpecificationAllowsSpecifyingCookieWithNoValue() throws Exception {
+      //  given().cookie("some_cookie").expect().body(Matchers.equalTo("some_cookie")).when().get("/cookie_with_no_value");
+
+        ServiceExample service = init(ServiceExample.class);
+        //RestResponse response = service.getCookies2.addCookie("cookie");
+        // TODO - no method to add cookie without value
+
+/*                call(
+                requestData(requestData ->
+                        requestData.cookies = new MapArray<>(new Object[][] {
+                                {"additionalCookie", "test"}
+                        })));*/
+      //  response.isOk();
+    }
+
+    @Test
+    public void requestSpecificationAllowsSpecifyingCookies() throws Exception {
+        given().cookies("username", "John", "token", "1234").then().expect().body(Matchers.equalTo("username, token")).when().get("/cookie");
+    }
+
+    @Test
+    public void requestSpecificationAllowsSpecifyingCookieUsingMap() throws Exception {
+        Map<String, String> cookies = new HashMap<String, String>();
+        cookies.put("username", "John");
+        cookies.put("token", "1234");
+        given().cookies(cookies).then().expect().body(Matchers.equalTo("username, token")).when().get("/cookie");
+    }
+
+    @Test
+    public void requestSpecificationAllowsSpecifyingMultipleCookies() throws Exception {
+        Map<String, String> cookies = new HashMap<String, String>();
+        cookies.put("username", "John");
+        cookies.put("token", "1234");
+        given().cookies(cookies).and().cookies("key1", "value1").then().expect().body(Matchers.equalTo("username, token, key1")).when().get("/cookie");
     }
 
 

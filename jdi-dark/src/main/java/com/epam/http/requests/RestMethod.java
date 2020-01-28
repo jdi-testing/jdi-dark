@@ -6,10 +6,8 @@ import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
-import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -29,10 +27,9 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestMethod<T> {
-    public RequestSpecification spec = given().filter(new AllureRestAssured());;
+    public RequestSpecification spec = given().filter(new AllureRestAssured());
     private RequestData data;
     private RestMethodTypes type;
-    private Gson gson = new Gson();
     private ResponseStatusType expectedStatus = OK;
 
     public RestMethod() {}
@@ -88,13 +85,6 @@ public class RestMethod<T> {
         addHeader(header.name(), header.value());
     }
 
-    /**
-     * Set header to HTTP request from given Rest Assured header.
-     * @param header    Rest Assured header
-     */
-    public void addHeader(Header header) {
-        addHeader(header.getName(), header.getValue());
-    }
 
     /**
      * Set headers to HTTP request from field annotation.
@@ -112,10 +102,7 @@ public class RestMethod<T> {
     public void setContentType(ContentType ct) {
         data.contentType = ct;
     }
-    public void addHeaders(Header[] headers) {
-        for(Header header : headers)
-            addHeader(header);
-    }
+
 
     /**
      * Set cookie to HTTP request.
@@ -142,9 +129,6 @@ public class RestMethod<T> {
         for (Cookie cookie : cookies) {
             addCookie(cookie);
         }
-    }
-    public RestMethod expectStatus(ResponseStatusType status) {
-        expectedStatus = status; return this;
     }
 
     /**
@@ -179,11 +163,7 @@ public class RestMethod<T> {
     public T asData(Class<T> c) {
         return callAsData(c);
     }
-    public RestResponse postData(T data) {
-        this.data.body = gson.toJson(data);
-        getSpec().body(this.data.body);
-        return call();
-    }
+
 
     /**
      * Send HTTP request with specific path parameters.
@@ -191,8 +171,9 @@ public class RestMethod<T> {
      * @return          response
      */
     public RestResponse call(String... params) {
-        if (data.url.contains("%s") && params.length > 0)
+        if (data.url.contains("%s") && params.length > 0) {
             data.url = format(data.url, params);
+        }
         return call();
     }
     public RestResponse post(String body) {
@@ -252,13 +233,6 @@ public class RestMethod<T> {
         if (data.cookies.any())
             spec.cookies(data.cookies.toMap());
         return spec;
-    }
-
-    /**
-     * Check response time is less than 2000msec.
-     */
-    public void isAlive() {
-        isAlive(2000);
     }
 
     /**

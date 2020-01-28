@@ -42,7 +42,7 @@ public class ResponseStepsEN {
         Boolean typeMatches = false;
         for (ResponseStatusType responseStatusType : ResponseStatusType.values()) {
             if(type.equalsIgnoreCase(responseStatusType.name()))
-                typeMatches = true;
+                typeMatches = true;         
         }
         Assert.assertTrue(typeMatches);
     }

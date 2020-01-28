@@ -1,17 +1,18 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.*;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.PATCH;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RestMethodTypes.*;
+import static com.epam.http.requests.RestMethodTypes.GET;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.DELETE;
+import static com.epam.http.requests.RestMethodTypes.HEAD;
+import static com.epam.http.requests.RestMethodTypes.OPTIONS;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
 
@@ -121,11 +122,11 @@ public class ServiceInit {
 
     /**
      * Get and check URL from request data.
-     * @param domain
-     * @param uri
-     * @param methodName
-     * @param className
-     * @return normalized URL
+     * @param   domain      String
+     * @param   uri         String
+     * @param   methodName  String
+     * @param   className   String
+     * @return  normalized  URL
      */
     private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
         if (uri == null)

@@ -99,6 +99,8 @@ public class ServiceTest {
                         requestData.cookies = new MapArray<>(new Object[][] {
                                 {"additionalCookie", "test"}
                         })));
+
+        response.cookie("xx");
         response.isOk()
                 .body("cookies.additionalCookie", equalTo("test"))
                 .body("cookies.session_id", equalTo("1234"))

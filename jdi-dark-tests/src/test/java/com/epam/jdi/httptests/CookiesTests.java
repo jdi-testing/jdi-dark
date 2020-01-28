@@ -2,6 +2,7 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.map.MapArray;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeTest;
@@ -14,6 +15,7 @@ import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -21,12 +23,30 @@ public class CookiesTests {
 
     @BeforeTest
     public void before() {
-        //init(ServiceExample.class);
+        init(JettyService.class);
+    }
+
+    @Test
+    public void multivalueCookieReturnsTheLastValue()  {
+        RestResponse response = JettyService.getMultiCookie.call();
+        resp.isOk();
+        final Map<String,String> cookies = response
+
+        final Map<String,String> cookies = get("/multiCookie").cookies();
+        assertThat(cookies, hasEntry("cookie1", "cookieValue2"));
     }
 
     @Test
     public void requestSpecificationAllowsSpecifyingCookieWithNoValue() throws Exception {
       //  given().cookie("some_cookie").expect().body(Matchers.equalTo("some_cookie")).when().get("/cookie_with_no_value");
+
+        final Map<String,String> cookies = get("http://localhost:8080/multiCookie").cookies();
+     //   Thread.sleep(100000);
+        System.out.println("cookies size: " + cookies.size());
+        assertThat(cookies, hasEntry("cookie1", "cookieValue2"));
+        for (String key : cookies.keySet()) {
+            System.out.println("\n this key is " + key + " value: " + cookies.get(key));
+        }
 
         ServiceExample service = init(ServiceExample.class);
         //RestResponse response = service.getCookies2.addCookie("cookie");

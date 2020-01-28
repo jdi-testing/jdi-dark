@@ -6,8 +6,9 @@ before_install:
 
 env:
   global:
+  - HTTP_TESTS="com.epam.jdi:jdi-dark-tests"
   - BDD_TESTS="com.epam.jdi:jdi-dark-bdd-tests"
-  
+
 stages:
 - prepare
 - compile
@@ -27,6 +28,12 @@ jobs:
     script:
     - mvn install -DskipTests
     - mvn versions:use-latest-releases
+
+  - stage: test
+    name: Run tests - bdd
+    script:
+      - mvn install -DskipTests
+      - mvn verify -pl HTTP_TESTS
 
   - stage: test
     name: Run tests - bdd

@@ -93,7 +93,6 @@ function uploadFile() {
 
 ######################         PART 2: Deploy allure results as allure reports to netlify
 function deployAllureResults() {
-    echo "deployAllureResults"
     checkBranchIsOk #there is an exit inside
     downloadAllureResults
     extractAllureResults

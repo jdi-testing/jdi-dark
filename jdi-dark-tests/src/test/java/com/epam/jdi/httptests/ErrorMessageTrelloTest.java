@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestData;
@@ -22,11 +22,10 @@ public class ErrorMessageTrelloTest {
     public static final String NOT_EXISTS_BOARD_ID = "5a27e3b62fef5d3a74dca59a";
     public static final String CARD_UNIQUE_ID = "5a27e722e2f04f3ab6924931";
     public static final String NOT_EXISTS_CARD_ID = "5a27e722e2f04f3ab6924991";
-    public static final String APPLICATION_JSON_CONTENT_TYPE = "application/json";
     public static final int NOT_FOUND_CODE = 404;
     public static final int ERROR_CODE = 400;
 
-    @BeforeClass
+    @BeforeMethod
     public void initService() {
         init(TrelloApi.class);
     }
@@ -59,7 +58,6 @@ public class ErrorMessageTrelloTest {
         String invalidComment = "";
         RestResponse response = postNewCommentToCard
                 .call(requestData(d -> {
-                    d.headers.add("Content-Type", APPLICATION_JSON_CONTENT_TYPE);
                     d.pathParams.add("card_id", CARD_UNIQUE_ID);
                     d.queryParams.add("text", invalidComment);
                 }));

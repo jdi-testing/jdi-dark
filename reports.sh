@@ -67,6 +67,7 @@ function checkBranchIsOk() {
 
 #########################               PART 1: send allure results into web to collect it later
 function grubAllureResults() {
+    echo "grubAllureResults"
     echo "Stage was: ${TRAVIS_BUILD_STAGE_NAME}"
     checkBranchIsOk #there is an exit inside
 
@@ -92,6 +93,7 @@ function uploadFile() {
 
 ######################         PART 2: Deploy allure results as allure reports to netlify
 function deployAllureResults() {
+    echo "deployAllureResults"
     checkBranchIsOk #there is an exit inside
     downloadAllureResults
     extractAllureResults

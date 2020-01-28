@@ -33,7 +33,7 @@ jobs:
     name: Run tests - http
     script:
       - mvn install -DskipTests
-      - mvn verify -pl HTTP_TESTS
+      - mvn verify -pl $HTTP_TESTS
 
   - stage: test
     name: Run tests - bdd

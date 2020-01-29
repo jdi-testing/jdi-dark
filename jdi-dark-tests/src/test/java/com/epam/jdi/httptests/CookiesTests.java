@@ -12,7 +12,9 @@ import java.util.Map;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
 
 public class CookiesTests {
 

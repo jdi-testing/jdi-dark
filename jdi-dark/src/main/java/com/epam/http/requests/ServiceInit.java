@@ -122,11 +122,11 @@ public class ServiceInit {
 
     /**
      * Get and check URL from request data.
-     * @param   domain      String
-     * @param   uri         String
-     * @param   methodName  String
-     * @param   className   String
-     * @return  normalized  URL
+     * @param   domain String
+     * @param   uri String
+     * @param   methodName String
+     * @param   className String
+     * @return  normalized URL
      */
     private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
         if (uri == null)

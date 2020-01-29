@@ -14,4 +14,10 @@ public class JettyService {
 
     @GET("/cookie")
     static RestMethod getCookie;
+
+    @POST("/reflect")
+    static RestMethod postReflect;
+
+    @GET("/setCommonIdCookies")
+    static RestMethod getCommonIdCookies;
 }

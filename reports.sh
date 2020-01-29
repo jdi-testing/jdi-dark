@@ -67,6 +67,7 @@ function checkBranchIsOk() {
 
 #########################               PART 1: send allure results into web to collect it later
 function grubAllureResults() {
+    echo "grubAllureResults"
     echo "Stage was: ${TRAVIS_BUILD_STAGE_NAME}"
     checkBranchIsOk #there is an exit inside
 
@@ -126,7 +127,7 @@ function extractAllureResults() {
 function generateAllureReports() {
     reportDirList="";
     allureDirExistence=false
-    for report in $(ls -d1 jdi-light*/)
+    for report in $(ls -d1 jdi-dark*/)
     do
         allureDirExistence=true
         allureDir="${report}allure-results"

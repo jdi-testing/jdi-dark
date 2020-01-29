@@ -11,7 +11,6 @@ import io.restassured.http.ContentType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.jdi.http.Utils.*;
 import static com.epam.jdi.tools.LinqUtils.first;
 import static io.restassured.http.ContentType.values;
 

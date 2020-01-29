@@ -4,12 +4,9 @@ import com.epam.http.response.RestResponse;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestData.*;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloApi.*;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class TrelloTests {

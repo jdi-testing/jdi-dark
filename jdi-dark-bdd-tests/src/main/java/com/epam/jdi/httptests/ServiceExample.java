@@ -1,6 +1,5 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
 import com.epam.jdi.http.IRestService;
 

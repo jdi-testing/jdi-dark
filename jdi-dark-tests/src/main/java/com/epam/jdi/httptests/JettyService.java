@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests;
 
+import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.ServiceDomain;
@@ -22,4 +23,13 @@ public class JettyService {
 
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
+
+    @DELETE("/cookie")
+    static RestMethod deleteCookie;
+
+    @DELETE("/greet")
+    static RestMethod deleteGreet;
+
+    @DELETE("/body")
+    static RestMethod deleteBody;
 }

@@ -9,6 +9,7 @@ import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matcher;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -23,7 +24,7 @@ import static java.lang.String.format;
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
-public class RestResponse{
+public class RestResponse {
     private final Response raResponse;
     private final long responseTimeMSec;
     public String body = null;
@@ -34,12 +35,15 @@ public class RestResponse{
         this.raResponse = null;
         responseTimeMSec = 0;
     }
+
     public static RestResponse Response() {
         return new RestResponse();
     }
+
     public RestResponse(Response raResponse) {
         this(raResponse, 0);
     }
+
     public RestResponse(Response raResponse, long time) {
         this.raResponse = raResponse;
         responseTimeMSec = time;
@@ -48,19 +52,22 @@ public class RestResponse{
         contenType = raResponse.contentType();
         logger.info(toString());
     }
+
     public RestResponse set(JAction1<RestResponse> valueFunc) {
         RestResponse thisObj = this;
         valueFunc.execute(thisObj);
         return thisObj;
     }
+
     public boolean verify(Function<RestResponse, Boolean> validator) {
         return validator.apply(this);
     }
 
     /**
      * Check the validity of the response.
-     * @param validator     function to validate assuming the result would be boolean
-     * @return              Rest Assured validatable response
+     *
+     * @param validator function to validate assuming the result would be boolean
+     * @return Rest Assured validatable response
      */
     public ValidatableResponse validate(Function<RestResponse, Boolean> validator) {
         if (!verify(validator))
@@ -70,7 +77,8 @@ public class RestResponse{
 
     /**
      * Check if response status is OK(code starts with 2).
-     * @return          result of assertion
+     *
+     * @return result of assertion
      */
     public ValidatableResponse isOk() {
         return isStatus(OK);
@@ -78,7 +86,8 @@ public class RestResponse{
 
     /**
      * Check if response status has any errors.
-     * @return          result of assertion
+     *
+     * @return result of assertion
      */
     public ValidatableResponse hasErrors() {
         return isStatus(ERROR);
@@ -86,20 +95,23 @@ public class RestResponse{
 
     /**
      * Validate the status.
-     * @param type      of status as enumeration value
-     * @return          result of assertion
+     *
+     * @param type of status as enumeration value
+     * @return result of assertion
      */
     public ValidatableResponse isStatus(ResponseStatusType type) {
         return validate(r -> status.type == type);
     }
+
     public ValidatableResponse isEmpty() {
         return validate(r -> body.equals(""));
     }
 
     /**
      * Check response body according to expected values.
-     * @param params    key name and matcher with expected value for that key
-     * @return          Rest Assured response
+     *
+     * @param params key name and matcher with expected value for that key
+     * @return Rest Assured response
      */
     public ValidatableResponse assertBody(MapArray<String, Matcher<?>> params) {
         ValidatableResponse vr = assertThat();
@@ -107,13 +119,16 @@ public class RestResponse{
             for (Pair<String, Matcher<?>> pair : params)
                 vr.body(pair.key, pair.value);
             return vr;
-        } catch (Exception ex) { throw new RuntimeException("Only <String, Matcher> pairs available for assertBody"); }
+        } catch (Exception ex) {
+            throw new RuntimeException("Only <String, Matcher> pairs available for assertBody");
+        }
     }
 
     /**
      * Check response body according to expected values.
-     * @param params    key name and matcher with expected value for that key
-     * @return          Rest Assured response
+     *
+     * @param params key name and matcher with expected value for that key
+     * @return Rest Assured response
      */
     public ValidatableResponse assertBody(Object[][] params) {
         return assertBody(new MapArray<>(params));
@@ -121,8 +136,9 @@ public class RestResponse{
 
     /**
      * Get text/html media type content by path.
-     * @param path      the HTML path
-     * @return          string matching the provided HTML path
+     *
+     * @param path the HTML path
+     * @return string matching the provided HTML path
      */
     public String getFromHtml(String path) {
         return raResponse.body().htmlPath().getString(path);
@@ -131,40 +147,63 @@ public class RestResponse{
     /**
      * Get response headers.
      *
-     * @return      response headers list
+     * @return response headers list
      */
-    public List<Header> headers() { return raResponse.getHeaders().asList(); }
+    public List<Header> headers() {
+        return raResponse.getHeaders().asList();
+    }
 
     /**
      * Get response cookie associated by the given name.
-     * @param name      cookie key name
-     * @return          cookie value
+     *
+     * @param name cookie key name
+     * @return cookie value
      */
-    public String cookie(String name) { return raResponse.getCookie(name); }
+    public String cookie(String name) {
+        return raResponse.getCookie(name);
+    }
+
+    /**
+     * Get response cookie associated by the given name.
+     *
+     * @return cookie value
+     */
+    public Map<String, String> cookies() {
+        return raResponse.getCookies();
+    }
 
     /**
      * Get Rest Assured response.
-     * @return          Rest Assured response
+     *
+     * @return Rest Assured response
      */
-    public Response raResponse() { return raResponse; }
+    public Response raResponse() {
+        return raResponse;
+    }
 
     /**
      * Time taken to perform HTTP request.
      *
-     * @return      time
+     * @return time
      */
-    public long responseTime() { return responseTimeMSec; }
+    public long responseTime() {
+        return responseTimeMSec;
+    }
 
     /**
      * Returns validatable response.
-     * @return          validatable Rest Assured response
+     *
+     * @return validatable Rest Assured response
      */
-    public ValidatableResponse assertThat() { return raResponse.then(); }
+    public ValidatableResponse assertThat() {
+        return raResponse.then();
+    }
 
     /**
      * Verify the status of response.
-     * @param rs        expected response status containing code, type and text message
-     * @return          response
+     *
+     * @param rs expected response status containing code, type and text message
+     * @return response
      */
     public RestResponse assertStatus(ResponseStatus rs) {
         String errors = "";
@@ -178,9 +217,10 @@ public class RestResponse{
             throw exception(errors);
         return this;
     }
+
     @Override
     public String toString() {
         return format("Response status: %s %s (%s)", status.code, status.text, status.type) + LINE_BREAK +
-               "Response body: " + body;
+                "Response body: " + body;
     }
 }

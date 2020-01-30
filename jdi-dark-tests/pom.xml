@@ -11,6 +11,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <allure.testng>2.7.0</allure.testng>
+        <allure.maven>2.9</allure.maven>
+        <aspectj.version>1.9.1</aspectj.version>
     </properties>
 
     <dependencies>
@@ -22,31 +25,19 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.11</version>
+            <version>7.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.9.10.1</version>
         </dependency>
+        <!--Allure config in parent-->
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-            <version>9.3.2.v20150730</version>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.testng}</version>
         </dependency>
-        <dependency>
-            <groupId>com.jayway.restassured.examples</groupId>
-            <artifactId>scalatra-webapp</artifactId>
-            <version>2.9.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.rest-assured.examples/example-parent -->
-        <dependency>
-            <groupId>io.rest-assured.examples</groupId>
-            <artifactId>example-parent</artifactId>
-            <version>3.0.2</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -60,6 +51,53 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/general.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${allure.maven}</version>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>LATEST</version>
+                <configuration>
+                    <properties>
+                        <allure.results.directory>target/allure-results</allure.results.directory>
+                    </properties>
+                    <properties>
+                        <allure.link.issue.pattern>https://example.org/issue/{}</allure.link.issue.pattern>
+                    </properties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

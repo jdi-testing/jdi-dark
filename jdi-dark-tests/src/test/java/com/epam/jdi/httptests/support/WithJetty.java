@@ -2,18 +2,13 @@ package com.epam.jdi.httptests.support;
 
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import java.io.File;
 
 public abstract class WithJetty {
     private static Server server;
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @BeforeClass
     public static void startJetty() throws Exception {

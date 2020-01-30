@@ -3,6 +3,7 @@
 <suite name="Http tests" parallel="methods" thread-count="1">
     <test name="Tests">
         <classes>
+            <class name="com.epam.jdi.httptests.CookiesTests"/>
             <class name="com.epam.jdi.httptests.PerformanceTests"/>
             <class name="com.epam.jdi.httptests.ServiceTest"/>
             <class name="com.epam.jdi.httptests.TrelloTests"/>

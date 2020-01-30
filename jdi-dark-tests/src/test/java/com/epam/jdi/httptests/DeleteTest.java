@@ -8,6 +8,9 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestData.requestBody;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.httptests.JettyService.deleteBody;
+import static com.epam.jdi.httptests.JettyService.deleteCookie;
+import static com.epam.jdi.httptests.JettyService.deleteGreet;
 import static org.hamcrest.Matchers.equalTo;
 import static org.testng.Assert.assertEquals;
 
@@ -20,7 +23,7 @@ public class DeleteTest {
 
     @Test
     public void requestSpecificationAllowsSpecifyingCookie() {
-        RestResponse response = JettyService.deleteCookie.call(requestData(requestData ->
+        RestResponse response = deleteCookie.call(requestData(requestData ->
                 requestData.cookies = new MapArray<>(new Object[][]{
                         {"username", "John"},
                         {"token", "1234"}
@@ -30,18 +33,15 @@ public class DeleteTest {
 
     @Test
     public void bodyHamcrestMatcherWithoutKey() {
-        JettyService.deleteGreet.call(requestData(d -> {
+        deleteGreet.call(requestData(d -> {
             d.queryParams.add("firstName", "John");
             d.queryParams.add("lastName", "Doe");
         })).isOk().assertThat().body("greeting", equalTo("Greetings John Doe"));
-        ;
-
-
     }
 
     @Test
     public void deleteSupportsStringBody() {
-        RestResponse response = JettyService.deleteBody.call(requestBody("a body"));
-        assertEquals(response.body, "username, token");
+        RestResponse response = deleteBody.call(requestBody("a body"));
+        assertEquals(response.body, "a body");
     }
 }

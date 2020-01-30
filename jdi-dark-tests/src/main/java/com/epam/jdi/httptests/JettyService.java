@@ -50,4 +50,12 @@ public class JettyService {
     @DELETE("/greet")
     static RestMethod deleteGreet;
 
+    @GET("/textHTML")
+    static RestMethod getTextHtml;
+
+    @GET("/jsonStore")
+    static RestMethod getJsonStore;
+
+    @GET("/videos")
+    static RestMethod getVideos;
 }

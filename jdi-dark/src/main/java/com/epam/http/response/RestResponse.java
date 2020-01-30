@@ -154,6 +154,16 @@ public class RestResponse {
     }
 
     /**
+     * Get response header value.
+     *
+     * @param name header name
+     * @return response header value
+     */
+    public String header(String name) {
+        return raResponse.getHeader(name);
+    }
+
+    /**
      * Get response cookie associated by the given name.
      *
      * @param name cookie key name

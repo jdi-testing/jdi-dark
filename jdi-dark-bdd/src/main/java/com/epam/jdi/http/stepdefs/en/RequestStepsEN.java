@@ -7,11 +7,14 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.jdi.http.Utils.*;
+
+import static com.epam.jdi.http.Utils.preparedHeader;
+import static com.epam.jdi.http.Utils.requestContentType;
+import static com.epam.jdi.http.Utils.restResponse;
+import static com.epam.jdi.http.Utils.getRestMethod;
 import static com.epam.jdi.tools.LinqUtils.first;
 import static io.restassured.http.ContentType.values;
 
@@ -22,7 +25,6 @@ public class RequestStepsEN {
         RestMethod getMethod = getRestMethod(methodName);
         getMethod.isAlive();
     }
-
     @When("^I do ([^\"]*) request$")
     public void iCallMethod(String methodName) {
         RestMethod restMethod;

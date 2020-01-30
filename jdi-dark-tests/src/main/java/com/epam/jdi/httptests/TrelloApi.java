@@ -1,8 +1,20 @@
 package com.epam.jdi.httptests;
 
-//import com.epam.http.annotations.*;
-
-import com.epam.http.annotations.*;
+import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.GET;
+import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.PATCH;
+import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.OPTIONS;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
 import com.epam.http.requests.RestMethod;
 
 import static io.restassured.http.ContentType.JSON;

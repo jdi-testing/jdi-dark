@@ -10,7 +10,9 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestData.requestBody;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.httptests.JettyService.cookiePost;
 import static com.epam.jdi.httptests.JettyService.greetPost;
+import static com.epam.jdi.httptests.JettyService.headerPost;
 import static com.epam.jdi.httptests.JettyService.jsonBodyPost;
 import static com.epam.jdi.httptests.JettyService.notFoundedURIPost;
 import static com.epam.jdi.httptests.JettyService.unauthorizedPost;
@@ -63,7 +65,7 @@ public class JSONPostTests {
 
     @Test
     public void requestSpecificationAllowsSpecifyingHeaders() {
-        RestResponse response = JettyService.headerPost.call();
+        RestResponse response = headerPost.call();
         response.isOk().body(containsString("MyHeader"));
     }
 
@@ -91,7 +93,7 @@ public class JSONPostTests {
 
     @Test
     public void requestSpecificationAllowsSpecifyingCookie() {
-        RestResponse response = JettyService.cookiePost.call(requestData(requestData ->
+        RestResponse response = cookiePost.call(requestData(requestData ->
                 requestData.cookies = new MapArray<>(new Object[][]{
                         {"username", "John"},
                         {"token", "1234"}

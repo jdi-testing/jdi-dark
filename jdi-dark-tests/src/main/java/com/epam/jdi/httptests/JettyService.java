@@ -4,6 +4,8 @@ import com.epam.http.annotations.ContentType;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.POST;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
 
@@ -23,7 +25,7 @@ public class JettyService {
     static RestMethod getCookie;
 
     @POST("/reflect")
-    static RestMethod postReflect;
+    static RestMethod<Hello> postReflect;
 
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
@@ -41,4 +43,17 @@ public class JettyService {
     @POST("/greetXML")
     @ContentType(URLENC)
     static RestMethod postGreetXml;
+
+    @GET("/hello")
+    static RestMethod<Hello> getHello;
+
+    @QueryParameters({
+            @QueryParameter(name = "firstName", value = "John"),
+            @QueryParameter(name = "lastName", value = "Doe")
+    })
+    @GET("/greetXML")
+    static RestMethod<Greeting> getGreetXml;
+
+    @GET("/mimeTypeWithPlusJson")
+    static RestMethod<Message> getMimeType;
 }

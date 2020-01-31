@@ -5,6 +5,7 @@ import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
 import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
@@ -12,6 +13,7 @@ import com.epam.http.requests.RestMethod;
 
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
+import static io.restassured.http.ContentType.URLENC;
 
 @ServiceDomain("http://localhost:8080/")
 public class JettyService {
@@ -24,6 +26,9 @@ public class JettyService {
 
     @GET("/cookie")
     static RestMethod getCookie;
+
+    @PUT("/cookie")
+    static RestMethod putCookie;
 
     @POST("/reflect")
     static RestMethod<Hello> postReflect;
@@ -80,4 +85,8 @@ public class JettyService {
 
     @GET("/mimeTypeWithPlusJson")
     static RestMethod<Message> getMimeType;
+
+    @ContentType(URLENC)
+    @POST("/greetXML")
+    static RestMethod postGreetXml;
 }

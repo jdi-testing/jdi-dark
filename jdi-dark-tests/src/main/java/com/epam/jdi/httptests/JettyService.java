@@ -46,4 +46,7 @@ public class JettyService {
 
     @POST("/cookie")
     static RestMethod cookiePost;
+
+    @POST("/param-reflect")
+    static RestMethod paramUrlPost;
 }

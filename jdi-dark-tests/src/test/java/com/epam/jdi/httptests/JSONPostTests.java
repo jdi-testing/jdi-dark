@@ -15,6 +15,7 @@ import static com.epam.jdi.httptests.JettyService.greetPost;
 import static com.epam.jdi.httptests.JettyService.headerPost;
 import static com.epam.jdi.httptests.JettyService.jsonBodyPost;
 import static com.epam.jdi.httptests.JettyService.notFoundedURIPost;
+import static com.epam.jdi.httptests.JettyService.paramUrlPost;
 import static com.epam.jdi.httptests.JettyService.unauthorizedPost;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -100,5 +101,12 @@ public class JSONPostTests {
                 })));
         response.isOk()
                 .body(equalTo("username, token"));
+    }
+
+    @Test
+    public void queryParametersInPostAreUrlEncoded() {
+        RestResponse response = paramUrlPost
+                .call(requestData(d -> d.queryParams.add(new Object[][]{{"first", "http://myurl.com"}})));
+        response.isOk().body("first", equalTo("http://myurl.com"));
     }
 }

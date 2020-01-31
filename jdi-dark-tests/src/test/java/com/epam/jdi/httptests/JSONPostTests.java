@@ -2,7 +2,6 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.map.MapArray;
-import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -18,7 +17,6 @@ import static com.epam.jdi.httptests.JettyService.jsonBodyPost;
 import static com.epam.jdi.httptests.JettyService.notFoundedURIPost;
 import static com.epam.jdi.httptests.JettyService.paramUrlPost;
 import static com.epam.jdi.httptests.JettyService.unauthorizedPost;
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
@@ -76,7 +74,6 @@ public class JSONPostTests {
         RestResponse response = jsonBodyPost
                 .call(requestBody("{ \"message\" : \"hello world\"}"));
         response.isOk().body(equalTo("hello world"));
-        given().body("{ \"message\" : \"hello world\"}").with().contentType(ContentType.JSON).then().expect().body(equalTo("hello world")).when().post("/jsonBody");
     }
 
     @Test

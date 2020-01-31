@@ -11,7 +11,6 @@ import com.epam.http.annotations.Headers;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.requests.RestMethod;
 import com.epam.jdi.http.IRestService;
-
 import static io.restassured.http.ContentType.JSON;
 
 @ServiceDomain("http://httpbin.org/")

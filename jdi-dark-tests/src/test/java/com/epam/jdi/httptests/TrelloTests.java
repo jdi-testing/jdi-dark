@@ -16,7 +16,6 @@ import static com.epam.jdi.httptests.TrelloApi.getBoardCardsList;
 import static com.epam.jdi.httptests.TrelloApi.postNewCommentToCard;
 import static com.epam.jdi.httptests.TrelloApi.getAllMemberBoards;
 import static com.epam.jdi.httptests.TrelloApi.getCardByUniqueId;
-
 import static java.lang.String.format;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.hamcrest.CoreMatchers.containsString;

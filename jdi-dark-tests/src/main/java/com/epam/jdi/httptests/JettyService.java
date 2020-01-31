@@ -89,8 +89,4 @@ public class JettyService {
 
     @GET("/mimeTypeWithPlusJson")
     static RestMethod<Message> getMimeType;
-
-    @ContentType(URLENC)
-    @POST("/greetXML")
-    static RestMethod postGreetXml;
 }

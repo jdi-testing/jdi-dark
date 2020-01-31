@@ -149,6 +149,7 @@ public class RestMethod<T> {
         data.cookies.add(name, value);
     }
 
+    
     /**
      * Set cookie to HTTP request from annotated field.
      *

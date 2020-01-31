@@ -1,6 +1,5 @@
 package com.epam.http.requests;
 
-
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -136,11 +135,11 @@ public class ServiceInit {
 
     /**
      * Get and check URL from request data.
-     * @param domain
-     * @param uri
-     * @param methodName
+     * @param domain string
+     * @param uri adres string
+     * @param methodName string
      * @param className
-     * @return normalized URL
+     * @return normalized URL as string
      */
     private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
         if (uri == null)

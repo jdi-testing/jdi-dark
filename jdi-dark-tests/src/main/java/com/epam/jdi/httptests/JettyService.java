@@ -8,6 +8,7 @@ import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
 
 import static io.restassured.http.ContentType.JSON;
+import static io.restassured.http.ContentType.TEXT;
 
 @ServiceDomain("http://localhost:8080/")
 public class JettyService {
@@ -49,4 +50,8 @@ public class JettyService {
 
     @POST("/param-reflect")
     static RestMethod paramUrlPost;
+
+    @ContentType(TEXT)
+    @POST("/body")
+    static RestMethod bodyPost;
 }

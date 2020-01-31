@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestData.requestBody;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.httptests.JettyService.bodyPost;
 import static com.epam.jdi.httptests.JettyService.cookiePost;
 import static com.epam.jdi.httptests.JettyService.greetPost;
 import static com.epam.jdi.httptests.JettyService.headerPost;
@@ -108,5 +109,12 @@ public class JSONPostTests {
         RestResponse response = paramUrlPost
                 .call(requestData(d -> d.queryParams.add(new Object[][]{{"first", "http://myurl.com"}})));
         response.isOk().body("first", equalTo("http://myurl.com"));
+    }
+
+    @Test
+    public void requestSpecificationAllowsSpecifyingStringBodyForPostJDI() {
+        RestResponse response = bodyPost
+                .call(requestBody("some body"));
+        response.isOk().body(equalTo("some body"));
     }
 }

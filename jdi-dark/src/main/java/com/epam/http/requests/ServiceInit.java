@@ -1,20 +1,35 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.*;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.PATCH;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RestMethodTypes.*;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
+import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.GET;
+import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.PATCH;
+import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.OPTIONS;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
 
+import static com.epam.http.requests.RestMethodTypes.GET;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.DELETE;
+import static com.epam.http.requests.RestMethodTypes.HEAD;
+import static com.epam.http.requests.RestMethodTypes.OPTIONS;
 /**
  * The entry point for initialising the Service Object classes.
  * In order to effectively use JDI HTTP it's recommended to statically import:

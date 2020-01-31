@@ -4,6 +4,7 @@ import com.epam.http.annotations.ContentType;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.QueryParameter;
@@ -35,6 +36,17 @@ public class JettyService {
 
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
+
+    @GET("/header")
+    @Header(name = "HeaderTestName", value = "HeaderTestValue")
+    static RestMethod getWithSingleHeaderInRequest;
+
+    @GET("/header")
+    @Headers({
+            @Header(name = "Header1", value = "Value1"),
+            @Header(name = "Header2", value = "Value2")
+    })
+    static RestMethod getWithMultipleHeadersInRequest;
 
     @DELETE("/cookie")
     static RestMethod deleteCookie;

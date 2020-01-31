@@ -50,20 +50,4 @@ public class JettyService {
     @ContentType(URLENC)
     @POST("/greetXML")
     static RestMethod postGreetXml;
-
-/*    @QueryParameters({
-            @QueryParameter(name = "firstName", value = "John"),
-            @QueryParameter(name = "lastName", value = "Doe")
-    })
-    @DELETE("/greet")
-    static RestMethod deleteGreet;*/
-
-    @GET("/textHTML")
-    static RestMethod getTextHtml;
-
-    @GET("/jsonStore")
-    static RestMethod getJsonStore;
-
-    @GET("/videos")
-    static RestMethod getVideos;
 }

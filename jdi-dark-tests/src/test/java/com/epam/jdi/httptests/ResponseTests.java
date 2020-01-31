@@ -55,7 +55,10 @@ public class ResponseTests {
 
     @Test
     public void deleteCanReturnBodyAsString() {
-        final String body = JettyService.deleteGreet.call().body;
+        final String body = JettyService.deleteGreet.call(requestData(d -> {
+            d.queryParams.add("firstName", "John");
+            d.queryParams.add("lastName", "Doe");
+        })).body;
         assertEquals("{\"greeting\":\"Greetings John Doe\"}", body);
     }
 

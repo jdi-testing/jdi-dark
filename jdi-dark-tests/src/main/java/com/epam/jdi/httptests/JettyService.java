@@ -10,6 +10,7 @@ import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
 
+import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
 
 @ServiceDomain("http://localhost:8080/")
@@ -33,6 +34,16 @@ public class JettyService {
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
 
+    @DELETE("/cookie")
+    static RestMethod deleteCookie;
+
+    @DELETE("/greet")
+    static RestMethod deleteGreet;
+
+    @DELETE("/body")
+    @ContentType(TEXT)
+    static RestMethod deleteBody;
+
     @GET("/hello")
     static RestMethod getHello;
 
@@ -40,12 +51,12 @@ public class JettyService {
     @POST("/greetXML")
     static RestMethod postGreetXml;
 
-    @QueryParameters({
+/*    @QueryParameters({
             @QueryParameter(name = "firstName", value = "John"),
             @QueryParameter(name = "lastName", value = "Doe")
     })
     @DELETE("/greet")
-    static RestMethod deleteGreet;
+    static RestMethod deleteGreet;*/
 
     @GET("/textHTML")
     static RestMethod getTextHtml;

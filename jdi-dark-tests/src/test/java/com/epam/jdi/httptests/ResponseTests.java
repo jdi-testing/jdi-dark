@@ -80,6 +80,12 @@ public class ResponseTests {
     }
 
     @Test
+    public void responseSupportsGettingStatusCode() {
+        RestResponse response = JettyService.getHello.call();
+        assertThat(response.status.code, equalTo(200));
+    }
+
+    @Test
     public void responseSupportsIsOkVerification() {
         RestResponse response = JettyService.getHello.call();
         response.isOk();

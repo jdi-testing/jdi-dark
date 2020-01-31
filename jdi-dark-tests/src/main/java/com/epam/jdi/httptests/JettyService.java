@@ -1,6 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
 import com.epam.http.annotations.POST;
@@ -28,15 +29,15 @@ public class JettyService {
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
 
-    @POST("/greet")
-    static RestMethod greetPost;
+    @DELETE("/cookie")
+    static RestMethod deleteCookie;
 
-    @POST("/notexist")
-    static RestMethod notFoundedURIPost;
+    @DELETE("/greet")
+    static RestMethod deleteGreet;
 
-    @POST("/header")
-    @Header(name = "MyHeader", value = "Something")
-    static RestMethod headerPost;
+    @DELETE("/body")
+    @ContentType(TEXT)
+    static RestMethod deleteBody;
 
     @ContentType(JSON)
     @POST("/jsonBody")
@@ -54,4 +55,14 @@ public class JettyService {
     @ContentType(TEXT)
     @POST("/body")
     static RestMethod bodyPost;
+
+    @POST("/greet")
+    static RestMethod greetPost;
+
+    @POST("/notexist")
+    static RestMethod notFoundedURIPost;
+
+    @POST("/header")
+    @Header(name = "MyHeader", value = "Something")
+    static RestMethod headerPost;
 }

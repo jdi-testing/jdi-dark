@@ -1,13 +1,10 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
-
-import static io.restassured.http.ContentType.TEXT;
 
 @ServiceDomain("http://localhost:8080/")
 public class JettyService {
@@ -27,13 +24,21 @@ public class JettyService {
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
 
-    @DELETE("/cookie")
-    static RestMethod deleteCookie;
+    @GET("/hello")
+    static RestMethod getHello;
 
-    @DELETE("/greet")
-    static RestMethod deleteGreet;
+    @GET("/contentTypeAsBody")
+    static RestMethod getContentTypeAsBody;
 
-    @DELETE("/body")
-    @ContentType(TEXT)
-    static RestMethod deleteBody;
+    @POST("/contentTypeAsBody")
+    static RestMethod postContentTypeAsBody;
+
+    @PUT("/reflect")
+    static RestMethod putReflect;
+
+    @GET("/reflect")
+    static RestMethod getReflect;
+
+    @POST("/returnContentTypeAsBody")
+    static RestMethod postReturnContentTypeAsBody;
 }

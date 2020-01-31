@@ -5,6 +5,7 @@ import io.cucumber.java.en.Given;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.http.Utils.domainUrl;
+import static com.epam.jdi.http.Utils.service;
 import static com.epam.jdi.http.Utils.getDomain;
 
 public class InitService {

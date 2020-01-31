@@ -2,6 +2,10 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.map.MapArray;
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.http.Header;
+import io.restassured.specification.RequestSpecification;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -19,37 +23,46 @@ import static org.testng.Assert.assertEquals;
  */
 public class ServiceTest {
 
-    @BeforeTest
+    private RequestSpecification requestSpecification;
+
+    @BeforeClass
     public void before() {
-        init(ServiceExample.class);
+        requestSpecification = given().filter(new AllureRestAssured());
+        requestSpecification.auth().basic("user", "password");
+        requestSpecification.queryParam("myParam", "myValue");
+        requestSpecification.header(new Header("myHeader", "headerValue"));
+        init(ServiceExample.class, requestSpecification);
     }
 
     @Test
     public void simpleRestTest() {
         RestResponse resp = ServiceExample.getInfo.call();
         resp.isOk().
-            body("url", equalTo("https://httpbin.org/get")).
-            body("headers.Host", equalTo("httpbin.org")).
-            body("headers.Id", equalTo("Test"));
+                body("url", equalTo("https://httpbin.org/get")).
+                body("headers.Host", equalTo("httpbin.org")).
+                body("headers.Id", equalTo("Test"));
         resp.assertThat().header("Connection", "keep-alive");
     }
 
     @Test
     public void noServiceObjectTest() {
         RestResponse resp = GET(requestData(
-            rd -> { rd.url = "https://httpbin.org/get";
-                rd.headers = new MapArray<>(new Object[][] {
-                    {"Name", "Roman"},
-                    {"Id", "TestTest"}
-                });}
+                rd -> {
+                    rd.url = "https://httpbin.org/get";
+                    rd.headers = new MapArray<>(new Object[][]{
+                            {"Name", "Roman"},
+                            {"Id", "TestTest"}
+                    });
+                }
         ));
         resp.isOk().header("Connection", "keep-alive");
-        resp.assertBody(new Object[][] {
-            {"url", equalTo("https://httpbin.org/get")},
-            {"headers.Host", equalTo("httpbin.org")},
-            {"headers.Id", equalTo("TestTest")}
+        resp.assertBody(new Object[][]{
+                {"url", equalTo("https://httpbin.org/get")},
+                {"headers.Host", equalTo("httpbin.org")},
+                {"headers.Id", equalTo("TestTest")}
         });
     }
+
     @Test
     public void entityTest() {
         Info e = getInfo.asData(Info.class);
@@ -58,6 +71,7 @@ public class ServiceTest {
         assertEquals(e.headers.Id, "Test");
         assertEquals(e.headers.Name, "Roman");
     }
+
     @Test
     public void statusTest() {
         ServiceExample service = init(ServiceExample.class);
@@ -66,6 +80,7 @@ public class ServiceTest {
         assertEquals(resp.status.type, SERVER_ERROR);
         resp.isEmpty();
     }
+
     @Test
     public void staticServiceInitTest() {
         init(ServiceExample.class);
@@ -74,6 +89,7 @@ public class ServiceTest {
                 body("url", equalTo("https://httpbin.org/get")).
                 body("headers.Host", equalTo("httpbin.org"));
     }
+
     @Test
     public void serviceInitTest() {
         ServiceExample service = init(ServiceExample.class);
@@ -96,7 +112,7 @@ public class ServiceTest {
         ServiceExample service = init(ServiceExample.class);
         RestResponse response = service.getCookies.call(
                 requestData(requestData ->
-                        requestData.cookies = new MapArray<>(new Object[][] {
+                        requestData.cookies = new MapArray<>(new Object[][]{
                                 {"additionalCookie", "test"}
                         })));
         response.isOk()

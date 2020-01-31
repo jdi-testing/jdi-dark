@@ -6,6 +6,7 @@ import com.epam.http.annotations.GET;
 import com.epam.http.annotations.PATCH;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
+import io.restassured.specification.RequestSpecification;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -26,19 +27,30 @@ import static java.lang.reflect.Modifier.isStatic;
  */
 public class ServiceInit {
 
+
     /**
      * Initialise the Service Object class.
      * @param c     class describing Service
      * @return      initialised Service Object
      */
     public static <T> T init(Class<T> c) {
+        return init(c, null);
+    }
+
+    /**
+     * Initialise the Service Object class.
+     * @param c     class describing Service
+     * @param requestSpecification custom request specification
+     * @return      initialised Service Object
+     */
+    public static <T> T init(Class<T> c, RequestSpecification requestSpecification) {
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> f.getType().equals(RestMethod.class));
         for (Field method: methods) {
             try {
                 method.setAccessible(true);
                 if (isStatic(method.getModifiers()))
-                    method.set(null, getRestMethod(method, c));
+                    method.set(null, getRestMethod(method, c, requestSpecification));
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
                     method.set(getService(c), getRestMethod(method, c));
             } catch (IllegalAccessException ex) {
@@ -46,6 +58,7 @@ public class ServiceInit {
         }
         return getService(c);
     }
+
     private static Object service;
 
     /**
@@ -70,9 +83,20 @@ public class ServiceInit {
      * @return          http method with request data
      */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c) {
+        return getRestMethod(field, c, null);
+    }
+
+    /**
+     * Check whether the annotation present and add these values to request data.
+     * @param field     HTTP method described in Service Object class as a field
+     * @param c         class describing service
+     * @param requestSpecification custom request specification
+     * @return          http method with request data
+     */
+    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification) {
         MethodData mtData = getMethodData(field);
         String url = getUrlFromDomain(getDomain(c), mtData.getUrl(), field.getName(), c.getSimpleName());
-        RestMethod method = new RestMethod(mtData.getType(), url);
+        RestMethod method = new RestMethod(mtData.getType(), url, requestSpecification);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))

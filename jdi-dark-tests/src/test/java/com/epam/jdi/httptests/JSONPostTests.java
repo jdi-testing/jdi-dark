@@ -66,13 +66,13 @@ public class JSONPostTests {
     }
 
     @Test
-    public void requestSpecificationAllowsSpecifyingHeaders() {
+    public void requestAllowsSpecifyingHeaders() {
         RestResponse response = headerPost.call();
         response.isOk().body(containsString("MyHeader"));
     }
 
     @Test
-    public void requestSpecificationAllowsSpecifyingJsonBodyForPost() {
+    public void requestAllowsSpecifyingJsonBodyForPost() {
         RestResponse response = jsonBodyPost
                 .call(requestBody("{ \"message\" : \"hello world\"}"));
         response.isOk().body(equalTo("hello world"));
@@ -94,7 +94,7 @@ public class JSONPostTests {
     }
 
     @Test
-    public void requestSpecificationAllowsSpecifyingCookie() {
+    public void requestAllowsSpecifyingCookie() {
         RestResponse response = cookiePost.call(requestData(requestData ->
                 requestData.cookies = new MapArray<>(new Object[][]{
                         {"username", "John"},
@@ -112,7 +112,7 @@ public class JSONPostTests {
     }
 
     @Test
-    public void requestSpecificationAllowsSpecifyingStringBodyForPostJDI() {
+    public void requestAllowsSpecifyingStringBodyForPostJDI() {
         RestResponse response = bodyPost
                 .call(requestBody("some body"));
         response.isOk().body(equalTo("some body"));

@@ -22,4 +22,7 @@ public class JettyService {
 
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
+
+    @GET("/noValueParam")
+    static RestMethod getNoValueParam;
 }

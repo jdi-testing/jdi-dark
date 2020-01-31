@@ -14,6 +14,7 @@ import java.util.Map;
 import static com.epam.jdi.http.Utils.preparedHeader;
 import static com.epam.jdi.http.Utils.requestContentType;
 import static com.epam.jdi.http.Utils.restResponse;
+import static com.epam.jdi.http.Utils.service;
 import static com.epam.jdi.http.Utils.getRestMethod;
 import static com.epam.jdi.tools.LinqUtils.first;
 import static io.restassured.http.ContentType.values;

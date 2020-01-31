@@ -29,7 +29,7 @@ public class JettyService {
     static RestMethod putCookie;
 
     @POST("/reflect")
-    static RestMethod postReflect;
+    static RestMethod<Hello> postReflect;
 
     @GET("/setCommonIdCookies")
     static RestMethod getCommonIdCookies;
@@ -45,7 +45,17 @@ public class JettyService {
     static RestMethod deleteBody;
 
     @GET("/hello")
-    static RestMethod getHello;
+    static RestMethod<Hello> getHello;
+
+    @QueryParameters({
+            @QueryParameter(name = "firstName", value = "John"),
+            @QueryParameter(name = "lastName", value = "Doe")
+    })
+    @GET("/greetXML")
+    static RestMethod<Greeting> getGreetXml;
+
+    @GET("/mimeTypeWithPlusJson")
+    static RestMethod<Message> getMimeType;
 
     @ContentType(URLENC)
     @POST("/greetXML")

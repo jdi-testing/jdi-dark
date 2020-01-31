@@ -38,6 +38,17 @@
             <artifactId>allure-testng</artifactId>
             <version>${allure.testng}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>9.4.26.v20200117</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured.examples</groupId>
+            <artifactId>scalatra-webapp</artifactId>
+            <version>3.0.2</version>
+            <type>war</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -50,6 +61,34 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <!-- Used to copy the foo bar war to the webapps folder -->
+                        <id>copy-dependency</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>io.rest-assured.examples</groupId>
+                                    <artifactId>scalatra-webapp</artifactId>
+                                    <version>3.0.2</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/webapps</outputDirectory>
+                                    <destFileName>scalatra-webapp.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

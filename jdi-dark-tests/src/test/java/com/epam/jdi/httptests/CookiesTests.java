@@ -1,6 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.support.WithJetty;
 import com.epam.jdi.tools.map.MapArray;
 import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeTest;
@@ -16,7 +17,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 
-public class CookiesTests {
+public class CookiesTests extends WithJetty {
 
     @BeforeTest
     public void before() {

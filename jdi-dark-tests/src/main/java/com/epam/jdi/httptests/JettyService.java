@@ -8,6 +8,7 @@ import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
 
 import static io.restassured.http.ContentType.TEXT;
+import static io.restassured.http.ContentType.URLENC;
 
 @ServiceDomain("http://localhost:8080/")
 public class JettyService {
@@ -36,4 +37,8 @@ public class JettyService {
     @DELETE("/body")
     @ContentType(TEXT)
     static RestMethod deleteBody;
+
+    @POST("/greetXML")
+    @ContentType(URLENC)
+    static RestMethod postGreetXml;
 }

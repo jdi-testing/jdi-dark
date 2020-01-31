@@ -7,7 +7,6 @@ import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static io.restassured.http.ContentType.URLENC;
 
 public class BodyWithCustomContentTypeTest {
 
@@ -19,10 +18,9 @@ public class BodyWithCustomContentTypeTest {
     @Test
     public void
     bodyIsUrlEncodedWhenSettingBody() {
-        RestResponse response = JettyService.postGreetXml.call(requestData(rd -> {
-            rd.contentType = URLENC;
-            rd.body = "firstName=John&lastName=Doe&";
-        }));
+        RestResponse response = JettyService.postGreetXml.call(requestData(rd ->
+                rd.body = "firstName=John&lastName=Doe&"
+        ));
         response.assertBody(new Object[][]{
                 {"greeting.firstName", IsEqual.equalTo("John")},
                 {"greeting.lastName", IsEqual.equalTo("Doe")},

@@ -58,6 +58,10 @@ public class JettyService {
     @ContentType(TEXT)
     static RestMethod deleteBody;
 
+    @POST("/greetXML")
+    @ContentType(URLENC)
+    static RestMethod postGreetXml;
+
     @ContentType(JSON)
     @POST("/jsonBody")
     static RestMethod jsonBodyPost;
@@ -97,8 +101,4 @@ public class JettyService {
 
     @GET("/mimeTypeWithPlusJson")
     static RestMethod<Message> getMimeType;
-
-    @ContentType(URLENC)
-    @POST("/greetXML")
-    static RestMethod postGreetXml;
 }

@@ -15,20 +15,20 @@ public class ObjectMappingTests {
     }
 
     @Test
-    public void mapResponseToObjectUsingJackson() {
+    public void mapResponseToObjectJson() {
         Hello helloObject = JettyService.getHello.asData(Hello.class);
         assertThat(helloObject.getHello(), equalTo("Hello Scalatra"));
     }
 
     @Test
-    public void mapResponseToObjectUsingJaxb() {
+    public void mapResponseToObjectXml() {
         Greeting greetingObject = JettyService.getGreetXml.asData(Greeting.class);
         assertThat(greetingObject.getFirstName(), equalTo("John"));
         assertThat(greetingObject.getLastName(), equalTo("Doe"));
     }
 
     @Test
-    public void contentTypesEndingWithPlusJsonWorksForJsonObjectMapping() {
+    public void contentTypesEndingWithPlusForJsonObjectMapping() {
         Message messageObject = JettyService.getMimeType.asData(Message.class);
         assertThat(messageObject.getMessage(), equalTo("It works"));
     }

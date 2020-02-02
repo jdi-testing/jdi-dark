@@ -3,7 +3,6 @@ package com.epam.http.requests;
 import com.epam.http.response.RestResponse;
 import io.restassured.specification.RequestSpecification;
 
-import static com.epam.http.requests.RestMethodTypes.*;
 
 /**
  * <p>

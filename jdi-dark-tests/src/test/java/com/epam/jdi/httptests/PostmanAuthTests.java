@@ -149,7 +149,6 @@ public class PostmanAuthTests {
     public void oauthTest() {
         String key = "RKCGzna7bv9YD57c";
         String nonce = "R6MyHe5WCRx";
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         RestResponse resp = oauth.call(requestData(rd ->
                 rd.headers = new MapArray<>(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}

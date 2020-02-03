@@ -17,7 +17,11 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.PostmanAuth.*;
+import static com.epam.jdi.httptests.PostmanAuth.authBase;
+import static com.epam.jdi.httptests.PostmanAuth.authBaseForm;
+import static com.epam.jdi.httptests.PostmanAuth.authDigest;
+import static com.epam.jdi.httptests.PostmanAuth.authHawk;
+import static com.epam.jdi.httptests.PostmanAuth.oauth;
 import static com.wealdtech.hawk.Hawk.calculateMAC;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
@@ -110,7 +114,6 @@ public class PostmanAuthTests {
         URI uri = new URI("https://postman-echo.com/auth/hawk");
         HawkCredentials.Builder hc = new HawkCredentials.Builder();
         HawkCredentials hawkCredentials = hc.key(key).keyId(id).algorithm(HawkCredentials.Algorithm.SHA256).build();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         long ts = 1234567890;
         String mac = calculateMAC(hawkCredentials, Hawk.AuthType.HEADER, ts, uri, "x9Feni", "GET", null, null, null, null);
         RestResponse resp = authHawk.call(requestData(rd ->
@@ -147,7 +150,6 @@ public class PostmanAuthTests {
         String key = "RKCGzna7bv9YD57c";
         String nonce = "R6MyHe5WCRx";
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        long ts = timestamp.getTime() / 1000;
         RestResponse resp = oauth.call(requestData(rd ->
                 rd.headers = new MapArray<>(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}

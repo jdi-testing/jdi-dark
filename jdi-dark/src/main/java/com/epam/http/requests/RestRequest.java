@@ -27,7 +27,7 @@ public class RestRequest {
         long time;
         try {
             time = currentTimeMillis();
-            response = methodType.method.apply(spec).prettyPeek();
+            response = methodType.method.apply(spec);
             time = currentTimeMillis() - time;
         } catch (Exception ex) { throw exception("Request failed"); }
         RestResponse resp = new RestResponse(response, time);

@@ -4,6 +4,7 @@ import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.tools.PrintUtils;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.google.gson.Gson;
@@ -205,7 +206,8 @@ public class RestMethod<T> {
         if (type == null)
             throw exception("HttpMethodType not specified");
         RequestSpecification spec = addRestSpecificationData();
-        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
+//        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
+        logger.info(format("Do %s request: %s", type, PrintUtils.print(data.getFields().filter((k, v) -> !k.startsWith("common") && v != null && !v.toString().isEmpty()).map((k,v) -> "\n" + k + ": " + v + ""))));
         return doRequest(type, spec, expectedStatus);
     }
 

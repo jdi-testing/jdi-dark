@@ -18,7 +18,7 @@ import static io.restassured.http.ContentType.JSON;
 })
 public class TrelloApi {
 
-        public static final String BOARDS = "/boards";
+        //public static final String BOARDS = "/boards";
 
         @ContentType(JSON) @GET(BOARDS)
         static RestMethod boardsGet;

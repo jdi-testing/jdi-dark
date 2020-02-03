@@ -14,6 +14,9 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
@@ -30,6 +33,7 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestMethod<T> {
+
     private RequestSpecification spec = given().filter(new AllureRestAssured());
     private RequestData data;
     private RestMethodTypes type;
@@ -74,7 +78,15 @@ public class RestMethod<T> {
      */
     public RestMethod(RestMethodTypes type, String url, RequestSpecification requestSpecification) {
         this(type, url);
-        this.spec = spec.spec(requestSpecification);
+        if (requestSpecification != null) {
+            this.spec = spec.spec(requestSpecification);
+            data.commonHeaders = ((FilterableRequestSpecification)spec).getHeaders().asList();
+            data.commonQueryParams = ((FilterableRequestSpecification)spec).getQueryParams();
+        }
+    }
+
+    public RequestSpecification getSpec() {
+        return spec;
     }
 
     /**
@@ -192,7 +204,7 @@ public class RestMethod<T> {
     public RestResponse call() {
         if (type == null)
             throw exception("HttpMethodType not specified");
-        RequestSpecification spec = getSpec();
+        RequestSpecification spec = addRestSpecificationData();
         logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
         return doRequest(type, spec, expectedStatus);
     }
@@ -213,7 +225,7 @@ public class RestMethod<T> {
 
     public RestResponse postData(T data) {
         this.data.body = gson.toJson(data);
-        getSpec().body(this.data.body);
+        addRestSpecificationData().body(this.data.body);
         return call();
     }
 
@@ -271,14 +283,16 @@ public class RestMethod<T> {
      *
      * @return request specification
      */
-    public RequestSpecification getSpec() {
+    public RequestSpecification addRestSpecificationData() {
         if (data == null)
             return spec;
         if (data.pathParams.any() && data.url.contains("{"))
             data.url = formatParams(data.url, data.pathParams);
         spec.baseUri(data.url);
 
-        String[] keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().toArray(new String[0]);
+        ///String[] keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().toArray(new String[0]);
+        List<String> keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().stream()
+                .filter(e -> !data.commonQueryParams.containsKey(e)).collect(Collectors.toList());
         for (String key : keys) {
             ((FilterableRequestSpecification) spec).removeQueryParam(key);
         }
@@ -288,7 +302,11 @@ public class RestMethod<T> {
         }
         if (data.body != null)
             spec.body(data.body);
-        ((FilterableRequestSpecification) spec).removeHeaders();
+        List<Header> headers = ((FilterableRequestSpecification) spec).getHeaders().asList().stream()
+                .filter(e -> !data.commonHeaders.contains(e)).collect(Collectors.toList());
+        for (Header header : headers) {
+            ((FilterableRequestSpecification) spec).removeHeader(header.getName());
+        }
         if (data.headers.any()) {
             spec.headers(data.headers.toMap());
         }

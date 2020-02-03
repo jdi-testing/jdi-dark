@@ -4,6 +4,12 @@ import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static io.restassured.http.ContentType.ANY;
 
@@ -21,6 +27,8 @@ public class RequestData extends DataClass<RequestData> {
     public MapArray<String, String> queryParams = new MapArray<>();
     public MapArray<String, String> cookies = new MapArray<>();
 
+    public Map<String, String> commonQueryParams = new HashMap<>();
+    public List<Header> commonHeaders = new ArrayList<>();
     /**
      * Set request data fields based on lambda function.
      *

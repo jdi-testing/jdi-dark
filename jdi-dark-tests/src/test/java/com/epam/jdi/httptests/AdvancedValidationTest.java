@@ -11,6 +11,10 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
+/**
+ * This class is using for advanced validation cases for JettyService
+ * Tests are similar to rest assured cases
+ */
 public class AdvancedValidationTest {
 
     @BeforeTest
@@ -50,7 +54,6 @@ public class AdvancedValidationTest {
                 body("min { it.price }.title", equalTo("Sayings of the Century")).
                 body("author*.length().sum()", equalTo(53)).
                 body("author*.length().sum(2, { it * 2 })", is(108));
-
     }
 
     @Test

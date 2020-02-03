@@ -192,8 +192,8 @@ public class RestMethod<T> {
     public RestResponse call() {
         if (type == null)
             throw exception("HttpMethodType not specified");
-        RequestSpecification spec = getSpec().log().all();
-        logger.info(format("Do %s request %s", type, data.url));
+        RequestSpecification spec = getSpec();
+        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
         return doRequest(type, spec, expectedStatus);
     }
 

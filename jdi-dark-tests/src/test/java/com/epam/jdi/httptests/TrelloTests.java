@@ -25,7 +25,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 public class TrelloTests {
 
-    public static final String BOARD_ID = "5a27e3b62fef5d3a74dca48a";
+    public static final String BOARD_ID = "5a27e3b62fef5d3a74dca48a11";
     public static final String CARD_UNIQUE_ID = "5a27e722e2f04f3ab6924931";
 
     @BeforeClass

@@ -4,7 +4,6 @@ import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.tools.PrintUtils;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.google.gson.Gson;

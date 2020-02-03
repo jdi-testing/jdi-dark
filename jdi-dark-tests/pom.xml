@@ -17,6 +17,19 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.wealdtech.hawk/hawk-core -->
+        <dependency>
+            <groupId>com.wealdtech.hawk</groupId>
+            <artifactId>hawk-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>3.0-alpha-1</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>

@@ -2,7 +2,13 @@ package com.epam.http.requests;
 
 import com.epam.http.response.RestResponse;
 import io.restassured.specification.RequestSpecification;
-
+import static com.epam.http.requests.RestMethodTypes.DELETE;
+import static com.epam.http.requests.RestMethodTypes.GET;
+import static com.epam.http.requests.RestMethodTypes.HEAD;
+import static com.epam.http.requests.RestMethodTypes.OPTIONS;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
 
 /**
  * <p>

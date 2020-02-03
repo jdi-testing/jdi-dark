@@ -9,5 +9,5 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class JdiHttpSettigns {
     public static boolean verifyOkStatus = false;
-    public static Logger logger = getLogger("Http logger");
+    //public static Logger logger = getLogger("Http logger");
 }

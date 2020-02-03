@@ -101,4 +101,7 @@ public class JettyService {
 
     @GET("/mimeTypeWithPlusJson")
     static RestMethod<Message> getMimeType;
+
+    @GET("/noValueParam")
+    static RestMethod getNoValueParam;
 }

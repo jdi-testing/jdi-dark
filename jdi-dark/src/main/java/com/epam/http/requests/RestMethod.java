@@ -14,8 +14,6 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
-import java.util.Set;
-
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
@@ -32,7 +30,7 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestMethod<T> {
-    public RequestSpecification spec = given().filter(new AllureRestAssured());
+    private RequestSpecification spec = given().filter(new AllureRestAssured());
     private RequestData data;
     private RestMethodTypes type;
     private Gson gson = new Gson();
@@ -194,8 +192,8 @@ public class RestMethod<T> {
     public RestResponse call() {
         if (type == null)
             throw exception("HttpMethodType not specified");
-        RequestSpecification spec = getSpec().log().all();
-        logger.info(format("Do %s request %s", type, data.url));
+        RequestSpecification spec = getSpec();
+        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
         return doRequest(type, spec, expectedStatus);
     }
 
@@ -280,7 +278,7 @@ public class RestMethod<T> {
             data.url = formatParams(data.url, data.pathParams);
         spec.baseUri(data.url);
 
-        Set<String> keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet();
+        String[] keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().toArray(new String[0]);
         for (String key : keys) {
             ((FilterableRequestSpecification) spec).removeQueryParam(key);
         }

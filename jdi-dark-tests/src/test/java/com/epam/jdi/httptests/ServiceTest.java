@@ -6,7 +6,6 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestData;

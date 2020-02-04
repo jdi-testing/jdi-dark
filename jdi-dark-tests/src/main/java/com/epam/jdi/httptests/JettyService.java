@@ -113,4 +113,7 @@ public class JettyService {
 
     @GET("/jsonStore")
     static RestMethod getJsonStore;
+
+    @GET("/noValueParam")
+    static RestMethod getNoValueParam;
 }

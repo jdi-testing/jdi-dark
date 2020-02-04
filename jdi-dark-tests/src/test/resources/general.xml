@@ -3,6 +3,7 @@
 <suite name="Http tests" parallel="methods" thread-count="1">
     <test name="Tests">
         <classes>
+            <class name="com.epam.jdi.httptests.AdvancedValidationTest"/>
             <class name="com.epam.jdi.httptests.BodyWithCustomContentTypeTest"/>
             <class name="com.epam.jdi.httptests.CookiesTests"/>
             <class name="com.epam.jdi.httptests.DeleteTest"/>
@@ -10,6 +11,7 @@
             <class name="com.epam.jdi.httptests.HeaderTests"/>
             <class name="com.epam.jdi.httptests.JSONPostTests"/>
             <class name="com.epam.jdi.httptests.ObjectMappingTests"/>
+            <class name="com.epam.jdi.httptests.ParamTest"/>
             <class name="com.epam.jdi.httptests.PerformanceTests"/>
             <class name="com.epam.jdi.httptests.PostmanAuthTests"/>
             <class name="com.epam.jdi.httptests.ResponseTests"/>

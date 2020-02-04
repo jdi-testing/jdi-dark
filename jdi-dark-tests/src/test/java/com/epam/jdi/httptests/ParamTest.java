@@ -1,6 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -13,7 +14,7 @@ import static org.testng.Assert.assertEquals;
  * This class is using for param cases for JettyService
  * Tests are similar to rest assured cases
  */
-public class ParamTest {
+public class ParamTest extends WithJetty {
 
     private static final String PARAM_NAME = "some";
     private static final String FIRST_NAME = "firstName";

@@ -114,6 +114,17 @@ public class JettyService {
     @GET("/jsonStore")
     static RestMethod getJsonStore;
 
+    @GET("/contentTypeAsBody")
+    static RestMethod getContentTypeAsBody;
+
+    @POST("/return204WithContentType")
+    @ContentType(JSON)
+    static RestMethod postReturn204WithContentType;
+
+    @GET("/headersWithValues")
+    static RestMethod getHeadersWithValues;
+
     @GET("/noValueParam")
     static RestMethod getNoValueParam;
+
 }

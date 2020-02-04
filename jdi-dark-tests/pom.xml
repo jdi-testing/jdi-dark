@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.wealdtech.hawk</groupId>
+            <artifactId>hawk-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>
             <version>1.0.1</version>

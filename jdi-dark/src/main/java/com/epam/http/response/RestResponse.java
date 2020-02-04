@@ -60,10 +60,6 @@ public class RestResponse {
         return thisObj;
     }
 
-    public Response getRaResponse() {
-        return raResponse;
-    }
-
     public boolean verify(Function<RestResponse, Boolean> validator) {
         return validator.apply(this);
     }

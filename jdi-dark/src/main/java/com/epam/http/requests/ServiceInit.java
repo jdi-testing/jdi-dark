@@ -1,19 +1,37 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.*;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.PATCH;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
+import io.restassured.specification.RequestSpecification;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RestMethodTypes.*;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
+
+import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.GET;
+import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.PATCH;
+import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.OPTIONS;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
+
+import static com.epam.http.requests.RestMethodTypes.GET;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.DELETE;
+import static com.epam.http.requests.RestMethodTypes.HEAD;
+import static com.epam.http.requests.RestMethodTypes.OPTIONS;
 
 /**
  * The entry point for initialising the Service Object classes.
@@ -26,53 +44,83 @@ import static java.lang.reflect.Modifier.isStatic;
  */
 public class ServiceInit {
 
+
     /**
      * Initialise the Service Object class.
-     * @param c     class describing Service
-     * @return      initialised Service Object
+     *
+     * @param c class describing Service
+     * @return initialised Service Object
      */
     public static <T> T init(Class<T> c) {
+        return init(c, null);
+    }
+
+    /**
+     * Initialise the Service Object class.
+     *
+     * @param c                    class describing Service
+     * @param requestSpecification custom request specification
+     * @return initialised Service Object
+     */
+    public static <T> T init(Class<T> c, RequestSpecification requestSpecification) {
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> f.getType().equals(RestMethod.class));
-        for (Field method: methods) {
+        for (Field method : methods) {
             try {
                 method.setAccessible(true);
                 if (isStatic(method.getModifiers()))
-                    method.set(null, getRestMethod(method, c));
+                    method.set(null, getRestMethod(method, c, requestSpecification));
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
                     method.set(getService(c), getRestMethod(method, c));
             } catch (IllegalAccessException ex) {
-                throw exception("Can't init method %s for class %s", method.getName(), c.getName()); }
+                throw exception("Can't init method %s for class %s", method.getName(), c.getName());
+            }
         }
         return getService(c);
     }
+
     private static Object service;
 
     /**
      * Helper method to instantiate the class.
-     * @param c     class describing Service
-     * @return      instantiated service
+     *
+     * @param c class describing Service
+     * @return instantiated service
      */
     private static <T> T getService(Class<T> c) {
         if (service != null) return (T) service;
         try {
             return (T) (service = c.newInstance());
-        } catch (IllegalAccessException|InstantiationException ex) {
+        } catch (IllegalAccessException | InstantiationException ex) {
             throw exception(
-                "Can't instantiate class %s, Service class should have empty constructor",
-                    c.getSimpleName()); }
+                    "Can't instantiate class %s, Service class should have empty constructor",
+                    c.getSimpleName());
+        }
     }
 
     /**
      * Check whether the annotation present and add these values to request data.
-     * @param field     HTTP method described in Service Object class as a field
-     * @param c         class describing service
-     * @return          http method with request data
+     *
+     * @param field HTTP method described in Service Object class as a field
+     * @param c     class describing service
+     * @return http method with request data
      */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c) {
+        return getRestMethod(field, c, null);
+    }
+
+    /**
+     * Check whether the annotation present and add these values to request data.
+     *
+     * @param field                HTTP method described in Service Object class as a field
+     * @param c                    class describing service
+     * @param requestSpecification custom request specification
+     * @return http method with request data
+     */
+    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification) {
         MethodData mtData = getMethodData(field);
         String url = getUrlFromDomain(getDomain(c), mtData.getUrl(), field.getName(), c.getSimpleName());
-        RestMethod method = new RestMethod(mtData.getType(), url);
+        RestMethod method = new RestMethod(mtData.getType(), url, requestSpecification);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
@@ -98,20 +146,21 @@ public class ServiceInit {
 
     /**
      * Create method data.
-     * @param method    annotated method field
-     * @return          method data with url and type of request
+     *
+     * @param method annotated method field
+     * @return method data with url and type of request
      */
     private static MethodData getMethodData(Field method) {
         if (method.isAnnotationPresent(GET.class))
-            return new MethodData(method.getAnnotation(GET.class).value(),GET);
+            return new MethodData(method.getAnnotation(GET.class).value(), GET);
         if (method.isAnnotationPresent(POST.class))
-            return new MethodData(method.getAnnotation(POST.class).value(),POST);
+            return new MethodData(method.getAnnotation(POST.class).value(), POST);
         if (method.isAnnotationPresent(PUT.class))
-            return new MethodData(method.getAnnotation(PUT.class).value(),PUT);
+            return new MethodData(method.getAnnotation(PUT.class).value(), PUT);
         if (method.isAnnotationPresent(DELETE.class))
-            return new MethodData(method.getAnnotation(DELETE.class).value(),DELETE);
+            return new MethodData(method.getAnnotation(DELETE.class).value(), DELETE);
         if (method.isAnnotationPresent(PATCH.class))
-            return new MethodData(method.getAnnotation(PATCH.class).value(),PATCH);
+            return new MethodData(method.getAnnotation(PATCH.class).value(), PATCH);
         if (method.isAnnotationPresent(HEAD.class))
             return new MethodData(method.getAnnotation(HEAD.class).value(), HEAD);
         if (method.isAnnotationPresent(OPTIONS.class))
@@ -121,11 +170,12 @@ public class ServiceInit {
 
     /**
      * Get and check URL from request data.
-     * @param domain
-     * @param uri
-     * @param methodName
+     *
+     * @param domain     string
+     * @param uri        adres string
+     * @param methodName string
      * @param className
-     * @return normalized URL
+     * @return normalized URL as string
      */
     private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
         if (uri == null)
@@ -134,16 +184,17 @@ public class ServiceInit {
             return uri;
         if (domain == null)
             throw exception(
-            "Can't instantiate method '%s' for service '%s'. " +
-                    "Domain undefined and method url not contains '://'",
+                    "Can't instantiate method '%s' for service '%s'. " +
+                            "Domain undefined and method url not contains '://'",
                     methodName, className);
         return domain.replaceAll("/*$", "") + "/" + uri.replaceAll("^/*", "");
     }
 
     /**
      * Get service domain.
-     * @param c     Service Object class
-     * @return      service domain string
+     *
+     * @param c Service Object class
+     * @return service domain string
      */
     private static <T> String getDomain(Class<T> c) {
         return c.isAnnotationPresent(ServiceDomain.class)

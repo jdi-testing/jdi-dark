@@ -29,8 +29,6 @@ public class ServiceTest {
     public void before() {
         requestSpecification = given().filter(new AllureRestAssured());
         requestSpecification.auth().basic("user", "password");
-        requestSpecification.queryParam("myParam", "myValue");
-        requestSpecification.header(new Header("myHeader", "headerValue"));
         init(ServiceExample.class, requestSpecification);
     }
 
@@ -49,7 +47,7 @@ public class ServiceTest {
         RestResponse resp = GET(requestData(
                 rd -> {
                     rd.url = "https://httpbin.org/get";
-                    rd.headers = new MapArray<>(new Object[][]{
+                    rd.jdiHeaders.userHeaders = new MapArray<>(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}
                     });
@@ -65,7 +63,7 @@ public class ServiceTest {
 
     @Test
     public void entityTest() {
-        Info e = getInfo.asData(Info.class);
+        Info e = ServiceExample.getInfo();
         assertEquals(e.url, "https://httpbin.org/get");
         assertEquals(e.headers.Host, "httpbin.org");
         assertEquals(e.headers.Id, "Test");

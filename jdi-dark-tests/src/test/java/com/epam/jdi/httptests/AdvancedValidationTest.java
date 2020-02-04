@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests;
 
+import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -15,7 +16,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
  * This class is using for advanced validation cases for JettyService
  * Tests are similar to rest assured cases
  */
-public class AdvancedValidationTest {
+public class AdvancedValidationTest extends WithJetty {
 
     @BeforeTest
     public void before() {

@@ -6,9 +6,20 @@ import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
+import static org.hamcrest.Matchers.equalTo;
 import static org.testng.Assert.assertEquals;
 
+/**
+ * This class is using for param cases for JettyService
+ * Tests are similar to rest assured cases
+ */
 public class ParamTest {
+
+    private static final String PARAM_NAME = "some";
+    private static final String FIRST_NAME = "firstName";
+    private static final String LAST_NAME = "lastName";
+    private static final String FIRST_NAME_VALUE = "John";
+    private static final String LAST_NAME_VALUE = "Doe";
 
     @BeforeMethod
     public void before() {
@@ -18,31 +29,24 @@ public class ParamTest {
     @Test
     public void noValueParamWhenUsingQueryParamWithGetRequest() {
         RestResponse response = JettyService.getNoValueParam.call(requestData(d -> {
-            d.queryParams.add("some", "");
+            d.queryParams.add(PARAM_NAME, "");
         }));
         assertEquals(response.body, "Params: some=");
     }
 
     @Test
-    public void multipleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        // JettyService service = init(JettyService.class);
-        // For some reason Scalatra returns the order different when running in Intellij and Maven
-        /*RestResponse resp = GET(requestData(d -> {
-            d.url = ("http://localhost:8080/noValueParam?some&some1");
-            d.contentType = (ContentType.JSON);
-            d.headers = new MapArray<>(new Object[][] {
-                    {"charset", "utf-8"},
-            });
-        }));*/
+    public void whenLastParamInGetRequestEndsWithEqualItsTreatedAsANoValueParam() {
+        JettyService.getGreet.call(requestData(d -> {
+            d.queryParams.add(FIRST_NAME, FIRST_NAME_VALUE);
+            d.queryParams.add(LAST_NAME, "");
+        })).isOk().assertThat().body("greeting", equalTo("Greetings John "));
+    }
 
-        RestResponse resp1 = JettyService.getNoValueParamWithParamInUrl.call("some&some1");
-
-        //        .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
-        //assertEquals(response.body, "Params: some=");
-
-        //requestData(
-        //                rd -> { rd.url = "some&some1";
-        //                })
-
+    @Test
+    public void whenFirstParamInGetRequestEndsWithEqualItsTreatedAsANoValueParam() {
+        JettyService.getGreet.call(requestData(d -> {
+            d.queryParams.add(FIRST_NAME, "");
+            d.queryParams.add(LAST_NAME, LAST_NAME_VALUE);
+        })).isOk().assertThat().body("greeting", equalTo("Greetings  Doe"));
     }
 }

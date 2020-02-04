@@ -12,4 +12,16 @@ public class JDIHeaders {
     public MapArray<String, String> serviceHeaders = new MapArray<>();
     public MapArray<String, String> userHeaders = new MapArray<>();
 
+    @Override
+    public String toString() {
+        return "commonHeaders=" + commonHeaders +
+                ", serviceHeaders=" + serviceHeaders +
+                ", userHeaders=" + userHeaders;
+    }
+
+//    @Override
+//    public String toString() {
+//        return commonHeaders + "," + serviceHeaders + "," + userHeaders;
+//    }
+
 }

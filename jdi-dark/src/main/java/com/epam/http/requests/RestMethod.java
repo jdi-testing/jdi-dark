@@ -80,7 +80,7 @@ public class RestMethod<T> {
         this(type, url);
         if (requestSpecification != null) {
             this.spec = spec.spec(requestSpecification);
-            data.jdiHeaders.commonHeaders = ((FilterableRequestSpecification) spec).getHeaders().asList();
+            data.headers.commonHeaders = ((FilterableRequestSpecification) spec).getHeaders().asList();
             data.commonQueryParams = ((FilterableRequestSpecification) spec).getQueryParams();
         }
     }
@@ -96,7 +96,7 @@ public class RestMethod<T> {
      * @param value of header field
      */
     public void addHeader(String name, String value) {
-        data.jdiHeaders.serviceHeaders.add(name, value);
+        data.headers.serviceHeaders.add(name, value);
     }
 
     /**
@@ -106,7 +106,7 @@ public class RestMethod<T> {
      * @param value of header field
      */
     public void addOrReplaceHeader(String name, String value) {
-        data.jdiHeaders.serviceHeaders.addOrReplace(name, value);
+        data.headers.serviceHeaders.addOrReplace(name, value);
     }
 
     /**
@@ -259,8 +259,8 @@ public class RestMethod<T> {
             data.queryParams.addAll(requestData.queryParams);
         if (requestData.body != null)
             data.body = requestData.body;
-        if (!requestData.jdiHeaders.userHeaders.isEmpty()) {
-            data.jdiHeaders.userHeaders.addAll(requestData.jdiHeaders.userHeaders);
+        if (!requestData.headers.userHeaders.isEmpty()) {
+            data.headers.userHeaders.addAll(requestData.headers.userHeaders);
         }
         if (!requestData.cookies.isEmpty()) {
             data.cookies.addAll(requestData.cookies);
@@ -304,13 +304,13 @@ public class RestMethod<T> {
         if (data.body != null)
             spec.body(data.body);
         List<Header> headers = ((FilterableRequestSpecification) spec).getHeaders().asList().stream()
-                .filter(e -> !data.jdiHeaders.commonHeaders.contains(e)).collect(Collectors.toList());
+                .filter(e -> !data.headers.commonHeaders.contains(e)).collect(Collectors.toList());
         for (Header header : headers) {
             ((FilterableRequestSpecification) spec).removeHeader(header.getName());
         }
-        if (data.jdiHeaders.serviceHeaders.any() || data.jdiHeaders.userHeaders.any()) {
-            spec.headers(data.jdiHeaders.serviceHeaders.toMap());
-            spec.headers(data.jdiHeaders.userHeaders.toMap());
+        if (data.headers.serviceHeaders.any() || data.headers.userHeaders.any()) {
+            spec.headers(data.headers.serviceHeaders.toMap());
+            spec.headers(data.headers.userHeaders.toMap());
         }
         spec.contentType(data.contentType);
         ((FilterableRequestSpecification) spec).removeCookies();

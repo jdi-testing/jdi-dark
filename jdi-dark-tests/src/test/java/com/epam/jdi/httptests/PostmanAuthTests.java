@@ -7,7 +7,6 @@ import com.wealdtech.hawk.HawkCredentials;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.net.URI;
@@ -82,7 +81,7 @@ public class PostmanAuthTests {
     @Test
     public void authDigestFailTest() {
         RestResponse resp = authDigest.call(requestData(rd ->
-                rd.jdiHeaders.userHeaders = new MapArray<>(new Object[][]{
+                rd.headers.userHeaders = new MapArray<>(new Object[][]{
                         {"Authorization", "Digest username=\"postman\", realm=\"Users\", nonce=\"ni1LiL0O37PRRhofWdCLmwFsnEtH1lew\", uri=\"/digest-auth\", response=\"254679099562cf07df9b6f5d8d15db45\", opaque=\"\""}
                 })));
         resp.assertThat()
@@ -100,7 +99,7 @@ public class PostmanAuthTests {
         long ts = timestamp.getTime() / 1000;
         String mac = calculateMAC(hawkCredentials, Hawk.AuthType.HEADER, ts, uri, "x9Feni", "GET", null, null, null, null);
         RestResponse resp = authHawk.call(requestData(rd ->
-                rd.jdiHeaders.userHeaders = new MapArray<>(new Object[][]{
+                rd.headers.userHeaders = new MapArray<>(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"" + ts + "\", nonce=\"x9Feni\", mac=\"" + mac + "\""}
                 })));
         resp.isOk().assertThat()
@@ -118,7 +117,7 @@ public class PostmanAuthTests {
         long ts = 1234567890;
         String mac = calculateMAC(hawkCredentials, Hawk.AuthType.HEADER, ts, uri, "x9Feni", "GET", null, null, null, null);
         RestResponse resp = authHawk.call(requestData(rd ->
-                rd.jdiHeaders.userHeaders = new MapArray<>(new Object[][]{
+                rd.headers.userHeaders = new MapArray<>(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"" + ts + "\", nonce=\"x9Feni\", mac=\"" + mac + "\""}
                 })));
         resp.assertThat()
@@ -138,7 +137,7 @@ public class PostmanAuthTests {
         body.put("message", "Bad mac");
         body.put("attributes", attr);
         RestResponse resp = authHawk.call(requestData(rd ->
-                rd.jdiHeaders.userHeaders = new MapArray<>(new Object[][]{
+                rd.headers.userHeaders = new MapArray<>(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"ts\", nonce=\"x9Feni\", mac=\"mac\""}
                 })));
         resp.assertThat()
@@ -151,7 +150,7 @@ public class PostmanAuthTests {
         String key = "RKCGzna7bv9YD57c";
         String nonce = "R6MyHe5WCRx";
         RestResponse resp = oauth.call(requestData(rd ->
-                rd.jdiHeaders.userHeaders = new MapArray<>(new Object[][]{
+                rd.headers.userHeaders = new MapArray<>(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}
                 })));
         resp.isOk().assertThat()
@@ -165,7 +164,7 @@ public class PostmanAuthTests {
         String key = "RKCGzna7bv9YD57";
         String nonce = "R6MyHe5WCRx";
         RestResponse resp = oauth.call(requestData(rd ->
-                rd.jdiHeaders.userHeaders = new MapArray<>(new Object[][]{
+                rd.headers.userHeaders = new MapArray<>(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}
                 })));
         resp.assertThat()

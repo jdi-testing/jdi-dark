@@ -217,7 +217,7 @@ public class RestMethod<T> {
      * @return Java object
      */
     public T callAsData(Class<T> c) {
-        return call().raResponse().body().as(c);
+        return call().getRaResponse().body().as(c);
     }
 
     public T asData(Class<T> c) {

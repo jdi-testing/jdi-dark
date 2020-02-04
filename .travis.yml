@@ -26,19 +26,19 @@ jobs:
   - stage: compile
     name: Compile jdi code
     script:
-    - mvn install -DskipTests
+    - mvn install -DskipTests -q || travis_terminate 1
     - mvn versions:use-latest-releases
 
   - stage: test
     name: Run tests - http
     script:
-      - mvn install -DskipTests
+      - mvn install -DskipTests -q || travis_terminate 1
       - mvn verify -pl $HTTP_TESTS
 
   - stage: test
     name: Run tests - bdd
     script:
-    - mvn install -DskipTests
+    - mvn install -DskipTests -q || travis_terminate 1
     - mvn verify -pl $BDD_TESTS
 
   - stage: reports

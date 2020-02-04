@@ -93,13 +93,13 @@ public class ResponseTests {
 
     @Test
     public void usingJsonPathViewFromTheResponse() {
-        final String hello = JettyService.getHello.call().raResponse().jsonPath().getString("hello");
+        final String hello = JettyService.getHello.call().getRaResponse().jsonPath().getString("hello");
         assertThat(hello, equalTo("Hello Scalatra"));
     }
 
     @Test
     public void usingXmlPathViewFromTheResponse() {
-        final String firstName = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).raResponse().xmlPath().getString("greeting.firstName");
+        final String firstName = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).getRaResponse().xmlPath().getString("greeting.firstName");
         assertThat(firstName, equalTo("John"));
     }
 }

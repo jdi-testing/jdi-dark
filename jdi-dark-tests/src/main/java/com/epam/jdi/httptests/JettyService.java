@@ -51,6 +51,9 @@ public class JettyService {
     @DELETE("/cookie")
     static RestMethod deleteCookie;
 
+    @GET("/greet")
+    static RestMethod getGreet;
+
     @DELETE("/greet")
     static RestMethod deleteGreet;
 
@@ -120,4 +123,8 @@ public class JettyService {
 
     @GET("/headersWithValues")
     static RestMethod getHeadersWithValues;
+
+    @GET("/noValueParam")
+    static RestMethod getNoValueParam;
+
 }

@@ -1,6 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.support.WithJetty;
 import com.epam.jdi.tools.map.MapArray;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -18,7 +19,7 @@ import static org.testng.Assert.assertEquals;
  * This class is using for delete cases for JettyService
  * Tests are similar to rest assured cases
  */
-public class DeleteTest {
+public class DeleteTest extends WithJetty {
 
     private static final String TEST_BODY_VALUE = "a body";
     private static final String FIRST_NAME = "firstName";

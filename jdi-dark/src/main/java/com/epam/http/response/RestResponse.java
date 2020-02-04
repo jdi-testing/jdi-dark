@@ -187,7 +187,7 @@ public class RestResponse {
      *
      * @return Rest Assured response
      */
-    public Response raResponse() {
+    public Response getRaResponse() {
         return raResponse;
     }
 

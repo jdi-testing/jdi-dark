@@ -1,6 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.support.WithJetty;
 import com.epam.jdi.tools.map.MapArray;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -13,7 +14,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
 
-public class ResponseTests {
+public class ResponseTests extends WithJetty {
 
     @BeforeTest
     public void before() {
@@ -73,7 +74,7 @@ public class ResponseTests {
     @Test
     public void responseSupportsGettingHeaders() {
         RestResponse response = JettyService.setCookies.call();
-        assertEquals(7, response.headers().size());
+        assertEquals(8, response.headers().size());
         assertEquals("text/plain;charset=utf-8", response.header("Content-Type"));
         final String server = response.header("Server");
         assertThat(server, containsString("Jetty"));
@@ -93,13 +94,13 @@ public class ResponseTests {
 
     @Test
     public void usingJsonPathViewFromTheResponse() {
-        final String hello = JettyService.getHello.call().raResponse().jsonPath().getString("hello");
+        final String hello = JettyService.getHello.call().getRaResponse().jsonPath().getString("hello");
         assertThat(hello, equalTo("Hello Scalatra"));
     }
 
     @Test
     public void usingXmlPathViewFromTheResponse() {
-        final String firstName = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).raResponse().xmlPath().getString("greeting.firstName");
+        final String firstName = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).getRaResponse().xmlPath().getString("greeting.firstName");
         assertThat(firstName, equalTo("John"));
     }
 }

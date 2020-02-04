@@ -88,7 +88,7 @@ public class ServiceInit {
      * @return instantiated service
      */
     private static <T> T getService(Class<T> c) {
-        if (service != null) return (T) service;
+        if (service != null && service.getClass().equals(c)) return (T) service;
         try {
             return (T) (service = c.newInstance());
         } catch (IllegalAccessException | InstantiationException ex) {

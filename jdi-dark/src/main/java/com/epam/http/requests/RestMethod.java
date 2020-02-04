@@ -205,7 +205,8 @@ public class RestMethod<T> {
         if (type == null)
             throw exception("HttpMethodType not specified");
         RequestSpecification spec = addRestSpecificationData();
-        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
+//        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
+        logger.info(format("Do %s request: %s", type, data.getFields().filter((k, v) -> !k.startsWith("common") && v != null && !v.toString().isEmpty()).map((k,v) -> "\n" + k + ": " + v)));
         return doRequest(type, spec, expectedStatus);
     }
 
@@ -216,7 +217,7 @@ public class RestMethod<T> {
      * @return Java object
      */
     public T callAsData(Class<T> c) {
-        return call().raResponse().body().as(c);
+        return call().getRaResponse().body().as(c);
     }
 
     public T asData(Class<T> c) {

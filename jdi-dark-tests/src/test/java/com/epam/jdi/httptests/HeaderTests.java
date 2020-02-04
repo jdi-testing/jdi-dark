@@ -1,6 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -9,7 +10,7 @@ import static com.epam.jdi.httptests.JettyService.getWithMultipleHeadersInReques
 import static com.epam.jdi.httptests.JettyService.getWithSingleHeaderInRequest;
 import static org.hamcrest.Matchers.containsString;
 
-public class HeaderTests {
+public class HeaderTests extends WithJetty {
 
     @BeforeTest
     public void before() {
@@ -20,14 +21,15 @@ public class HeaderTests {
     public void singleHeaderIsAllowedInRequest() {
         RestResponse response = getWithSingleHeaderInRequest.call();
         response.isOk();
-        response.assertBody(new Object[][] {{"headers.Headertestname", containsString("HeaderTestValue")}});
+        response.assertThat().body(containsString("HeaderTestName"));
     }
 
     @Test
     public void multipleHeadersAreAllowedInRequest() {
         RestResponse response = getWithMultipleHeadersInRequest.call();
         response.isOk();
-        response.assertBody(new Object[][]{{"headers.Header1", containsString("Value1")},
-                {"headers.Header2", containsString("Value2")}});
+        response.assertThat().
+                body(containsString("Header1")).
+                body(containsString("Header2"));
     }
 }

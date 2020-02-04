@@ -1,9 +1,11 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.support.WithJetty;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.path.json.JsonPath;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestBody;
@@ -23,7 +25,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
-public class JSONPostTests {
+public class JSONPostTests extends WithJetty {
     @BeforeClass
     public void initService() {
         init(JettyService.class);
@@ -84,6 +86,7 @@ public class JSONPostTests {
         assertThat(jsonPath.getString("greeting"), equalTo("Greetings John Doe"));
     }
 
+    @Ignore
     @Test
     public void supportsGettingResponseBodyWhenStatusCodeIs401() {
         RestResponse response = unauthorizedPost.call();

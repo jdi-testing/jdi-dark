@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests;
 
+import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -7,7 +8,7 @@ import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class ObjectMappingTests {
+public class ObjectMappingTests extends WithJetty {
 
     @BeforeTest
     public void before() {

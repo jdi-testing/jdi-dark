@@ -61,7 +61,7 @@ public class ServiceTest {
 
     @Test
     public void entityTest() {
-        Info e = ServiceExample.getInfo();
+        Info e = getInfo();
         assertEquals(e.url, "https://httpbin.org/get");
         assertEquals(e.headers.Host, "httpbin.org");
         assertEquals(e.headers.Id, "Test");

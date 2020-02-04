@@ -12,7 +12,6 @@ import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.ContentType;
 import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.Cookie;
-import com.epam.http.response.RestResponse;
 
 import static io.restassured.http.ContentType.HTML;
 import static io.restassured.http.ContentType.JSON;

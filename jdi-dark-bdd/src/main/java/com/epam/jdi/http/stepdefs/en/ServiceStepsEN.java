@@ -4,7 +4,9 @@ import com.epam.http.requests.RestMethod;
 import io.cucumber.java.en.When;
 
 import static com.epam.http.performance.RestLoad.loadService;
-import static com.epam.jdi.http.Utils.*;
+import static com.epam.jdi.http.Utils.performanceResult;
+import static com.epam.jdi.http.Utils.restResponse;
+import static com.epam.jdi.http.Utils.service;
 
 public class ServiceStepsEN {
 

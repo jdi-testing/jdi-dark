@@ -21,34 +21,34 @@ public class TrelloApi {
         public static final String BOARDS = "/boards";
 
         @ContentType(JSON) @GET(BOARDS)
-        static RestMethod boardsGet;
+        public static RestMethod boardsGet;
 
         @ContentType(JSON) @POST(BOARDS)
-        static RestMethod boardsPost;
+        public static RestMethod boardsPost;
 
         @ContentType(JSON) @GET("/boards/{board_id}")
-        static RestMethod getBoardById;
+        public static RestMethod getBoardById;
 
         @ContentType(JSON) @GET("/boards/{board_id}/cards")
-        static RestMethod getBoardCardsList;
+        public static RestMethod getBoardCardsList;
 
         @ContentType(JSON) @GET("/boards/{board_id}/cards/{short_card_id}")
-        static RestMethod getBoardCardById;
+        public static RestMethod getBoardCardById;
 
         @ContentType(JSON) @GET("/members/{user_name}/boards")
-        static RestMethod getAllMemberBoards;
+        public static RestMethod getAllMemberBoards;
 
         @ContentType(JSON) @GET("/members")
-        static RestMethod membersGet;
+        public static RestMethod membersGet;
 
         @ContentType(JSON) @DELETE("/cards")
-        static RestMethod deleteACardFromBoard;
+        public static RestMethod deleteACardFromBoard;
 
         @ContentType(JSON) @POST("/cards/{card_id}/actions/comments")
-        static RestMethod postNewCommentToCard;
+        public static RestMethod postNewCommentToCard;
 
         @QueryParameter(name = "test", value = "test")
         @ContentType(JSON) @GET("/cards/{card_id}")
-        static RestMethod getCardByUniqueId;
+        public static RestMethod getCardByUniqueId;
 
 }

@@ -35,6 +35,7 @@ import static com.epam.http.requests.RestMethodTypes.PUT;
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
+@SuppressWarnings({"PMD.ClassNamingConventions", "PMD.MethodNamingConventions"})
 public class RestMethods {
     public static RestResponse GET(RequestData data) {
         return new RestMethod(GET, data).call();

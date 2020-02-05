@@ -28,6 +28,9 @@ public class HTTPLogger implements ILogger {
     private static MapArray<String, HTTPLogger> loggers = new MapArray<>();
     private static Marker jdiMarker = MarkerManager.getMarker("JDI");
     private Safe<LogLevels> logLevel = new Safe<>(INFO);
+    private Safe<Integer> logOffDeepness = new Safe<>(0);
+    private String name;
+    private Logger logger;
 
     public static HTTPLogger instance(String name) {
         if (!loggers.has(name))
@@ -55,7 +58,6 @@ public class HTTPLogger implements ILogger {
         setRootLevel(getLog4j2Level(level));
         setLevel(name, getLog4j2Level(level));
     }
-    private Safe<Integer> logOffDeepness = new Safe<>(0);
 
     public void logOff() {
         logLevel.set(OFF);
@@ -93,8 +95,7 @@ public class HTTPLogger implements ILogger {
         logLevel.set(tempLevel);
         return result;
     }
-    private String name;
-    private Logger logger;
+
     private String getRecord(String record, Object... args) {
         return format(record, args);
     }

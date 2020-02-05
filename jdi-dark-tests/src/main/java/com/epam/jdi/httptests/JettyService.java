@@ -20,111 +20,111 @@ import static io.restassured.http.ContentType.URLENC;
 public class JettyService {
 
     @GET("/multiCookie")
-    static RestMethod getMultiCookie;
+    public static RestMethod getMultiCookie;
 
     @GET("/setCookies")
-    static RestMethod setCookies;
+    public static RestMethod setCookies;
 
     @GET("/cookie")
-    static RestMethod getCookie;
+    public static RestMethod getCookie;
 
     @PUT("/cookie")
-    static RestMethod putCookie;
+    public static RestMethod putCookie;
 
     @POST("/reflect")
-    static RestMethod<Hello> postReflect;
+    public static RestMethod<Hello> postReflect;
 
     @GET("/setCommonIdCookies")
-    static RestMethod getCommonIdCookies;
+    public static RestMethod getCommonIdCookies;
 
     @GET("/header")
     @Header(name = "HeaderTestName", value = "HeaderTestValue")
-    static RestMethod getWithSingleHeaderInRequest;
+    public static RestMethod getWithSingleHeaderInRequest;
 
     @GET("/header")
     @Headers({
             @Header(name = "Header1", value = "Value1"),
             @Header(name = "Header2", value = "Value2")
     })
-    static RestMethod getWithMultipleHeadersInRequest;
+    public static RestMethod getWithMultipleHeadersInRequest;
 
     @DELETE("/cookie")
-    static RestMethod deleteCookie;
+    public static RestMethod deleteCookie;
 
     @GET("/greet")
-    static RestMethod getGreet;
+    public static RestMethod getGreet;
 
     @DELETE("/greet")
-    static RestMethod deleteGreet;
+    public static RestMethod deleteGreet;
 
     @DELETE("/body")
     @ContentType(TEXT)
-    static RestMethod deleteBody;
+    public static RestMethod deleteBody;
 
     @POST("/greetXML")
     @ContentType(URLENC)
-    static RestMethod postGreetXml;
+    public static RestMethod postGreetXml;
 
     @ContentType(JSON)
     @POST("/jsonBody")
-    static RestMethod jsonBodyPost;
+    public static RestMethod jsonBodyPost;
 
     @POST("/secured/hello")
-    static RestMethod unauthorizedPost;
+    public static RestMethod unauthorizedPost;
 
     @POST("/cookie")
-    static RestMethod cookiePost;
+    public static RestMethod cookiePost;
 
     @POST("/param-reflect")
-    static RestMethod paramUrlPost;
+    public static RestMethod paramUrlPost;
 
     @ContentType(TEXT)
     @POST("/body")
-    static RestMethod bodyPost;
+    public static RestMethod bodyPost;
 
     @POST("/greet")
-    static RestMethod greetPost;
+    public static RestMethod greetPost;
 
     @POST("/notexist")
-    static RestMethod notFoundedURIPost;
+    public static RestMethod notFoundedURIPost;
 
     @POST("/header")
     @Header(name = "MyHeader", value = "Something")
-    static RestMethod headerPost;
+    public static RestMethod headerPost;
 
     @GET("/hello")
-    static RestMethod<Hello> getHello;
+    public static RestMethod<Hello> getHello;
 
     @QueryParameters({
             @QueryParameter(name = "firstName", value = "John"),
             @QueryParameter(name = "lastName", value = "Doe")
     })
     @GET("/greetXML")
-    static RestMethod<Greeting> getGreetXml;
+    public static RestMethod<Greeting> getGreetXml;
 
     @GET("/mimeTypeWithPlusJson")
-    static RestMethod<Message> getMimeType;
+    public static RestMethod<Message> getMimeType;
 
     @GET("/shopping")
-    static RestMethod getShopping;
+    public static RestMethod getShopping;
 
     @GET("/products")
-    static RestMethod getProducts;
+    public static RestMethod getProducts;
 
     @GET("/jsonStore")
-    static RestMethod getJsonStore;
+    public static RestMethod getJsonStore;
 
     @GET("/contentTypeAsBody")
-    static RestMethod getContentTypeAsBody;
+    public static RestMethod getContentTypeAsBody;
 
     @POST("/return204WithContentType")
     @ContentType(JSON)
-    static RestMethod postReturn204WithContentType;
+    public static RestMethod postReturn204WithContentType;
 
     @GET("/headersWithValues")
-    static RestMethod getHeadersWithValues;
+    public static RestMethod getHeadersWithValues;
 
     @GET("/noValueParam")
-    static RestMethod getNoValueParam;
+    public static RestMethod getNoValueParam;
 
 }

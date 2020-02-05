@@ -80,8 +80,8 @@ public class RestMethod<T> {
         this(type, url);
         if (requestSpecification != null) {
             this.spec = spec.spec(requestSpecification);
-            data.commonHeaders = ((FilterableRequestSpecification)spec).getHeaders().asList();
-            data.commonQueryParams = ((FilterableRequestSpecification)spec).getQueryParams();
+            data.headers.commonHeaders = ((FilterableRequestSpecification) spec).getHeaders().asList();
+            data.commonQueryParams = ((FilterableRequestSpecification) spec).getQueryParams();
         }
     }
 
@@ -96,7 +96,7 @@ public class RestMethod<T> {
      * @param value of header field
      */
     public void addHeader(String name, String value) {
-        data.headers.add(name, value);
+        data.headers.serviceHeaders.add(name, value);
     }
 
     /**
@@ -106,7 +106,7 @@ public class RestMethod<T> {
      * @param value of header field
      */
     public void addOrReplaceHeader(String name, String value) {
-        data.headers.addOrReplace(name, value);
+        data.headers.serviceHeaders.addOrReplace(name, value);
     }
 
     /**
@@ -206,7 +206,7 @@ public class RestMethod<T> {
             throw exception("HttpMethodType not specified");
         RequestSpecification spec = addRestSpecificationData();
 //        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
-        logger.info(format("Do %s request: %s", type, data.getFields().filter((k, v) -> !k.startsWith("common") && v != null && !v.toString().isEmpty()).map((k,v) -> "\n" + k + ": " + v)));
+        logger.info(format("Do %s request: %s", type, data.getFields().filter((k, v) -> !k.startsWith("common") && v != null && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v)));
         return doRequest(type, spec, expectedStatus);
     }
 
@@ -259,8 +259,8 @@ public class RestMethod<T> {
             data.queryParams.addAll(requestData.queryParams);
         if (requestData.body != null)
             data.body = requestData.body;
-        if (!requestData.headers.isEmpty()) {
-            data.headers.addAll(requestData.headers);
+        if (!requestData.headers.userHeaders.isEmpty()) {
+            data.headers.userHeaders.addAll(requestData.headers.userHeaders);
         }
         if (!requestData.cookies.isEmpty()) {
             data.cookies.addAll(requestData.cookies);
@@ -304,18 +304,21 @@ public class RestMethod<T> {
         if (data.body != null)
             spec.body(data.body);
         List<Header> headers = ((FilterableRequestSpecification) spec).getHeaders().asList().stream()
-                .filter(e -> !data.commonHeaders.contains(e)).collect(Collectors.toList());
+                .filter(e -> !data.headers.commonHeaders.contains(e)).collect(Collectors.toList());
         for (Header header : headers) {
             ((FilterableRequestSpecification) spec).removeHeader(header.getName());
         }
-        if (data.headers.any()) {
-            spec.headers(data.headers.toMap());
+        if (data.headers.serviceHeaders.any() || data.headers.userHeaders.any()) {
+            spec.headers(data.headers.serviceHeaders.toMap());
+            spec.headers(data.headers.userHeaders.toMap());
         }
         spec.contentType(data.contentType);
         ((FilterableRequestSpecification) spec).removeCookies();
         if (data.cookies.any()) {
             spec.cookies(data.cookies.toMap());
         }
+
+        data.clear();
         return spec;
     }
 

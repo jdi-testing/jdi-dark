@@ -71,7 +71,7 @@ public class ServiceInit {
                 if (isStatic(method.getModifiers()))
                     method.set(null, getRestMethod(method, c, requestSpecification));
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
-                    method.set(getService(c), getRestMethod(method, c));
+                    method.set(getService(c), getRestMethod(method, c, requestSpecification));
             } catch (IllegalAccessException ex) {
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
             }

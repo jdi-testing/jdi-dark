@@ -24,6 +24,10 @@ public enum LogLevels {
     ALL(MAX_VALUE);   // All log messages
 
     private int level;
+
+    private static final List<Level> allLog4J2Levels =
+            asList(Level.OFF,  Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
+                    Level.DEBUG, Level.TRACE, Level.ALL);
     LogLevels(int level) {
         this.level = level;
     }
@@ -37,9 +41,7 @@ public enum LogLevels {
         return getLevel() <= level.getLevel();
     }
 
-    private static final List<Level> allLog4J2Levels =
-        asList(Level.OFF,  Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
-                Level.DEBUG, Level.TRACE, Level.ALL);
+
     public static Level getLog4j2Level(LogLevels level) {
         return first(allLog4J2Levels, l -> l.intLevel() >= level.level);
     }

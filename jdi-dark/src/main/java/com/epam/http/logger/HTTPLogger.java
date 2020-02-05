@@ -9,9 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.epam.http.logger.LogLevels.DEBUG;
 import static com.epam.http.logger.LogLevels.INFO;
 import static com.epam.http.logger.LogLevels.OFF;
@@ -30,6 +27,7 @@ import static org.apache.logging.log4j.core.config.Configurator.setRootLevel;
 public class HTTPLogger implements ILogger {
     private static MapArray<String, HTTPLogger> loggers = new MapArray<>();
     private static Marker jdiMarker = MarkerManager.getMarker("JDI");
+    private Safe<LogLevels> logLevel = new Safe<>(INFO);
 
     public static HTTPLogger instance(String name) {
         if (!loggers.has(name))
@@ -48,8 +46,6 @@ public class HTTPLogger implements ILogger {
     public HTTPLogger(Class clazz) {
         this(clazz.getSimpleName());
     }
-
-    private Safe<LogLevels> logLevel = new Safe<>(INFO);
 
     public LogLevels getLogLevel() {
         return logLevel.get();

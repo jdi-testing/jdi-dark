@@ -254,7 +254,7 @@ public class RestMethod<T> {
      */
     public RestResponse call(RequestData requestData) {
         if (!requestData.pathParams.isEmpty())
-            data.pathParams.addAll(requestData.pathParams);
+            data.pathParams = requestData.pathParams;
         if (!requestData.queryParams.isEmpty())
             data.queryParams.addAll(requestData.queryParams);
         if (requestData.body != null)
@@ -287,9 +287,11 @@ public class RestMethod<T> {
     public RequestSpecification addRestSpecificationData() {
         if (data == null)
             return spec;
+
+        String url = data.url;
         if (data.pathParams.any() && data.url.contains("{"))
-            data.url = formatParams(data.url, data.pathParams);
-        spec.baseUri(data.url);
+            url = formatParams(url, data.pathParams);
+        spec.baseUri(url);
 
         ///String[] keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().toArray(new String[0]);
         List<String> keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().stream()

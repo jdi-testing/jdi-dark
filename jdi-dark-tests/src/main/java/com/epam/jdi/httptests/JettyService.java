@@ -127,4 +127,16 @@ public class JettyService {
     @GET("/noValueParam")
     public static RestMethod getNoValueParam;
 
+    @GET("/{firstName}/{lastName}")
+    public static RestMethod getUser;
+
+    @GET("/{path}.json")
+    public static RestMethod getParamBeforePath;
+
+    @GET("/something.{format}")
+    public static RestMethod getParamAfterPath;
+
+    @GET("/matrix;{abcde}={value}")
+    public static RestMethod getMatrix;
+
 }

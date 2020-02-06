@@ -14,6 +14,7 @@
             <class name="com.epam.jdi.httptests.ParamTest"/>
             <class name="com.epam.jdi.httptests.PerformanceTests"/>
             <class name="com.epam.jdi.httptests.PostmanAuthTests"/>
+            <class name="com.epam.jdi.httptests.PathParamTests"/>
             <class name="com.epam.jdi.httptests.ResponseTests"/>
             <class name="com.epam.jdi.httptests.ServiceTest"/>
             <class name="com.epam.jdi.httptests.TrelloTests"/>

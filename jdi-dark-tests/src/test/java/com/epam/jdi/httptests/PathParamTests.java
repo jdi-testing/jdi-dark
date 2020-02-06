@@ -91,16 +91,14 @@ public class PathParamTests extends WithJetty {
     }
 
     @Test
-    public void
-    can_use_path_parameters_value_shorter_than_the_template_name_when_using_multiple_templates_in_a_subresource() {
+    public void usePathParametersShorterTheTemplateName() {
         RestResponse response = getMatrix
                 .call(requestPathParams(new Object[][]{{"abcde", "John"}, {"value", "Doe"}}));
         response.isOk().body("John", equalTo("Doe"));
     }
 
     @Test
-    public void
-    can_use_path_parameters_value_longer_than_the_template_name_when_using_multiple_templates_in_a_subresource2() {
+    public void usePathParametersLongerTheTemplateName() {
         RestResponse response = getMatrix
                 .call(requestPathParams(new Object[][]{{"abcde", "JohnJohn"}, {"value", "Doe"}}));
         response.isOk().body("JohnJohn", equalTo("Doe"));

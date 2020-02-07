@@ -332,6 +332,9 @@ public class RestMethod<T> {
         if (!requestData.cookies.isEmpty()) {
             userData.cookies.addAll(requestData.cookies);
         }
+        if (requestData.contentType != null) {
+            userData.contentType = requestData.contentType;
+        }
         return call();
     }
 

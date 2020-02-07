@@ -29,7 +29,9 @@ public class RestRequest {
             time = currentTimeMillis();
             response = methodType.method.apply(spec);
             time = currentTimeMillis() - time;
-        } catch (Exception ex) { throw exception("Request failed"); }
+        } catch (Exception ex) {
+            throw exception("Request failed");
+        }
         RestResponse resp = new RestResponse(response, time);
         if (verifyOkStatus)
             resp.isStatus(expectedStatus);

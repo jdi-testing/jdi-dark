@@ -5,8 +5,11 @@ import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.http.ContentType.ANY;
@@ -19,14 +22,11 @@ import static io.restassured.http.ContentType.ANY;
 public class RequestData extends DataClass<RequestData> {
     public String url = null;
     public String body = null;
-    public ContentType contentType = ANY;
-    public JDIHeaders headers = new JDIHeaders();
-
+    public ContentType contentType = null;
+    public MapArray<String, String> headers = new MapArray<>();
     public MapArray<String, String> pathParams = new MapArray<>();
     public MapArray<String, String> queryParams = new MapArray<>();
     public MapArray<String, String> cookies = new MapArray<>();
-
-    public Map<String, String> commonQueryParams = new HashMap<>();
 
     /**
      * Set request data fields based on lambda function.
@@ -73,6 +73,9 @@ public class RequestData extends DataClass<RequestData> {
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {
-        headers.userHeaders.clear();
+        headers.clear();
+        pathParams.clear();
+        queryParams.clear();
+        cookies.clear();
     }
 }

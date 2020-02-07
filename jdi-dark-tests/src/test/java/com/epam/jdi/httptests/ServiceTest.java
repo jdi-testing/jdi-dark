@@ -45,7 +45,7 @@ public class ServiceTest {
         RestResponse resp = GET(requestData(
                 rd -> {
                     rd.url = "https://httpbin.org/get";
-                    rd.headers.userHeaders = new MapArray<>(new Object[][]{
+                    rd.headers = new MapArray<>(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}
                     });

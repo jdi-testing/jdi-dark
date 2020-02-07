@@ -16,11 +16,10 @@ public class RestRequest {
     /**
      * Perform an HTTP request with provided data.
      * Used in call().
-     *
-     * @param methodType     of HTTP request
-     * @param spec           Request Specification
-     * @param expectedStatus of request
-     * @return response
+     * @param methodType        of HTTP request
+     * @param spec              Request Specification
+     * @param expectedStatus    of request
+     * @return                  response
      */
     public static RestResponse doRequest(
             RestMethodTypes methodType, RequestSpecification spec, ResponseStatusType expectedStatus) {
@@ -30,15 +29,12 @@ public class RestRequest {
             time = currentTimeMillis();
             response = methodType.method.apply(spec);
             time = currentTimeMillis() - time;
-        } catch (Exception ex) {
-            throw exception("Request failed");
-        }
+        } catch (Exception ex) { throw exception("Request failed"); }
         RestResponse resp = new RestResponse(response, time);
         if (verifyOkStatus)
             resp.isStatus(expectedStatus);
         return resp;
     }
-
     private static String printRS(RequestSpecification rs) {
         return rs.toString();
     }

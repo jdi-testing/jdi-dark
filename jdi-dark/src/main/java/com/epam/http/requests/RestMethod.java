@@ -11,11 +11,13 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
-import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.util.ArrayList;
+
 import static com.epam.http.ExceptionHandler.exception;
+import static com.epam.http.JdiHttpSettigns.getDomain;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
@@ -30,8 +32,9 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  */
 public class RestMethod<T> {
 
-    private RequestSpecBuilder builder = new RequestSpecBuilder();
     private RequestSpecification spec = given().filter(new AllureRestAssured());
+    private String url = null;
+    private String path = null;
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
@@ -50,20 +53,31 @@ public class RestMethod<T> {
      * Constructor for forming HTTP request.
      *
      * @param type of HTTP request
-     * @param path to send HTTP request to
+     * @param data of request
      */
-    public RestMethod(RestMethodTypes type, String path) {
-        this(type, new RequestData().set(d -> d.path = path));
+    public RestMethod(RestMethodTypes type, RequestData data) {
+        this.data = data;
+        this.type = type;
     }
 
     /**
      * Constructor for forming HTTP request.
      *
      * @param type of HTTP request
-     * @param url  to send HTTP request to
+     * @param path to send HTTP request to
      */
-    public RestMethod(RestMethodTypes type, String path, String url) {
-        this(type, new RequestData().set(d -> d.path = path).set(d -> d.url = url));
+    public RestMethod(RestMethodTypes type, String path) {
+        this(type, getDomain(), path, new RequestData());
+    }
+
+    /**
+     * Constructor for forming HTTP request.
+     *
+     * @param type of HTTP request
+     * @param path to send HTTP request to
+     */
+    public RestMethod(RestMethodTypes type, String url, String path) {
+        this(type, url, path, new RequestData());
     }
 
     /**
@@ -72,9 +86,11 @@ public class RestMethod<T> {
      * @param type of HTTP request
      * @param data of request
      */
-    public RestMethod(RestMethodTypes type, RequestData data) {
-        this.data = data;
+    public RestMethod(RestMethodTypes type, String url, String path, RequestData data) {
         this.type = type;
+        this.url = url;
+        this.path = path;
+        this.data = data;
     }
 
     /**
@@ -105,8 +121,8 @@ public class RestMethod<T> {
         }
     }
 
-    public RequestSpecification getSpec() {
-        return spec;
+    public RequestSpecification getInitSpec() {
+        return given().filter(new AllureRestAssured()).spec(spec).spec(getDataSpec(data));
     }
 
     /**
@@ -119,15 +135,15 @@ public class RestMethod<T> {
         data.headers.add(name, value);
     }
 
-    /**
-     * Set header to HTTP request or replace the value of header if it had been added before.
-     *
-     * @param name  of header field
-     * @param value of header field
-     */
-    public void addOrReplaceHeader(String name, String value) {
-        data.headers.addOrReplace(name, value);
-    }
+//    /**
+//     * Set header to HTTP request or replace the value of header if it had been added before.
+//     *
+//     * @param name  of header field
+//     * @param value of header field
+//     */
+//    public void addOrReplaceHeader(String name, String value) {
+//        data.headers.addOrReplace(name, value);
+//    }
 
     /**
      * Set header to HTTP request.
@@ -216,6 +232,14 @@ public class RestMethod<T> {
                 QueryParameter::name, QueryParameter::value));
     }
 
+    private void logRequest(RequestData... rds) {
+        ArrayList<String> maps = new ArrayList<>();
+        for (RequestData rd : rds) {
+            maps.addAll(rd.getFields().filter((k, v) -> k != "empty" && v != null && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+        }
+        logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
+    }
+
     /**
      * Send HTTP request
      *
@@ -225,10 +249,28 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        spec.spec(getSpec(data)).spec(getSpec(userData));
-        logger.info(format("Do %s request: %s \nuser data: %s", type, data.getFields(), userData.getFields()));
+        RequestSpecification runSpec = getInitSpec();
+        if (!userData.empty) {
+            runSpec.spec(getDataSpec(userData));
+        }
+        logRequest(data, userData);
         userData.clear();
-        return doRequest(type, spec, expectedStatus);
+        return doRequest(type, runSpec, expectedStatus);
+    }
+
+    /**
+     * Send HTTP request with Rest Assured Request Specification.
+     *
+     * @param requestSpecification Rest Assured request specification
+     * @return response
+     */
+    public RestResponse call(RequestSpecification requestSpecification) {
+        if (type == null) {
+            throw exception("HttpMethodType not specified");
+        }
+        RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
+        logRequest(data);
+        return doRequest(type, runSpec, expectedStatus);
     }
 
     /**
@@ -245,11 +287,10 @@ public class RestMethod<T> {
         return callAsData(c);
     }
 
-//    public RestResponse postData(T data) {
-//        this.data.body = gson.toJson(data);
-//        getUserSpec().body(this.data.body);
-//        return call();
-//    }
+    public RestResponse postData(T data) {
+        this.data.body = gson.toJson(data);
+        return call();
+    }
 
     /**
      * Send HTTP request with specific path parameters.
@@ -258,8 +299,8 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        if (data.url.contains("%s") && params.length > 0) {
-            data.url = format(data.url, params);
+        if (url.contains("%s") && params.length > 0) {
+            url = format(url, params);
         }
         return call();
     }
@@ -275,6 +316,7 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(RequestData requestData) {
+        userData.empty = false;
         if (!requestData.pathParams.isEmpty()) {
             userData.pathParams = requestData.pathParams;
         }
@@ -294,25 +336,23 @@ public class RestMethod<T> {
     }
 
     /**
-     * Send HTTP request with Rest Assured Request Specification.
-     *
-     * @param requestSpecification Rest Assured request specification
-     * @return response
-     */
-    public RestResponse call(RequestSpecification requestSpecification) {
-        this.spec = spec.spec(requestSpecification);
-        return call();
-    }
-
-    /**
      * Get request specification to be able to log it.
      *
      * @return request specification
      */
-    public RequestSpecificationImpl getSpec(RequestData data) {
-        RequestSpecificationImpl spec = (RequestSpecificationImpl) builder.build();
+    public RequestSpecification getDataSpec(RequestData data) {
+        RequestSpecification spec = new RequestSpecBuilder().build();
+        if (url != null) {
+            spec.baseUri(url);
+        }
+        if (path != null) {
+            spec.basePath(path);
+        }
         if (data == null) {
             return spec;
+        }
+        if (data.uri != null) {
+            spec.baseUri(data.uri);
         }
         if (data.path != null) {
             spec.basePath(data.path);
@@ -320,15 +360,11 @@ public class RestMethod<T> {
         if (data.pathParams.any()) {
             spec.pathParams(data.pathParams.toMap());
         }
-        if (data.url != null) {
-            spec.baseUri(data.url);
-        }
         if (data.contentType != null) {
             spec.contentType(data.contentType);
         }
         if (data.queryParams.any()) {
             spec.queryParams(data.queryParams.toMap());
-//            data.url += "?" + print(data.queryParams.toMap(), "&", "{0}={1}");
         }
         if (data.body != null) {
             spec.body(data.body);

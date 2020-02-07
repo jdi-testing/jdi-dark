@@ -26,21 +26,17 @@ public enum LogLevels {
     private int level;
 
     private static final List<Level> allLog4J2Levels =
-            asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
+            asList(Level.OFF,  Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
                     Level.DEBUG, Level.TRACE, Level.ALL);
-
     LogLevels(int level) {
         this.level = level;
     }
-
     public int getLevel() {
         return level;
     }
-
     public boolean equalOrLessThan(LogLevels level) {
         return getLevel() >= level.getLevel();
     }
-
     public boolean equalOrMoreThan(LogLevels level) {
         return getLevel() <= level.getLevel();
     }
@@ -49,27 +45,17 @@ public enum LogLevels {
     public static Level getLog4j2Level(LogLevels level) {
         return first(allLog4J2Levels, l -> l.intLevel() >= level.level);
     }
-
     public static LogLevels parseLogLevel(String logLevel) {
         switch (logLevel) {
-            case "OFF":
-                return OFF;
-            case "FATAL":
-                return FATAL;
-            case "ERROR":
-                return ERROR;
-            case "WARNING":
-                return WARNING;
-            case "STEP":
-                return STEP;
-            case "DEBUG":
-                return DEBUG;
-            case "TRACE":
-                return TRACE;
-            case "ALL":
-                return ALL;
-            default:
-                return INFO;
+            case "OFF": return OFF;
+            case "FATAL": return FATAL;
+            case "ERROR": return ERROR;
+            case "WARNING": return WARNING;
+            case "STEP": return STEP;
+            case "DEBUG": return DEBUG;
+            case "TRACE": return TRACE;
+            case "ALL": return ALL;
+            default: return INFO;
         }
     }
 }

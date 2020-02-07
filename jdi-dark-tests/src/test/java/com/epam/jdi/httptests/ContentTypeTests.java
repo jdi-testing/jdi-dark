@@ -38,7 +38,7 @@ public class ContentTypeTests {
     @Test
     public void validatesContentTypeJson() {
         RestResponse response = GET(requestData(d -> {
-            d.url = "http://localhost:8080/contentTypeAsContentType";
+            d.uri = "http://localhost:8080/contentTypeAsContentType";
             d.contentType = ContentType.JSON;}));
         response.assertThat().contentType(ContentType.JSON);
     }
@@ -46,7 +46,7 @@ public class ContentTypeTests {
     @Test
     public void validatesContentTypeBinary() {
         RestResponse response = GET(requestData(d -> {
-            d.url = "http://localhost:8080/contentTypeAsContentType";
+            d.uri = "http://localhost:8080/contentTypeAsContentType";
             d.contentType = ContentType.BINARY;}));
         response.assertThat().contentType(ContentType.BINARY);
     }

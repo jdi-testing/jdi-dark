@@ -51,6 +51,7 @@ public class ServiceInit {
     public static MapArray<String, JAction> PRE_INIT =
             new MapArray<>("WebSettings", JdiHttpSettigns::init);
     public static boolean initialized = false;
+
     public static void preInit() {
         if (PRE_INIT == null) return;
         if (!initialized) {
@@ -139,9 +140,9 @@ public class ServiceInit {
      */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification) {
         MethodData mtData = getMethodData(field);
-        String url = getUrlFromDomain(getDomain(c), field.getName(), c.getSimpleName());
+        String url = getDomain(c);
         String path = mtData.getPath();
-        RestMethod method = new RestMethod(mtData.getType(), path, url, requestSpecification);
+        RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
@@ -193,11 +194,16 @@ public class ServiceInit {
      * Get and check URL from request data.
      *
      * @param domain     string
+     * @param uri        adres string
      * @param methodName string
      * @param className
      * @return normalized URL as string
      */
-    private static String getUrlFromDomain(String domain, String methodName, String className) {
+    private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
+        if (uri == null)
+            return null;
+        if (uri.contains("://"))
+            return uri;
         if (domain == null)
             throw exception(
                     "Can't instantiate method '%s' for service '%s'. " +

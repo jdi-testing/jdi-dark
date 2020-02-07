@@ -8,26 +8,17 @@ import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.internal.RequestSpecificationImpl;
-import io.restassured.internal.SpecificationMerger;
-import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
-import static com.epam.jdi.tools.PrintUtils.formatParams;
-import static com.epam.jdi.tools.PrintUtils.print;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
@@ -40,12 +31,9 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
 public class RestMethod<T> {
 
     private RequestSpecBuilder builder = new RequestSpecBuilder();
-    private RequestSpecificationImpl spec = (RequestSpecificationImpl) builder.build();
-    private RequestSpecificationImpl commonSpec = (RequestSpecificationImpl) builder.build();
-    private RequestSpecificationImpl userSpec = (RequestSpecificationImpl) builder.build();
-//    private RequestSpecification spec = given().filter(new AllureRestAssured());
-//    private RequestSpecification userSpec = given().filter(new AllureRestAssured());
+    private RequestSpecification spec = given().filter(new AllureRestAssured());
     private RequestData data;
+    private RequestData userData = new RequestData();
     private RestMethodTypes type;
     private Gson gson = new Gson();
     private ResponseStatusType expectedStatus = OK;
@@ -62,10 +50,20 @@ public class RestMethod<T> {
      * Constructor for forming HTTP request.
      *
      * @param type of HTTP request
+     * @param path to send HTTP request to
+     */
+    public RestMethod(RestMethodTypes type, String path) {
+        this(type, new RequestData().set(d -> d.path = path));
+    }
+
+    /**
+     * Constructor for forming HTTP request.
+     *
+     * @param type of HTTP request
      * @param url  to send HTTP request to
      */
-    public RestMethod(RestMethodTypes type, String url) {
-        this(type, new RequestData().set(d -> d.url = url));
+    public RestMethod(RestMethodTypes type, String path, String url) {
+        this(type, new RequestData().set(d -> d.path = path).set(d -> d.url = url));
     }
 
     /**
@@ -83,13 +81,27 @@ public class RestMethod<T> {
      * Constructor for forming HTTP request with given Rest Assured Request Specification.
      *
      * @param type                 of HTTP request
+     * @param path                 of request
+     * @param requestSpecification Rest Assured request specification
+     */
+    public RestMethod(RestMethodTypes type, String path, RequestSpecification requestSpecification) {
+        this(type, path);
+        if (requestSpecification != null) {
+            this.spec = spec.spec(requestSpecification);
+        }
+    }
+
+    /**
+     * Constructor for forming HTTP request with given Rest Assured Request Specification.
+     *
+     * @param type                 of HTTP request
      * @param url                  of request
      * @param requestSpecification Rest Assured request specification
      */
-    public RestMethod(RestMethodTypes type, String url, RequestSpecification requestSpecification) {
-        this(type, url);
+    public RestMethod(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
+        this(type, path, url);
         if (requestSpecification != null) {
-            this.commonSpec = (RequestSpecificationImpl) commonSpec.spec(requestSpecification);
+            this.spec = spec.spec(requestSpecification);
         }
     }
 
@@ -213,11 +225,9 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-
-        SpecificationMerger.merge(spec, commonSpec);
-        SpecificationMerger.merge(spec, getUserSpec());
-        //logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
-        logger.info(format("Do %s request: %s", type, data.getFields().filter((k, v) -> !k.startsWith("common") && v != null && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v)));
+        spec.spec(getSpec(data)).spec(getSpec(userData));
+        logger.info(format("Do %s request: %s \nuser data: %s", type, data.getFields(), userData.getFields()));
+        userData.clear();
         return doRequest(type, spec, expectedStatus);
     }
 
@@ -266,19 +276,19 @@ public class RestMethod<T> {
      */
     public RestResponse call(RequestData requestData) {
         if (!requestData.pathParams.isEmpty()) {
-            data.pathParams = requestData.pathParams;
+            userData.pathParams = requestData.pathParams;
         }
         if (!requestData.queryParams.isEmpty()) {
-            data.queryParams.addAll(requestData.queryParams);
+            userData.queryParams.addAll(requestData.queryParams);
         }
         if (requestData.body != null) {
-            data.body = requestData.body;
+            userData.body = requestData.body;
         }
         if (!requestData.headers.isEmpty()) {
-            data.headers.addAll(requestData.headers);
+            userData.headers.addAll(requestData.headers);
         }
         if (!requestData.cookies.isEmpty()) {
-            data.cookies.addAll(requestData.cookies);
+            userData.cookies.addAll(requestData.cookies);
         }
         return call();
     }
@@ -290,7 +300,7 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(RequestSpecification requestSpecification) {
-        this.commonSpec = (RequestSpecificationImpl) commonSpec.spec(requestSpecification);
+        this.spec = spec.spec(requestSpecification);
         return call();
     }
 
@@ -299,32 +309,37 @@ public class RestMethod<T> {
      *
      * @return request specification
      */
-    public RequestSpecificationImpl getUserSpec() {
-        userSpec = (RequestSpecificationImpl) builder.build();
+    public RequestSpecificationImpl getSpec(RequestData data) {
+        RequestSpecificationImpl spec = (RequestSpecificationImpl) builder.build();
         if (data == null) {
-            return userSpec;
+            return spec;
         }
-        if (data.pathParams.any() && data.url.contains("{")) {
-            data.url = formatParams(data.url, data.pathParams);
+        if (data.path != null) {
+            spec.basePath(data.path);
         }
-        userSpec.contentType(data.contentType);
-        userSpec.baseUri(data.url);
+        if (data.pathParams.any()) {
+            spec.pathParams(data.pathParams.toMap());
+        }
+        if (data.url != null) {
+            spec.baseUri(data.url);
+        }
+        if (data.contentType != null) {
+            spec.contentType(data.contentType);
+        }
         if (data.queryParams.any()) {
-            userSpec.queryParams(data.queryParams.toMap());
-            data.url += "?" + print(data.queryParams.toMap(), "&", "{0}={1}");
+            spec.queryParams(data.queryParams.toMap());
+//            data.url += "?" + print(data.queryParams.toMap(), "&", "{0}={1}");
         }
         if (data.body != null) {
-            userSpec.body(data.body);
+            spec.body(data.body);
         }
         if (data.headers.any()) {
-            userSpec.headers(data.headers.toMap());
+            spec.headers(data.headers.toMap());
         }
         if (data.cookies.any()) {
-            userSpec.cookies(data.cookies.toMap());
+            spec.cookies(data.cookies.toMap());
         }
-
-        data.clear();
-        return userSpec;
+        return spec;
     }
 
     /**

@@ -44,7 +44,7 @@ public class PostmanAuthTests {
     @Test
     public void authPutCredentialsInFormTest() {
         RequestSpecification resp2 = authBaseForm
-                .getUserSpec()
+                .getSpec()
                 .auth()
                 .basic("postman", "password");
         RestResponse resp = authBaseForm.call(resp2);
@@ -61,7 +61,7 @@ public class PostmanAuthTests {
 
     @Test
     public void authBaseFailTest() {
-        RequestSpecification spec = authBase.getUserSpec().header("Authorization", "Basic cG9zdG1hbjpwYXNzd29yBB==");
+        RequestSpecification spec = authBase.getSpec().header("Authorization", "Basic cG9zdG1hbjpwYXNzd29yBB==");
         RestResponse resp = authBaseForm.call(spec);
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
@@ -69,7 +69,7 @@ public class PostmanAuthTests {
 
     @Test
     public void authDigestTest() {
-        RequestSpecification rs = authDigest.getUserSpec()
+        RequestSpecification rs = authDigest.getSpec()
                 .auth().digest("postman", "password");
         RestResponse resp = authDigest.call(rs);
         resp.isOk().assertThat().

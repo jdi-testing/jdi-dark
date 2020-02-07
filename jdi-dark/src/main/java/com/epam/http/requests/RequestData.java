@@ -1,18 +1,9 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.components.JDIHeaders;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.http.ContentType;
-import io.restassured.http.Header;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static io.restassured.http.ContentType.ANY;
 
 /**
  * Represents all HTTP request data.
@@ -21,6 +12,7 @@ import static io.restassured.http.ContentType.ANY;
  */
 public class RequestData extends DataClass<RequestData> {
     public String url = null;
+    public String path = null;
     public String body = null;
     public ContentType contentType = null;
     public MapArray<String, String> headers = new MapArray<>();

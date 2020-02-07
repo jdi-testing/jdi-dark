@@ -25,6 +25,7 @@ import static java.lang.String.format;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestResponse {
+
     private final Response raResponse;
     private final long responseTimeMSec;
     public String body = null;

@@ -1,5 +1,9 @@
 package com.epam.http.requests;
 
+import com.epam.http.JdiHttpSettigns;
+import com.epam.jdi.tools.func.JAction;
+import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.specification.RequestSpecification;
 
 import java.lang.reflect.Field;
@@ -44,6 +48,21 @@ import static com.epam.http.requests.RestMethodTypes.OPTIONS;
  */
 public class ServiceInit {
 
+    public static MapArray<String, JAction> PRE_INIT =
+            new MapArray<>("WebSettings", JdiHttpSettigns::init);
+    public static boolean initialized = false;
+    public static void preInit() {
+        if (PRE_INIT == null) return;
+        if (!initialized) {
+            for (Pair<String, JAction> action : PRE_INIT)
+                try {
+                    action.value.execute();
+                } catch (Exception ex) {
+                    throw exception("Preinit '%s' failed. Please correct PageFactory.PRE_INIT function", action.key);
+                }
+            initialized = true;
+        }
+    }
 
     /**
      * Initialise the Service Object class.
@@ -63,6 +82,7 @@ public class ServiceInit {
      * @return initialised Service Object
      */
     public static <T> T init(Class<T> c, RequestSpecification requestSpecification) {
+        preInit();
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> f.getType().equals(RestMethod.class));
         for (Field method : methods) {
@@ -71,7 +91,7 @@ public class ServiceInit {
                 if (isStatic(method.getModifiers()))
                     method.set(null, getRestMethod(method, c, requestSpecification));
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
-                    method.set(getService(c), getRestMethod(method, c));
+                    method.set(getService(c), getRestMethod(method, c, requestSpecification));
             } catch (IllegalAccessException ex) {
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
             }
@@ -199,6 +219,6 @@ public class ServiceInit {
     private static <T> String getDomain(Class<T> c) {
         return c.isAnnotationPresent(ServiceDomain.class)
                 ? c.getAnnotation(ServiceDomain.class).value()
-                : null;
+                : JdiHttpSettigns.getDomain();
     }
 }

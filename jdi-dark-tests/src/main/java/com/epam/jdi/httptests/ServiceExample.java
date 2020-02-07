@@ -12,6 +12,7 @@ import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.ContentType;
 import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.Cookie;
+
 import static io.restassured.http.ContentType.HTML;
 import static io.restassured.http.ContentType.JSON;
 
@@ -26,6 +27,10 @@ public class ServiceExample {
         @Header(name = "Id", value = "Test")
     })
     static RestMethod<Info> getInfo;
+
+    public static Info getInfo() {
+        return getInfo.asData(Info.class);
+    }
 
     @Header(name = "Type", value = "Test")
     @POST("/post")

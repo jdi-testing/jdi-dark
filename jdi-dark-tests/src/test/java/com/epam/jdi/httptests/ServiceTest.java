@@ -3,10 +3,8 @@ package com.epam.jdi.httptests;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.map.MapArray;
 import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestData;
@@ -29,8 +27,6 @@ public class ServiceTest {
     public void before() {
         requestSpecification = given().filter(new AllureRestAssured());
         requestSpecification.auth().basic("user", "password");
-        requestSpecification.queryParam("myParam", "myValue");
-        requestSpecification.header(new Header("myHeader", "headerValue"));
         init(ServiceExample.class, requestSpecification);
     }
 
@@ -49,7 +45,7 @@ public class ServiceTest {
         RestResponse resp = GET(requestData(
                 rd -> {
                     rd.url = "https://httpbin.org/get";
-                    rd.headers = new MapArray<>(new Object[][]{
+                    rd.headers.userHeaders = new MapArray<>(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}
                     });
@@ -65,7 +61,7 @@ public class ServiceTest {
 
     @Test
     public void entityTest() {
-        Info e = getInfo.asData(Info.class);
+        Info e = getInfo();
         assertEquals(e.url, "https://httpbin.org/get");
         assertEquals(e.headers.Host, "httpbin.org");
         assertEquals(e.headers.Id, "Test");

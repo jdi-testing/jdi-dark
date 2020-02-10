@@ -12,8 +12,4 @@ public class Config {
     @GET("https://www.gmail.com")
     public static RestMethod redirect;
 
-    @ContentType(JSON)
-    @GET("http://jsonplaceholder.typicode.com/todos/1")
-    public static RestMethod listener;
-
 }

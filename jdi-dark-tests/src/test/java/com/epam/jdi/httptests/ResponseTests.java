@@ -2,7 +2,7 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.map.MultiMap;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -47,7 +47,7 @@ public class ResponseTests extends WithJetty {
     @Test
     public void putCanReturnBodyAsString() {
         final String body = JettyService.putCookie.call(requestData(requestData ->
-                requestData.cookies = new MapArray<>(new Object[][]{
+                requestData.cookies = new MultiMap<>(new Object[][]{
                         {"username", "John"},
                         {"token", "1234"}
                 }))).body;

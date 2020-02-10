@@ -1,15 +1,9 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.components.JDIHeaders;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
-import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.map.MultiMap;
 import io.restassured.http.ContentType;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static io.restassured.http.ContentType.ANY;
 
 /**
  * Represents all HTTP request data.
@@ -17,16 +11,15 @@ import static io.restassured.http.ContentType.ANY;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RequestData extends DataClass<RequestData> {
-    public String url = null;
+    public boolean empty = true;
+    public String uri = null;
+    public String path = null;
     public String body = null;
-    public ContentType contentType = ANY;
-    public JDIHeaders headers = new JDIHeaders();
-
-    public MapArray<String, String> pathParams = new MapArray<>();
-    public MapArray<String, String> queryParams = new MapArray<>();
-    public MapArray<String, String> cookies = new MapArray<>();
-
-    public Map<String, String> commonQueryParams = new HashMap<>();
+    public ContentType contentType = null;
+    public MultiMap<String, String> headers = new MultiMap<>();
+    public MultiMap<String, String> pathParams = new MultiMap<>();
+    public MultiMap<String, String> queryParams = new MultiMap<>();
+    public MultiMap<String, String> cookies = new MultiMap<>();
 
     /**
      * Set request data fields based on lambda function.
@@ -55,7 +48,7 @@ public class RequestData extends DataClass<RequestData> {
      * @return generated request data with provided path parameters
      */
     public static RequestData requestPathParams(Object[][] params) {
-        return new RequestData().set(rd -> rd.pathParams = new MapArray<>(params));
+        return new RequestData().set(rd -> rd.pathParams = new MultiMap<>(params));
     }
 
     /**
@@ -73,6 +66,14 @@ public class RequestData extends DataClass<RequestData> {
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {
-        headers.userHeaders.clear();
+        headers.clear();
+        pathParams.clear();
+        queryParams.clear();
+        cookies.clear();
+        body = null;
+        path = null;
+        uri = null;
+        contentType = null;
+        empty = true;
     }
 }

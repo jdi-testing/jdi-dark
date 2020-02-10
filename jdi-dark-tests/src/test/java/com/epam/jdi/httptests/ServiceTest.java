@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.map.MultiMap;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
@@ -45,8 +45,8 @@ public class ServiceTest {
     public void noServiceObjectTest() {
         RestResponse resp = GET(requestData(
                 rd -> {
-                    rd.url = "https://httpbin.org/get";
-                    rd.headers.userHeaders = new MapArray<>(new Object[][]{
+                    rd.uri = "https://httpbin.org/get";
+                    rd.headers = new MultiMap<>(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}
                     });
@@ -105,7 +105,7 @@ public class ServiceTest {
     public void cookiesTest() {
         RestResponse response = service.getCookies.call(
                 requestData(requestData ->
-                        requestData.cookies = new MapArray<>(new Object[][]{
+                        requestData.cookies = new MultiMap<>(new Object[][]{
                                 {"additionalCookie", "test"}
                         })));
         response.isOk()

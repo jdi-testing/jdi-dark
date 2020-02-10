@@ -10,17 +10,19 @@ import static com.epam.http.requests.RestMethodTypes.GET;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class MethodData extends DataClass {
-    private String url = "";
+    private String path = "";
     private RestMethodTypes type = GET;
 
-    public String getUrl() {
-        return url;
+    public String getPath() {
+        return path;
     }
+
     public RestMethodTypes getType() {
         return type;
     }
-    public MethodData(String url, RestMethodTypes type) {
-        this.url = url;
+
+    public MethodData(String path, RestMethodTypes type) {
+        this.path = path;
         this.type = type;
     }
 }

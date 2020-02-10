@@ -1,6 +1,7 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.http.ContentType;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -10,7 +11,7 @@ import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
 
-public class ContentTypeTests {
+public class ContentTypeTests extends WithJetty {
     @BeforeMethod
     public void initService() {
         init(JettyService.class);
@@ -38,7 +39,7 @@ public class ContentTypeTests {
     @Test
     public void validatesContentTypeJson() {
         RestResponse response = GET(requestData(d -> {
-            d.url = "http://localhost:8080/contentTypeAsContentType";
+            d.uri = "http://localhost:8080/contentTypeAsContentType";
             d.contentType = ContentType.JSON;}));
         response.assertThat().contentType(ContentType.JSON);
     }
@@ -46,7 +47,7 @@ public class ContentTypeTests {
     @Test
     public void validatesContentTypeBinary() {
         RestResponse response = GET(requestData(d -> {
-            d.url = "http://localhost:8080/contentTypeAsContentType";
+            d.uri = "http://localhost:8080/contentTypeAsContentType";
             d.contentType = ContentType.BINARY;}));
         response.assertThat().contentType(ContentType.BINARY);
     }

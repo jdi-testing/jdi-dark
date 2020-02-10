@@ -51,6 +51,7 @@ public class ServiceInit {
     public static MapArray<String, JAction> PRE_INIT =
             new MapArray<>("WebSettings", JdiHttpSettigns::init);
     public static boolean initialized = false;
+
     public static void preInit() {
         if (PRE_INIT == null) return;
         if (!initialized) {
@@ -139,8 +140,9 @@ public class ServiceInit {
      */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification) {
         MethodData mtData = getMethodData(field);
-        String url = getUrlFromDomain(getDomain(c), mtData.getUrl(), field.getName(), c.getSimpleName());
-        RestMethod method = new RestMethod(mtData.getType(), url, requestSpecification);
+        String url = getDomain(c);
+        String path = mtData.getPath();
+        RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
@@ -207,7 +209,7 @@ public class ServiceInit {
                     "Can't instantiate method '%s' for service '%s'. " +
                             "Domain undefined and method url not contains '://'",
                     methodName, className);
-        return domain.replaceAll("/*$", "") + "/" + uri.replaceAll("^/*", "");
+        return domain.replaceAll("/*$", "");
     }
 
     /**

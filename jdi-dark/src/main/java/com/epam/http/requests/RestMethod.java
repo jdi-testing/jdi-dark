@@ -1,6 +1,5 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
@@ -10,13 +9,14 @@ import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.http.Cookies;
+import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.getDomain;
@@ -216,9 +216,9 @@ public class RestMethod<T> {
      * @param value of cookie
      */
     public void addCookie(String name, String value) {
-        List<Cookie> cookieList = new ArrayList<>(data.cookies.serviceCookies.asList());
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
         cookieList.add(new Cookie.Builder(name, value).build());
-        data.cookies.serviceCookies = new Cookies(cookieList);
+        data.cookies = new Cookies(cookieList);
     }
 
     /**
@@ -238,14 +238,14 @@ public class RestMethod<T> {
      * @param additionalValues additional values of the cookie
      */
     public void addCookie(String name, String value, String[] additionalValues) {
-        List<Cookie> cookieList = new ArrayList<>(data.cookies.serviceCookies.asList());
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
         cookieList.add(new Cookie.Builder(name, value).build());
         if (additionalValues != null) {
             for (String cookieValue : additionalValues) {
                 cookieList.add(new Cookie.Builder(name, cookieValue).build());
             }
         }
-        data.cookies.serviceCookies = new Cookies(cookieList);
+        data.cookies = new Cookies(cookieList);
     }
 
     public RestMethod expectStatus(ResponseStatusType status) {
@@ -360,11 +360,10 @@ public class RestMethod<T> {
         if (!requestData.headers.isEmpty()) {
             userData.headers.addAll(requestData.headers);
         }
-        if (!requestData.cookies.userCookies.asList().isEmpty()) {
-          //  userData.cookies.addAll(requestData.cookies);
-
-            List<io.restassured.http.Cookie> cookieList = new ArrayList<>(requestData.cookies.userCookies.asList());
-            data.cookies.userCookies = new Cookies(cookieList);
+        if (!requestData.cookies.asList().isEmpty()) {
+            List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
+            cookieList.addAll(requestData.cookies.asList());
+            userData.cookies = new Cookies(cookieList);
         }
         if (requestData.contentType != null) {
             userData.contentType = requestData.contentType;
@@ -409,20 +408,8 @@ public class RestMethod<T> {
         if (data.headers.any()) {
             spec.headers(data.headers.toMap());
         }
-        if (data.cookies.any()) {
-            spec.cookies(data.cookies.toMap());
-
-            // TODO - fix...
-      /*      List<io.restassured.http.Cookie> cookies = ((FilterableRequestSpecification) spec).getCookies().asList().stream()
-                    .filter(cookie -> !data.cookies.commonCookies.asList().contains(cookie)).collect(Collectors.toList());
-            for (io.restassured.http.Cookie cookie : cookies) {
-                ((FilterableRequestSpecification) spec).removeCookie(cookie.getName());
-            }
-            if (!data.cookies.serviceCookies.asList().isEmpty() || !data.cookies.userCookies.asList().isEmpty()) {
-                spec.cookies(data.cookies.serviceCookies);
-                spec.cookies(data.cookies.userCookies);
-            }   */
-
+        if (!data.cookies.asList().isEmpty()) {
+            spec.cookies(data.cookies);
         }
         return spec;
     }

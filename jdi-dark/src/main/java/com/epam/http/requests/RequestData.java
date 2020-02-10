@@ -1,6 +1,5 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.components.JDICookies;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
@@ -11,11 +10,8 @@ import io.restassured.http.Cookies;
 import io.restassured.internal.MapCreator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static io.restassured.http.ContentType.ANY;
 
 /**
  * Represents all HTTP request data.
@@ -31,7 +27,7 @@ public class RequestData extends DataClass<RequestData> {
     public MultiMap<String, String> headers = new MultiMap<>();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
-    public JDICookies cookies = new JDICookies();
+    public Cookies cookies = new Cookies();
 
     /**
      * Set request data fields based on lambda function.
@@ -81,8 +77,7 @@ public class RequestData extends DataClass<RequestData> {
         headers.clear();
         pathParams.clear();
         queryParams.clear();
-        // TODO -fix
-        cookies.clear();
+        cookies = new Cookies();
         body = null;
         path = null;
         uri = null;
@@ -95,7 +90,7 @@ public class RequestData extends DataClass<RequestData> {
         for (Object[] cookie : objects) {
             cookieList.add(new Cookie.Builder(cookie[0].toString(), cookie[1].toString()).build());
         }
-        cookies.userCookies = new Cookies(cookieList);
+        cookies = new Cookies(cookieList);
         return this;
     }
 
@@ -104,12 +99,12 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     public RequestData addCookie(String name, String value, String... additionalValues) {
-        List<Cookie> cookieList = new ArrayList<>(cookies.userCookies.asList());
+        List<Cookie> cookieList = new ArrayList<>(cookies.asList());
         cookieList.add(new Cookie.Builder(name, value).build());
         for (String cookieValue : additionalValues) {
             cookieList.add(new Cookie.Builder(name, cookieValue).build());
         }
-        cookies.userCookies = new Cookies(cookieList);
+        cookies = new Cookies(cookieList);
         return this;
     }
 
@@ -119,11 +114,11 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     public RequestData addCookies(Map map) {
-        List<Cookie> cookieList = new ArrayList<>(cookies.userCookies.asList());
+        List<Cookie> cookieList = new ArrayList<>(cookies.asList());
         for (Object cookie : map.keySet()) {
             cookieList.add(new Cookie.Builder(cookie.toString(), map.get(cookie).toString()).build());
         }
-        cookies.userCookies = new Cookies(cookieList);
+        cookies = new Cookies(cookieList);
         return this;
     }
 

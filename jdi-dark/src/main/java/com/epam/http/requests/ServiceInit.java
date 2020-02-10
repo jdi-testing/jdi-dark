@@ -1,6 +1,21 @@
 package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettigns;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.GET;
+import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.OPTIONS;
+import com.epam.http.annotations.PATCH;
+import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.ServiceDomain;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
@@ -10,39 +25,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.jdi.tools.LinqUtils.where;
-import static java.lang.reflect.Modifier.isStatic;
-
-import com.epam.http.annotations.ServiceDomain;
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.PATCH;
-import com.epam.http.annotations.HEAD;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.OPTIONS;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.Headers;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
-import java.lang.reflect.Field;
-import java.util.List;
-
-import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RestMethodTypes.GET;
-import static com.epam.http.requests.RestMethodTypes.POST;
-import static com.epam.http.requests.RestMethodTypes.PUT;
-import static com.epam.http.requests.RestMethodTypes.PATCH;
 import static com.epam.http.requests.RestMethodTypes.DELETE;
 import static com.epam.http.requests.RestMethodTypes.GET;
 import static com.epam.http.requests.RestMethodTypes.HEAD;
 import static com.epam.http.requests.RestMethodTypes.OPTIONS;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
 
@@ -60,6 +49,8 @@ public class ServiceInit {
     public static MapArray<String, JAction> PRE_INIT =
             new MapArray<>("WebSettings", JdiHttpSettigns::init);
     public static boolean initialized = false;
+    private static Object service;
+
     public static void preInit() {
         if (PRE_INIT == null) return;
         if (!initialized) {
@@ -108,8 +99,6 @@ public class ServiceInit {
         return getService(c);
     }
 
-    private static Object service;
-
     /**
      * Helper method to instantiate the class.
      *
@@ -156,14 +145,13 @@ public class ServiceInit {
             method.addHeader(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
             method.addHeaders(field.getAnnotation(Headers.class).value());
-        if (field.isAnnotationPresent(Cookie.class))
-            if (field.getAnnotation(Cookie.class).value().equals("[unassigned]")) {
-                method.addCookie(field.getAnnotation(Cookie.class).name());
-            } else {
-                method.addCookie(field.getAnnotation(Cookie.class).value());
-            }
+        if (field.isAnnotationPresent(Cookie.class)) {
+            setupCookie(method, field.getAnnotation(Cookie.class));
+        }
         if (field.isAnnotationPresent(Cookies.class)) {
-            method.addCookies(field.getAnnotation(Cookies.class).value());
+            for (Cookie cookie : field.getAnnotation(Cookies.class).value()) {
+                setupCookie(method, cookie);
+            }
         }
         /* Case for class annotations*/
         if (c.isAnnotationPresent(QueryParameter.class))
@@ -176,6 +164,16 @@ public class ServiceInit {
         if (field.isAnnotationPresent(QueryParameters.class))
             method.addQueryParameters(field.getAnnotation(QueryParameters.class).value());
         return method;
+    }
+
+    private static void setupCookie(RestMethod method, Cookie cookie) {
+        if (cookie.value().equals("[unassigned]")) {
+            method.addCookie(cookie.name());
+        } else if (cookie.additionalValues()[0].equals("[unassigned]")) {
+            method.addCookie(cookie.name(), cookie.value());
+        } else {
+            method.addCookie(cookie.name(), cookie.value(), cookie.additionalValues());
+        }
     }
 
     /**

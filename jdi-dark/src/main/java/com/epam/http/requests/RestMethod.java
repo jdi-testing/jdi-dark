@@ -84,6 +84,7 @@ public class RestMethod<T> {
             this.spec = spec.spec(requestSpecification);
             data.headers.commonHeaders = ((FilterableRequestSpecification) spec).getHeaders().asList();
             data.commonQueryParams = ((FilterableRequestSpecification) spec).getQueryParams();
+            data.cookies.commonCookies = ((FilterableRequestSpecification) spec).getCookies();
         }
     }
 
@@ -201,11 +202,13 @@ public class RestMethod<T> {
      * @param value            of cookie
      * @param additionalValues additional values of the cookie
      */
-    public void addCookies(String name, String value, String... additionalValues) {
-        List<Cookie> cookieList = data.cookies.serviceCookies.asList();
+    public void addCookie(String name, String value, String[] additionalValues) {
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.serviceCookies.asList());
         cookieList.add(new Cookie.Builder(name, value).build());
-        for (String cookieValue : additionalValues) {
-            cookieList.add(new Cookie.Builder(name, cookieValue).build());
+        if (additionalValues != null) {
+            for (String cookieValue : additionalValues) {
+                cookieList.add(new Cookie.Builder(name, cookieValue).build());
+            }
         }
         data.cookies.serviceCookies = new Cookies(cookieList);
     }
@@ -297,7 +300,6 @@ public class RestMethod<T> {
             data.headers.userHeaders.addAll(requestData.headers.userHeaders);
         }
         if (!requestData.cookies.userCookies.asList().isEmpty()) {
-            // TODO - do we need to clear it? try via addAll
             List<Cookie> cookieList = new ArrayList<>(requestData.cookies.userCookies.asList());
             data.cookies.userCookies = new Cookies(cookieList);
         }

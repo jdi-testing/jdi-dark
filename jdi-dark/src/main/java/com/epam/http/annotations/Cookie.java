@@ -20,4 +20,6 @@ public @interface Cookie {
     String name();
 
     String value() default "[unassigned]";
+
+    String[] additionalValues() default "[unassigned]";
 }

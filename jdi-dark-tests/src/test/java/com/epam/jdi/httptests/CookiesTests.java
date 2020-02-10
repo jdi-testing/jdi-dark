@@ -2,8 +2,6 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.response.Response;
@@ -17,7 +15,6 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -54,9 +51,15 @@ public class CookiesTests extends WithJetty {
     }
 
     @Test
-    public void canSpecifyMultiValueCookiesUsingByPassingInSeveralValuesToTheCookieMethod() {
+    public void canSpecifyMultiValueCookiesPassingSeveralValuesToTheCookieMethod() {
         RestResponse response = JettyService.getMultiCookieRequest.call(requestData(
                 requestData -> requestData.addCookie("key1", "value1", "value2")));
+        assertThat(response.body, equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"}]"));
+    }
+
+    @Test
+    public void canSpecifyMultiValueCookiesPassingSeveralValuesToTheServiceObject() {
+        RestResponse response = JettyService.getMultiCookieWithCookies.call();
         assertThat(response.body, equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"}]"));
     }
 
@@ -86,11 +89,21 @@ public class CookiesTests extends WithJetty {
     }
 
     @Test
-    public void supportsMultipleCookiesUsingMap() {
+    public void supportsMultipleCookiesVerificationUsingMap() {
         Map<String, String> expectedCookies = new HashMap<>();
         expectedCookies.put("key1", "value1");
         expectedCookies.put("key2", "value2");
         JettyService.setCookies.call().isOk().assertThat().cookies(expectedCookies);
+    }
+
+    @Test
+    public void canPassCookiesAsObjectsArray() {
+        RestResponse response = JettyService.getMultiCookieRequest.call(requestData(
+                requestData -> requestData.addCookies(new Object[][]{
+                        {"key1", "value1"},
+                        {"key2", "value2"}
+                })));
+        assertThat(response.body, equalTo("[{\"key1\":\"value1\"},{\"key2\":\"value2\"}]"));
     }
 
     @Test
@@ -123,6 +136,12 @@ public class CookiesTests extends WithJetty {
     }
 
     @Test
+    public void serviceObjectAllowsSpecifyingCookieWithNoValue() {
+        RestResponse response = JettyService.getCookieWithNoValueWithCookies.call();
+        assertThat(response.body, equalTo("some_cookie"));
+    }
+
+    @Test
     public void responseSpecificationAllowsParsingCookieWithNoValue() {
         Response response = JettyService.getResponseCookieWithNoValue.call().getRaResponse();
         assertThat("Cookie is empty", response.cookie("PLAY_FLASH").isEmpty());
@@ -132,6 +151,12 @@ public class CookiesTests extends WithJetty {
     public void requestSpecificationAllowsSpecifyingCookies() {
         RestResponse response = JettyService.getCookie.call(requestData(
                 requestData -> requestData.addCookies("username", "John", "token", "1234")));
+        assertThat(response.body, equalTo("username, token"));
+    }
+
+    @Test
+    public void serviceObjectAllowsSpecifyingCookies() {
+        RestResponse response = JettyService.getCookieWithCookies.call();
         assertThat(response.body, equalTo("username, token"));
     }
 
@@ -197,22 +222,6 @@ public class CookiesTests extends WithJetty {
         assertThat(detailedCookieJsessionId.getValue(), equalTo("B3134D534F40968A3805968207273EF5"));
     }
 
-    @Test
-    public void usesCookiesDefinedInAStaticRequestSpecification() throws Exception {
-// TODO -think about common cookies..
-        RestAssured.requestSpecification = new RequestSpecBuilder().addCookie("my-cookie", "1234").build();
-
-        try {
-            when().
-                    post("/reflect").
-                    then().
-                    log().ifValidationFails().
-                    cookie("my-cookie", "1234");
-        } finally {
-            RestAssured.reset();
-        }
-    }
-
     @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*1 expectation failed.*")
     public void assertionErrorIsThrownWhenCookieIsNotFound() {
         JettyService.setCookies.call().isOk().assertThat().cookie("Not-Defined", "something");
@@ -229,5 +238,11 @@ public class CookiesTests extends WithJetty {
     public void supportsMultipleCookiesWithSameKey() {
         Map<String, String> map = JettyService.getCommonIdCookies.call().cookies();
         assertThat(map.get("key1"), equalTo("value3"));
+    }
+
+    @Test
+    public void supportsMultipleCookiesWithDifferentAnnotation() {
+        RestResponse response = JettyService.getMultiCookieWithManyCookies.call();
+        assertThat(response.body, equalTo("[{\"key4\":\"value4\"},{\"key1\":\"value1\"},{\"key1\":\"value2\"},{\"key2\":\"\"},{\"key3\":\"value3\"}]"));
     }
 }

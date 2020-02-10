@@ -1,6 +1,8 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
@@ -35,6 +37,11 @@ public class JettyService {
 
     @GET("/cookie")
     public static RestMethod getCookie;
+
+    @GET("/cookie")
+    @Cookies({@Cookie(name = "username", value = "John"),
+            @Cookie(name = "token", value = "1234")})
+    public static RestMethod getCookieWithCookies;
 
     @PUT("/cookie")
     public static RestMethod putCookie;
@@ -151,4 +158,18 @@ public class JettyService {
     @GET("/matrix;{abcde}={value}")
     public static RestMethod getMatrix;
 
+    @GET("/cookie_with_no_value")
+    @Cookie(name = "some_cookie")
+    public static RestMethod getCookieWithNoValueWithCookies;
+
+    @GET("/multiCookieRequest")
+    @Cookie(name = "key1", value = "value1", additionalValues = "value2")
+    public static RestMethod getMultiCookieWithCookies;
+
+    @GET("/multiCookieRequest")
+    @Cookies({@Cookie(name = "key1", value = "value1", additionalValues = "value2"),
+            @Cookie(name = "key2"),
+            @Cookie(name = "key3", value = "value3")})
+    @Cookie(name = "key4", value = "value4")
+    public static RestMethod getMultiCookieWithManyCookies;
 }

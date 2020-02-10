@@ -42,6 +42,9 @@ public class JettyService {
     @GET("/multiValueHeader")
     public static RestMethod getMultiValueHeader;
 
+    @GET("/multiHeaderReflect")
+    public static RestMethod getMultiHeaderReflect;
+
     @DELETE("/cookie")
     public static RestMethod deleteCookie;
 

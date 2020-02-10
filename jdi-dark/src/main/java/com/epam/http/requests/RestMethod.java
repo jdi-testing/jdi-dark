@@ -373,7 +373,7 @@ public class RestMethod<T> {
             spec.body(data.body);
         }
         if (data.headers.any()) {
-            spec.headers(data.headers.toMap());
+            spec.headers(data.headers.asRaHeaders());
         }
         if (data.cookies.any()) {
             spec.cookies(data.cookies.toMap());

@@ -1,9 +1,13 @@
 package com.epam.http.requests;
 
+import com.epam.http.requests.components.JDIHeaders;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MultiMap;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+
+import java.util.ArrayList;
 
 /**
  * Represents all HTTP request data.
@@ -16,7 +20,7 @@ public class RequestData extends DataClass<RequestData> {
     public String path = null;
     public String body = null;
     public ContentType contentType = null;
-    public MultiMap<String, String> headers = new MultiMap<>();
+    public JDIHeaders headers = new JDIHeaders();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
     public MultiMap<String, String> cookies = new MultiMap<>();

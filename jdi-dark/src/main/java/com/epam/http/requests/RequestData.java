@@ -3,7 +3,14 @@ package com.epam.http.requests;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MultiMap;
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.MultiPartSpecification;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import static io.restassured.RestAssured.given;
 
 /**
  * Represents all HTTP request data.
@@ -15,11 +22,12 @@ public class RequestData extends DataClass<RequestData> {
     public String uri = null;
     public String path = null;
     public String body = null;
-    public ContentType contentType = null;
+    public String contentType = null;
     public MultiMap<String, String> headers = new MultiMap<>();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
     public MultiMap<String, String> cookies = new MultiMap<>();
+    public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
 
     /**
      * Set request data fields based on lambda function.
@@ -61,6 +69,23 @@ public class RequestData extends DataClass<RequestData> {
     public static RequestData requestPathParams(String paramName, String paramValue) {
         return requestPathParams(new Object[][]{{paramName, paramValue}});
     }
+
+    public void setContentType(String contentType){
+        this.contentType = contentType;
+    }
+
+    public void setContentType(ContentType contentType){
+        this.contentType = contentType.toString();
+    }
+
+    public void setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
+        multiPartSpecifications.add(multiPartSpecBuilder.build());
+    }
+
+    public void setMultiPart(File file) {
+        multiPartSpecifications.add(new MultiPartSpecBuilder(file).build());
+    }
+
 
     /**
      * Clean Custom user Request data to avoid using old data in new requests

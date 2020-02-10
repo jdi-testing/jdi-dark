@@ -119,5 +119,6 @@ public class RequestData extends DataClass<RequestData> {
         uri = null;
         contentType = null;
         empty = true;
+        multiPartSpecifications.clear();
     }
 }

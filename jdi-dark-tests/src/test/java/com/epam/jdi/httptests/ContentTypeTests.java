@@ -40,7 +40,7 @@ public class ContentTypeTests extends WithJetty {
     public void validatesContentTypeJson() {
         RestResponse response = GET(requestData(d -> {
             d.uri = "http://localhost:8080/contentTypeAsContentType";
-            d.contentType = ContentType.JSON;}));
+            d.contentType = ContentType.JSON.toString();}));
         response.assertThat().contentType(ContentType.JSON);
     }
 
@@ -48,7 +48,7 @@ public class ContentTypeTests extends WithJetty {
     public void validatesContentTypeBinary() {
         RestResponse response = GET(requestData(d -> {
             d.uri = "http://localhost:8080/contentTypeAsContentType";
-            d.contentType = ContentType.BINARY;}));
+            d.contentType = ContentType.BINARY.toString();}));
         response.assertThat().contentType(ContentType.BINARY);
     }
 

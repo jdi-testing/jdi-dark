@@ -2,7 +2,6 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.map.MapArray;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 

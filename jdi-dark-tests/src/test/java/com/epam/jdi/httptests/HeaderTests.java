@@ -15,8 +15,11 @@ import static com.epam.jdi.httptests.JettyService.getMultiHeaderReflect;
 import static com.epam.jdi.httptests.JettyService.getLotto;
 import static com.epam.jdi.httptests.JettyService.getHeader;
 import static io.restassured.RestAssured.requestSpecification;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class HeaderTests extends WithJetty {
@@ -48,18 +51,6 @@ public class HeaderTests extends WithJetty {
                 .and().assertThat().body(containsString("SecondHeader"));
     }
 
-    @Test
-    public void requestDataAllowsSpecifyingMultipleHeaders84728736482() {
-        RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData ->
-                        requestData.headers = new JDIHeaders(new String[][]
-                                {{"MyHeader", "MyValue"}, {"SecondHeader", "MyValue2"},
-                                        {"MultiValueHeader", "MyValue3", "MyValue4", "MyValue5"}
-
-                        })));
-        response.isOk();
-        response.headers();
-    }
 
     @Test
     public void allowsSupplyingMappingFunction() {
@@ -118,26 +109,17 @@ public class HeaderTests extends WithJetty {
     }
 
     @Test
-    public void multiHeadersPrototype() {
-        RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData ->
-                        requestData.headers = new JDIHeaders(new String[][]{
-                                {"MyHeader", "TestValue"}, {"SecondHeader", "SecondHeaderTestValue"}
-                        })));
-        response.isOk();
-        response.headers();
-    }
-
-    @Test
-    public void multiHeadersPrototype2() {
+    public void multiValueTestExample() {
         Header header1 = new Header("MyHeader1", "MyValue1");
         Header header2 = new Header("MyHeader2", "MyValue2");
-        Header header3 = new Header("MyHeader2", "MyValue3");
+        Header header3 = new Header("MyHeader2", "MyValue23");
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
                         requestData.headers = new JDIHeaders(header1, header2, header3)));
         response.isOk();
-        response.headers();
+        response.assertThat().header("MyHeader1", containsString("MyValue1"));
+        assertThat(response.headers().getValues("MyHeader2").size(), is(2));
+        assertThat(response.headers().getValues("MyHeader2"), hasItems("MyValue2", "MyValue23"));
     }
 
 }

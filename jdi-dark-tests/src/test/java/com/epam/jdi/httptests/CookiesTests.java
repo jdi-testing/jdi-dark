@@ -6,6 +6,7 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -17,7 +18,6 @@ import java.util.Map;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.requestSpecification;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -250,13 +250,11 @@ public class CookiesTests extends WithJetty {
 
     @Test
     public void supportsCookiesFromRequestSpecification() {
-
-        // TODO - not sent
-        requestSpecification = given().filter(new AllureRestAssured());
-        requestSpecification.cookies("SpecCookie1", "SpecCookieValue1", "SpecCookie2", "SpecCookieValue2");
-        init(JettyService.class, requestSpecification);
+        RequestSpecification rs = given().filter(new AllureRestAssured()).cookie("SpecCookie1", "SpecCookieValue1");
+        init(JettyService.class, rs);
 
         RestResponse response = JettyService.getMultiCookieRequest.call();
-        // assertThat(response.body, equalTo("[{\"key4\":\"value4\"},{\"key1\":\"value1\"},{\"key1\":\"value2\"},{\"key2\":\"\"},{\"key3\":\"value3\"}]"));
+        assertThat(response.body, equalTo("[{\"SpecCookie1\":\"SpecCookieValue1\"}]"));
+        init(JettyService.class, given().filter(new AllureRestAssured()));
     }
 }

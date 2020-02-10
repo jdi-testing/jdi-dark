@@ -29,7 +29,7 @@ public class ConfigITest extends WithJetty {
     @Test
     public void supportsSpecifyingDefaultContentCharset() {
         String body = "Something {\\\\+$%???";
-        RequestSpecification rs = postReflect.getSpec()
+        RequestSpecification rs = postReflect.getInitSpec()
                 .config(RestAssuredConfig.newConfig()
                         .encoderConfig(EncoderConfig.encoderConfig()
                                 .defaultContentCharset("US-ASCII")));
@@ -42,7 +42,7 @@ public class ConfigITest extends WithJetty {
 
     @Test
     public void supportsConfiguringJsonConfigProperties() {
-        RequestSpecification rs = getJsonStore.getSpec().
+        RequestSpecification rs = getJsonStore.getInitSpec().
                 config(RestAssuredConfig.newConfig().
                         jsonConfig(JsonConfig.jsonConfig().
                                 numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)));

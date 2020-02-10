@@ -1,6 +1,5 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
@@ -10,11 +9,14 @@ import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.getDomain;
@@ -190,31 +192,60 @@ public class RestMethod<T> {
     /**
      * Set cookie to HTTP request.
      *
-     * @param name  of cookie
-     * @param value of cookie
+     * @param cookie field name and value presented as annotation
      */
-    public void addCookie(String name, String value) {
-        data.cookies.add(name, value);
-    }
-
-    /**
-     * Set cookie to HTTP request from annotated field.
-     *
-     * @param cookie from HTTP method field annotation
-     */
-    public void addCookie(Cookie cookie) {
+    public void addCookie(com.epam.http.annotations.Cookie cookie) {
         addCookie(cookie.name(), cookie.value());
     }
 
     /**
-     * Set cookies to HTTP request.
+     * Set cookie to HTTP request.
      *
-     * @param cookies collection of cookies from HTTP method field annotation
+     * @param cookies pairs of field name and value presented as annotation
      */
-    public void addCookies(Cookie... cookies) {
-        for (Cookie cookie : cookies) {
+    public void addCookies(com.epam.http.annotations.Cookie... cookies) {
+        for (com.epam.http.annotations.Cookie cookie : cookies) {
             addCookie(cookie);
         }
+    }
+
+    /**
+     * Set cookie to HTTP request.
+     *
+     * @param name  of cookie
+     * @param value of cookie
+     */
+    public void addCookie(String name, String value) {
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
+        cookieList.add(new Cookie.Builder(name, value).build());
+        data.cookies = new Cookies(cookieList);
+    }
+
+    /**
+     * Set cookie without value to HTTP request.
+     *
+     * @param name of cookie
+     */
+    public void addCookie(String name) {
+        addCookie(name, "");
+    }
+
+    /**
+     * Set cookie with multiple values to HTTP request.
+     *
+     * @param name             of cookie
+     * @param value            of cookie
+     * @param additionalValues additional values of the cookie
+     */
+    public void addCookie(String name, String value, String[] additionalValues) {
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
+        cookieList.add(new Cookie.Builder(name, value).build());
+        if (additionalValues != null) {
+            for (String cookieValue : additionalValues) {
+                cookieList.add(new Cookie.Builder(name, cookieValue).build());
+            }
+        }
+        data.cookies = new Cookies(cookieList);
     }
 
     public RestMethod expectStatus(ResponseStatusType status) {
@@ -329,8 +360,10 @@ public class RestMethod<T> {
         if (!requestData.headers.isEmpty()) {
             userData.headers.addAll(requestData.headers);
         }
-        if (!requestData.cookies.isEmpty()) {
-            userData.cookies.addAll(requestData.cookies);
+        if (!requestData.cookies.asList().isEmpty()) {
+            List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
+            cookieList.addAll(requestData.cookies.asList());
+            userData.cookies = new Cookies(cookieList);
         }
         if (requestData.contentType != null) {
             userData.contentType = requestData.contentType;
@@ -378,8 +411,8 @@ public class RestMethod<T> {
         if (data.headers.any()) {
             spec.headers(data.headers.toMap());
         }
-        if (data.cookies.any()) {
-            spec.cookies(data.cookies.toMap());
+        if (!data.cookies.asList().isEmpty()) {
+            spec.cookies(data.cookies);
         }
         if (data.multiPartSpecifications.size() > 0) {
             data.multiPartSpecifications.forEach(spec::multiPart);

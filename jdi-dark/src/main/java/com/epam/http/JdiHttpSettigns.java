@@ -20,9 +20,19 @@ public class JdiHttpSettigns {
     public static String TEST_PROPERTIES_PATH = "test.properties";
     public static boolean verifyOkStatus = false;
     public static ILogger logger = instance("JDI");
+    public static String DOMAIN;
+
+    public static String getDomain() {
+        if (DOMAIN != null)
+            return DOMAIN;
+        return "No Domain Found. Use test.properties or WebSettings.DOMAIN";
+    }
+
+    public static void setDomain(String domain) { DOMAIN = domain; }
 
     public static synchronized void init() {
         getProperties(TEST_PROPERTIES_PATH);
+        fillAction(p -> setDomain(p), "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
     }
 

@@ -231,10 +231,11 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call() {
-        if (type == null)
+        if (type == null) {
             throw exception("HttpMethodType not specified");
+        }
         RequestSpecification spec = addRestSpecificationData();
-//        logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
+        //logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
         logger.info(format("Do %s request: %s", type, data.getFields().filter((k, v) -> !k.startsWith("common") && v != null && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v)));
         return doRequest(type, spec, expectedStatus);
     }
@@ -266,8 +267,9 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        if (data.url.contains("%s") && params.length > 0)
+        if (data.url.contains("%s") && params.length > 0) {
             data.url = format(data.url, params);
+        }
         return call();
     }
 
@@ -282,12 +284,15 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(RequestData requestData) {
-        if (!requestData.pathParams.isEmpty())
-            data.pathParams.addAll(requestData.pathParams);
-        if (!requestData.queryParams.isEmpty())
+        if (!requestData.pathParams.isEmpty()) {
+            data.pathParams = requestData.pathParams;
+        }
+        if (!requestData.queryParams.isEmpty()) {
             data.queryParams.addAll(requestData.queryParams);
-        if (requestData.body != null)
+        }
+        if (requestData.body != null) {
             data.body = requestData.body;
+        }
         if (!requestData.headers.userHeaders.isEmpty()) {
             data.headers.userHeaders.addAll(requestData.headers.userHeaders);
         }
@@ -316,13 +321,15 @@ public class RestMethod<T> {
      * @return request specification
      */
     public RequestSpecification addRestSpecificationData() {
-        if (data == null)
+        if (data == null) {
             return spec;
-        if (data.pathParams.any() && data.url.contains("{"))
-            data.url = formatParams(data.url, data.pathParams);
-        spec.baseUri(data.url);
+        }
+        String url = data.url;
+        if (data.pathParams.any() && data.url.contains("{")) {
+            url = formatParams(url, data.pathParams);
+        }
+        spec.baseUri(url);
 
-        ///String[] keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().toArray(new String[0]);
         List<String> keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().stream()
                 .filter(e -> !data.commonQueryParams.containsKey(e)).collect(Collectors.toList());
         for (String key : keys) {
@@ -332,8 +339,9 @@ public class RestMethod<T> {
             spec.queryParams(data.queryParams.toMap());
             data.url += "?" + print(data.queryParams.toMap(), "&", "{0}={1}");
         }
-        if (data.body != null)
+        if (data.body != null) {
             spec.body(data.body);
+        }
         List<Header> headers = ((FilterableRequestSpecification) spec).getHeaders().asList().stream()
                 .filter(e -> !data.headers.commonHeaders.contains(e)).collect(Collectors.toList());
         for (Header header : headers) {

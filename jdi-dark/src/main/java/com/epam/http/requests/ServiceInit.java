@@ -1,33 +1,48 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.HEAD;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.Headers;
-import com.epam.http.annotations.OPTIONS;
-import com.epam.http.annotations.PATCH;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.JdiHttpSettigns;
+import com.epam.jdi.tools.func.JAction;
+import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.specification.RequestSpecification;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
+import static com.epam.jdi.tools.LinqUtils.where;
+import static java.lang.reflect.Modifier.isStatic;
+
+import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.GET;
+import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.PATCH;
+import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.OPTIONS;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
+import java.lang.reflect.Field;
+import java.util.List;
+
+import static com.epam.http.ExceptionHandler.exception;
+import static com.epam.http.requests.RestMethodTypes.GET;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
 import static com.epam.http.requests.RestMethodTypes.DELETE;
 import static com.epam.http.requests.RestMethodTypes.GET;
 import static com.epam.http.requests.RestMethodTypes.HEAD;
 import static com.epam.http.requests.RestMethodTypes.OPTIONS;
-import static com.epam.http.requests.RestMethodTypes.PATCH;
-import static com.epam.http.requests.RestMethodTypes.POST;
-import static com.epam.http.requests.RestMethodTypes.PUT;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static java.lang.reflect.Modifier.isStatic;
 
@@ -42,8 +57,21 @@ import static java.lang.reflect.Modifier.isStatic;
  */
 public class ServiceInit {
 
-
-    private static Object service;
+    public static MapArray<String, JAction> PRE_INIT =
+            new MapArray<>("WebSettings", JdiHttpSettigns::init);
+    public static boolean initialized = false;
+    public static void preInit() {
+        if (PRE_INIT == null) return;
+        if (!initialized) {
+            for (Pair<String, JAction> action : PRE_INIT)
+                try {
+                    action.value.execute();
+                } catch (Exception ex) {
+                    throw exception("Preinit '%s' failed. Please correct PageFactory.PRE_INIT function", action.key);
+                }
+            initialized = true;
+        }
+    }
 
     /**
      * Initialise the Service Object class.
@@ -63,6 +91,7 @@ public class ServiceInit {
      * @return initialised Service Object
      */
     public static <T> T init(Class<T> c, RequestSpecification requestSpecification) {
+        preInit();
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> f.getType().equals(RestMethod.class));
         for (Field method : methods) {
@@ -78,6 +107,8 @@ public class ServiceInit {
         }
         return getService(c);
     }
+
+    private static Object service;
 
     /**
      * Helper method to instantiate the class.
@@ -202,6 +233,6 @@ public class ServiceInit {
     private static <T> String getDomain(Class<T> c) {
         return c.isAnnotationPresent(ServiceDomain.class)
                 ? c.getAnnotation(ServiceDomain.class).value()
-                : null;
+                : JdiHttpSettigns.getDomain();
     }
 }

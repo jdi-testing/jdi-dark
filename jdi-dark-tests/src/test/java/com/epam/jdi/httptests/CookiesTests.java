@@ -129,6 +129,7 @@ public class CookiesTests extends WithJetty {
     public void assertionErrorIsThrownWhenCookieDoesNotMatch() {
         JettyService.setCookies.call().isOk().assertThat().cookie("key1", "value2");
         Cookie cookie = JettyService.setCookies.call().getRaResponse().getDetailedCookie("key1");
+        assertThat(cookie, notNullValue());
     }
 
     @Test

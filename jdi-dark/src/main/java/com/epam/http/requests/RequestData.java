@@ -3,7 +3,12 @@ package com.epam.http.requests;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MultiMap;
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.MultiPartSpecification;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Represents all HTTP request data.
@@ -15,11 +20,12 @@ public class RequestData extends DataClass<RequestData> {
     public String uri = null;
     public String path = null;
     public String body = null;
-    public ContentType contentType = null;
+    public String contentType = null;
     public MultiMap<String, String> headers = new MultiMap<>();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
     public MultiMap<String, String> cookies = new MultiMap<>();
+    public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
 
     /**
      * Set request data fields based on lambda function.
@@ -63,6 +69,42 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set content type to request data.
+     *
+     * @param contentType  content type as string
+     */
+    public void setContentType(String contentType){
+        this.contentType = contentType;
+    }
+
+    /**
+     * Set content type to request data.
+     *
+     * @param contentType  content type as ContentType
+     */
+    public void setContentType(ContentType contentType){
+        this.contentType = contentType.toString();
+    }
+
+    /**
+     * Set multipart parameters to request data.
+     *
+     * @param multiPartSpecBuilder  MultiPartSpecBuilder
+     */
+    public void setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
+        multiPartSpecifications.add(multiPartSpecBuilder.build());
+    }
+
+    /**
+     * Set multipart parameters to request data.
+     *
+     * @param file  File parameter
+     */
+    public void setMultiPart(File file) {
+        multiPartSpecifications.add(new MultiPartSpecBuilder(file).build());
+    }
+
+    /**
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {
@@ -75,5 +117,6 @@ public class RequestData extends DataClass<RequestData> {
         uri = null;
         contentType = null;
         empty = true;
+        multiPartSpecifications.clear();
     }
 }

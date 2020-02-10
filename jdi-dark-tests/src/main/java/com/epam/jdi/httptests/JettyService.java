@@ -15,7 +15,7 @@ import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
 
-@ServiceDomain("http://localhost:8080/")
+@ServiceDomain("http://localhost:8080")
 public class JettyService {
 
     @GET("/multiCookie")
@@ -139,4 +139,9 @@ public class JettyService {
     @GET("/matrix;{abcde}={value}")
     public static RestMethod getMatrix;
 
+    @POST("/multipart/file")
+    public static RestMethod postMultipartFile;
+
+    @POST("/multipart/text")
+    public static RestMethod postMultipartText;
 }

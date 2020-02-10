@@ -10,6 +10,7 @@
             <class name="com.epam.jdi.httptests.ErrorMessageTrelloTest"/>
             <class name="com.epam.jdi.httptests.HeaderTests"/>
             <class name="com.epam.jdi.httptests.JSONPostTests"/>
+            <class name="com.epam.jdi.httptests.MultiPartUploadTests"/>
             <class name="com.epam.jdi.httptests.ObjectMappingTests"/>
             <class name="com.epam.jdi.httptests.ParamTest"/>
             <class name="com.epam.jdi.httptests.PerformanceTests"/>

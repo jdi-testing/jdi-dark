@@ -70,22 +70,41 @@ public class RequestData extends DataClass<RequestData> {
         return requestPathParams(new Object[][]{{paramName, paramValue}});
     }
 
+    /**
+     * Set content type to request data.
+     *
+     * @param contentType  content type as string
+     */
     public void setContentType(String contentType){
         this.contentType = contentType;
     }
 
+    /**
+     * Set content type to request data.
+     *
+     * @param contentType  content type as ContentType
+     */
     public void setContentType(ContentType contentType){
         this.contentType = contentType.toString();
     }
 
+    /**
+     * Set multipart parameters to request data.
+     *
+     * @param multiPartSpecBuilder  MultiPartSpecBuilder
+     */
     public void setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
         multiPartSpecifications.add(multiPartSpecBuilder.build());
     }
 
+    /**
+     * Set multipart parameters to request data.
+     *
+     * @param file  File parameter
+     */
     public void setMultiPart(File file) {
         multiPartSpecifications.add(new MultiPartSpecBuilder(file).build());
     }
-
 
     /**
      * Clean Custom user Request data to avoid using old data in new requests

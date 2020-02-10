@@ -299,8 +299,8 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        if (url.contains("%s") && params.length > 0) {
-            url = format(url, params);
+        if (path.contains("%s") && params.length > 0) {
+            path = format(path, params);
         }
         return call();
     }

@@ -2,7 +2,7 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.map.MultiMap;
 import io.qameta.allure.restassured.AllureRestAssured;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeTest;
@@ -33,7 +33,7 @@ public class HeaderTests extends WithJetty {
     public void requestDataAllowsSpecifyingHeader() {
         RestResponse response = getHeader.call(
                 requestData(requestData ->
-                        requestData.headers.userHeaders = new MapArray<>(new Object[][]{
+                        requestData.headers = new MultiMap<>(new Object[][]{
                                 {"MyHeader", "TestValue"}
                         })));
         response.isOk();
@@ -44,7 +44,7 @@ public class HeaderTests extends WithJetty {
     public void requestDataAllowsSpecifyingMultipleHeaders() {
         RestResponse response = getHeader.call(
                 requestData(requestData ->
-                        requestData.headers.userHeaders = new MapArray<>(new Object[][]{
+                        requestData.headers = new MultiMap<>(new Object[][]{
                                 {"MyHeader", "TestValue"}, {"SecondHeader", "SecondHeaderTestValue"}
                         })));
         response.isOk();

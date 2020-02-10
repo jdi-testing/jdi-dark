@@ -17,7 +17,6 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -125,12 +124,7 @@ public class CookiesTests extends WithJetty {
 
     @Test
     public void responseSpecificationAllowsParsingCookieWithNoValue() {
-
-        // TODO -fine
-        Response response32 = given().get("/response_cookie_with_no_value");
         Response response = JettyService.getResponseCookieWithNoValue.call().getRaResponse();
-
-
         assertThat("Cookie is empty", response.cookie("PLAY_FLASH").isEmpty());
     }
 
@@ -183,16 +177,7 @@ public class CookiesTests extends WithJetty {
 
     @Test
     public void cookiesParsingSupportsNoValueCookies() {
-        // TODO - check
-        Response response344 = given().
-                cookie("no-value-cookie").
-/*        expect().
-                cookie("no-value-cookie").*/
-        when().
-                        post("/reflect");
-
-
-        RestResponse response = JettyService.postReflectWithCookie.call(requestData(requestData -> requestData.addCookie("no-value-cookie")));
+        RestResponse response = JettyService.postReflect.call(requestData(requestData -> requestData.addCookie("no-value-cookie")));
         assertThat("Cookie is empty", response.cookie("no-value-cookie").isEmpty());
     }
 

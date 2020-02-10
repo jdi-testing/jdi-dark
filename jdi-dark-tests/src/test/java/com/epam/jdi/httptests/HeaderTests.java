@@ -121,5 +121,4 @@ public class HeaderTests extends WithJetty {
         assertThat(response.headers().getValues("MyHeader2").size(), is(2));
         assertThat(response.headers().getValues("MyHeader2"), hasItems("MyValue2", "MyValue23"));
     }
-
 }

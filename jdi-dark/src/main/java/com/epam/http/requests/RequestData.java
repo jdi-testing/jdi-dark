@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Map;
 import io.restassured.specification.MultiPartSpecification;
 import java.io.File;
-import io.restassured.http.Header;
-
-import java.util.ArrayList;
 
 /**
  * Represents all HTTP request data.

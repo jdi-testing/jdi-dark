@@ -2,7 +2,6 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.map.MapArray;
 import io.restassured.path.json.JsonPath;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Ignore;
@@ -96,10 +95,7 @@ public class JSONPostTests extends WithJetty {
     @Test
     public void requestAllowsSpecifyingCookie() {
         RestResponse response = cookiePost.call(requestData(requestData ->
-                requestData.cookies = new MapArray<>(new Object[][]{
-                        {"username", "John"},
-                        {"token", "1234"}
-                })));
+                requestData.addCookies("username", "John", "token", "1234")));
         response.isOk()
                 .body(equalTo("username, token"));
     }

@@ -22,8 +22,17 @@ public class JettyService {
     @GET("/multiCookie")
     public static RestMethod getMultiCookie;
 
+    @GET("/multiCookieRequest")
+    public static RestMethod getMultiCookieRequest;
+
     @GET("/setCookies")
     public static RestMethod setCookies;
+
+    @GET("/cookie_with_no_value")
+    public static RestMethod getCookieWithNoValue;
+
+    @GET("/response_cookie_with_no_value")
+    public static RestMethod getResponseCookieWithNoValue;
 
     @GET("/cookie")
     public static RestMethod getCookie;
@@ -33,6 +42,9 @@ public class JettyService {
 
     @POST("/reflect")
     public static RestMethod<Hello> postReflect;
+
+    @GET("/html_with_cookie")
+    public static RestMethod getHtmlWithCookie;
 
     @GET("/setCommonIdCookies")
     public static RestMethod getCommonIdCookies;

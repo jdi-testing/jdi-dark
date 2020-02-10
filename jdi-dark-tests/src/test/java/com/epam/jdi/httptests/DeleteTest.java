@@ -38,10 +38,10 @@ public class DeleteTest extends WithJetty {
     @Test
     public void requestSpecificationAllowsSpecifyingCookie() {
         RestResponse response = deleteCookie.call(requestData(requestData ->
-                requestData.cookies = new MapArray<>(new Object[][]{
+                requestData.addCookies(new MapArray<>(new Object[][]{
                         {USERNAME, FIRST_NAME_VALUE},
                         {TOKEN, TOKEN_VALUE}
-                })));
+                }))));
         assertEquals(response.body, "username, token");
     }
 

@@ -1,6 +1,5 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
@@ -9,11 +8,14 @@ import com.epam.jdi.tools.map.MapArray;
 import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -154,31 +156,58 @@ public class RestMethod<T> {
     /**
      * Set cookie to HTTP request.
      *
-     * @param name  of cookie
-     * @param value of cookie
+     * @param cookie field name and value presented as annotation
      */
-    public void addCookie(String name, String value) {
-        data.cookies.add(name, value);
-    }
-
-    /**
-     * Set cookie to HTTP request from annotated field.
-     *
-     * @param cookie from HTTP method field annotation
-     */
-    public void addCookie(Cookie cookie) {
+    public void addCookie(com.epam.http.annotations.Cookie cookie) {
         addCookie(cookie.name(), cookie.value());
     }
 
     /**
-     * Set cookies to HTTP request.
+     * Set cookie to HTTP request.
      *
-     * @param cookies collection of cookies from HTTP method field annotation
+     * @param cookies pairs of field name and value presented as annotation
      */
-    public void addCookies(Cookie... cookies) {
-        for (Cookie cookie : cookies) {
+    public void addCookies(com.epam.http.annotations.Cookie... cookies) {
+        for (com.epam.http.annotations.Cookie cookie : cookies) {
             addCookie(cookie);
         }
+    }
+
+    /**
+     * Set cookie to HTTP request.
+     *
+     * @param name  of cookie
+     * @param value of cookie
+     */
+    public void addCookie(String name, String value) {
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.serviceCookies.asList());
+        cookieList.add(new Cookie.Builder(name, value).build());
+        data.cookies.serviceCookies = new Cookies(cookieList);
+    }
+
+    /**
+     * Set cookie without value to HTTP request.
+     *
+     * @param name of cookie
+     */
+    public void addCookie(String name) {
+        addCookie(name, "");
+    }
+
+    /**
+     * Set array of rest assured cookies to HTTP request.
+     *
+     * @param name             of cookie
+     * @param value            of cookie
+     * @param additionalValues additional values of the cookie
+     */
+    public void addCookies(String name, String value, String... additionalValues) {
+        List<Cookie> cookieList = data.cookies.serviceCookies.asList();
+        cookieList.add(new Cookie.Builder(name, value).build());
+        for (String cookieValue : additionalValues) {
+            cookieList.add(new Cookie.Builder(name, cookieValue).build());
+        }
+        data.cookies.serviceCookies = new Cookies(cookieList);
     }
 
     public RestMethod expectStatus(ResponseStatusType status) {
@@ -262,8 +291,10 @@ public class RestMethod<T> {
         if (!requestData.headers.userHeaders.isEmpty()) {
             data.headers.userHeaders.addAll(requestData.headers.userHeaders);
         }
-        if (!requestData.cookies.isEmpty()) {
-            data.cookies.addAll(requestData.cookies);
+        if (!requestData.cookies.userCookies.asList().isEmpty()) {
+            // TODO - do we need to clear it? try via addAll
+            List<Cookie> cookieList = new ArrayList<>(requestData.cookies.userCookies.asList());
+            data.cookies.userCookies = new Cookies(cookieList);
         }
         return call();
     }
@@ -313,9 +344,15 @@ public class RestMethod<T> {
             spec.headers(data.headers.userHeaders.toMap());
         }
         spec.contentType(data.contentType);
-        ((FilterableRequestSpecification) spec).removeCookies();
-        if (data.cookies.any()) {
-            spec.cookies(data.cookies.toMap());
+
+        List<Cookie> cookies = ((FilterableRequestSpecification) spec).getCookies().asList().stream()
+                .filter(cookie -> !data.cookies.commonCookies.asList().contains(cookie)).collect(Collectors.toList());
+        for (Cookie cookie : cookies) {
+            ((FilterableRequestSpecification) spec).removeCookie(cookie.getName());
+        }
+        if (!data.cookies.serviceCookies.asList().isEmpty() || !data.cookies.userCookies.asList().isEmpty()) {
+            spec.cookies(data.cookies.serviceCookies);
+            spec.cookies(data.cookies.userCookies);
         }
 
         data.clear();

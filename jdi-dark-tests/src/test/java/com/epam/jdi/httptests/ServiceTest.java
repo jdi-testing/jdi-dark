@@ -22,12 +22,13 @@ import static org.testng.Assert.assertEquals;
 public class ServiceTest {
 
     private RequestSpecification requestSpecification;
+    private ServiceExample service;
 
     @BeforeClass
     public void before() {
         requestSpecification = given().filter(new AllureRestAssured());
         requestSpecification.auth().basic("user", "password");
-        init(ServiceExample.class, requestSpecification);
+        service = init(ServiceExample.class, requestSpecification);
     }
 
     @Test
@@ -70,7 +71,6 @@ public class ServiceTest {
 
     @Test
     public void statusTest() {
-        ServiceExample service = init(ServiceExample.class);
         RestResponse resp = service.status.call("503");
         assertEquals(resp.status.code, 503);
         assertEquals(resp.status.type, SERVER_ERROR);
@@ -88,7 +88,6 @@ public class ServiceTest {
 
     @Test
     public void serviceInitTest() {
-        ServiceExample service = init(ServiceExample.class);
         RestResponse resp = service.postMethod.call();
         resp.isOk().assertThat().
                 body("url", equalTo("https://httpbin.org/post")).
@@ -97,7 +96,6 @@ public class ServiceTest {
 
     @Test
     public void htmlBodyParseTest() {
-        ServiceExample service = init(ServiceExample.class);
         RestResponse resp = service.getHTMLMethod.call();
         resp.isOk();
         assertEquals(resp.getFromHtml("html.body.h1"), "Herman Melville - Moby-Dick");
@@ -105,7 +103,6 @@ public class ServiceTest {
 
     @Test
     public void cookiesTest() {
-        ServiceExample service = init(ServiceExample.class);
         RestResponse response = service.getCookies.call(
                 requestData(requestData ->
                         requestData.cookies = new MultiMap<>(new Object[][]{
@@ -119,7 +116,6 @@ public class ServiceTest {
 
     @Test
     public void getWithRaRequestSpecification() {
-        ServiceExample service = init(ServiceExample.class);
         service.getWithAuth.call(
                 given().auth().basic("user", "password")
         ).assertThat()

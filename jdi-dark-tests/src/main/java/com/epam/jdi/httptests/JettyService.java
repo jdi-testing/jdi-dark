@@ -111,6 +111,9 @@ public class JettyService {
     @GET("/contentTypeAsBody")
     public static RestMethod getContentTypeAsBody;
 
+    @POST("contentTypeAsBody")
+    public static RestMethod postContentTypeAsBody;
+
     @POST("/return204WithContentType")
     @ContentType(JSON)
     public static RestMethod postReturn204WithContentType;
@@ -138,5 +141,20 @@ public class JettyService {
 
     @GET("/matrix;{abcde}={value}")
     public static RestMethod getMatrix;
+
+    @GET("/returnContentTypeAsBody")
+    public static RestMethod getReturnContentTypeAsBody;
+
+    @POST("/textUriList")
+    public static RestMethod postTextUriList;
+
+    @PUT("/reflect")
+    public static RestMethod putReflect;
+
+    @GET("/reflect")
+    public static RestMethod getReflect;
+
+    @POST("/returnContentTypeAsBody")
+    public static RestMethod postReturnContentTypeAsBody;
 
 }

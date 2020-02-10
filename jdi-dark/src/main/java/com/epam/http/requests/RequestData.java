@@ -10,8 +10,6 @@ import io.restassured.specification.MultiPartSpecification;
 import java.io.File;
 import java.util.ArrayList;
 
-import static io.restassured.RestAssured.given;
-
 /**
  * Represents all HTTP request data.
  *

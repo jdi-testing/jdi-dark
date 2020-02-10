@@ -229,9 +229,8 @@ public class CookiesTests extends WithJetty {
 
     @Test
     public void supportEqualCharacterInCookieValue() {
-        Cookies raCookie = new Cookies(new Cookie.Builder("jsessionid", "9HTaCatOIaiO7ccHojDzuxwVoIU=").build());
         JettyService.postReflect.call(requestData(requestData ->
-                requestData.cookies.userCookies = raCookie)).isOk().assertThat().cookie("JSESSIONID", "9HTaCatOIaiO7ccHojDzuxwVoIU=");
+                requestData.addCookie("jsessionid", "9HTaCatOIaiO7ccHojDzuxwVoIU="))).isOk().assertThat().cookie("JSESSIONID", "9HTaCatOIaiO7ccHojDzuxwVoIU=");
     }
 
     @Test

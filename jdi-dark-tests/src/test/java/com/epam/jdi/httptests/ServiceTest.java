@@ -104,11 +104,8 @@ public class ServiceTest {
 
     @Test
     public void cookiesTest() {
-        RestResponse response = service.getCookies.call(
-                requestData(requestData ->
-                        requestData.cookies = new MultiMap<>(new Object[][]{
-                                {"additionalCookie", "test"}
-                        })));
+        RestResponse response = service.getCookies.call(requestData(requestData ->
+                requestData.addCookie("additionalCookie", "test")));
         response.isOk()
                 .body("cookies.additionalCookie", equalTo("test"))
                 .body("cookies.session_id", equalTo("1234"))

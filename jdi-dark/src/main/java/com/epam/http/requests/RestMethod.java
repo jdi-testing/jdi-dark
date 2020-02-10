@@ -235,7 +235,7 @@ public class RestMethod<T> {
     private void logRequest(RequestData... rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
-            maps.addAll(rd.getFields().filter((k, v) -> k != "empty" && v != null && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+            maps.addAll(rd.getFields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
     }
@@ -335,7 +335,7 @@ public class RestMethod<T> {
         if (requestData.contentType != null) {
             userData.contentType = requestData.contentType;
         }
-        if (requestData.multiPartSpecifications != null) {
+        if (requestData.multiPartSpecifications.size() > 0) {
             userData.multiPartSpecifications = requestData.multiPartSpecifications;
         }
         return call();
@@ -381,7 +381,7 @@ public class RestMethod<T> {
         if (data.cookies.any()) {
             spec.cookies(data.cookies.toMap());
         }
-        if (data.multiPartSpecifications.size()>0){
+        if (data.multiPartSpecifications.size() > 0) {
             data.multiPartSpecifications.forEach(spec::multiPart);
         }
 

@@ -231,7 +231,7 @@ public class RestMethod<T> {
     }
 
     /**
-     * Set array of rest assured cookies to HTTP request.
+     * Set cookie with multiple values to HTTP request.
      *
      * @param name             of cookie
      * @param value            of cookie

@@ -85,6 +85,12 @@ public class RequestData extends DataClass<RequestData> {
         empty = true;
     }
 
+    /**
+     * Adds cookies to HTTP request
+     *
+     * @param objects pairs of cookies name and value
+     * @return generated request data with provided cookies
+     */
     public RequestData addCookies(Object[][] objects) {
         List<Cookie> cookieList = new ArrayList<>();
         for (Object[] cookie : objects) {
@@ -94,10 +100,24 @@ public class RequestData extends DataClass<RequestData> {
         return this;
     }
 
+    /**
+     * Adds cookie without value to HTTP request
+     *
+     * @param name of cookie
+     * @return generated request data with provided cookie
+     */
     public RequestData addCookie(String name) {
         return addCookie(name, "");
     }
 
+    /**
+     * Adds cookie with multiple values to HTTP request
+     *
+     * @param name             of cookie
+     * @param value            of cookie
+     * @param additionalValues of cookie
+     * @return generated request data with provided cookie
+     */
     public RequestData addCookie(String name, String value, String... additionalValues) {
         List<Cookie> cookieList = new ArrayList<>(cookies.asList());
         cookieList.add(new Cookie.Builder(name, value).build());
@@ -108,11 +128,25 @@ public class RequestData extends DataClass<RequestData> {
         return this;
     }
 
+    /**
+     * Adds multiple cookies to HTTP request
+     *
+     * @param name                 of cookie
+     * @param value                of cookie
+     * @param cookieNameValuePairs additional pairs of name and value
+     * @return generated request data with provided cookies
+     */
     public RequestData addCookies(String name, Object value, Object... cookieNameValuePairs) {
         Map<String, Object> map = MapCreator.createMapFromParams(MapCreator.CollisionStrategy.OVERWRITE, name, value, cookieNameValuePairs);
         return addCookies(map);
     }
 
+    /**
+     * Adds cookies from Map to HTTP request
+     *
+     * @param map of cookies
+     * @return generated request data with provided cookies
+     */
     public RequestData addCookies(Map map) {
         List<Cookie> cookieList = new ArrayList<>(cookies.asList());
         for (Object cookie : map.keySet()) {
@@ -122,6 +156,12 @@ public class RequestData extends DataClass<RequestData> {
         return this;
     }
 
+    /**
+     * Adds cookies from MapArray to HTTP request
+     *
+     * @param mapArray of cookies
+     * @return generated request data with provided cookies
+     */
     public RequestData addCookies(MapArray mapArray) {
         Map map = mapArray.toMap();
         return addCookies(map);

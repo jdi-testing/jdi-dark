@@ -3,7 +3,6 @@ package com.epam.jdi.httptests;
 import com.epam.http.response.RestResponse;
 import com.wealdtech.hawk.Hawk;
 import com.wealdtech.hawk.HawkCredentials;
-import io.restassured.http.Headers;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;

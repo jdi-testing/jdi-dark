@@ -63,7 +63,7 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
-     * Set path parameters required to be inserted in URL.     *
+     * Set query parameters in request
      *
      * @param params query parameters
      * @return generated request data with provided query parameters

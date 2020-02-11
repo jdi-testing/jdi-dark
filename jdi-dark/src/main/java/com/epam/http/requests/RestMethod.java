@@ -142,9 +142,14 @@ public class RestMethod<T> {
      *
      * @param ct Rest Assured Content-Type
      */
+//    public void setContentType(ContentType ct) {
+//        data.contentType = ct;
+//    }
+
     public void setContentType(ContentType ct) {
-        data.contentType = ct;
+        data.contentType = ct.toString();
     }
+
 
     public void addHeaders(Header[] headers) {
         for (Header header : headers)
@@ -270,6 +275,9 @@ public class RestMethod<T> {
         if (!requestData.cookies.isEmpty()) {
             data.cookies.addAll(requestData.cookies);
         }
+        if (requestData.contentType != null) {
+            data.contentType = requestData.contentType;
+        }
         return call();
     }
 
@@ -320,7 +328,9 @@ public class RestMethod<T> {
             spec.headers(data.headers.serviceHeaders.toMap());
             spec.headers(data.headers.userHeaders.toMap());
         }
-        spec.contentType(data.contentType);
+        if (data.contentType != null) {
+            spec.contentType(data.contentType);
+        }
         ((FilterableRequestSpecification) spec).removeCookies();
         if (data.cookies.any()) {
             spec.cookies(data.cookies.toMap());

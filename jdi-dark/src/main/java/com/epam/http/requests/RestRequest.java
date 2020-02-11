@@ -5,7 +5,6 @@ import com.epam.http.response.RestResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.verifyOkStatus;
 import static java.lang.System.currentTimeMillis;
 
@@ -25,11 +24,9 @@ public class RestRequest {
             RestMethodTypes methodType, RequestSpecification spec, ResponseStatusType expectedStatus) {
         Response response;
         long time;
-        try {
-            time = currentTimeMillis();
-            response = methodType.method.apply(spec);
-            time = currentTimeMillis() - time;
-        } catch (Exception ex) { throw exception("Request failed"); }
+        time = currentTimeMillis();
+        response = methodType.method.apply(spec);
+        time = currentTimeMillis() - time;
         RestResponse resp = new RestResponse(response, time);
         if (verifyOkStatus)
             resp.isStatus(expectedStatus);
@@ -39,3 +36,5 @@ public class RestRequest {
         return rs.toString();
     }
 }
+
+//catch (Exception ex) { throw exception(ex.getLocalizedMessage()); }

@@ -19,7 +19,8 @@ import static io.restassured.http.ContentType.ANY;
 public class RequestData extends DataClass<RequestData> {
     public String url = null;
     public String body = null;
-    public ContentType contentType = ANY;
+    public String contentType = null;
+ //   public ContentType contentType = ANY;
     public JDIHeaders headers = new JDIHeaders();
 
     public MapArray<String, String> pathParams = new MapArray<>();

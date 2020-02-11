@@ -149,7 +149,5 @@ public class JDIHeaders {
     public boolean any() {
         return this.size() > 0;
     }
-
-
 }
 

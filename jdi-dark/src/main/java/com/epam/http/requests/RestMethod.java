@@ -1,6 +1,5 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
@@ -8,21 +7,22 @@ import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
 import io.restassured.http.Header;
-import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.epam.http.ExceptionHandler.exception;
+import static com.epam.http.JdiHttpSettigns.getDomain;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
-import static com.epam.jdi.tools.PrintUtils.formatParams;
-import static com.epam.jdi.tools.PrintUtils.print;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
@@ -35,7 +35,10 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
 public class RestMethod<T> {
 
     private RequestSpecification spec = given().filter(new AllureRestAssured());
+    private String url = null;
+    private String path = null;
     private RequestData data;
+    private RequestData userData = new RequestData();
     private RestMethodTypes type;
     private Gson gson = new Gson();
     private ResponseStatusType expectedStatus = OK;
@@ -52,10 +55,31 @@ public class RestMethod<T> {
      * Constructor for forming HTTP request.
      *
      * @param type of HTTP request
-     * @param url  to send HTTP request to
+     * @param data of request
      */
-    public RestMethod(RestMethodTypes type, String url) {
-        this(type, new RequestData().set(d -> d.url = url));
+    public RestMethod(RestMethodTypes type, RequestData data) {
+        this.data = data;
+        this.type = type;
+    }
+
+    /**
+     * Constructor for forming HTTP request.
+     *
+     * @param type of HTTP request
+     * @param path to send HTTP request to
+     */
+    public RestMethod(RestMethodTypes type, String path) {
+        this(type, getDomain(), path, new RequestData());
+    }
+
+    /**
+     * Constructor for forming HTTP request.
+     *
+     * @param type of HTTP request
+     * @param path to send HTTP request to
+     */
+    public RestMethod(RestMethodTypes type, String url, String path) {
+        this(type, url, path, new RequestData());
     }
 
     /**
@@ -64,9 +88,25 @@ public class RestMethod<T> {
      * @param type of HTTP request
      * @param data of request
      */
-    public RestMethod(RestMethodTypes type, RequestData data) {
-        this.data = data;
+    public RestMethod(RestMethodTypes type, String url, String path, RequestData data) {
         this.type = type;
+        this.url = url;
+        this.path = path;
+        this.data = data;
+    }
+
+    /**
+     * Constructor for forming HTTP request with given Rest Assured Request Specification.
+     *
+     * @param type                 of HTTP request
+     * @param path                 of request
+     * @param requestSpecification Rest Assured request specification
+     */
+    public RestMethod(RestMethodTypes type, String path, RequestSpecification requestSpecification) {
+        this(type, path);
+        if (requestSpecification != null) {
+            this.spec = spec.spec(requestSpecification);
+        }
     }
 
     /**
@@ -76,17 +116,15 @@ public class RestMethod<T> {
      * @param url                  of request
      * @param requestSpecification Rest Assured request specification
      */
-    public RestMethod(RestMethodTypes type, String url, RequestSpecification requestSpecification) {
-        this(type, url);
+    public RestMethod(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
+        this(type, path, url);
         if (requestSpecification != null) {
             this.spec = spec.spec(requestSpecification);
-            data.headers.commonHeaders = ((FilterableRequestSpecification) spec).getHeaders().asList();
-            data.commonQueryParams = ((FilterableRequestSpecification) spec).getQueryParams();
         }
     }
 
-    public RequestSpecification getSpec() {
-        return spec;
+    public RequestSpecification getInitSpec() {
+        return given().filter(new AllureRestAssured()).spec(spec).spec(getDataSpec(data));
     }
 
     /**
@@ -96,18 +134,18 @@ public class RestMethod<T> {
      * @param value of header field
      */
     public void addHeader(String name, String value) {
-        data.headers.serviceHeaders.add(name, value);
+        data.headers.add(name, value);
     }
 
-    /**
-     * Set header to HTTP request or replace the value of header if it had been added before.
-     *
-     * @param name  of header field
-     * @param value of header field
-     */
-    public void addOrReplaceHeader(String name, String value) {
-        data.headers.serviceHeaders.addOrReplace(name, value);
-    }
+//    /**
+//     * Set header to HTTP request or replace the value of header if it had been added before.
+//     *
+//     * @param name  of header field
+//     * @param value of header field
+//     */
+//    public void addOrReplaceHeader(String name, String value) {
+//        data.headers.addOrReplace(name, value);
+//    }
 
     /**
      * Set header to HTTP request.
@@ -142,14 +180,9 @@ public class RestMethod<T> {
      *
      * @param ct Rest Assured Content-Type
      */
-//    public void setContentType(ContentType ct) {
-//        data.contentType = ct;
-//    }
-
     public void setContentType(ContentType ct) {
         data.contentType = ct.toString();
     }
-
 
     public void addHeaders(Header[] headers) {
         for (Header header : headers)
@@ -159,31 +192,60 @@ public class RestMethod<T> {
     /**
      * Set cookie to HTTP request.
      *
-     * @param name  of cookie
-     * @param value of cookie
+     * @param cookie field name and value presented as annotation
      */
-    public void addCookie(String name, String value) {
-        data.cookies.add(name, value);
-    }
-
-    /**
-     * Set cookie to HTTP request from annotated field.
-     *
-     * @param cookie from HTTP method field annotation
-     */
-    public void addCookie(Cookie cookie) {
+    public void addCookie(com.epam.http.annotations.Cookie cookie) {
         addCookie(cookie.name(), cookie.value());
     }
 
     /**
-     * Set cookies to HTTP request.
+     * Set cookie to HTTP request.
      *
-     * @param cookies collection of cookies from HTTP method field annotation
+     * @param cookies pairs of field name and value presented as annotation
      */
-    public void addCookies(Cookie... cookies) {
-        for (Cookie cookie : cookies) {
+    public void addCookies(com.epam.http.annotations.Cookie... cookies) {
+        for (com.epam.http.annotations.Cookie cookie : cookies) {
             addCookie(cookie);
         }
+    }
+
+    /**
+     * Set cookie to HTTP request.
+     *
+     * @param name  of cookie
+     * @param value of cookie
+     */
+    public void addCookie(String name, String value) {
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
+        cookieList.add(new Cookie.Builder(name, value).build());
+        data.cookies = new Cookies(cookieList);
+    }
+
+    /**
+     * Set cookie without value to HTTP request.
+     *
+     * @param name of cookie
+     */
+    public void addCookie(String name) {
+        addCookie(name, "");
+    }
+
+    /**
+     * Set cookie with multiple values to HTTP request.
+     *
+     * @param name             of cookie
+     * @param value            of cookie
+     * @param additionalValues additional values of the cookie
+     */
+    public void addCookie(String name, String value, String[] additionalValues) {
+        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
+        cookieList.add(new Cookie.Builder(name, value).build());
+        if (additionalValues != null) {
+            for (String cookieValue : additionalValues) {
+                cookieList.add(new Cookie.Builder(name, cookieValue).build());
+            }
+        }
+        data.cookies = new Cookies(cookieList);
     }
 
     public RestMethod expectStatus(ResponseStatusType status) {
@@ -201,6 +263,14 @@ public class RestMethod<T> {
                 QueryParameter::name, QueryParameter::value));
     }
 
+    private void logRequest(RequestData... rds) {
+        ArrayList<String> maps = new ArrayList<>();
+        for (RequestData rd : rds) {
+            maps.addAll(rd.getFields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+        }
+        logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
+    }
+
     /**
      * Send HTTP request
      *
@@ -210,10 +280,28 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        RequestSpecification spec = addRestSpecificationData();
-        //logger.info(format("Do %s request %s. \nQuery params: %s. \nPath params: %s. \nBody: %s", type, data.url, data.queryParams, data.pathParams, data.body));
-        logger.info(format("Do %s request: %s", type, data.getFields().filter((k, v) -> !k.startsWith("common") && v != null && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v)));
-        return doRequest(type, spec, expectedStatus);
+        RequestSpecification runSpec = getInitSpec();
+        if (!userData.empty) {
+            runSpec.spec(getDataSpec(userData));
+        }
+        logRequest(data, userData);
+        userData.clear();
+        return doRequest(type, runSpec, expectedStatus);
+    }
+
+    /**
+     * Send HTTP request with Rest Assured Request Specification.
+     *
+     * @param requestSpecification Rest Assured request specification
+     * @return response
+     */
+    public RestResponse call(RequestSpecification requestSpecification) {
+        if (type == null) {
+            throw exception("HttpMethodType not specified");
+        }
+        RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
+        logRequest(data);
+        return doRequest(type, runSpec, expectedStatus);
     }
 
     /**
@@ -232,7 +320,6 @@ public class RestMethod<T> {
 
     public RestResponse postData(T data) {
         this.data.body = gson.toJson(data);
-        addRestSpecificationData().body(this.data.body);
         return call();
     }
 
@@ -243,8 +330,8 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        if (data.url.contains("%s") && params.length > 0) {
-            data.url = format(data.url, params);
+        if (path.contains("%s") && params.length > 0) {
+            path = format(path, params);
         }
         return call();
     }
@@ -260,35 +347,30 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(RequestData requestData) {
+        userData.empty = false;
         if (!requestData.pathParams.isEmpty()) {
-            data.pathParams = requestData.pathParams;
+            userData.pathParams = requestData.pathParams;
         }
         if (!requestData.queryParams.isEmpty()) {
-            data.queryParams.addAll(requestData.queryParams);
+            userData.queryParams.addAll(requestData.queryParams);
         }
         if (requestData.body != null) {
-            data.body = requestData.body;
+            userData.body = requestData.body;
         }
-        if (!requestData.headers.userHeaders.isEmpty()) {
-            data.headers.userHeaders.addAll(requestData.headers.userHeaders);
+        if (!requestData.headers.isEmpty()) {
+            userData.headers.addAll(requestData.headers);
         }
-        if (!requestData.cookies.isEmpty()) {
-            data.cookies.addAll(requestData.cookies);
+        if (!requestData.cookies.asList().isEmpty()) {
+            List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
+            cookieList.addAll(requestData.cookies.asList());
+            userData.cookies = new Cookies(cookieList);
         }
         if (requestData.contentType != null) {
-            data.contentType = requestData.contentType;
+            userData.contentType = requestData.contentType;
         }
-        return call();
-    }
-
-    /**
-     * Send HTTP request with Rest Assured Request Specification.
-     *
-     * @param requestSpecification Rest Assured request specification
-     * @return response
-     */
-    public RestResponse call(RequestSpecification requestSpecification) {
-        this.spec = spec.spec(requestSpecification);
+        if (requestData.multiPartSpecifications.size() > 0) {
+            userData.multiPartSpecifications = requestData.multiPartSpecifications;
+        }
         return call();
     }
 
@@ -297,46 +379,45 @@ public class RestMethod<T> {
      *
      * @return request specification
      */
-    public RequestSpecification addRestSpecificationData() {
+    public RequestSpecification getDataSpec(RequestData data) {
+        RequestSpecification spec = new RequestSpecBuilder().build();
+        if (url != null) {
+            spec.baseUri(url);
+        }
+        if (path != null) {
+            spec.basePath(path);
+        }
         if (data == null) {
             return spec;
         }
-        String url = data.url;
-        if (data.pathParams.any() && data.url.contains("{")) {
-            url = formatParams(url, data.pathParams);
+        if (data.uri != null) {
+            spec.baseUri(data.uri);
         }
-        spec.baseUri(url);
-
-        List<String> keys = ((FilterableRequestSpecification) spec).getQueryParams().keySet().stream()
-                .filter(e -> !data.commonQueryParams.containsKey(e)).collect(Collectors.toList());
-        for (String key : keys) {
-            ((FilterableRequestSpecification) spec).removeQueryParam(key);
+        if (data.path != null) {
+            spec.basePath(data.path);
         }
-        if (data.queryParams.any()) {
-            spec.queryParams(data.queryParams.toMap());
-            data.url += "?" + print(data.queryParams.toMap(), "&", "{0}={1}");
-        }
-        if (data.body != null) {
-            spec.body(data.body);
-        }
-        List<Header> headers = ((FilterableRequestSpecification) spec).getHeaders().asList().stream()
-                .filter(e -> !data.headers.commonHeaders.contains(e)).collect(Collectors.toList());
-        for (Header header : headers) {
-            ((FilterableRequestSpecification) spec).removeHeader(header.getName());
-        }
-        if (data.headers.serviceHeaders.any() || data.headers.userHeaders.any()) {
-            spec.headers(data.headers.serviceHeaders.toMap());
-            spec.headers(data.headers.userHeaders.toMap());
+        if (data.pathParams.any()) {
+            spec.pathParams(data.pathParams.toMap());
         }
         if (data.contentType != null) {
             spec.contentType(data.contentType);
         }
-        ((FilterableRequestSpecification) spec).removeCookies();
-        if (data.cookies.any()) {
-            spec.cookies(data.cookies.toMap());
+        if (data.queryParams.any()) {
+            spec.queryParams(data.queryParams.toMap());
+        }
+        if (data.body != null) {
+            spec.body(data.body);
+        }
+        if (data.headers.any()) {
+            spec.headers(data.headers.toMap());
+        }
+        if (!data.cookies.asList().isEmpty()) {
+            spec.cookies(data.cookies);
+        }
+        if (data.multiPartSpecifications.size() > 0) {
+            data.multiPartSpecifications.forEach(spec::multiPart);
         }
 
-        data.clear();
         return spec;
     }
 

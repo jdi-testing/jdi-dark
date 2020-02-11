@@ -1,6 +1,8 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
@@ -15,23 +17,40 @@ import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
 
-@ServiceDomain("http://localhost:8080/")
+@ServiceDomain("http://localhost:8080")
 public class JettyService {
 
     @GET("/multiCookie")
     public static RestMethod getMultiCookie;
 
+    @GET("/multiCookieRequest")
+    public static RestMethod getMultiCookieRequest;
+
     @GET("/setCookies")
     public static RestMethod setCookies;
 
+    @GET("/cookie_with_no_value")
+    public static RestMethod getCookieWithNoValue;
+
+    @GET("/response_cookie_with_no_value")
+    public static RestMethod getResponseCookieWithNoValue;
+
     @GET("/cookie")
     public static RestMethod getCookie;
+
+    @GET("/cookie")
+    @Cookies({@Cookie(name = "username", value = "John"),
+            @Cookie(name = "token", value = "1234")})
+    public static RestMethod getCookieWithCookies;
 
     @PUT("/cookie")
     public static RestMethod putCookie;
 
     @POST("/reflect")
     public static RestMethod<Hello> postReflect;
+
+    @GET("/html_with_cookie")
+    public static RestMethod getHtmlWithCookie;
 
     @GET("/setCommonIdCookies")
     public static RestMethod getCommonIdCookies;
@@ -111,9 +130,6 @@ public class JettyService {
     @GET("/contentTypeAsBody")
     public static RestMethod getContentTypeAsBody;
 
-    @POST("contentTypeAsBody")
-    public static RestMethod postContentTypeAsBody;
-
     @POST("/return204WithContentType")
     @ContentType(JSON)
     public static RestMethod postReturn204WithContentType;
@@ -142,19 +158,25 @@ public class JettyService {
     @GET("/matrix;{abcde}={value}")
     public static RestMethod getMatrix;
 
-    @GET("/returnContentTypeAsBody")
-    public static RestMethod getReturnContentTypeAsBody;
+    @GET("/cookie_with_no_value")
+    @Cookie(name = "some_cookie")
+    public static RestMethod getCookieWithNoValueWithCookies;
 
-    @POST("/textUriList")
-    public static RestMethod postTextUriList;
+    @GET("/multiCookieRequest")
+    @Cookie(name = "key1", value = "value1", additionalValues = "value2")
+    public static RestMethod getMultiCookieWithCookies;
 
-    @PUT("/reflect")
-    public static RestMethod putReflect;
+    @GET("/multiCookieRequest")
+    @Cookies({@Cookie(name = "key1", value = "value1", additionalValues = "value2"),
+            @Cookie(name = "key2"),
+            @Cookie(name = "key3", value = "value3")})
+    @Cookie(name = "key4", value = "value4")
+    public static RestMethod getMultiCookieWithManyCookies;
 
-    @GET("/reflect")
-    public static RestMethod getReflect;
+    @POST("/multipart/file")
+    public static RestMethod postMultipartFile;
 
-    @POST("/returnContentTypeAsBody")
-    public static RestMethod postReturnContentTypeAsBody;
+    @POST("/multipart/text")
+    public static RestMethod postMultipartText;
 
 }

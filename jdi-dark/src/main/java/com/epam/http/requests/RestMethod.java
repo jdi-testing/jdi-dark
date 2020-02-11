@@ -12,6 +12,7 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -134,7 +135,9 @@ public class RestMethod<T> {
      * @param value of header field
      */
     public void addHeader(String name, String value) {
-        data.headers.add(name, value);
+        List<Header> headerList = new ArrayList<>(data.headers.asList());
+        headerList.add(new Header(name, value));
+        data.headers = new Headers(headerList);
     }
 
 //    /**
@@ -357,8 +360,10 @@ public class RestMethod<T> {
         if (requestData.body != null) {
             userData.body = requestData.body;
         }
-        if (!requestData.headers.isEmpty()) {
-            userData.headers.addAll(requestData.headers);
+        if (!requestData.headers.asList().isEmpty()) {
+            List<Header> headerList = new ArrayList<>(userData.headers.asList());
+            headerList.addAll(requestData.headers.asList());
+            userData.headers = new Headers(headerList);
         }
         if (!requestData.cookies.asList().isEmpty()) {
             List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());

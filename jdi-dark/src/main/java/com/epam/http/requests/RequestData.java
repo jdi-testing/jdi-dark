@@ -63,6 +63,25 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set path parameters required to be inserted in URL.     *
+     *
+     * @param params query parameters
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(Object[][] params) {
+        return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
+    }
+
+    /**
+     * @param paramName  query parameter name
+     * @param paramValue query parameter value
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(String paramName, String paramValue) {
+        return requestQueryParams(new Object[][]{{paramName, paramValue}});
+    }
+
+    /**
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {

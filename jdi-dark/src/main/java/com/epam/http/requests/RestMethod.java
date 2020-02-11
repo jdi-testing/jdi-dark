@@ -185,6 +185,10 @@ public class RestMethod<T> {
         data.contentType = ct.toString();
     }
 
+    public void setContentType(String ct){
+        data.contentType = ct;
+    }
+
     public void addHeaders(Header[] headers) {
         for (Header header : headers)
             addHeader(header);

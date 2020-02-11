@@ -149,10 +149,14 @@ public class ServiceInit {
             method.addHeader(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
             method.addHeaders(field.getAnnotation(Headers.class).value());
-        if (field.isAnnotationPresent(Cookie.class))
-            method.addCookie(field.getAnnotation(Cookie.class));
-        if (field.isAnnotationPresent(Cookies.class))
-            method.addCookies(field.getAnnotation(Cookies.class).value());
+        if (field.isAnnotationPresent(Cookie.class)) {
+            setupCookie(method, field.getAnnotation(Cookie.class));
+        }
+        if (field.isAnnotationPresent(Cookies.class)) {
+            for (Cookie cookie : field.getAnnotation(Cookies.class).value()) {
+                setupCookie(method, cookie);
+            }
+        }
         /* Case for class annotations*/
         if (c.isAnnotationPresent(QueryParameter.class))
             method.addQueryParameters(c.getAnnotation(QueryParameter.class));
@@ -164,6 +168,16 @@ public class ServiceInit {
         if (field.isAnnotationPresent(QueryParameters.class))
             method.addQueryParameters(field.getAnnotation(QueryParameters.class).value());
         return method;
+    }
+
+    private static void setupCookie(RestMethod method, Cookie cookie) {
+        if (cookie.value().equals("[unassigned]")) {
+            method.addCookie(cookie.name());
+        } else if (cookie.additionalValues()[0].equals("[unassigned]")) {
+            method.addCookie(cookie.name(), cookie.value());
+        } else {
+            method.addCookie(cookie.name(), cookie.value(), cookie.additionalValues());
+        }
     }
 
     /**

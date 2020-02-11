@@ -36,5 +36,3 @@ public class RestRequest {
         return rs.toString();
     }
 }
-
-//catch (Exception ex) { throw exception(ex.getLocalizedMessage()); }

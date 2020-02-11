@@ -76,7 +76,6 @@ public class JettyService {
     public static RestMethod deleteGreet;
 
     @DELETE("/body")
-    @ContentType(TEXT)
     public static RestMethod deleteBody;
 
     @POST("/greetXML")

@@ -259,12 +259,12 @@ public class RestMethod<T> {
      *
      * @param params collection of query parameters from HTTP method field annotation
      */
-    void addQueryParameters(QueryParameter... params) {
+    public void addQueryParameters(QueryParameter... params) {
         data.queryParams.addAll(new MapArray<>(params,
                 QueryParameter::name, QueryParameter::value));
     }
 
-    void addFormParameters(FormParameter... params) {
+    public void addFormParameters(FormParameter... params) {
         data.formParams.addAll(new MapArray<>(params,
                 FormParameter::name, FormParameter::value));
     }

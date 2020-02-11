@@ -59,6 +59,28 @@ public class ParamTest extends WithJetty {
     }
 
     @Test
+    public void multipleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
+        // JettyService service = init(JettyService.class);
+        // For some reason Scalatra returns the order different when running in Intellij and Maven
+        /*RestResponse resp = GET(requestData(d -> {
+            d.uri = ("http://localhost:8080/noValueParam");
+            d.path = ("?some&some1");
+
+        }));*/
+
+        RestResponse resp1 =
+
+                JettyService.getNoValueParamWithParamInUrl.call("some1=one&some2=two");
+        //   .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
+        //assertEquals(response.body, "Params: some=");
+
+        //requestData(
+        //                rd -> { rd.url = "some&some1";
+        //                })
+
+    }
+
+    @Test
     public void formParamsAreUrlEncodedWithUtf8WhenCharsetDefinedWithNoEqualSign() {
         RestResponse resp = greetPost.call(requestData(rd -> {
             rd.contentType = "application/x-www-form-urlencoded; charset";

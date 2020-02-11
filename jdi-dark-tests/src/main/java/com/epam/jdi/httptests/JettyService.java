@@ -198,4 +198,7 @@ public class JettyService {
     @POST("/multipart/text")
     public static RestMethod postMultipartText;
 
+    @GET("/noValueParam?%s")
+    public static RestMethod getNoValueParamWithParamInUrl;
+
 }

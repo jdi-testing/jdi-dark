@@ -17,6 +17,7 @@ import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -26,6 +27,8 @@ import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
 
 /**
@@ -286,7 +289,7 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        RequestSpecification runSpec = getInitSpec();
+        RequestSpecification runSpec = getInitSpec().log().all();
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
@@ -338,6 +341,23 @@ public class RestMethod<T> {
     public RestResponse call(String... params) {
         if (path.contains("%s") && params.length > 0) {
             path = format(path, params);
+            //params parsing logic, if query parameters are set in url
+            List<String> paramsList = new ArrayList<>(Arrays.asList(params));
+            for (int i = 0; i < paramsList.size(); i++) {
+                if (paramsList.get(i).contains("&")) {
+                    List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
+                    paramsList.remove(i);
+                    paramsList.addAll(i, tempList);
+                }
+            }
+            paramsList.forEach(param -> {
+                if (param.contains("=")) {
+                    String paramName = substringBefore(param, "=");
+                    String paramValue = substringAfter(param, "=");
+                    data.queryParams.add(paramName, paramValue);
+                } else
+                    data.queryParams.add(param, null);
+            });
         }
         return call();
     }

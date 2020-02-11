@@ -1,6 +1,6 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.components.JDIHeaders;
+//import com.epam.http.requests.components.JDIHeaders;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
@@ -9,6 +9,8 @@ import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.internal.MapCreator;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class RequestData extends DataClass<RequestData> {
     public String path = null;
     public String body = null;
     public String contentType = null;
-    public JDIHeaders headers = new JDIHeaders();
+    public Headers headers = new Headers();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
     public Cookies cookies = new Cookies();
@@ -115,7 +117,7 @@ public class RequestData extends DataClass<RequestData> {
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {
-        headers.clear();
+        headers = new Headers();
         pathParams.clear();
         queryParams.clear();
         cookies = new Cookies();
@@ -208,4 +210,89 @@ public class RequestData extends DataClass<RequestData> {
         Map map = mapArray.toMap();
         return addCookies(map);
     }
+/*******************************************************
+ *
+ *
+ */
+    /**
+     * Adds cookies to HTTP request
+     *
+     * @param objects pairs of cookies name and value
+     * @return generated request data with provided cookies
+     */
+    public RequestData addHeaders(Object[][] objects) {
+        List<Header> headerList = new ArrayList<>();
+        for (Object[] header : objects) {
+            headerList.add(new Header(header[0].toString(), header[1].toString()));
+        }
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
+     * Adds cookie without value to HTTP request
+     *
+     * @param name of cookie
+     * @return generated request data with provided cookie
+     */
+//    public RequestData addHeader(String name) {
+//        return addHeader(name, "");
+//    }
+//
+//    /**
+//     * Adds cookie with multiple values to HTTP request
+//     *
+//     * @param name             of cookie
+//     * @param value            of cookie
+//     * @param additionalValues of cookie
+//     * @return generated request data with provided cookie
+//     */
+//    public RequestData addHeader(String name, String value, String... additionalValues) {
+//        List<Header> headerList = new ArrayList<>(headers.asList());
+//        headerList.add(new Header(name, value));
+//        for (String headeValue : additionalValues) {
+//            headerList.add(new Header(name, cookieValue));
+//        }
+//        headers = new Headers(headerList);
+//        return this;
+//    }
+//
+//    /**
+//     * Adds multiple cookies to HTTP request
+//     *
+//     * @param name                 of cookie
+//     * @param value                of cookie
+//     * @param cookieNameValuePairs additional pairs of name and value
+//     * @return generated request data with provided cookies
+//     */
+//    public RequestData addCookies(String name, Object value, Object... cookieNameValuePairs) {
+//        Map<String, Object> map = MapCreator.createMapFromParams(MapCreator.CollisionStrategy.OVERWRITE, name, value, cookieNameValuePairs);
+//        return addCookies(map);
+//    }
+//
+//    /**
+//     * Adds cookies from Map to HTTP request
+//     *
+//     * @param map of cookies
+//     * @return generated request data with provided cookies
+//     */
+//    public RequestData addCookies(Map map) {
+//        List<Cookie> cookieList = new ArrayList<>(cookies.asList());
+//        for (Object cookie : map.keySet()) {
+//            cookieList.add(new Cookie.Builder(cookie.toString(), map.get(cookie).toString()).build());
+//        }
+//        cookies = new Cookies(cookieList);
+//        return this;
+//    }
+//
+//    /**
+//     * Adds cookies from MapArray to HTTP request
+//     *
+//     * @param mapArray of cookies
+//     * @return generated request data with provided cookies
+//     */
+//    public RequestData addCookies(MapArray mapArray) {
+//        Map map = mapArray.toMap();
+//        return addCookies(map);
+//    }
 }

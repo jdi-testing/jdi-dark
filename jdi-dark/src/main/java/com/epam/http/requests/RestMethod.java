@@ -408,8 +408,8 @@ public class RestMethod<T> {
         if (data.body != null) {
             spec.body(data.body);
         }
-        if (data.headers.any()) {
-            spec.headers(data.headers.asRaHeaders());
+        if (data.headers.asList().isEmpty()) {
+            spec.headers(data.headers);
         }
         if (!data.cookies.asList().isEmpty()) {
             spec.cookies(data.cookies);

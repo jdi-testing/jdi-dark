@@ -10,12 +10,12 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.internal.MapCreator;
+import io.restassured.specification.MultiPartSpecification;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import io.restassured.specification.MultiPartSpecification;
-import java.io.File;
 
 /**
  * Represents all HTTP request data.
@@ -73,6 +73,27 @@ public class RequestData extends DataClass<RequestData> {
      */
     public static RequestData requestPathParams(String paramName, String paramValue) {
         return requestPathParams(new Object[][]{{paramName, paramValue}});
+    }
+
+    /**
+     * Set query parameters to request
+     *
+     * @param params query parameters
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(Object[][] params) {
+        return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
+    }
+
+    /**
+     * Set query parameters to request
+     *
+     * @param paramName  query parameter name
+     * @param paramValue query parameter value
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(String paramName, String paramValue) {
+        return requestQueryParams(new Object[][]{{paramName, paramValue}});
     }
 
     /**

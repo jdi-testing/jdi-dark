@@ -11,6 +11,7 @@ import com.epam.http.annotations.GET;
 import com.epam.http.annotations.HEAD;
 import com.epam.http.annotations.Header;
 import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.OPTIONS;
 import com.epam.http.annotations.PATCH;
 import com.epam.http.annotations.POST;
@@ -175,6 +176,8 @@ public class ServiceInit {
             method.addFormParameters(field.getAnnotation(FormParameter.class));
         if (field.isAnnotationPresent(FormParameters.class))
             method.addFormParameters(field.getAnnotation(FormParameters.class).value());
+        if (field.isAnnotationPresent(MultiPart.class))
+            method.addMultiPartParams(field.getAnnotation(MultiPart.class));
         return method;
     }
 

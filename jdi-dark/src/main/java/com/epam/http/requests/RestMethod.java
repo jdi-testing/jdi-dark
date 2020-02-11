@@ -1,6 +1,7 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.FormParameter;
+import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
@@ -8,11 +9,13 @@ import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
+import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -38,6 +41,11 @@ public class RestMethod<T> {
     private RequestSpecification spec = given().filter(new AllureRestAssured());
     private String url = null;
     private String path = null;
+
+    public RequestData getData() {
+        return data;
+    }
+
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
@@ -262,6 +270,15 @@ public class RestMethod<T> {
     public void addQueryParameters(QueryParameter... params) {
         data.queryParams.addAll(new MapArray<>(params,
                 QueryParameter::name, QueryParameter::value));
+    }
+
+    /**
+     * Set query parameters to HTTP request.
+     *
+     * @param multiPartParams multiPart params
+     */
+    public void addMultiPartParams(MultiPart multiPartParams) {
+        data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
     }
 
     public void addFormParameters(FormParameter... params) {

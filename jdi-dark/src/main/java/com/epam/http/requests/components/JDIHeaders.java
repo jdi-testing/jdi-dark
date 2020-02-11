@@ -30,9 +30,17 @@ public class JDIHeaders {
      * This method is a mere example how one can use this class.
      * In this case the following method allows to build headers out
      * of a string array object like this:
-     *  JDIHeader headers = new JDIHeader(
+     *  JDIHeaders headers = new JDIHeaders(
      *      new String[][] {{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
-     *      {"MultiValuesHeader", "multiValue_01", "multiValue_02", "multiValue_03}});
+     *      {"MultiValuesHeader", "multiValue_01", "multiValue_02", "multiValue_03"}});
+     *
+     *      this will creare the following list of headers":
+     *      Header_01 : Value_01
+     *      Header_02 : Value_02
+     *      MultiValuesHeader : multiValue_01
+     *      MultiValuesHeader : multiValue_02
+     *      MultiValuesHeader : multiValue_03
+     *
      * @param listOfHeaderStrings
      */
     public JDIHeaders(String[][] listOfHeaderStrings) {
@@ -47,8 +55,9 @@ public class JDIHeaders {
             else {
                 String name = headerArray[0];
                 String[] valuesArray = Arrays.copyOfRange(headerArray, 1, headerArray.length);
-                String value = String.join(",", valuesArray);
-                this.headers.add(new Header(name, value));
+                for (String value : valuesArray) {
+                    this.headers.add(new Header(name, value));
+                }
             }
         }
     }
@@ -140,5 +149,7 @@ public class JDIHeaders {
     public boolean any() {
         return this.size() > 0;
     }
+
+
 }
 

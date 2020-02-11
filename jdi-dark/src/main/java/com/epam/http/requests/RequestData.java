@@ -209,15 +209,12 @@ public class RequestData extends DataClass<RequestData> {
         Map map = mapArray.toMap();
         return addCookies(map);
     }
-/*******************************************************
- *
- *
- */
+
     /**
-     * Adds cookies to HTTP request
+     * Adds headers to HTTP request
      *
-     * @param objects pairs of cookies name and value
-     * @return generated request data with provided cookies
+     * @param objects pairs of headers name and value
+     * @return generated request data with provided headers
      */
     public RequestData addHeaders(Object[][] objects) {
         List<Header> headerList = new ArrayList<>();
@@ -229,22 +226,22 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
-     * Adds cookie without value to HTTP request
+     * Adds header without value to HTTP request
      *
-     * @param name of cookie
-     * @return generated request data with provided cookie
+     * @param name of header
+     * @return generated request data with provided header
      */
     public RequestData addHeader(String name) {
         return addHeader(name, "");
     }
 
     /**
-     * Adds cookie with multiple values to HTTP request
+     * Adds header with multiple values to HTTP request
      *
-     * @param name             of cookie
-     * @param value            of cookie
-     * @param additionalValues of cookie
-     * @return generated request data with provided cookie
+     * @param name             of header
+     * @param value            of header
+     * @param additionalValues of header
+     * @return generated request data with provided header
      */
     public RequestData addHeader(String name, String value, String... additionalValues) {
         List<Header> headerList = new ArrayList<>(headers.asList());
@@ -258,10 +255,10 @@ public class RequestData extends DataClass<RequestData> {
 
 
     /**
-     * Adds cookies from Map to HTTP request
+     * Adds header from Map to HTTP request
      *
-     * @param map of cookies
-     * @return generated request data with provided cookies
+     * @param map of header
+     * @return generated request data with provided headers
      */
     public RequestData addHeaders(Map map) {
         List<Header> headerList = new ArrayList<>(headers.asList());
@@ -273,10 +270,10 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
-     * Adds cookies from MapArray to HTTP request
+     * Adds headers from MapArray to HTTP request
      *
-     * @param mapArray of cookies
-     * @return generated request data with provided cookies
+     * @param mapArray of headers
+     * @return generated request data with provided headers
      */
     public RequestData addHeaders(MapArray mapArray) {
         Map map = mapArray.toMap();

@@ -4,6 +4,8 @@ import com.epam.http.annotations.ContentType;
 import com.epam.http.annotations.Cookie;
 import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.FormParameter;
+import com.epam.http.annotations.FormParameters;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
 import com.epam.http.annotations.POST;
@@ -142,6 +144,21 @@ public class JettyService {
 
     @GET("/noValueParam")
     public static RestMethod getNoValueParam;
+
+    @PUT("/noValueParam")
+    public static RestMethod putNoValueParam;
+
+    @POST("/noValueParam")
+    public static RestMethod postNoValueParam;
+
+    @POST("/noValueParam")
+    @FormParameters(
+            @FormParameter(name = "some1", value = "one")
+    )
+    public static RestMethod postNoValueParamDefinedFormParam;
+
+    @POST("/charEncoding")
+    public static RestMethod postCharEncoding;
 
     @GET("/redirect")
     public static RestMethod postRedirect;

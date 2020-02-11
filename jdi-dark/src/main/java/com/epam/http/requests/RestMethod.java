@@ -1,5 +1,6 @@
 package com.epam.http.requests;
 
+import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
@@ -263,6 +264,11 @@ public class RestMethod<T> {
                 QueryParameter::name, QueryParameter::value));
     }
 
+    void addFormParameters(FormParameter... params) {
+        data.formParams.addAll(new MapArray<>(params,
+                FormParameter::name, FormParameter::value));
+    }
+
     private void logRequest(RequestData... rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
@@ -354,6 +360,9 @@ public class RestMethod<T> {
         if (!requestData.queryParams.isEmpty()) {
             userData.queryParams.addAll(requestData.queryParams);
         }
+        if (!requestData.formParams.isEmpty()) {
+            userData.formParams.addAll(requestData.formParams);
+        }
         if (requestData.body != null) {
             userData.body = requestData.body;
         }
@@ -404,6 +413,9 @@ public class RestMethod<T> {
         }
         if (data.queryParams.any()) {
             spec.queryParams(data.queryParams.toMap());
+        }
+        if (data.formParams.any()) {
+            spec.formParams(data.formParams.toMap());
         }
         if (data.body != null) {
             spec.body(data.body);

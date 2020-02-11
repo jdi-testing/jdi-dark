@@ -1,0 +1,40 @@
+package com.epam.jdi.httptests;
+
+import com.epam.jdi.httptests.support.WithJetty;
+import io.restassured.builder.MultiPartSpecBuilder;
+import org.apache.commons.io.IOUtils;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import static com.epam.http.requests.RequestData.requestData;
+import static com.epam.http.requests.ServiceInit.init;
+import static org.hamcrest.Matchers.is;
+
+public class MultiPartUploadTests extends WithJetty {
+
+    @BeforeTest
+    public void before() {
+        init(JettyService.class);
+    }
+
+    @Test
+    public void multiPartUploadingWorksForByteArrays() throws Exception {
+
+        final byte[] bytes = IOUtils.toByteArray(getClass().getResourceAsStream("/car-records.xsd"));
+        JettyService.postMultipartFile.call(requestData(rd ->
+                rd.setMultiPart(new MultiPartSpecBuilder(bytes).controlName("file").fileName("myFile")))).assertThat()
+                .statusCode(200)
+                .body(is(new String(bytes)));
+    }
+
+    @Test
+    public void multiPartUploadingWorksForMultipleStrings() {
+
+        JettyService.postMultipartText.call(requestData(rd -> {
+            rd.setMultiPart(new MultiPartSpecBuilder("Some text").controlName("text"));
+            rd.setMultiPart(new MultiPartSpecBuilder("Some other text").controlName("text"));
+        })).assertThat()
+                .statusCode(200)
+                .body(is("Some text,Some other text"));
+    }
+}

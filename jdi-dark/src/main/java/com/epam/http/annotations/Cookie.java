@@ -18,5 +18,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface Cookie {
     String name();
-    String value();
+
+    String value() default "[unassigned]";
+
+    String[] additionalValues() default "[unassigned]";
 }

@@ -4,6 +4,7 @@ import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matcher;
@@ -146,12 +147,21 @@ public class RestResponse {
     }
 
     /**
-     * Get response headers.
+     * Get response headers as list.
      *
      * @return response headers list
      */
-    public List<Header> headers() {
+    public List<Header> headersAsList() {
         return raResponse.getHeaders().asList();
+    }
+
+    /**
+     * Get response headers as list.
+     *
+     * @return response headers list
+     */
+    public Headers headers() {
+        return raResponse.getHeaders();
     }
 
     /**

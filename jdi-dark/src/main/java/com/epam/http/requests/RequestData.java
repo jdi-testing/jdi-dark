@@ -1,5 +1,6 @@
 package com.epam.http.requests;
 
+import com.epam.http.requests.components.JDIHeaders;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
@@ -9,12 +10,12 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.internal.MapCreator;
+import io.restassured.specification.MultiPartSpecification;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import io.restassured.specification.MultiPartSpecification;
-import java.io.File;
 
 /**
  * Represents all HTTP request data.
@@ -27,9 +28,10 @@ public class RequestData extends DataClass<RequestData> {
     public String path = null;
     public String body = null;
     public String contentType = null;
-    public MultiMap<String, String> headers = new MultiMap<>();
+    public JDIHeaders headers = new JDIHeaders();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
+    public MultiMap<String, String> formParams = new MultiMap<>();
     public Cookies cookies = new Cookies();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
 
@@ -75,6 +77,27 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set query parameters to request
+     *
+     * @param params query parameters
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(Object[][] params) {
+        return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
+    }
+
+    /**
+     * Set query parameters to request
+     *
+     * @param paramName  query parameter name
+     * @param paramValue query parameter value
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(String paramName, String paramValue) {
+        return requestQueryParams(new Object[][]{{paramName, paramValue}});
+    }
+
+    /**
      * Set content type to request data.
      *
      * @param contentType  content type as string
@@ -117,6 +140,7 @@ public class RequestData extends DataClass<RequestData> {
         headers.clear();
         pathParams.clear();
         queryParams.clear();
+        formParams.clear();
         cookies = new Cookies();
         body = null;
         path = null;

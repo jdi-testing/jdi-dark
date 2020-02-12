@@ -114,7 +114,7 @@ public class HeaderTests extends WithJetty {
         Header header1 = new Header("MyHeader1", "MyValue1");
         Header header2 = new Header("MyHeader2", "MyValue2");
         Header header3 = new Header("MyHeader3", "MyValue3");
-        RestResponse response = getHeader.call(
+        RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
                         requestData.addHeaders(header1, header2, header3)));
         response.isOk();
@@ -161,5 +161,14 @@ public class HeaderTests extends WithJetty {
         assertThat(response.headers().getValues("MultiValuesHeader").size(), is(3));
         assertThat(response.headers().getValues("MultiValuesHeader"),
                 hasItems("multiValue_01", "multiValue_02", "multiValue_03"));
+    }
+
+    @Test
+    public void multipleHeadersTestExample0001() {
+        RestResponse response = getMultiHeaderReflect.call(
+                requestData(requestData ->
+                        requestData.addHeader("new", "new")));
+        response.isOk();
+        response.assertThat().header("new", equalTo("new"));
     }
 }

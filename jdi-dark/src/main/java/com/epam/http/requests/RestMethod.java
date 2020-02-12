@@ -191,6 +191,18 @@ public class RestMethod<T> {
     }
 
     /**
+     * Adds headers from number of Header objects to HTTP request
+     *
+     * @param headerObjects
+     * @return generated request data with provided headers
+     */
+    public void addHeaders(Header... headerObjects) {
+        List<Header> headerList = new ArrayList<>(data.headers.asList());
+        Collections.addAll(headerList, headerObjects);
+        data.headers = new Headers(headerList);
+    }
+
+    /**
      * Set Content-Type to HTTP request.
      *
      * @param ct Rest Assured Content-Type
@@ -379,7 +391,6 @@ public class RestMethod<T> {
             List<Header> headerList = new ArrayList<>(userData.headers.asList());
             headerList.addAll(requestData.headers.asList());
             userData.headers = new Headers(headerList);
-            System.out.println("1");
         }
         if (!requestData.cookies.asList().isEmpty()) {
             List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
@@ -432,7 +443,7 @@ public class RestMethod<T> {
         if (data.body != null) {
             spec.body(data.body);
         }
-        if (data.headers.asList().isEmpty()) {
+        if (!data.headers.asList().isEmpty()) {
             spec.headers(data.headers);
         }
         if (!data.cookies.asList().isEmpty()) {

@@ -289,7 +289,7 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        RequestSpecification runSpec = getInitSpec();
+        RequestSpecification runSpec = getInitSpec().log().all();
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
@@ -342,22 +342,24 @@ public class RestMethod<T> {
         if (path.contains("%s") && params.length > 0) {
             path = format(path, params);
             //params parsing logic, if query parameters are set in url
-            List<String> paramsList = new ArrayList<>(Arrays.asList(params));
-            for (int i = 0; i < paramsList.size(); i++) {
-                if (paramsList.get(i).contains("&")) {
-                    List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
-                    paramsList.remove(i);
-                    paramsList.addAll(i, tempList);
+            if (path.contains("?")) {
+                userData.empty = false;
+                List<String> paramsList = new ArrayList<>(Arrays.asList(params));
+                for (int i = 0; i < paramsList.size(); i++) {
+                    if (paramsList.get(i).contains("&")) {
+                        List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
+                        paramsList.remove(i);
+                        paramsList.addAll(i, tempList);
+                    }
                 }
+                paramsList.forEach(param -> {
+                    if (param.contains("=")) {
+                        String paramName = substringBefore(param, "=");
+                        String paramValue = substringAfter(param, "=");
+                        userData.queryParams.add(paramName, paramValue);
+                    } else userData.queryParams.add(param, null);
+                });
             }
-            paramsList.forEach(param -> {
-                if (param.contains("=")) {
-                    String paramName = substringBefore(param, "=");
-                    String paramValue = substringAfter(param, "=");
-                    data.queryParams.add(paramName, paramValue);
-                } else
-                    data.queryParams.add(param, null);
-            });
         }
         return call();
     }

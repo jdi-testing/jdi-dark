@@ -150,25 +150,14 @@ public class HeaderTests extends WithJetty {
     }
 
     @Test
-    public void requestDataAllowsSpecifyingMultipleHeadersWithMultipleValues() {
+    public void requestDataAllowsSpecifyingMultipleHeadersAsObject() {
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
                         requestData.addHeaders(new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
-                                {"MultiValuesHeader", "multiValue_01"}})));
+                                {"Header_03", "Value_03"}})));
         response.isOk();
-        response.assertThat().header("Header_01", equalTo("Value_01"));
-        response.assertThat().header("Header_02", equalTo("Value_02"));
-        assertThat(response.headers().getValues("MultiValuesHeader").size(), is(3));
-        assertThat(response.headers().getValues("MultiValuesHeader"),
-                hasItems("multiValue_01", "multiValue_02", "multiValue_03"));
-    }
-
-    @Test
-    public void multipleHeadersTestExample0001() {
-        RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData ->
-                        requestData.addHeader("new", "new")));
-        response.isOk();
-        response.assertThat().header("new", equalTo("new"));
+        response.assertThat().header("Header_01", equalTo("Value_01"))
+            .header("Header_02", equalTo("Value_02"))
+            .header("Header_03", equalTo("Value_03"));
     }
 }

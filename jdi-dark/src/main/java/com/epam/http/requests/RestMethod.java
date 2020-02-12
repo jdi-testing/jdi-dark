@@ -17,7 +17,9 @@ import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.getDomain;
@@ -131,28 +133,6 @@ public class RestMethod<T> {
     /**
      * Set header to HTTP request.
      *
-     * @param name  of header field
-     * @param value of header field
-     */
-    public void addHeader(String name, String value) {
-        List<Header> headerList = new ArrayList<>(data.headers.asList());
-        headerList.add(new Header(name, value));
-        data.headers = new Headers(headerList);
-    }
-
-//    /**
-//     * Set header to HTTP request or replace the value of header if it had been added before.
-//     *
-//     * @param name  of header field
-//     * @param value of header field
-//     */
-//    public void addOrReplaceHeader(String name, String value) {
-//        data.headers.addOrReplace(name, value);
-//    }
-
-    /**
-     * Set header to HTTP request.
-     *
      * @param header field name and value presented as annotation
      */
     public void addHeader(com.epam.http.annotations.Header header) {
@@ -160,22 +140,53 @@ public class RestMethod<T> {
     }
 
     /**
-     * Set header to HTTP request from given Rest Assured header.
+     * Set header to HTTP request.
      *
-     * @param header Rest Assured header
+     * @param headers pairs of field name and value presented as annotation
      */
-    public void addHeader(Header header) {
-        addHeader(header.getName(), header.getValue());
+    public void addHeaders(com.epam.http.annotations.Header... headers) {
+        for (com.epam.http.annotations.Header header : headers) {
+            addHeader(header);
+        }
     }
 
     /**
-     * Set headers to HTTP request from field annotation.
+     * Set header to HTTP request.
      *
-     * @param headers collection of header annotations
+     * @param name  of header
+     * @param value of header
      */
-    public void addHeaders(com.epam.http.annotations.Header... headers) {
-        for (com.epam.http.annotations.Header header : headers)
-            addHeader(header);
+    public void addHeader(String name, String value) {
+        List<Header> headerList = new ArrayList<>(data.headers.asList());
+        headerList.add(new Header(name, value));
+        data.headers = new Headers(headerList);
+    }
+
+    /**
+     * Adds header without value to HTTP request
+     *
+     * @param name of header
+     * @return generated request data with provided header
+     */
+    public void addHeader(String name) {
+        addHeader(name, "");
+    }
+
+    /**
+     * Adds header with multiple values to HTTP request
+     *
+     * @param name             of header
+     * @param value            of header
+     * @param additionalValues of header
+     * @return generated request data with provided header
+     */
+    public void addHeader(String name, String value, String... additionalValues) {
+        List<Header> headerList = new ArrayList<>(data.headers.asList());
+        headerList.add(new Header(name, value));
+        for (String headerValue : additionalValues) {
+            headerList.add(new Header(name, headerValue));
+        }
+        data.headers = new Headers(headerList);
     }
 
     /**
@@ -185,11 +196,6 @@ public class RestMethod<T> {
      */
     public void setContentType(ContentType ct) {
         data.contentType = ct.toString();
-    }
-
-    public void addHeaders(Header[] headers) {
-        for (Header header : headers)
-            addHeader(header);
     }
 
     /**
@@ -364,6 +370,7 @@ public class RestMethod<T> {
             List<Header> headerList = new ArrayList<>(userData.headers.asList());
             headerList.addAll(requestData.headers.asList());
             userData.headers = new Headers(headerList);
+            System.out.println("1");
         }
         if (!requestData.cookies.asList().isEmpty()) {
             List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());

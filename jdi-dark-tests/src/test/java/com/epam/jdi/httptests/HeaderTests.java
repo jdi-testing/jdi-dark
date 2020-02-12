@@ -114,9 +114,9 @@ public class HeaderTests extends WithJetty {
         Header header1 = new Header("MyHeader1", "MyValue1");
         Header header2 = new Header("MyHeader2", "MyValue2");
         Header header3 = new Header("MyHeader3", "MyValue3");
-        RestResponse response = getMultiHeaderReflect.call(
+        RestResponse response = getHeader.call(
                 requestData(requestData ->
-                        requestData.headers = new Headers(header1, header2, header3)));
+                        requestData.addHeaders(header1, header2, header3)));
         response.isOk();
         response.assertThat().header("MyHeader1", equalTo("MyValue1"))
                 .header("MyHeader2", equalTo("MyValue2"))

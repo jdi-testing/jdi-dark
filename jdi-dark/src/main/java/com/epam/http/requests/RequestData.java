@@ -13,6 +13,7 @@ import io.restassured.http.Headers;
 import io.restassured.internal.MapCreator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import io.restassured.specification.MultiPartSpecification;
@@ -270,6 +271,32 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Adds headers from List to HTTP request
+     *
+     * @param list of headers
+     * @return generated request data with provided headers
+     */
+    public RequestData addHeaders(List<Header> list) {
+        List<Header> headerList = new ArrayList<>(headers.asList());
+        headerList.addAll(list);
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
+     * Adds headers from number of Header objects to HTTP request
+     *
+     * @param headerObjects
+     * @return generated request data with provided headers
+     */
+    public RequestData addHeaders(Header... headerObjects) {
+        List<Header> headerList = new ArrayList<>(headers.asList());
+        Collections.addAll(headerList, headerObjects);
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
      * Adds headers from MapArray to HTTP request
      *
      * @param mapArray of headers
@@ -277,6 +304,6 @@ public class RequestData extends DataClass<RequestData> {
      */
     public RequestData addHeaders(MapArray mapArray) {
         Map map = mapArray.toMap();
-        return addCookies(map);
+        return addHeaders(map);
     }
 }

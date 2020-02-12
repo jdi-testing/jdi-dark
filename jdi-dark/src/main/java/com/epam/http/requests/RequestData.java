@@ -88,6 +88,7 @@ public class RequestData extends DataClass<RequestData> {
         return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
     }
 
+
     /**
      * Set query parameters to request
      *
@@ -277,7 +278,6 @@ public class RequestData extends DataClass<RequestData> {
         return this;
     }
 
-
     /**
      * Adds header from Map to HTTP request
      *
@@ -309,7 +309,7 @@ public class RequestData extends DataClass<RequestData> {
     /**
      * Adds headers from number of Header objects to HTTP request
      *
-     * @param headerObjects
+     * @param headerObjects number of header objects to create Headers
      * @return generated request data with provided headers
      */
     public RequestData addHeaders(Header... headerObjects) {

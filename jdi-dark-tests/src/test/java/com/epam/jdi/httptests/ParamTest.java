@@ -3,7 +3,7 @@ package com.epam.jdi.httptests;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.builder.MultiPartSpecBuilder;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestData;
@@ -31,7 +31,7 @@ public class ParamTest extends WithJetty {
     private static final String FIRST_NAME_VALUE = "John";
     private static final String LAST_NAME_VALUE = "Doe";
 
-    @BeforeMethod
+    @BeforeClass
     public void before() {
         init(JettyService.class);
     }

@@ -339,10 +339,11 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        if (path.contains("%s") && params.length > 0) {
-            path = format(path, params);
+        userData.path = path;
+        if (userData.path.contains("%s") && params.length > 0) {
+            userData.path = format(userData.path, params);
             //params parsing logic, if query parameters are set in url
-            if (path.contains("?")) {
+            if (userData.path.contains("?")) {
                 userData.empty = false;
                 List<String> paramsList = new ArrayList<>(Arrays.asList(params));
                 for (int i = 0; i < paramsList.size(); i++) {

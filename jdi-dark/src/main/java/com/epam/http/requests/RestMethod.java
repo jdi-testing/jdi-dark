@@ -289,7 +289,7 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        RequestSpecification runSpec = getInitSpec().log().all();
+        RequestSpecification runSpec = getInitSpec();
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }

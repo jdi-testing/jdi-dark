@@ -2,6 +2,7 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
+import io.restassured.builder.MultiPartSpecBuilder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -13,6 +14,7 @@ import static com.epam.jdi.httptests.JettyService.postNoValueParam;
 import static com.epam.jdi.httptests.JettyService.postNoValueParamDefinedFormParam;
 import static com.epam.jdi.httptests.JettyService.putNoValueParam;
 import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.assertEquals;
@@ -60,24 +62,27 @@ public class ParamTest extends WithJetty {
 
     @Test
     public void multipleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        // JettyService service = init(JettyService.class);
         // For some reason Scalatra returns the order different when running in Intellij and Maven
-        /*RestResponse resp = GET(requestData(d -> {
-            d.uri = ("http://localhost:8080/noValueParam");
-            d.path = ("?some&some1");
+        JettyService.getNoValueParamWithParamInUrl.call("some&some1")
+                .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
+    }
 
-        }));*/
+    @Test
+    public void singleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
+        JettyService.getNoValueParamWithParamInUrl.call("some")
+                .isOk().assertThat().body(is("Params: some="));
+    }
 
-        RestResponse resp1 =
+    @Test
+    public void mixingStartingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
+        JettyService.getNoValueParamWithParamInUrl.call("some1&some2=one")
+                .isOk().assertThat().body(is("Params: some1=some2=one"));
+    }
 
-                JettyService.getNoValueParamWithParamInUrl.call("some1=one&some2=two");
-        //   .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
-        //assertEquals(response.body, "Params: some=");
-
-        //requestData(
-        //                rd -> { rd.url = "some&some1";
-        //                })
-
+    @Test
+    public void mixingEndingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
+        JettyService.getNoValueParamWithParamInUrl.call("some1=one&some2")
+                .isOk().assertThat().body(is("Params: some1=onesome2="));
     }
 
     @Test
@@ -153,5 +158,17 @@ public class ParamTest extends WithJetty {
             rd.formParams.add("some", "");
         }));
         resp.isOk().assertThat().body(anyOf(is("Params: some=some1=one"), is("Params: some1=onesome=")));
+    }
+
+    @Test
+    public void multiPartUploadingWorksForFormParamsAndByteArray() {
+        JettyService.postMultipartMultiple.call(requestData(rd -> {
+            rd.formParams.add("formParam1", "");
+            rd.formParams.add("formParam2", "formParamValue");
+            rd.setMultiPart(new MultiPartSpecBuilder("juX").controlName("file"));
+            rd.setMultiPart(new MultiPartSpecBuilder("body").controlName("string"));
+        })).assertThat()
+                .statusCode(200)
+                .body(containsString("formParam1 -> WrappedArray()"));
     }
 }

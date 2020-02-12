@@ -191,18 +191,6 @@ public class RestMethod<T> {
     }
 
     /**
-     * Adds headers from number of Header objects to HTTP request
-     *
-     * @param headerObjects
-     * @return generated request data with provided headers
-     */
-    public void addHeaders(Header... headerObjects) {
-        List<Header> headerList = new ArrayList<>(data.headers.asList());
-        Collections.addAll(headerList, headerObjects);
-        data.headers = new Headers(headerList);
-    }
-
-    /**
      * Set Content-Type to HTTP request.
      *
      * @param ct Rest Assured Content-Type

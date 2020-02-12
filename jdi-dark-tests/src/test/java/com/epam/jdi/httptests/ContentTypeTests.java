@@ -4,9 +4,11 @@ import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -28,7 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class ContentTypeTests extends WithJetty {
-    @BeforeMethod
+    @BeforeClass
     public void before() {
         init(JettyService.class);
     }
@@ -140,7 +142,7 @@ public class ContentTypeTests extends WithJetty {
     public void headerWithContentTypeEnumWorks() {
         postReturnContentTypeAsBody
                 .call(requestData(d ->
-                        d.headers.add("Content-Type", ContentType.JSON.toString())))
+                        d.headers = new Headers(new Header("Content-Type", ContentType.JSON.toString()))))
                 .assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
     }
 
@@ -148,8 +150,7 @@ public class ContentTypeTests extends WithJetty {
     public void appendsCharsetToNonStreamingContentTypeWhenContentTypeIsExplicitlyDefinedAndEncoderConfigIsConfiguredAccordingly() throws Exception {
         RequestSpecification rs = postReturnContentTypeAsBody.getInitSpec()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(true)));
-        postReturnContentTypeAsBody.setContentType("application/vnd.com.example-v1+xml");
-        RestResponse response = postReturnContentTypeAsBody.call(rs.body("something"));
+        RestResponse response = postReturnContentTypeAsBody.call(rs.body("something").contentType("application/vnd.com.example-v1+xml"));
         response.isOk().assertThat().body(equalTo("application/vnd.com.example-v1+xml; charset=ISO-8859-1"));
     }
 
@@ -163,8 +164,7 @@ public class ContentTypeTests extends WithJetty {
                 "urn:isbn:0-061-99881-8";
         RequestSpecification rs = postTextUriList.getInitSpec()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig().encodeContentTypeAs("my-text", ContentType.TEXT)));
-        postTextUriList.setContentType("my-text");
-        postTextUriList.call(rs.body(uriList))
+        postTextUriList.call(rs.body(uriList).contentType("my-text"))
                 .isOk().assertThat().body("uris.size()", is(6));
     }
 
@@ -182,8 +182,7 @@ public class ContentTypeTests extends WithJetty {
     public void encoderConfigCanSpecifyADefaultCharsetForASpecificContentTypeUsingEnum() {
         RequestSpecification rs = postReturnContentTypeAsBody.getInitSpec()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig().defaultCharsetForContentType(StandardCharsets.ISO_8859_1.toString(), ContentType.JSON)));
-        postReturnContentTypeAsBody.setContentType(ContentType.JSON);
-        postReturnContentTypeAsBody.call(rs)
+        postReturnContentTypeAsBody.call(rs.contentType(ContentType.JSON))
                 .isOk().assertThat().body(equalTo(ContentType.JSON.withCharset(StandardCharsets.ISO_8859_1.toString())));
     }
 
@@ -191,8 +190,7 @@ public class ContentTypeTests extends WithJetty {
     public void doesntAppendCharsetToNonStreamingContentTypeWhenContentTypeIsExplicitlyDefinedAndEncoderConfigIsConfiguredAccordingly() {
         RequestSpecification rs = postReturnContentTypeAsBody.getInitSpec()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)));
-        postReturnContentTypeAsBody.setContentType("application/vnd.com.example-v1+json");
-        RestResponse response = postReturnContentTypeAsBody.call(rs.body("something"));
+        RestResponse response = postReturnContentTypeAsBody.call(rs.body("something").contentType("application/vnd.com.example-v1+json"));
         response.isOk().assertThat().body(equalTo("application/vnd.com.example-v1+json"));
     }
 
@@ -200,8 +198,7 @@ public class ContentTypeTests extends WithJetty {
     public void doesntOverrideDefinedCharsetForNonStreamingContentTypeWhenContentTypeIsExplicitlyDefinedAndEncoderConfigIsConfiguredAccordingly() throws Exception {
         RequestSpecification rs = postReturnContentTypeAsBody.getInitSpec()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(true)));
-        postReturnContentTypeAsBody.setContentType("application/vnd.com.example-v1+json; charSet=UTF-16");
-        postReturnContentTypeAsBody.call(rs.body("something"))
+        postReturnContentTypeAsBody.call(rs.body("something").contentType("application/vnd.com.example-v1+json; charSet=UTF-16"))
                 .isOk().assertThat().body(equalTo("application/vnd.com.example-v1+json; charSet=UTF-16"));
     }
 
@@ -209,8 +206,7 @@ public class ContentTypeTests extends WithJetty {
     public void encoderConfigCanSpecifyADefaultCharsetForASpecificContentTypeUsingString() {
         RequestSpecification rs = postReturnContentTypeAsBody.getInitSpec()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig().defaultCharsetForContentType(StandardCharsets.ISO_8859_1.toString(), "application/json")));
-        postReturnContentTypeAsBody.setContentType(ContentType.JSON);
-        postReturnContentTypeAsBody.call(rs)
+        postReturnContentTypeAsBody.call(rs.contentType(ContentType.JSON))
                 .isOk().assertThat().body(equalTo(ContentType.JSON.withCharset(StandardCharsets.ISO_8859_1.toString())));
     }
 
@@ -228,9 +224,15 @@ public class ContentTypeTests extends WithJetty {
     public void contentTypeIsSentToTheServerWhenUsingAPostRequest() {
         RequestSpecification rs = postContentTypeAsBody.getInitSpec()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)));
-        postContentTypeAsBody.setContentType(ContentType.XML);
-        postContentTypeAsBody.call(rs.queryParam("foo", "bar"))
+        postContentTypeAsBody.call(rs.queryParam("foo", "bar").contentType(ContentType.XML))
                 .isOk().assertThat().body(equalTo(ContentType.XML.toString()));
     }
 
+    @Test
+    public void contentTypeIsSentToTheServerWhenUsingAPostRequest1() {
+        RequestSpecification rs = postContentTypeAsBody.getInitSpec()
+                .config(config().encoderConfig(EncoderConfig.encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(false)));
+        postContentTypeAsBody.call(rs.queryParam("foo", "bar").contentType(ContentType.XML))
+                .isOk().assertThat().body(equalTo(ContentType.XML.toString()));
+    }
 }

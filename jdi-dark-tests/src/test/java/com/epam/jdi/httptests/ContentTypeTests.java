@@ -2,7 +2,6 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
-import io.restassured.RestAssured;
 import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -155,7 +154,7 @@ public class ContentTypeTests extends WithJetty {
     }
 
     @Test
-    public void customRegisteredEncodingOfContentTypeIs_applied_through_encoder_config() {
+    public void customRegisteredEncodingOfContentTypeIsAppliedThroughEncoderConfig() {
         String uriList = "http://www.example.com/raindrops-on-roses\n" +
                 "ftp://www.example.com/sleighbells\n" +
                 "http://www.example.com/crisp-apple-strudel\n" +
@@ -200,7 +199,7 @@ public class ContentTypeTests extends WithJetty {
     @Test
     public void doesntOverrideDefinedCharsetForNonStreamingContentTypeWhenContentTypeIsExplicitlyDefinedAndEncoderConfigIsConfiguredAccordingly() throws Exception {
         RequestSpecification rs = postReturnContentTypeAsBody.getInitSpec()
-                .config(RestAssured.config().encoderConfig(EncoderConfig.encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(true)));
+                .config(config().encoderConfig(EncoderConfig.encoderConfig().appendDefaultContentCharsetToContentTypeIfUndefined(true)));
         postReturnContentTypeAsBody.setContentType("application/vnd.com.example-v1+json; charSet=UTF-16");
         postReturnContentTypeAsBody.call(rs.body("something"))
                 .isOk().assertThat().body(equalTo("application/vnd.com.example-v1+json; charSet=UTF-16"));

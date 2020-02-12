@@ -6,7 +6,7 @@ Feature: Request headers check
     When I have the following headers:
       | Name       | Katarina |
       | Id         | 1        |
-    And I do get request
+    And I do getMethod request
     And I print response
     Then Response status type is OK
     And Response "headers.Name" is "Katarina"

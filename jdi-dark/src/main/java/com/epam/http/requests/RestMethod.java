@@ -462,4 +462,14 @@ public class RestMethod<T> {
         } while (status != OK && watch.getTime() < liveTimeMSec);
         call().isOk();
     }
+
+    /**
+     * Reset predefined request specification to default state.
+     *
+     * return rest method
+     */
+    public RestMethod resetInitSpec() {
+        spec = given().filter(new AllureRestAssured());
+        return this;
+    }
 }

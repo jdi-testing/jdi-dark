@@ -15,7 +15,8 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
-import io.restassured.specification.MultiPartSpecification;
+import io.restassured.mapper.ObjectMapper;
+import io.restassured.mapper.ObjectMapperType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -337,14 +338,52 @@ public class RestMethod<T> {
         return call().getRaResponse().body().as(c);
     }
 
+    /**
+     * Send HTTP request and map response to Java object.
+     *
+     * @param c class to make mapping to
+     * @return Java object
+     */
+    private T callAsData(Class<T> c, ObjectMapper objectMapper) {
+        return call().getRaResponse().body().as(c, objectMapper);
+    }
+
+    /**
+     * Send HTTP request and map response to Java object with specific mapper type.
+     *
+     * @param c class to make mapping to
+     * @param objectMapperType type of object mapper
+     * @return Java object
+     */
+    private T callAsData(Class<T> c, ObjectMapperType objectMapperType) {
+        return call().getRaResponse().body().as(c, objectMapperType);
+    }
+
+    /**
+     * Send HTTP request and map response to Java object.
+     *
+     * @param c class to make mapping to
+     * @return Java object
+     */
     public T asData(Class<T> c) {
         return callAsData(c);
     }
 
-    public RestResponse postData(T data) {
-        this.data.body = gson.toJson(data);
-        return call();
+    /**
+     * Send HTTP request and map response to Java object with specific object mapper.
+     *
+     * @param c class to make mapping to
+     * @param objectMapper used object mapper
+     * @return Java object
+     */
+    public T asData(Class<T> c, ObjectMapper objectMapper) {
+        return callAsData(c, objectMapper);
     }
+
+    public T asData(Class<T> c, ObjectMapperType objectMapperType) {
+        return callAsData(c, objectMapperType);
+    }
+
 
     /**
      * Send HTTP request with specific path parameters.
@@ -359,8 +398,16 @@ public class RestMethod<T> {
         return call();
     }
 
-    public RestResponse post(String body) {
+    public RestResponse post(Object body) {
         return call(new RequestData().set(rd -> rd.body = body));
+    }
+
+    public T post(Object body, Class<T> c) {
+        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
+    }
+
+    public T post(Object body, Class<T> c, ObjectMapper objectMapper) {
+        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c, objectMapper);
     }
 
     /**

@@ -26,7 +26,7 @@ public class RequestData extends DataClass<RequestData> {
     public boolean empty = true;
     public String uri = null;
     public String path = null;
-    public String body = null;
+    public Object body = null;
     public String contentType = null;
     public JDIHeaders headers = new JDIHeaders();
     public MultiMap<String, String> pathParams = new MultiMap<>();
@@ -51,7 +51,7 @@ public class RequestData extends DataClass<RequestData> {
      * @param body as formatted String
      * @return generated request data with provided request body
      */
-    public static RequestData requestBody(String body) {
+    public static RequestData requestBody(Object body) {
         return new RequestData().set(rd -> rd.body = body);
     }
 

@@ -2,11 +2,18 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.requests.components.JDIHeaders;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.tools.map.MultiMap;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.lang.reflect.Type;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RestMethods.GET;
@@ -27,6 +34,16 @@ public class ServiceTest {
 
     @BeforeClass
     public void before() {
+        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
+                new Jackson2ObjectMapperFactory() {
+                    @Override
+                    public ObjectMapper create(Type type, String s) {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                        return objectMapper;
+                    }
+                }
+        ));
         requestSpecification = given().filter(new AllureRestAssured());
         requestSpecification.auth().basic("user", "password");
         service = init(ServiceExample.class, requestSpecification);

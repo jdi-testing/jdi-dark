@@ -55,7 +55,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void supportsPassingPathParamsAsMapToRequestSpec() {
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put("firstName", "John2");
         params.put("lastName", "Doe");
         RestResponse response = getUser
@@ -79,7 +79,7 @@ public class PathParamTests extends WithJetty {
     public void doesntUrlEncodePathParamsInMapWhenUrlEncodingIsDisabled() {
         RestAssured.urlEncodingEnabled = false;
         try {
-            final Map<String, String> params = new HashMap<>();
+            final Map<String, Object> params = new HashMap<>();
             params.put("firstName", "John%20å");
             params.put("lastName", "Doe");
             RestResponse response = getUser

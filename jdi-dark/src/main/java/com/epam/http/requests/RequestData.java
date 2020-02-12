@@ -29,9 +29,9 @@ public class RequestData extends DataClass<RequestData> {
     public String body = null;
     public String contentType = null;
     public JDIHeaders headers = new JDIHeaders();
-    public MultiMap<String, String> pathParams = new MultiMap<>();
-    public MultiMap<String, String> queryParams = new MultiMap<>();
-    public MultiMap<String, String> formParams = new MultiMap<>();
+    public MultiMap<String, Object> pathParams = new MultiMap<>();
+    public MultiMap<String, Object> queryParams = new MultiMap<>();
+    public MultiMap<String, Object> formParams = new MultiMap<>();
     public Cookies cookies = new Cookies();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
 

@@ -1,7 +1,10 @@
 package com.epam.http.requests.components;
 
+import com.epam.jdi.tools.map.MultiMap;
+import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,6 +87,17 @@ public class JDIHeaders {
      */
     public boolean add(String name, String value) {
         return this.headers.add(new Header(name, value));
+    }
+
+    /**
+     * Add a header in the MultiMap using headers Name and Value strings
+     * @return boolean
+     */
+    public boolean addAll(MultiMap<String, String> headers) {
+        for (Pair<String, String> header : headers){
+            this.headers.add(new Header(header.key, header.value));
+        }
+        return false;
     }
 
     /**

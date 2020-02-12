@@ -2,7 +2,6 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.requests.components.JDIHeaders;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.tools.map.MultiMap;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;

@@ -6,6 +6,7 @@ import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.map.MultiMap;
 import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -134,8 +135,82 @@ public class RestMethod<T> {
      * @param name  of header field
      * @param value of header field
      */
-    public void addHeader(String name, String value) {
+    public RestMethod addHeader(String name, String value) {
         data.headers.add(name, value);
+        return this;
+    }
+
+    /**
+     * Set map of headers to HTTP request.
+     *
+     * @param headers pairs of field name and value presented as Map
+     */
+    public RestMethod addHeaders(MultiMap<String, String> headers) {
+        data.headers.addAll(headers);
+        return this;
+    }
+
+    /**
+     * Set queryParam to HTTP request.
+     *
+     * @param name  of queryParam field
+     * @param value of queryParam field
+     */
+    public RestMethod addQueryParam(String name, Object value) {
+        data.queryParams.add(name, value);
+        return this;
+    }
+
+    /**
+     * Set map of queryParams to HTTP request.
+     *
+     * @param queryParams pairs of field name and value presented as Map
+     */
+    public RestMethod addQueryParams(MultiMap<String, Object> queryParams) {
+        data.queryParams.addAll(queryParams);
+        return this;
+    }
+
+    /**
+     * Set pathParam to HTTP request.
+     *
+     * @param name  of pathParam field
+     * @param value of pathParam field
+     */
+    public RestMethod addPathParam(String name, Object value) {
+        data.pathParams.add(name, value);
+        return this;
+    }
+
+    /**
+     * Set map of pathParams to HTTP request.
+     *
+     * @param pathParams pairs of field name and value presented as Map
+     */
+    public RestMethod addPathParams(MultiMap<String, Object> pathParams) {
+        data.pathParams.addAll(pathParams);
+        return this;
+    }
+
+    /**
+     * Set formParam to HTTP request.
+     *
+     * @param name  of formParam field
+     * @param value of formParam field
+     */
+    public RestMethod addFormParam(String name, Object value) {
+        data.formParams.add(name, value);
+        return this;
+    }
+
+    /**
+     * Set map of formParams to HTTP request.
+     *
+     * @param formParams pairs of field name and value presented as Map
+     */
+    public RestMethod addFormParams(MultiMap<String, Object> formParams) {
+        data.formParams.addAll(formParams);
+        return this;
     }
 
 //    /**
@@ -181,8 +256,9 @@ public class RestMethod<T> {
      *
      * @param ct Rest Assured Content-Type
      */
-    public void setContentType(ContentType ct) {
+    public RestMethod setContentType(ContentType ct) {
         data.contentType = ct.toString();
+        return this;
     }
 
     public void addHeaders(Header[] headers) {
@@ -216,10 +292,11 @@ public class RestMethod<T> {
      * @param name  of cookie
      * @param value of cookie
      */
-    public void addCookie(String name, String value) {
+    public RestMethod addCookie(String name, String value) {
         List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
         cookieList.add(new Cookie.Builder(name, value).build());
         data.cookies = new Cookies(cookieList);
+        return this;
     }
 
     /**
@@ -227,8 +304,9 @@ public class RestMethod<T> {
      *
      * @param name of cookie
      */
-    public void addCookie(String name) {
+    public RestMethod addCookie(String name) {
         addCookie(name, "");
+        return this;
     }
 
     /**
@@ -238,7 +316,7 @@ public class RestMethod<T> {
      * @param value            of cookie
      * @param additionalValues additional values of the cookie
      */
-    public void addCookie(String name, String value, String[] additionalValues) {
+    public RestMethod addCookie(String name, String value, String[] additionalValues) {
         List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
         cookieList.add(new Cookie.Builder(name, value).build());
         if (additionalValues != null) {
@@ -247,6 +325,7 @@ public class RestMethod<T> {
             }
         }
         data.cookies = new Cookies(cookieList);
+        return this;
     }
 
     public RestMethod expectStatus(ResponseStatusType status) {

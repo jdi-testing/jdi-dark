@@ -1,8 +1,6 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.requests.components.JDIHeaders;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.tools.map.MultiMap;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
@@ -47,7 +45,7 @@ public class ServiceTest {
         RestResponse resp = GET(requestData(
                 rd -> {
                     rd.uri = "https://httpbin.org/get";
-                    rd.headers = new JDIHeaders(new String[][]{
+                    rd.addHeaders(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}
                     });

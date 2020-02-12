@@ -1,6 +1,5 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.requests.components.JDIHeaders;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.http.Header;
@@ -38,18 +37,16 @@ public class HeaderTests extends WithJetty {
     public void requestDataAllowsSpecifyingHeader() {
         RestResponse response = getHeader.call(
                 requestData(requestData ->
-                        requestData.headers = new JDIHeaders(new Header("MyHeader", "TestValue"))));
+                        requestData.headers = new Headers(new Header("MyHeader", "TestValue"))));
         response.isOk();
         response.assertThat().body(containsString("MyHeader"));
     }
 
     @Test
     public void requestDataAllowsSpecifyingMultipleHeaders() {
-        JDIHeaders testHeaders = new JDIHeaders(new String[][]
-                {{"MyHeader", "MyValue"}, {"SecondHeader", "MyValue2"}});
         RestResponse response = getHeader.call(
                 requestData(requestData ->
-                        requestData.headers = testHeaders));
+                        requestData.addHeaders(new Object[][]{{"MyHeader", "MyValue"}, {"SecondHeader", "MyValue2"}})));
         response.isOk();
         response.assertThat().body(containsString("MyHeader"))
                 .and().assertThat().body(containsString("SecondHeader"));
@@ -119,7 +116,7 @@ public class HeaderTests extends WithJetty {
         Header header3 = new Header("MyHeader3", "MyValue3");
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
-                        requestData.headers = new JDIHeaders(header1, header2, header3)));
+                        requestData.addHeaders(header1, header2, header3)));
         response.isOk();
         response.assertThat().header("MyHeader1", equalTo("MyValue1"))
                 .header("MyHeader2", equalTo("MyValue2"))
@@ -135,7 +132,8 @@ public class HeaderTests extends WithJetty {
         final String firstValue = headers.getValue("MultiHeader");
         final List<Header> headerListHeader = headers.getList("MultiHeader");
         assertThat(headerListString, hasItems("Value 1", "Value 2"));
-        assertThat(headerListHeader, hasItems(new Header("MultiHeader", "Value 1"), new Header("MultiHeader", "Value 2")));
+        assertThat(headerListHeader, hasItems(new Header("MultiHeader", "Value 1"),
+                new Header("MultiHeader", "Value 2")));
         assertThat(firstValue, equalTo("Value 2"));
     }
 
@@ -145,25 +143,21 @@ public class HeaderTests extends WithJetty {
         Header header2 = new Header("MyHeader", "SomethingElse");
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
-                        requestData.headers = new JDIHeaders(header1, header2)));
+                        requestData.headers = new Headers(header1, header2)));
         response.isOk();
         assertThat(response.headers().getValues("MyHeader").size(), is(2));
         assertThat(response.headers().getValues("MyHeader"), hasItems("Something", "SomethingElse"));
     }
 
     @Test
-    public void requestDataAllowsSpecifyingMultipleHeadersWithMultipleValues() {
-        JDIHeaders testHeaders = new JDIHeaders(new String[][]
-                {{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
-                        {"MultiValuesHeader", "multiValue_01", "multiValue_02", "multiValue_03"}});
+    public void requestDataAllowsSpecifyingMultipleHeadersAsObject() {
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
-                        requestData.headers = testHeaders));
+                        requestData.addHeaders(new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
+                                {"Header_03", "Value_03"}})));
         response.isOk();
-        response.assertThat().header("Header_01", equalTo("Value_01"));
-        response.assertThat().header("Header_02", equalTo("Value_02"));
-        assertThat(response.headers().getValues("MultiValuesHeader").size(), is(3));
-        assertThat(response.headers().getValues("MultiValuesHeader"),
-                hasItems("multiValue_01", "multiValue_02", "multiValue_03"));
+        response.assertThat().header("Header_01", equalTo("Value_01"))
+            .header("Header_02", equalTo("Value_02"))
+            .header("Header_03", equalTo("Value_03"));
     }
 }

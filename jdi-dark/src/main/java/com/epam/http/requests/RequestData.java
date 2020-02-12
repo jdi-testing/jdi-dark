@@ -1,6 +1,5 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.components.JDIHeaders;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
@@ -9,11 +8,14 @@ import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.internal.MapCreator;
 import io.restassured.specification.MultiPartSpecification;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +30,7 @@ public class RequestData extends DataClass<RequestData> {
     public String path = null;
     public String body = null;
     public String contentType = null;
-    public JDIHeaders headers = new JDIHeaders();
+    public Headers headers = new Headers();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
     public MultiMap<String, String> formParams = new MultiMap<>();
@@ -86,6 +88,7 @@ public class RequestData extends DataClass<RequestData> {
         return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
     }
 
+
     /**
      * Set query parameters to request
      *
@@ -137,7 +140,7 @@ public class RequestData extends DataClass<RequestData> {
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {
-        headers.clear();
+        headers = new Headers();
         pathParams.clear();
         queryParams.clear();
         formParams.clear();
@@ -230,5 +233,100 @@ public class RequestData extends DataClass<RequestData> {
     public RequestData addCookies(MapArray mapArray) {
         Map map = mapArray.toMap();
         return addCookies(map);
+    }
+
+    /**
+     * Adds headers to HTTP request
+     *
+     * @param objects pairs of headers name and value
+     * @return generated request data with provided headers
+     */
+    public RequestData addHeaders(Object[][] objects) {
+        List<Header> headerList = new ArrayList<>();
+        for (Object[] header : objects) {
+            headerList.add(new Header(header[0].toString(), header[1].toString()));
+        }
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
+     * Adds header without value to HTTP request
+     *
+     * @param name of header
+     * @return generated request data with provided header
+     */
+    public RequestData addHeader(String name) {
+        return addHeader(name, "");
+    }
+
+    /**
+     * Adds header with multiple values to HTTP request
+     *
+     * @param name             of header
+     * @param value            of header
+     * @param additionalValues of header
+     * @return generated request data with provided header
+     */
+    public RequestData addHeader(String name, String value, String... additionalValues) {
+        List<Header> headerList = new ArrayList<>(headers.asList());
+        headerList.add(new Header(name, value));
+        for (String headerValue : additionalValues) {
+            headerList.add(new Header(name, headerValue));
+        }
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
+     * Adds header from Map to HTTP request
+     *
+     * @param map of header
+     * @return generated request data with provided headers
+     */
+    public RequestData addHeaders(Map map) {
+        List<Header> headerList = new ArrayList<>(headers.asList());
+        for (Object header : map.keySet()) {
+            headerList.add(new Header(header.toString(), map.get(header).toString()));
+        }
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
+     * Adds headers from List to HTTP request
+     *
+     * @param list of headers
+     * @return generated request data with provided headers
+     */
+    public RequestData addHeaders(List<Header> list) {
+        List<Header> headerList = new ArrayList<>(headers.asList());
+        headerList.addAll(list);
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
+     * Adds headers from number of Header objects to HTTP request
+     *
+     * @param headerObjects number of header objects to create Headers
+     * @return generated request data with provided headers
+     */
+    public RequestData addHeaders(Header... headerObjects) {
+        List<Header> headerList = new ArrayList<>(headers.asList());
+        Collections.addAll(headerList, headerObjects);
+        headers = new Headers(headerList);
+        return this;
+    }
+
+    /**
+     * Adds headers from MapArray to HTTP request
+     *
+     * @param mapArray of headers
+     * @return generated request data with provided headers
+     */
+    public RequestData addHeaders(MapArray mapArray) {
+        Map map = mapArray.toMap();
+        return addHeaders(map);
     }
 }

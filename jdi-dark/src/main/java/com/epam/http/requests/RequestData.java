@@ -11,13 +11,13 @@ import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.internal.MapCreator;
+import io.restassured.specification.MultiPartSpecification;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import io.restassured.specification.MultiPartSpecification;
-import java.io.File;
 
 /**
  * Represents all HTTP request data.
@@ -33,6 +33,7 @@ public class RequestData extends DataClass<RequestData> {
     public Headers headers = new Headers();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
+    public MultiMap<String, String> formParams = new MultiMap<>();
     public Cookies cookies = new Cookies();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
 
@@ -78,6 +79,27 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set query parameters to request
+     *
+     * @param params query parameters
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(Object[][] params) {
+        return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
+    }
+
+    /**
+     * Set query parameters to request
+     *
+     * @param paramName  query parameter name
+     * @param paramValue query parameter value
+     * @return generated request data with provided query parameters
+     */
+    public static RequestData requestQueryParams(String paramName, String paramValue) {
+        return requestQueryParams(new Object[][]{{paramName, paramValue}});
+    }
+
+    /**
      * Set content type to request data.
      *
      * @param contentType  content type as string
@@ -120,6 +142,7 @@ public class RequestData extends DataClass<RequestData> {
         headers = new Headers();
         pathParams.clear();
         queryParams.clear();
+        formParams.clear();
         cookies = new Cookies();
         body = null;
         path = null;

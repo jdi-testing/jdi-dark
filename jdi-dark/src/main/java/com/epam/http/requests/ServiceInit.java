@@ -1,6 +1,23 @@
 package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettigns;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.FormParameter;
+import com.epam.http.annotations.FormParameters;
+import com.epam.http.annotations.GET;
+import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.OPTIONS;
+import com.epam.http.annotations.PATCH;
+import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.ServiceDomain;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
@@ -10,32 +27,15 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.jdi.tools.LinqUtils.where;
-import static java.lang.reflect.Modifier.isStatic;
-
-import com.epam.http.annotations.ServiceDomain;
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.PATCH;
-import com.epam.http.annotations.HEAD;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.OPTIONS;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.Headers;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
-
-import static com.epam.http.requests.RestMethodTypes.GET;
-import static com.epam.http.requests.RestMethodTypes.POST;
-import static com.epam.http.requests.RestMethodTypes.PUT;
-import static com.epam.http.requests.RestMethodTypes.PATCH;
 import static com.epam.http.requests.RestMethodTypes.DELETE;
+import static com.epam.http.requests.RestMethodTypes.GET;
 import static com.epam.http.requests.RestMethodTypes.HEAD;
 import static com.epam.http.requests.RestMethodTypes.OPTIONS;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
+import static com.epam.jdi.tools.LinqUtils.where;
+import static java.lang.reflect.Modifier.isStatic;
 
 /**
  * The entry point for initialising the Service Object classes.
@@ -162,11 +162,19 @@ public class ServiceInit {
             method.addQueryParameters(c.getAnnotation(QueryParameter.class));
         if (c.isAnnotationPresent(QueryParameters.class))
             method.addQueryParameters(c.getAnnotation(QueryParameters.class).value());
+        if (c.isAnnotationPresent(FormParameter.class))
+            method.addFormParameters(c.getAnnotation(FormParameter.class));
+        if (c.isAnnotationPresent(FormParameters.class))
+            method.addFormParameters(c.getAnnotation(FormParameters.class).value());
         /* Case for method annotations*/
         if (field.isAnnotationPresent(QueryParameter.class))
             method.addQueryParameters(field.getAnnotation(QueryParameter.class));
         if (field.isAnnotationPresent(QueryParameters.class))
             method.addQueryParameters(field.getAnnotation(QueryParameters.class).value());
+        if (field.isAnnotationPresent(FormParameter.class))
+            method.addFormParameters(field.getAnnotation(FormParameter.class));
+        if (field.isAnnotationPresent(FormParameters.class))
+            method.addFormParameters(field.getAnnotation(FormParameters.class).value());
         return method;
     }
 

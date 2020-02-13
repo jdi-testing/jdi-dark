@@ -144,28 +144,6 @@ public class ServiceInit {
         }
     }
 
-    /**
-     * Check whether the annotation present and add these values to request data.
-     *
-     * @param field HTTP method described in Service Object class as a field
-     * @param c     class describing service
-     * @return http method with request data
-     */
-    private static <T> RestMethod getRestMethod(Field field, Class<T> c) {
-        return getRestMethod(field, c, null);
-    }
-
-    /**
-     * Check whether the annotation present and add these values to request data.
-     *
-     * @param field                HTTP method described in Service Object class as a field
-     * @param c                    class describing service
-     * @param requestSpecification custom request specification
-     * @return http method with request data
-     */
-    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification) {
-        return getRestMethod(field, c, requestSpecification, null);
-    }
 
     /**
      * Check whether the annotation present and add these values to request data.

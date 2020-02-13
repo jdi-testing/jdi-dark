@@ -16,7 +16,6 @@ import java.util.Map;
 import static com.epam.jdi.http.Utils.preparedHeader;
 import static com.epam.jdi.http.Utils.requestContentType;
 import static com.epam.jdi.http.Utils.restResponse;
-import static com.epam.jdi.http.Utils.service;
 import static com.epam.jdi.http.Utils.getRestMethod;
 import static com.epam.jdi.tools.LinqUtils.first;
 import static io.restassured.http.ContentType.values;
@@ -24,12 +23,12 @@ import static io.restassured.http.ContentType.values;
 public class RequestStepsEN {
 
     @Then("^I verify that ([^\"]*) method is alive$")
-    public void theGetMethodIsAlive(String methodName) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException {
+    public void theGetMethodIsAlive(String methodName) throws IllegalAccessException, NoSuchFieldException {
         RestMethod restMethod = getRestMethod(methodName);
         restMethod.isAlive();
     }
     @When("^I do ([^\"]*) request$")
-    public void iCallMethod(String methodName) throws IllegalAccessException, NoSuchFieldException, InvocationTargetException {
+    public void iCallMethod(String methodName) throws IllegalAccessException, NoSuchFieldException {
         RestMethod restMethod = getRestMethod(methodName);
 //        if (preparedHeader.get() != null) {
 //            for (Map.Entry<String, String> entry : preparedHeader.get().entrySet()) {

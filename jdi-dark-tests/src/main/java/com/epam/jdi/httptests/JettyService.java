@@ -135,7 +135,7 @@ public class JettyService {
     public static RestMethod<Product[]> getProducts;
 
     public static List<Product> getProducts() {
-        return Arrays.asList(getProducts.asData(Product[].class));
+        return Arrays.asList(getProducts.callAsData(Product[].class));
     }
 
     @GET("/jsonStore")

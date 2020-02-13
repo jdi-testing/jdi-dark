@@ -22,6 +22,7 @@ import com.epam.http.annotations.ServiceDomain;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
+import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 
 import java.lang.reflect.Field;
@@ -73,7 +74,7 @@ public class ServiceInit {
      * @return initialised Service Object
      */
     public static <T> T init(Class<T> c) {
-        return init(c, null);
+        return init(c, null, null);
     }
 
     /**
@@ -84,6 +85,29 @@ public class ServiceInit {
      * @return initialised Service Object
      */
     public static <T> T init(Class<T> c, RequestSpecification requestSpecification) {
+        return init(c, requestSpecification, null);
+    }
+
+    /**
+     * Initialise the Service Object class.
+     *
+     * @param c            class describing Service
+     * @param objectMapper custom objectMapper
+     * @return initialised Service Object
+     */
+    public static <T> T init(Class<T> c, ObjectMapper objectMapper) {
+        return init(c, null, objectMapper);
+    }
+
+    /**
+     * Initialise the Service Object class.
+     *
+     * @param c                    class describing Service
+     * @param requestSpecification custom request specification
+     * @param objectMapper         custom objectMapper
+     * @return initialised Service Object
+     */
+    public static <T> T init(Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper) {
         preInit();
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> f.getType().equals(RestMethod.class));
@@ -91,9 +115,9 @@ public class ServiceInit {
             try {
                 method.setAccessible(true);
                 if (isStatic(method.getModifiers()))
-                    method.set(null, getRestMethod(method, c, requestSpecification));
+                    method.set(null, getRestMethod(method, c, requestSpecification, objectMapper));
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
-                    method.set(getService(c), getRestMethod(method, c, requestSpecification));
+                    method.set(getService(c), getRestMethod(method, c, requestSpecification, objectMapper));
             } catch (IllegalAccessException ex) {
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
             }
@@ -140,10 +164,24 @@ public class ServiceInit {
      * @return http method with request data
      */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification) {
+        return getRestMethod(field, c, requestSpecification, null);
+    }
+
+    /**
+     * Check whether the annotation present and add these values to request data.
+     *
+     * @param field                HTTP method described in Service Object class as a field
+     * @param c                    class describing service
+     * @param requestSpecification custom request specification
+     * @param objectMapper         custom ObjectMapper
+     * @return http method with request data
+     */
+    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper) {
         MethodData mtData = getMethodData(field);
         String url = getDomain(c);
         String path = mtData.getPath();
         RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
+        method.setObjectMapper(objectMapper);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))

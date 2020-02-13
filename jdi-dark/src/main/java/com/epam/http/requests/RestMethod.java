@@ -296,12 +296,14 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        RequestSpecification runSpec = getInitSpec();
+        RequestSpecification runSpec = getInitSpec().log().all();
         if (!userData.empty) {
+            checkQueryParamsInUrl();
             runSpec.spec(getDataSpec(userData));
         }
+        //userData.path = path;
         logRequest(data, userData);
-        userData.clear();
+        //userData.clear();
         return doRequest(type, runSpec, expectedStatus);
     }
 
@@ -347,9 +349,14 @@ public class RestMethod<T> {
      */
     public RestResponse call(String... params) {
         userData.path = path;
+        userData.empty = false;
         if (userData.path.contains("%s") && params.length > 0) {
             userData.path = format(userData.path, params);
+
+
+            //checkQueryParamsInUrl(params);
             //params parsing logic, if query parameters are set in url
+            /*
             if (userData.path.contains("?")) {
                 userData.empty = false;
                 List<String> paramsList = new ArrayList<>(Arrays.asList(params));
@@ -368,6 +375,8 @@ public class RestMethod<T> {
                     } else userData.queryParams.add(param, null);
                 });
             }
+
+             */
         }
         return call();
     }
@@ -484,5 +493,29 @@ public class RestMethod<T> {
             status = call().status.type;
         } while (status != OK && watch.getTime() < liveTimeMSec);
         call().isOk();
+    }
+
+    private void checkQueryParamsInUrl() {
+        //userData.path = path;
+        //params parsing logic, if query parameters are set in url
+        if (userData.path.contains("?")) {
+            userData.empty = false;
+            String params = substringAfter(userData.path, "?");
+            List<String> paramsList = new ArrayList<>(Arrays.asList(params));
+            for (int i = 0; i < paramsList.size(); i++) {
+                if (paramsList.get(i).contains("&")) {
+                    List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
+                    paramsList.remove(i);
+                    paramsList.addAll(i, tempList);
+                }
+            }
+            paramsList.forEach(param -> {
+                if (param.contains("=")) {
+                    String paramName = substringBefore(param, "=");
+                    String paramValue = substringAfter(param, "=");
+                    userData.queryParams.add(paramName, paramValue);
+                } else userData.queryParams.add(param, null);
+            });
+        }
     }
 }

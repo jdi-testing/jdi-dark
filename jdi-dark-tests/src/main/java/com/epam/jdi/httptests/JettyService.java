@@ -204,6 +204,9 @@ public class JettyService {
     @GET("/noValueParam?%s")
     public static RestMethod getNoValueParamWithParamInUrl;
 
+    @GET("/noValueParam?some&some1")
+    public static RestMethod getNoValueParamWithParamInUrl2;
+
     @GET("/returnContentTypeAsBody")
     public static RestMethod getReturnContentTypeAsBody;
 

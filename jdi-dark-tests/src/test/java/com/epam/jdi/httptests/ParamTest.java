@@ -68,6 +68,12 @@ public class ParamTest extends WithJetty {
     }
 
     @Test
+    public void fgf() {
+        JettyService.getNoValueParamWithParamInUrl2.call()
+                .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
+    }
+
+    @Test
     public void singleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
         JettyService.getNoValueParamWithParamInUrl.call("some")
                 .isOk().assertThat().body(is("Params: some="));

@@ -78,6 +78,14 @@ public class ServiceTest {
     }
 
     @Test
+    public void statusTest2() {
+        RestResponse resp = service.statusWithQuery.call("503", "some");
+        assertEquals(resp.status.code, 503);
+        assertEquals(resp.status.type, SERVER_ERROR);
+        resp.isEmpty();
+    }
+
+    @Test
     public void staticServiceInitTest() {
         init(ServiceExample.class);
         RestResponse resp = getInfo.call();

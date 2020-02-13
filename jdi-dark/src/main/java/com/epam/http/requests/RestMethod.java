@@ -17,10 +17,10 @@ import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -322,6 +322,7 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
+        getQueryParamsFromPath();
         RequestSpecification runSpec = getInitSpec();
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
@@ -355,12 +356,28 @@ public class RestMethod<T> {
     public T callAsData(Class<T> c) {
         if (objectMapper == null) {
             return call().getRaResponse().body().as(c);
-        }
-        else {
+        } else {
             return call().getRaResponse().body().as(c, objectMapper);
         }
     }
 
+    /**
+     * Moved all query params from path to request data query params.
+     */
+    private void getQueryParamsFromPath() {
+        if (data.path.contains("?")) {
+            String pathString = substringBefore(path, "?");
+            String queryString = substringAfter(path, "?");
+            data.path = pathString;
+            if (!queryString.isEmpty()) {
+                String[] queryParams = path.split(",");
+                for (String queryParam : queryParams) {
+                    userData.empty = false;
+                    userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
+                }
+            }
+        }
+    }
 
     /**
      * Send HTTP request with specific path parameters.
@@ -369,27 +386,24 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        userData.path = path;
-        if (userData.path.contains("%s") && params.length > 0) {
-            userData.path = format(userData.path, params);
-            //params parsing logic, if query parameters are set in url
-            if (userData.path.contains("?")) {
+        if (params.length > 0) {
+            String pathString = substringBefore(path, "?");
+            String queryString = substringAfter(path, "?");
+            data.path = pathString;
+            String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
+            int index = 0;
+            for (String key: pathParams) {
                 userData.empty = false;
-                List<String> paramsList = new ArrayList<>(Arrays.asList(params));
-                for (int i = 0; i < paramsList.size(); i++) {
-                    if (paramsList.get(i).contains("&")) {
-                        List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
-                        paramsList.remove(i);
-                        paramsList.addAll(i, tempList);
-                    }
+                userData.pathParams.add(key, params[index]);
+                index++;
+            }
+            if (!queryString.isEmpty()) {
+                String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
+                for (String key: queryParams) {
+                    userData.empty = false;
+                    userData.queryParams.add(key, params[index]);
+                    index++;
                 }
-                paramsList.forEach(param -> {
-                    if (param.contains("=")) {
-                        String paramName = substringBefore(param, "=");
-                        String paramValue = substringAfter(param, "=");
-                        userData.queryParams.add(paramName, paramValue);
-                    } else userData.queryParams.add(param, null);
-                });
             }
         }
         return call();
@@ -531,7 +545,7 @@ public class RestMethod<T> {
 
     /**
      * Reset predefined request specification to default state.
-     *
+     * <p>
      * return rest method
      */
     public RestMethod resetInitSpec() {

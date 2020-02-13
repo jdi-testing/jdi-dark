@@ -30,13 +30,6 @@ public class ObjectMappingForServiceTests extends WithJetty {
         init(JettyService.class, objectMapper);
     }
 
-    @Test(priority = 0)
-    public void mapResponseToObjectXml() {
-        Greeting greetingObject = JettyService.getGreetXml.callAsData(Greeting.class);
-        assertThat(greetingObject.getFirstName(), equalTo("John"));
-        assertThat(greetingObject.getLastName(), equalTo("Doe"));
-    }
-
     @Test
     public void contentTypesEndingWithPlusForJsonObjectMapping() {
         Message messageObject = JettyService.getMimeType.callAsData(Message.class);

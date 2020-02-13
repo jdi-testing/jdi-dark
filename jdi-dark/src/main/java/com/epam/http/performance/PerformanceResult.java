@@ -24,7 +24,7 @@ public class PerformanceResult {
         AverageResponseTime = (AverageResponseTime * NumberOfRequests + response.responseTime())
                 / (NumberOfRequests + 1);
         NumberOfRequests++;
-        if (response.getStatus().type == ERROR)
+        if (response.status.type == ERROR)
             NumberOfFails++;
 
     }

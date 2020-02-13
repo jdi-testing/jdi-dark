@@ -43,12 +43,13 @@ public class ResponseTests extends WithJetty {
         RestResponse response = JettyService.getHello.call();
         String body = response.getBody();
         assertThat(body, containsString("{\"hello\":\"Hello Scalatra\"}"));
+        assertThat(response.body, containsString("{\"hello\":\"Hello Scalatra\"}"));
     }
 
     @Test
     public void whenParamsSpecifiedCanReturnBodyAsString() {
         RestResponse response = JettyService.postGreetXml.call(requestData(requestData -> requestData.body = "firstName=John&lastName=Doe&"));
-        final String body = response.getBody();
+        final String body = response.body;
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +
                 "    </greeting>", body);
@@ -63,7 +64,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void postCanReturnBodyAsString() {
-        final String body = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).getBody();
+        final String body = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).body;
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +
                 "    </greeting>", body);
@@ -72,7 +73,7 @@ public class ResponseTests extends WithJetty {
     @Test
     public void putCanReturnBodyAsString() {
         final String body = JettyService.putCookie.call(requestData(requestData ->
-                requestData.addCookies("username", "John", "token", "1234"))).getBody();
+                requestData.addCookies("username", "John", "token", "1234"))).body;
         assertEquals("username, token", body);
     }
 
@@ -81,7 +82,7 @@ public class ResponseTests extends WithJetty {
         final String body = JettyService.deleteGreet.call(requestData(d -> {
             d.queryParams.add("firstName", "John");
             d.queryParams.add("lastName", "Doe");
-        })).getBody();
+        })).body;
         assertEquals("{\"greeting\":\"Greetings John Doe\"}", body);
     }
 
@@ -105,8 +106,8 @@ public class ResponseTests extends WithJetty {
     @Test
     public void responseSupportsGettingStatusCode() {
         RestResponse response = JettyService.getHello.call();
-        assertThat(response.getStatus().code, equalTo(200));
-        assertThat(response.getBody(), equalTo("{\"hello\":\"Hello Scalatra\"}"));
+        assertThat(response.status.code, equalTo(200));
+        assertThat(response.body, equalTo("{\"hello\":\"Hello Scalatra\"}"));
     }
 
     @Test
@@ -149,12 +150,6 @@ public class ResponseTests extends WithJetty {
     @Test
     public void usingPathWithContentTypeJsonFromTheResponse() {
         String hello = JettyService.getHello.call().getRaResponse().andReturn().path("hello");
-        assertThat(hello, equalTo("Hello Scalatra"));
-    }
-
-    @Test
-    public void usingPathWithParameters() {
-        String hello = JettyService.getHello.call().getRaResponse().andReturn().path("hel%s", "lo");
         assertThat(hello, equalTo("Hello Scalatra"));
     }
 

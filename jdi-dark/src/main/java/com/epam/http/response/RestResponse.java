@@ -29,9 +29,9 @@ public class RestResponse {
 
     private final Response raResponse;
     private final long responseTimeMSec;
-    private String body = null;
-    private ResponseStatus status = null;
-    private String contentType = "";
+    public String body = null;
+    public ResponseStatus status = null;
+    public String contentType = "";
 
     public RestResponse() {
         this.raResponse = null;

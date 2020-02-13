@@ -37,7 +37,7 @@ public class ErrorMessageTrelloTest {
                 .call(requestPathParams("board_id", NOT_EXISTS_BOARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
-        assertEquals(response.getBody(), "The requested resource was not found.");
+        assertEquals(response.body, "The requested resource was not found.");
         response.isEmpty();
     }
 
@@ -48,7 +48,7 @@ public class ErrorMessageTrelloTest {
                 .call(requestPathParams("board_id", INVALID_BOARD_ID));
         response.hasErrors()
                 .statusCode(ERROR_CODE);
-        assertEquals(response.getBody(), "invalid id");
+        assertEquals(response.body, "invalid id");
         response.isEmpty();
     }
 
@@ -63,7 +63,7 @@ public class ErrorMessageTrelloTest {
                 }));
         response.hasErrors()
                 .statusCode(ERROR_CODE);
-        assertEquals(response.getBody(), "invalid value for text");
+        assertEquals(response.body, "invalid value for text");
         response.isEmpty();
     }
 
@@ -74,7 +74,7 @@ public class ErrorMessageTrelloTest {
                 .call(requestPathParams("card_id", NOT_EXISTS_CARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
-        assertTrue(response.getBody().contains("Cannot DELETE"));
+        assertTrue(response.body.contains("Cannot DELETE"));
         response.isEmpty();
     }
 }

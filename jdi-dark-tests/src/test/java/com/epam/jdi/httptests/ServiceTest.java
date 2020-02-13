@@ -6,7 +6,6 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
@@ -72,8 +71,8 @@ public class ServiceTest {
     @Test
     public void statusTest() {
         RestResponse resp = service.status.call("503");
-        assertEquals(resp.getStatus().code, 503);
-        assertEquals(resp.getStatus().type, SERVER_ERROR);
+        assertEquals(resp.status.code, 503);
+        assertEquals(resp.status.type, SERVER_ERROR);
         resp.isEmpty();
     }
 

@@ -37,6 +37,7 @@ public abstract class WithJetty {
         server.setHandler(context);
         server.setConnectors(new Connector[]{http});
         server.start();
+        
     }
 
     @AfterClass

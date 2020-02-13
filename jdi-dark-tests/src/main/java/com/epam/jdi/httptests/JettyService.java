@@ -134,10 +134,6 @@ public class JettyService {
     @GET("/products")
     public static RestMethod<Product[]> getProducts;
 
-    public static List<Product> getProducts() {
-        return Arrays.asList(getProducts.callAsData(Product[].class));
-    }
-
     @GET("/jsonStore")
     public static RestMethod getJsonStore;
 
@@ -210,17 +206,6 @@ public class JettyService {
     @MultiPart(controlName = "file", fileName = "myFile")
     public static RestMethod postMultipartFile;
 
-    public static RestResponse postMultipartFile(byte[] file) {
-        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
-        return postMultipartFile.call();
-    }
-
-    public static RestResponse postMultipartFile(byte[] file, String fileName) {
-        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
-        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setFileName(fileName);
-        return postMultipartFile.call();
-    }
-
     @POST("/multipart/text")
     public static RestMethod postMultipartText;
 
@@ -253,4 +238,19 @@ public class JettyService {
 
     @POST("/returnContentTypeAsBody")
     public static RestMethod postReturnContentTypeAsBody;
+
+    public static RestResponse postMultipartFile(byte[] file) {
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
+        return postMultipartFile.call();
+    }
+
+    public static RestResponse postMultipartFile(byte[] file, String fileName) {
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setFileName(fileName);
+        return postMultipartFile.call();
+    }
+
+    public static List<Product> getProducts() {
+        return Arrays.asList(getProducts.callAsData(Product[].class));
+    }
 }

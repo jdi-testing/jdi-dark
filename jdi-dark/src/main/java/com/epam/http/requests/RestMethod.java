@@ -403,14 +403,35 @@ public class RestMethod<T> {
         return call();
     }
 
+    /**
+     * Send HTTP request with body.
+     *
+     * @param body request body
+     * @return response
+     */
     public RestResponse post(Object body) {
         return call(new RequestData().set(rd -> rd.body = body));
     }
 
+    /**
+     * Send HTTP request with body and parse result to object
+     *
+     * @param body request body
+     * @param c    type of response body
+     * @return response body as object
+     */
     public T post(Object body, Class<T> c) {
         return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
     }
 
+    /**
+     * Send HTTP request with body and parse result to object with specific ObjectMapper
+     *
+     * @param body         request body
+     * @param c            type of response body
+     * @param objectMapper mapper which will be used for body's serialization
+     * @return response body as object
+     */
     public T post(Object body, Class<T> c, ObjectMapper objectMapper) {
         return call(new RequestData().set(rd -> {
             rd.body = body;

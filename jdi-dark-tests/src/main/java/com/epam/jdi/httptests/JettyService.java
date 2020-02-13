@@ -8,12 +8,18 @@ import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.FormParameters;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
+import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
+import com.epam.http.response.RestResponse;
+import io.restassured.internal.multipart.MultiPartSpecificationImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
@@ -34,7 +40,7 @@ public class JettyService {
     @GET("/cookie_with_no_value")
     public static RestMethod getCookieWithNoValue;
 
-    @GET("/response_cookie_with_no_value")
+    @GET("/response_cookie_with_no/reflect_value")
     public static RestMethod getResponseCookieWithNoValue;
 
     @GET("/cookie")
@@ -126,7 +132,11 @@ public class JettyService {
     public static RestMethod getShopping;
 
     @GET("/products")
-    public static RestMethod getProducts;
+    public static RestMethod<Product[]> getProducts;
+
+    public static List<Product> getProducts() {
+        return Arrays.asList(getProducts.asData(Product[].class));
+    }
 
     @GET("/jsonStore")
     public static RestMethod getJsonStore;
@@ -162,6 +172,10 @@ public class JettyService {
     @POST("/charEncoding")
     public static RestMethod postCharEncoding;
 
+    @POST("/reflect")
+    @ContentType(JSON)
+    public static RestMethod<Hello> postObject;
+
     @GET("/redirect")
     public static RestMethod postRedirect;
 
@@ -193,7 +207,19 @@ public class JettyService {
     public static RestMethod getMultiCookieWithManyCookies;
 
     @POST("/multipart/file")
+    @MultiPart(controlName = "file", fileName = "myFile")
     public static RestMethod postMultipartFile;
+
+    public static RestResponse postMultipartFile(byte[] file) {
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
+        return postMultipartFile.call();
+    }
+
+    public static RestResponse postMultipartFile(byte[] file, String fileName) {
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setFileName(fileName);
+        return postMultipartFile.call();
+    }
 
     @POST("/multipart/text")
     public static RestMethod postMultipartText;

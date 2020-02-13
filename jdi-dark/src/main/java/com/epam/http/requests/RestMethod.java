@@ -16,6 +16,7 @@ import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.mapper.ObjectMapperType;
+import io.restassured.http.Headers;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -138,26 +139,6 @@ public class RestMethod<T> {
     /**
      * Set header to HTTP request.
      *
-     * @param name  of header field
-     * @param value of header field
-     */
-    public void addHeader(String name, String value) {
-        data.headers.add(name, value);
-    }
-
-//    /**
-//     * Set header to HTTP request or replace the value of header if it had been added before.
-//     *
-//     * @param name  of header field
-//     * @param value of header field
-//     */
-//    public void addOrReplaceHeader(String name, String value) {
-//        data.headers.addOrReplace(name, value);
-//    }
-
-    /**
-     * Set header to HTTP request.
-     *
      * @param header field name and value presented as annotation
      */
     public void addHeader(com.epam.http.annotations.Header header) {
@@ -165,22 +146,53 @@ public class RestMethod<T> {
     }
 
     /**
-     * Set header to HTTP request from given Rest Assured header.
+     * Set header to HTTP request.
      *
-     * @param header Rest Assured header
+     * @param headers pairs of field name and value presented as annotation
      */
-    public void addHeader(Header header) {
-        addHeader(header.getName(), header.getValue());
+    public void addHeaders(com.epam.http.annotations.Header... headers) {
+        for (com.epam.http.annotations.Header header : headers) {
+            addHeader(header);
+        }
     }
 
     /**
-     * Set headers to HTTP request from field annotation.
+     * Set header to HTTP request.
      *
-     * @param headers collection of header annotations
+     * @param name  of header
+     * @param value of header
      */
-    public void addHeaders(com.epam.http.annotations.Header... headers) {
-        for (com.epam.http.annotations.Header header : headers)
-            addHeader(header);
+    public void addHeader(String name, String value) {
+        List<Header> headerList = new ArrayList<>(data.headers.asList());
+        headerList.add(new Header(name, value));
+        data.headers = new Headers(headerList);
+    }
+
+    /**
+     * Adds header without value to HTTP request
+     *
+     * @param name of header
+     * @return generated request data with provided header
+     */
+    public void addHeader(String name) {
+        addHeader(name, "");
+    }
+
+    /**
+     * Adds header with multiple values to HTTP request
+     *
+     * @param name             of header
+     * @param value            of header
+     * @param additionalValues of header
+     * @return generated request data with provided header
+     */
+    public void addHeader(String name, String value, String... additionalValues) {
+        List<Header> headerList = new ArrayList<>(data.headers.asList());
+        headerList.add(new Header(name, value));
+        for (String headerValue : additionalValues) {
+            headerList.add(new Header(name, headerValue));
+        }
+        data.headers = new Headers(headerList);
     }
 
     /**
@@ -190,11 +202,6 @@ public class RestMethod<T> {
      */
     public void setContentType(ContentType ct) {
         data.contentType = ct.toString();
-    }
-
-    public void addHeaders(Header[] headers) {
-        for (Header header : headers)
-            addHeader(header);
     }
 
     /**
@@ -349,7 +356,7 @@ public class RestMethod<T> {
     /**
      * Send HTTP request and map response to Java object with specific mapper type.
      *
-     * @param c class to make mapping to
+     * @param c                class to make mapping to
      * @param objectMapperType type of object mapper
      * @return Java object
      */
@@ -370,7 +377,7 @@ public class RestMethod<T> {
     /**
      * Send HTTP request and map response to Java object with specific object mapper.
      *
-     * @param c class to make mapping to
+     * @param c            class to make mapping to
      * @param objectMapper used object mapper
      * @return Java object
      */
@@ -405,7 +412,10 @@ public class RestMethod<T> {
     }
 
     public T post(Object body, Class<T> c, ObjectMapper objectMapper) {
-        return call(new RequestData().set(rd -> {rd.body = body; rd.objectMapper = objectMapper;})).getRaResponse().as(c, objectMapper);
+        return call(new RequestData().set(rd -> {
+            rd.body = body;
+            rd.objectMapper = objectMapper;
+        })).getRaResponse().as(c, objectMapper);
     }
 
     /**
@@ -429,8 +439,10 @@ public class RestMethod<T> {
             userData.body = requestData.body;
             userData.objectMapper = requestData.objectMapper;
         }
-        if (!requestData.headers.isEmpty()) {
-            userData.headers.addAll(requestData.headers);
+        if (!requestData.headers.asList().isEmpty()) {
+            List<Header> headerList = new ArrayList<>(userData.headers.asList());
+            headerList.addAll(requestData.headers.asList());
+            userData.headers = new Headers(headerList);
         }
         if (!requestData.cookies.asList().isEmpty()) {
             List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
@@ -480,8 +492,8 @@ public class RestMethod<T> {
         if (data.formParams.any()) {
             spec.formParams(data.formParams.toMap());
         }
-        if (data.headers.any()) {
-            spec.headers(data.headers.asRaHeaders());
+        if (!data.headers.asList().isEmpty()) {
+            spec.headers(data.headers);
         }
         if (!data.cookies.asList().isEmpty()) {
             spec.cookies(data.cookies);
@@ -489,10 +501,9 @@ public class RestMethod<T> {
         if (data.multiPartSpecifications.size() > 0) {
             data.multiPartSpecifications.forEach(spec::multiPart);
         }
-        if ((data.body != null)&&(data.objectMapper != null)) {
+        if ((data.body != null) && (data.objectMapper != null)) {
             spec.body(data.body, data.objectMapper);
-        }
-        else if (data.body != null) {
+        } else if (data.body != null) {
             spec.body(data.body);
         }
 

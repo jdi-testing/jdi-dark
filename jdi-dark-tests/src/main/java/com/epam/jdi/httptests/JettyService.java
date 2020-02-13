@@ -224,4 +224,22 @@ public class JettyService {
     @POST("/multipart/text")
     public static RestMethod postMultipartText;
 
+    @GET("/returnContentTypeAsBody")
+    public static RestMethod getReturnContentTypeAsBody;
+
+    @POST("/textUriList")
+    public static RestMethod postTextUriList;
+
+    @PUT("/reflect")
+    public static RestMethod putReflect;
+
+    @POST("contentTypeAsBody")
+    public static RestMethod postContentTypeAsBody;
+
+    @GET("/reflect")
+    public static RestMethod getReflect;
+
+    @POST("/returnContentTypeAsBody")
+    public static RestMethod postReturnContentTypeAsBody;
+
 }

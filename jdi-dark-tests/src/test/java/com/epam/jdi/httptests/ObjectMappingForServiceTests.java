@@ -15,7 +15,7 @@ import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class ObjectMappingTests extends WithJetty {
+public class ObjectMappingForServiceTests extends WithJetty {
 
     @BeforeClass
     public void before() {
@@ -27,10 +27,10 @@ public class ObjectMappingTests extends WithJetty {
                 return objectMapper;
             }
         });
-        init(JettyService.class, null, objectMapper);
+        init(JettyService.class, objectMapper);
     }
 
-    @Test
+    @Test(priority = 0)
     public void mapResponseToObjectXml() {
         Greeting greetingObject = JettyService.getGreetXml.callAsData(Greeting.class);
         assertThat(greetingObject.getFirstName(), equalTo("John"));

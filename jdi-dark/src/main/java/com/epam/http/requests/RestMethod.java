@@ -7,7 +7,6 @@ import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
-import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
@@ -50,7 +49,6 @@ public class RestMethod<T> {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
-    private Gson gson = new Gson();
     private ResponseStatusType expectedStatus = OK;
 
     public RestMethod() {
@@ -407,7 +405,7 @@ public class RestMethod<T> {
     }
 
     public T post(Object body, Class<T> c, ObjectMapper objectMapper) {
-        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c, objectMapper);
+        return call(new RequestData().set(rd -> {rd.body = body; rd.objectMapper = objectMapper;})).getRaResponse().as(c, objectMapper);
     }
 
     /**
@@ -429,6 +427,7 @@ public class RestMethod<T> {
         }
         if (requestData.body != null) {
             userData.body = requestData.body;
+            userData.objectMapper = requestData.objectMapper;
         }
         if (!requestData.headers.isEmpty()) {
             userData.headers.addAll(requestData.headers);
@@ -481,9 +480,6 @@ public class RestMethod<T> {
         if (data.formParams.any()) {
             spec.formParams(data.formParams.toMap());
         }
-        if (data.body != null) {
-            spec.body(data.body);
-        }
         if (data.headers.any()) {
             spec.headers(data.headers.asRaHeaders());
         }
@@ -492,6 +488,12 @@ public class RestMethod<T> {
         }
         if (data.multiPartSpecifications.size() > 0) {
             data.multiPartSpecifications.forEach(spec::multiPart);
+        }
+        if ((data.body != null)&&(data.objectMapper != null)) {
+            spec.body(data.body, data.objectMapper);
+        }
+        else if (data.body != null) {
+            spec.body(data.body);
         }
 
         return spec;

@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests.support;
 
+import com.epam.jdi.httptests.BaseServiceTest;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;

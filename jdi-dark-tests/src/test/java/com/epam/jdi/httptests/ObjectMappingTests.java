@@ -1,14 +1,10 @@
 package com.epam.jdi.httptests;
 
-import com.epam.jdi.httptests.support.WithJetty;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.config.RestAssuredConfig;
+import io.restassured.internal.mapping.Jackson2Mapper;
+import io.restassured.mapper.ObjectMapper;
 import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Type;
@@ -17,28 +13,20 @@ import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class ObjectMappingTests extends WithJetty {
+public class ObjectMappingTests extends BaseServiceTest {
 
-    @BeforeTest
+    private ObjectMapper objectMapper;
+
+    @BeforeClass
     public void before() {
-
-        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
-                new Jackson2ObjectMapperFactory() {
-                    @Override
-                    public ObjectMapper create(Type type, String s) {
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                        return objectMapper;
-                    }
-                }
-        ));
         init(JettyService.class);
-    }
-
-    @Test
-    public void mapResponseToObjectJson() {
-        Hello helloObject = JettyService.getHello.asData(Hello.class);
-        assertThat(helloObject.getHello(), equalTo("Hello Scalatra"));
+        objectMapper = new Jackson2Mapper(new Jackson2ObjectMapperFactory() {
+            @Override
+            public com.fasterxml.jackson.databind.ObjectMapper create(Type type, String s) {
+                com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                return objectMapper;
+            }
+        });
     }
 
     @Test
@@ -55,7 +43,7 @@ public class ObjectMappingTests extends WithJetty {
     }
 
     @Test
-    public void getResponseAsObject() {
+    public void mapResponseToObjectJson() {
         Product[] products = JettyService.getProducts.asData(Product[].class);
         Assert.assertEquals(products.length, 2, "Number of products is incorrect");
     }
@@ -64,7 +52,7 @@ public class ObjectMappingTests extends WithJetty {
     public void sendObjectToRequest() {
         final Hello object = new Hello();
         object.setHello("Hello world");
-        Hello response = JettyService.postObject.post(object, Hello.class);
+        Hello response = JettyService.postObject.post(object, Hello.class, objectMapper);
         Assert.assertEquals(response.getHello(), "Hello world", "Response is incorrect");
     }
 }

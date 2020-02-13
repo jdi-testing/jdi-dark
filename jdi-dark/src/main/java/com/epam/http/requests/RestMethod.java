@@ -324,7 +324,7 @@ public class RestMethod<T> {
         }
         RequestSpecification runSpec = getInitSpec().log().all();
         //when path's defined in Service layer (the whole path with query params)
-        if (path.contains("?") && !path.contains("{")) userData.setPath(path);
+        if (path != null && path.contains("?") && !path.contains("{")) userData.setPath(path);
         if (!userData.empty) {
             //when query params are set in url via replaced params
             if (userData.path != null && userData.path.contains("?")) {

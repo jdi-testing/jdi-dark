@@ -1,56 +1,24 @@
 package com.epam.jdi.http;
 
-import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.performance.PerformanceResult;
-import com.epam.http.requests.MethodData;
 import com.epam.http.requests.RestMethod;
-import com.epam.http.requests.RestMethodTypes;
 import com.epam.http.response.RestResponse;
 import io.restassured.http.ContentType;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
-
-import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RestMethodTypes.GET;
 
 
 public class Utils {
-    public static final ThreadLocal<IRestService> service = new ThreadLocal<>();
-    public static final ThreadLocal<String> domainUrl = new ThreadLocal<>();
+    public static final ThreadLocal<Object> service = new ThreadLocal<>();
     public static final ThreadLocal<PerformanceResult> performanceResult = new ThreadLocal<>();
     public static final ThreadLocal<RestResponse> restResponse = new ThreadLocal<>();
     public static final ThreadLocal<ContentType> requestContentType = new ThreadLocal<>();
     public static final ThreadLocal<HashMap<String, String>> preparedHeader = new ThreadLocal<>();
 
-    public static RestMethod getRestMethod(String restMethodType) {
-        MethodData mtData = getMethodData(restMethodType);
-        String url = getUrlFromDomain(domainUrl.get(), mtData.getUrl(), restMethodType);
-        return new RestMethod(mtData.getType(), url);
-    }
-
-    private static MethodData getMethodData(String type) {
-        for (RestMethodTypes methodType : RestMethodTypes.values()) {
-            if(type.equalsIgnoreCase(methodType.name()))
-                return new MethodData(type.toLowerCase(), methodType);
-        }
-        return new MethodData(null, GET);
-    }
-    private static String getUrlFromDomain(String domain, String uri, String methodName) {
-        if (uri == null)
-            return null;
-        if (uri.contains("://"))
-            return uri;
-        if (domain == null)
-            throw exception(
-            "Can't instantiate method '%s' for domain '%s'. " +
-                    "Domain undefined and method url not contains '://'",
-                    methodName, domain);
-        return domain.replaceAll("/*$", "") + "/" + uri.replaceAll("^/*", "");
-    }
-
-    public static <T> String getDomain(Class<T> c) {
-        return c.isAnnotationPresent(ServiceDomain.class)
-                ? c.getAnnotation(ServiceDomain.class).value()
-                : null;
+    public static RestMethod getRestMethod(String restMethodName) throws IllegalAccessException, NoSuchFieldException {
+        Field field = service.get().getClass().getDeclaredField(restMethodName);
+        field.setAccessible(true);
+        return (RestMethod) field.get(service.get());
     }
 }

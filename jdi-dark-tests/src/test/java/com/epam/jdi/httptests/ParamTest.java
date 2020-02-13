@@ -39,7 +39,7 @@ public class ParamTest extends WithJetty {
         RestResponse response = JettyService.getNoValueParam.call(requestData(d -> {
             d.queryParams.add(PARAM_NAME, "");
         }));
-        assertEquals(response.body, "Params: some=");
+        assertEquals(response.getBody(), "Params: some=");
     }
 
     @Test

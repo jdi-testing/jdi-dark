@@ -71,8 +71,8 @@ public class ServiceTest {
     @Test
     public void statusTest() {
         RestResponse resp = service.status.call("503");
-        assertEquals(resp.status.code, 503);
-        assertEquals(resp.status.type, SERVER_ERROR);
+        assertEquals(resp.getStatus().code, 503);
+        assertEquals(resp.getStatus().type, SERVER_ERROR);
         resp.isEmpty();
     }
 

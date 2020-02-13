@@ -198,4 +198,6 @@ public class JettyService {
     @POST("/multipart/text")
     public static RestMethod postMultipartText;
 
+    @GET("/textHTML")
+    public static RestMethod getTextHtml;
 }

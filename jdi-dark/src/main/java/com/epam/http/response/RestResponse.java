@@ -29,17 +29,13 @@ public class RestResponse {
 
     private final Response raResponse;
     private final long responseTimeMSec;
-    public String body = null;
-    public ResponseStatus status = null;
-    public String contenType = "";
+    private String body = null;
+    private ResponseStatus status = null;
+    private String contentType = "";
 
     public RestResponse() {
         this.raResponse = null;
         responseTimeMSec = 0;
-    }
-
-    public static RestResponse Response() {
-        return new RestResponse();
     }
 
     public RestResponse(Response raResponse) {
@@ -51,7 +47,7 @@ public class RestResponse {
         responseTimeMSec = time;
         body = raResponse.body().asString();
         status = new ResponseStatus(raResponse);
-        contenType = raResponse.contentType();
+        contentType = raResponse.contentType();
         logger.info(toString());
     }
 
@@ -103,6 +99,18 @@ public class RestResponse {
      */
     public ValidatableResponse isStatus(ResponseStatusType type) {
         return validate(r -> status.type == type);
+    }
+
+    public String getBody() {
+        return this.body;
+    }
+
+    public ResponseStatus getStatus() {
+        return this.status;
+    }
+
+    public String getContentType() {
+        return this.contentType;
     }
 
     public ValidatableResponse isEmpty() {

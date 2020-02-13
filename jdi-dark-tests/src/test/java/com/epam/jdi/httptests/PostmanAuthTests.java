@@ -37,7 +37,7 @@ public class PostmanAuthTests {
         RestResponse resp = authBase.call();
         resp.isOk().assertThat().
                 body("authenticated", equalTo(true));
-        assertEquals(resp.status.code, HttpStatus.SC_OK);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class PostmanAuthTests {
         RestResponse resp = authBaseForm.call(resp2);
         resp.isOk().assertThat().
                 body("authenticated", equalTo(true));
-        assertEquals(resp.status.code, HttpStatus.SC_OK);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
 
     @Test

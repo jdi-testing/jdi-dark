@@ -81,7 +81,7 @@ public class JSONPostTests extends WithJetty {
     public void supportsReturningPostBody() {
         RestResponse response = greetPost
                 .call(requestData(d -> d.queryParams.add(new Object[][]{{"firstName", "John"}, {"lastName", "Doe"}})));
-        final JsonPath jsonPath = new JsonPath(response.body);
+        final JsonPath jsonPath = new JsonPath(response.getBody());
         assertThat(jsonPath.getString("greeting"), equalTo("Greetings John Doe"));
     }
 
@@ -89,7 +89,7 @@ public class JSONPostTests extends WithJetty {
     @Test
     public void supportsGettingResponseBodyWhenStatusCodeIs401() {
         RestResponse response = unauthorizedPost.call();
-        assertThat(response.body, allOf(containsString("401"), containsString("Unauthorized")));
+        assertThat(response.getBody(), allOf(containsString("401"), containsString("Unauthorized")));
     }
 
     @Test

@@ -44,7 +44,7 @@ public class DeleteTest extends WithJetty {
                         {USERNAME, FIRST_NAME_VALUE},
                         {TOKEN, TOKEN_VALUE}
                 }))));
-        assertEquals(response.body, "username, token");
+        assertEquals(response.getBody(), "username, token");
     }
 
     @Test

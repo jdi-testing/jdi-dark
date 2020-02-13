@@ -57,13 +57,13 @@ public class CookiesTests extends WithJetty {
     public void canSpecifyMultiValueCookiesPassingSeveralValuesToTheCookieMethod() {
         RestResponse response = JettyService.getMultiCookieRequest.call(requestData(
                 requestData -> requestData.addCookie("key1", "value1", "value2")));
-        assertThat(response.body, equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"}]"));
+        assertThat(response.getBody(), equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"}]"));
     }
 
     @Test
     public void canSpecifyMultiValueCookiesPassingSeveralValuesToTheServiceObject() {
         RestResponse response = JettyService.getMultiCookieWithCookies.call();
-        assertThat(response.body, equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"}]"));
+        assertThat(response.getBody(), equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"}]"));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class CookiesTests extends WithJetty {
                         {"key1", "value1"},
                         {"key2", "value2"}
                 })));
-        assertThat(response.body, equalTo("[{\"key1\":\"value1\"},{\"key2\":\"value2\"}]"));
+        assertThat(response.getBody(), equalTo("[{\"key1\":\"value1\"},{\"key2\":\"value2\"}]"));
     }
 
     @Test
@@ -136,13 +136,13 @@ public class CookiesTests extends WithJetty {
     public void requestSpecificationAllowsSpecifyingCookieWithNoValue() {
         RestResponse response = JettyService.getCookieWithNoValue
                 .call(requestData(requestData -> requestData.addCookie("some_cookie")));
-        assertThat(response.body, equalTo("some_cookie"));
+        assertThat(response.getBody(), equalTo("some_cookie"));
     }
 
     @Test
     public void serviceObjectAllowsSpecifyingCookieWithNoValue() {
         RestResponse response = JettyService.getCookieWithNoValueWithCookies.call();
-        assertThat(response.body, equalTo("some_cookie"));
+        assertThat(response.getBody(), equalTo("some_cookie"));
     }
 
     @Test
@@ -155,19 +155,19 @@ public class CookiesTests extends WithJetty {
     public void requestSpecificationAllowsSpecifyingCookies() {
         RestResponse response = JettyService.getCookie.call(requestData(
                 requestData -> requestData.addCookies("username", "John", "token", "1234")));
-        assertThat(response.body, equalTo("username, token"));
+        assertThat(response.getBody(), equalTo("username, token"));
     }
 
     @Test
     public void serviceObjectAllowsSpecifyingCookies() {
         RestResponse response = JettyService.getCookieWithCookies.call();
-        assertThat(response.body, equalTo("username, token"));
+        assertThat(response.getBody(), equalTo("username, token"));
     }
 
     @Test
     public void cookiesCombinedFromServiceObjectAndRequestData() {
         RestResponse response = JettyService.getCookieWithCookies.call(requestData(requestData -> requestData.addCookies("userCookie1", "userValue1")));
-        assertThat(response.body, equalTo("username, token, userCookie1"));
+        assertThat(response.getBody(), equalTo("username, token, userCookie1"));
     }
 
     @Test
@@ -252,7 +252,7 @@ public class CookiesTests extends WithJetty {
     @Test
     public void supportsMultipleCookiesWithDifferentAnnotation() {
         RestResponse response = JettyService.getMultiCookieWithManyCookies.call();
-        assertThat(response.body, equalTo("[{\"key4\":\"value4\"},{\"key1\":\"value1\"},{\"key1\":\"value2\"},{\"key2\":\"\"},{\"key3\":\"value3\"}]"));
+        assertThat(response.getBody(), equalTo("[{\"key4\":\"value4\"},{\"key1\":\"value1\"},{\"key1\":\"value2\"},{\"key2\":\"\"},{\"key3\":\"value3\"}]"));
     }
 
     @Test
@@ -261,7 +261,7 @@ public class CookiesTests extends WithJetty {
         init(JettyService.class, rs);
 
         RestResponse response = JettyService.getMultiCookieRequest.call(requestData(requestData -> requestData.addCookies("userCookie1", "userValue1")));
-        assertThat(response.body, equalTo("[{\"SpecCookie1\":\"SpecCookieValue1\"},{\"userCookie1\":\"userValue1\"}]"));
+        assertThat(response.getBody(), equalTo("[{\"SpecCookie1\":\"SpecCookieValue1\"},{\"userCookie1\":\"userValue1\"}]"));
         init(JettyService.class, given().filter(new AllureRestAssured()));
     }
 }

@@ -322,7 +322,7 @@ public class RestMethod<T> {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        RequestSpecification runSpec = getInitSpec().log().all();
+        RequestSpecification runSpec = getInitSpec();
         //when path's defined in Service layer (the whole path with query params)
         if (path != null && path.contains("?") && !path.contains("{")) userData.setPath(path);
         if (!userData.empty) {

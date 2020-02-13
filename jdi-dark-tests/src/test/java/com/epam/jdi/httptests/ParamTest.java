@@ -61,33 +61,33 @@ public class ParamTest extends WithJetty {
     }
 
     @Test
-    public void multipleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
+    public void multipleNoValueQueryParamWhenUsingReplacedQueryParamInUrlForGetRequest() {
         // For some reason Scalatra returns the order different when running in Intellij and Maven
-        JettyService.getNoValueParamWithParamInUrl.call("some&some1")
+        JettyService.getNoValueParamWithParamReplacedInUrl.call("some&some1")
                 .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
     }
 
     @Test
-    public void fgf() {
-        JettyService.getNoValueParamWithParamInUrl2.call()
+    public void multipleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
+        JettyService.getNoValueParamWithParamInUrl.call()
                 .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
     }
 
     @Test
     public void singleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithParamInUrl.call("some")
+        JettyService.getNoValueParamWithParamReplacedInUrl.call("some")
                 .isOk().assertThat().body(is("Params: some="));
     }
 
     @Test
     public void mixingStartingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithParamInUrl.call("some1&some2=one")
+        JettyService.getNoValueParamWithParamReplacedInUrl.call("some1&some2=one")
                 .isOk().assertThat().body(is("Params: some1=some2=one"));
     }
 
     @Test
     public void mixingEndingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithParamInUrl.call("some1=one&some2")
+        JettyService.getNoValueParamWithParamReplacedInUrl.call("some1=one&some2")
                 .isOk().assertThat().body(is("Params: some1=onesome2="));
     }
 

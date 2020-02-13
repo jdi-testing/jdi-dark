@@ -230,11 +230,11 @@ public class JettyService {
     @POST("multipart/multiple")
     public static RestMethod postMultipartMultiple;
 
-    @GET("/noValueParam?%s")
-    public static RestMethod getNoValueParamWithParamInUrl;
+    @GET("/noValueParam?{params}")
+    public static RestMethod getNoValueParamWithParamReplacedInUrl;
 
     @GET("/noValueParam?some&some1")
-    public static RestMethod getNoValueParamWithParamInUrl2;
+    public static RestMethod getNoValueParamWithParamInUrl;
 
     @GET("/returnContentTypeAsBody")
     public static RestMethod getReturnContentTypeAsBody;

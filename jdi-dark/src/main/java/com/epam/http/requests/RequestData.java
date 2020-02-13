@@ -329,4 +329,14 @@ public class RequestData extends DataClass<RequestData> {
         Map map = mapArray.toMap();
         return addHeaders(map);
     }
+
+    /**
+     * Set path to request data
+     *
+     * @param path
+     */
+    public void setPath(String path) {
+        this.path = path;
+        this.empty = false;
+    }
 }

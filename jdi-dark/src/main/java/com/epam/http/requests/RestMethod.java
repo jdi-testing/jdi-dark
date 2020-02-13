@@ -323,13 +323,17 @@ public class RestMethod<T> {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().log().all();
+        //when path's defined in Service layer (the whole path with query params)
+        if (path.contains("?") && !path.contains("{")) userData.setPath(path);
         if (!userData.empty) {
-            checkQueryParamsInUrl();
+            //when query params are set in url via replaced params
+            if (userData.path != null && userData.path.contains("?")) {
+                checkQueryParamsInUrl();
+            }
             runSpec.spec(getDataSpec(userData));
         }
-        //userData.path = path;
         logRequest(data, userData);
-        //userData.clear();
+        userData.clear();
         return doRequest(type, runSpec, expectedStatus);
     }
 
@@ -371,35 +375,9 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        userData.path = path;
-        userData.empty = false;
-        if (userData.path.contains("%s") && params.length > 0) {
-            userData.path = format(userData.path, params);
-
-
-            //checkQueryParamsInUrl(params);
-            //params parsing logic, if query parameters are set in url
-            /*
-            if (userData.path.contains("?")) {
-                userData.empty = false;
-                List<String> paramsList = new ArrayList<>(Arrays.asList(params));
-                for (int i = 0; i < paramsList.size(); i++) {
-                    if (paramsList.get(i).contains("&")) {
-                        List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
-                        paramsList.remove(i);
-                        paramsList.addAll(i, tempList);
-                    }
-                }
-                paramsList.forEach(param -> {
-                    if (param.contains("=")) {
-                        String paramName = substringBefore(param, "=");
-                        String paramValue = substringAfter(param, "=");
-                        userData.queryParams.add(paramName, paramValue);
-                    } else userData.queryParams.add(param, null);
-                });
-            }
-
-             */
+        userData.setPath(path);
+        if (userData.path.contains("{") && params.length > 0) {
+            replaceMaskWithQueryParams(params);
         }
         return call();
     }
@@ -548,8 +526,10 @@ public class RestMethod<T> {
         return this;
     }
 
+    /**
+     * This method checks that query parameters are set in Url
+     */
     private void checkQueryParamsInUrl() {
-        //userData.path = path;
         //params parsing logic, if query parameters are set in url
         if (userData.path.contains("?")) {
             userData.empty = false;
@@ -570,5 +550,15 @@ public class RestMethod<T> {
                 } else userData.queryParams.add(param, null);
             });
         }
+    }
+
+    /**
+     * This method replaces mask {} with query parameters
+     *
+     * @param params
+     */
+    private void replaceMaskWithQueryParams(String... params) {
+        String joinedParams = String.join("&", params);
+        userData.setPath(userData.path.replaceAll("\\{([^}]+)\\}", joinedParams));
     }
 }

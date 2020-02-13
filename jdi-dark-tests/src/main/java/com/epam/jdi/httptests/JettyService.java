@@ -204,4 +204,22 @@ public class JettyService {
     @GET("/noValueParam?%s")
     public static RestMethod getNoValueParamWithParamInUrl;
 
+    @GET("/returnContentTypeAsBody")
+    public static RestMethod getReturnContentTypeAsBody;
+
+    @POST("/textUriList")
+    public static RestMethod postTextUriList;
+
+    @PUT("/reflect")
+    public static RestMethod putReflect;
+
+    @POST("contentTypeAsBody")
+    public static RestMethod postContentTypeAsBody;
+
+    @GET("/reflect")
+    public static RestMethod getReflect;
+
+    @POST("/returnContentTypeAsBody")
+    public static RestMethod postReturnContentTypeAsBody;
+
 }

@@ -261,7 +261,9 @@ public class ServiceInit {
      */
     private static <T> String getDomain(Class<T> c) {
         return c.isAnnotationPresent(ServiceDomain.class)
-                ? c.getAnnotation(ServiceDomain.class).value()
+                ? ( c.getAnnotation(ServiceDomain.class).value().startsWith("$")
+                ? JdiHttpSettigns.getDomain(c.getAnnotation(ServiceDomain.class).value().substring(1))
+                : c.getAnnotation(ServiceDomain.class).value())
                 : JdiHttpSettigns.getDomain();
     }
 }

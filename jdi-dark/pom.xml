@@ -17,6 +17,8 @@
         <jdi-light-saber.version>2.0.62</jdi-light-saber.version>
         <allure-rest-assured.version>2.13.1</allure-rest-assured.version>
         <log4j2.version>2.11.1</log4j2.version>
+        <!--suppress UnresolvedMavenProperty -->
+        <profile>${env.BUILD_PROFILE}</profile>
     </properties>
 
     <dependencies>
@@ -69,6 +71,24 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>write-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>
+                                ${project.build.outputDirectory}/pom.properties
+                            </outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -531,25 +531,22 @@ public class RestMethod<T> {
      */
     private void checkQueryParamsInUrl() {
         //params parsing logic, if query parameters are set in url
-        if (userData.path.contains("?")) {
-            userData.empty = false;
-            String params = substringAfter(userData.path, "?");
-            List<String> paramsList = new ArrayList<>(Arrays.asList(params));
-            for (int i = 0; i < paramsList.size(); i++) {
-                if (paramsList.get(i).contains("&")) {
-                    List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
-                    paramsList.remove(i);
-                    paramsList.addAll(i, tempList);
-                }
+        String params = substringAfter(userData.path, "?");
+        List<String> paramsList = new ArrayList<>(Arrays.asList(params));
+        for (int i = 0; i < paramsList.size(); i++) {
+            if (paramsList.get(i).contains("&")) {
+                List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
+                paramsList.remove(i);
+                paramsList.addAll(i, tempList);
             }
-            paramsList.forEach(param -> {
-                if (param.contains("=")) {
-                    String paramName = substringBefore(param, "=");
-                    String paramValue = substringAfter(param, "=");
-                    userData.queryParams.add(paramName, paramValue);
-                } else userData.queryParams.add(param, null);
-            });
         }
+        paramsList.forEach(param -> {
+            if (param.contains("=")) {
+                String paramName = substringBefore(param, "=");
+                String paramValue = substringAfter(param, "=");
+                userData.queryParams.add(paramName, paramValue);
+            } else userData.queryParams.add(param, null);
+        });
     }
 
     /**

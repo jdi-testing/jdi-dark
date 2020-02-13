@@ -8,12 +8,18 @@ import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.FormParameters;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.Header;
+import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
+import com.epam.http.response.RestResponse;
+import io.restassured.internal.multipart.MultiPartSpecificationImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
@@ -126,7 +132,11 @@ public class JettyService {
     public static RestMethod getShopping;
 
     @GET("/products")
-    public static RestMethod getProducts;
+    public static RestMethod<Product[]> getProducts;
+
+    public static List<Product> getProducts() {
+        return Arrays.asList(getProducts.callAsData(Product[].class));
+    }
 
     @GET("/jsonStore")
     public static RestMethod getJsonStore;
@@ -162,6 +172,10 @@ public class JettyService {
     @POST("/charEncoding")
     public static RestMethod postCharEncoding;
 
+    @POST("/reflect")
+    @ContentType(JSON)
+    public static RestMethod<Hello> postObject;
+
     @GET("/redirect")
     public static RestMethod postRedirect;
 
@@ -193,11 +207,47 @@ public class JettyService {
     public static RestMethod getMultiCookieWithManyCookies;
 
     @POST("/multipart/file")
+    @MultiPart(controlName = "file", fileName = "myFile")
     public static RestMethod postMultipartFile;
+
+    public static RestResponse postMultipartFile(byte[] file) {
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
+        return postMultipartFile.call();
+    }
+
+    public static RestResponse postMultipartFile(byte[] file, String fileName) {
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
+        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setFileName(fileName);
+        return postMultipartFile.call();
+    }
 
     @POST("/multipart/text")
     public static RestMethod postMultipartText;
 
     @GET("/textHTML")
     public static RestMethod getTextHtml;
+
+    @POST("multipart/multiple")
+    public static RestMethod postMultipartMultiple;
+
+    @GET("/noValueParam?%s")
+    public static RestMethod getNoValueParamWithParamInUrl;
+
+    @GET("/returnContentTypeAsBody")
+    public static RestMethod getReturnContentTypeAsBody;
+
+    @POST("/textUriList")
+    public static RestMethod postTextUriList;
+
+    @PUT("/reflect")
+    public static RestMethod putReflect;
+
+    @POST("contentTypeAsBody")
+    public static RestMethod postContentTypeAsBody;
+
+    @GET("/reflect")
+    public static RestMethod getReflect;
+
+    @POST("/returnContentTypeAsBody")
+    public static RestMethod postReturnContentTypeAsBody;
 }

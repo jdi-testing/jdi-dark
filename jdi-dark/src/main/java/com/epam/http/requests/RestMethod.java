@@ -1,23 +1,26 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.FormParameter;
+import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
-import com.google.gson.Gson;
 import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -27,6 +30,8 @@ import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
 
 /**
@@ -39,10 +44,15 @@ public class RestMethod<T> {
     private RequestSpecification spec = given().filter(new AllureRestAssured());
     private String url = null;
     private String path = null;
+    private ObjectMapper objectMapper = null;
+
+    public RequestData getData() {
+        return data;
+    }
+
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
-    private Gson gson = new Gson();
     private ResponseStatusType expectedStatus = OK;
 
     public RestMethod() {
@@ -127,6 +137,16 @@ public class RestMethod<T> {
 
     public RequestSpecification getInitSpec() {
         return given().filter(new AllureRestAssured()).spec(spec).spec(getDataSpec(data));
+    }
+
+
+    /**
+     * Set ObjectMapper for HTTP request
+     *
+     * @param objectMapper object mapper which will be used for body serialization/deserialization
+     */
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     /**
@@ -271,6 +291,15 @@ public class RestMethod<T> {
                 QueryParameter::name, QueryParameter::value));
     }
 
+    /**
+     * Set query parameters to HTTP request.
+     *
+     * @param multiPartParams multiPart params
+     */
+    public void addMultiPartParams(MultiPart multiPartParams) {
+        data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
+    }
+
     public void addFormParameters(FormParameter... params) {
         data.formParams.addAll(new MapArray<>(params,
                 FormParameter::name, FormParameter::value));
@@ -320,21 +349,18 @@ public class RestMethod<T> {
     /**
      * Send HTTP request and map response to Java object.
      *
-     * @param c class to make mapping to
+     * @param c class to make mapping response body to object
      * @return Java object
      */
     public T callAsData(Class<T> c) {
-        return call().getRaResponse().body().as(c);
+        if (objectMapper == null) {
+            return call().getRaResponse().body().as(c);
+        }
+        else {
+            return call().getRaResponse().body().as(c, objectMapper);
+        }
     }
 
-    public T asData(Class<T> c) {
-        return callAsData(c);
-    }
-
-    public RestResponse postData(T data) {
-        this.data.body = gson.toJson(data);
-        return call();
-    }
 
     /**
      * Send HTTP request with specific path parameters.
@@ -343,15 +369,53 @@ public class RestMethod<T> {
      * @return response
      */
     public RestResponse call(String... params) {
-        if (path.contains("%s") && params.length > 0) {
-            path = format(path, params);
+        userData.path = path;
+        if (userData.path.contains("%s") && params.length > 0) {
+            userData.path = format(userData.path, params);
+            //params parsing logic, if query parameters are set in url
+            if (userData.path.contains("?")) {
+                userData.empty = false;
+                List<String> paramsList = new ArrayList<>(Arrays.asList(params));
+                for (int i = 0; i < paramsList.size(); i++) {
+                    if (paramsList.get(i).contains("&")) {
+                        List<String> tempList = Arrays.asList(paramsList.get(i).split("\\&"));
+                        paramsList.remove(i);
+                        paramsList.addAll(i, tempList);
+                    }
+                }
+                paramsList.forEach(param -> {
+                    if (param.contains("=")) {
+                        String paramName = substringBefore(param, "=");
+                        String paramValue = substringAfter(param, "=");
+                        userData.queryParams.add(paramName, paramValue);
+                    } else userData.queryParams.add(param, null);
+                });
+            }
         }
         return call();
     }
 
-    public RestResponse post(String body) {
+    /**
+     * Send HTTP request with body.
+     *
+     * @param body request body
+     * @return response
+     */
+    public RestResponse post(Object body) {
         return call(new RequestData().set(rd -> rd.body = body));
     }
+
+    /**
+     * Send HTTP request with body and parse result to object
+     *
+     * @param body request body
+     * @param c    type of response body
+     * @return response body as object
+     */
+    public T post(Object body, Class<T> c) {
+        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
+    }
+
 
     /**
      * Send HTTP request with invoked request data.
@@ -426,9 +490,6 @@ public class RestMethod<T> {
         if (data.formParams.any()) {
             spec.formParams(data.formParams.toMap());
         }
-        if (data.body != null) {
-            spec.body(data.body);
-        }
         if (!data.headers.asList().isEmpty()) {
             spec.headers(data.headers);
         }
@@ -437,6 +498,11 @@ public class RestMethod<T> {
         }
         if (data.multiPartSpecifications.size() > 0) {
             data.multiPartSpecifications.forEach(spec::multiPart);
+        }
+        if ((data.body != null) && (objectMapper != null)) {
+            spec.body(data.body, objectMapper);
+        } else if (data.body != null) {
+            spec.body(data.body);
         }
 
         return spec;
@@ -461,5 +527,15 @@ public class RestMethod<T> {
             status = call().getStatus().type;
         } while (status != OK && watch.getTime() < liveTimeMSec);
         call().isOk();
+    }
+
+    /**
+     * Reset predefined request specification to default state.
+     *
+     * return rest method
+     */
+    public RestMethod resetInitSpec() {
+        spec = given().filter(new AllureRestAssured());
+        return this;
     }
 }

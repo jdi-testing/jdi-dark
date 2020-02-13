@@ -4,7 +4,7 @@ Feature: Json response check
   Scenario: Check json response
     Given I init service
     And I set JSON request content type
-    When I do get request
+    When I do getMethod request
     Then Response status type is OK
     And Response body has values
       | url          | http://httpbin.org/get |

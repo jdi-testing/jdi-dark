@@ -54,7 +54,7 @@ public class PostmanAuthTests {
 
     @Test
     public void entityTest() {
-        PostmanInfo info = authBase.asData(PostmanInfo.class);
+        PostmanInfo info = authBase.callAsData(PostmanInfo.class);
         assertEquals(info.authenticated, "true");
     }
 

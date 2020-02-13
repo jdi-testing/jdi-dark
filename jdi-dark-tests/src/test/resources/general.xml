@@ -11,7 +11,7 @@
             <class name="com.epam.jdi.httptests.HeaderTests"/>
             <class name="com.epam.jdi.httptests.JSONPostTests"/>
             <class name="com.epam.jdi.httptests.MultiPartUploadTests"/>
-            <class name="com.epam.jdi.httptests.ObjectMappingTests"/>
+            <class name="com.epam.jdi.httptests.ObjectMappingForServiceTests"/>
             <class name="com.epam.jdi.httptests.ParamTest"/>
             <class name="com.epam.jdi.httptests.PerformanceTests"/>
             <class name="com.epam.jdi.httptests.PostmanAuthTests"/>
@@ -19,6 +19,7 @@
             <class name="com.epam.jdi.httptests.ResponseTests"/>
             <class name="com.epam.jdi.httptests.ServiceTest"/>
             <class name="com.epam.jdi.httptests.TrelloTests"/>
+            <class name="com.epam.jdi.httptests.ContentTypeTests"/>
         </classes>
     </test>
 </suite>

@@ -221,5 +221,4 @@ public class JettyService {
 
     @POST("/returnContentTypeAsBody")
     public static RestMethod postReturnContentTypeAsBody;
-
 }

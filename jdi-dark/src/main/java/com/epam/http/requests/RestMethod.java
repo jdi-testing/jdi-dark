@@ -139,6 +139,9 @@ public class RestMethod<T> {
         return given().filter(new AllureRestAssured()).spec(spec).spec(getDataSpec(data));
     }
 
+    public RequestSpecification getDataSpec() {
+        return getDataSpec(data);
+    }
 
     /**
      * Set ObjectMapper for HTTP request
@@ -365,7 +368,7 @@ public class RestMethod<T> {
      * Moved all query params from path to request data query params.
      */
     private void getQueryParamsFromPath() {
-        if (data.path.contains("?")) {
+        if (data.path != null && data.path.contains("?")) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
             data.path = pathString;
@@ -380,13 +383,30 @@ public class RestMethod<T> {
     }
 
     /**
-     * Send HTTP request with specific path parameters.
+     * Send HTTP request with specific query parameters.
      *
-     * @param params path parameters
+     * @param queryParams additional query parameters
      * @return response
      */
-    public RestResponse call(String... params) {
-        if (params.length > 0) {
+    public RestResponse call(String queryParams) {
+        if (!queryParams.isEmpty()) {
+            String[] queryParamsArr = queryParams.split("&");
+            for (String queryParam : queryParamsArr) {
+                userData.empty = false;
+                userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
+            }
+        }
+        return call();
+    }
+
+    /**
+     * Send HTTP request with specific named path parameters.
+     *
+     * @param namedParams path parameters
+     * @return response
+     */
+    public RestResponse callWithNamedParams(String... namedParams) {
+        if (namedParams.length > 0) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
             data.path = pathString;
@@ -394,14 +414,14 @@ public class RestMethod<T> {
             int index = 0;
             for (String key: pathParams) {
                 userData.empty = false;
-                userData.pathParams.add(key, params[index]);
+                userData.pathParams.add(key, namedParams[index]);
                 index++;
             }
             if (!queryString.isEmpty()) {
                 String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
                 for (String key: queryParams) {
                     userData.empty = false;
-                    userData.queryParams.add(key, params[index]);
+                    userData.queryParams.add(key, namedParams[index]);
                     index++;
                 }
             }

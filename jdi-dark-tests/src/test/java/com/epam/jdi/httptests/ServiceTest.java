@@ -71,15 +71,15 @@ public class ServiceTest {
 
     @Test
     public void statusTest() {
-        RestResponse resp = service.status.call("503");
+        RestResponse resp = service.status.callWithNamedParams("503");
         assertEquals(resp.status.code, 503);
         assertEquals(resp.status.type, SERVER_ERROR);
         resp.isEmpty();
     }
 
     @Test
-    public void statusTest2() {
-        RestResponse resp = service.statusWithQuery.call("503", "some");
+    public void statusTestWithQueryInPath() {
+        RestResponse resp = service.statusWithQuery.callWithNamedParams("503", "some");
         assertEquals(resp.status.code, 503);
         assertEquals(resp.status.type, SERVER_ERROR);
         resp.isEmpty();

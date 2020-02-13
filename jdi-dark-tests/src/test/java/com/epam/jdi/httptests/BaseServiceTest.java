@@ -15,7 +15,6 @@ public abstract class BaseServiceTest extends WithJetty {
 
     @BeforeClass
     public void preconditions() {
-        int i = 1;
         RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
                 new Jackson2ObjectMapperFactory() {
                     @Override

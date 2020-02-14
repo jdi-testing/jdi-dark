@@ -176,6 +176,7 @@ public class JettyService {
     @ContentType(JSON)
     public static RestMethod<Hello> postObject;
 
+    //commit to check codacy
     @GET("/redirect")
     @Header(name = "Redirect_test_header", value = "Redirect_test_header_value")
     public static RestMethod getRedirect;

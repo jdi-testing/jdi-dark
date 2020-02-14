@@ -13,12 +13,14 @@ import java.util.Map;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RequestData.requestPathParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.Google.searchGoogle;
 import static com.epam.jdi.httptests.JettyService.getMatrix;
+import static com.epam.jdi.httptests.JettyService.getMixedparam;
 import static com.epam.jdi.httptests.JettyService.getParamAfterPath;
 import static com.epam.jdi.httptests.JettyService.getParamBeforePath;
 import static com.epam.jdi.httptests.JettyService.getUser;
-import static io.restassured.RestAssured.expect;
+import static com.epam.jdi.httptests.JettyService.searchGoogle;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
 
 
@@ -100,6 +102,18 @@ public class PathParamTests extends WithJetty {
     }
 
     @Test
+    public void usePath() {
+        RestResponse response = getUser
+                .callWithNamedParams("Last", "Name");
+        response.isOk().body("fullName", equalTo("Last Name"));
+    }
+
+    @Test
+    public void mixingUnnamedPathParametersAndQueryParametersWorks() {
+        RestResponse response = getMixedparam.callWithNamedParams("games", "http://myurl.com");
+    }
+
+    @Test
     public void usePathParametersLongerTheTemplateName() {
         RestResponse response = getMatrix
                 .call(requestPathParams(new Object[][]{{"abcde", "JohnJohn"}, {"value", "Doe"}}));
@@ -132,19 +146,74 @@ public class PathParamTests extends WithJetty {
     }
 
     @Test
-    public void unnamedQueryParametersWorks() throws Exception {
-        expect().statusCode(200).when().get("http://www.google.se/search?q={query}&hl=en", "query");
+    public void
+    can_specify_space_only_named_path_params() {
+        given().
+                pathParam("firstName", "John").
+                pathParam("lastName", " ").
+                when().
+                get("/{firstName}/{lastName}").
+                then().
+                statusCode(200).
+                body("firstName", equalTo("John")).
+                body("lastName", equalTo(" "));
     }
 
     @Test
-    public void unnamedQueryParametersWorksJDI() throws Exception {
-        init(Google.class);
-        RestResponse response = searchGoogle.call();
-
+    public void
+    can_specify_space_only_unnamed_path_params() {
+        when().
+                get("/{firstName}/{lastName}", "John", " ").
+                then().
+                statusCode(200).
+                body("firstName", equalTo("John")).
+                body("lastName", equalTo(" "));
     }
 
+    @Test
+    public void
+    named_path_parameters_have_precedence_over_unnamed_path_params() {
+        given().
+                pathParam("middleName", "The Beast").
+                when().
+                get("/{firstName}/{middleName}/{lastName}", "John", "Doe").
+                then().
+                statusCode(200).
+                body("firstName", equalTo("John")).
+                body("middleName", equalTo("The Beast")).
+                body("lastName", equalTo("Doe"));
+    }
+
+    @Test
+    public void
+    canSpecifySpacePathParamsWithoutKey() {
+        RestResponse response = getUser.callWithNamedParams("John", " ");
+        response.isOk().body("firstName", equalTo("John")).body("lastName", equalTo(" "));
+    }
+
+    @Test
+    public void canSpecifyEmptyPath() {
+        RestResponse response = getUser
+                .call(requestPathParams(new Object[][]{{"firstName", "John"}, {"lastName", ""}}));
+        response.assertThat().statusCode(404);
+    }
+
+    @Test
+    public void
+    canSpecifyEmptyPathWithoutKey() {
+        RestResponse response = getUser.callWithNamedParams("John", "");
+        response.assertThat().statusCode(404);
+    }
+
+    @Test
+    public void queryParametersWorksWithoutKeys() {
+        RestResponse response = searchGoogle.call("query");
+        response.isOk();
+    }
+
+
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
-    public void passingInTooFewNamedPathParamsWithGivenThrowsIAEJDI() throws Exception {
+    public void passingInTooFewNamedPathParamsWithGivenThrowsIAEJDI() {
         RestResponse response = getUser
                 .call(requestPathParams(new Object[][]{{"firstName", "John"}}));
     }

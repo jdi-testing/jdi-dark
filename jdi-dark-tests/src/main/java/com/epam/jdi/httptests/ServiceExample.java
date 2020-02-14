@@ -36,7 +36,7 @@ public class ServiceExample {
     @PATCH("/patch") RestMethod patch;
     @DELETE("/delete") RestMethod delete;
     @GET("/status/{status}")
-    RestMethod status;
+    public static RestMethod status;
 
     @ContentType(HTML) @GET("/html")
     RestMethod getHTMLMethod;

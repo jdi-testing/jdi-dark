@@ -13,10 +13,12 @@ import java.util.Map;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RequestData.requestPathParams;
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.httptests.Google.searchGoogle;
 import static com.epam.jdi.httptests.JettyService.getMatrix;
 import static com.epam.jdi.httptests.JettyService.getParamAfterPath;
 import static com.epam.jdi.httptests.JettyService.getParamBeforePath;
 import static com.epam.jdi.httptests.JettyService.getUser;
+import static io.restassured.RestAssured.expect;
 import static org.hamcrest.Matchers.equalTo;
 
 
@@ -102,5 +104,48 @@ public class PathParamTests extends WithJetty {
         RestResponse response = getMatrix
                 .call(requestPathParams(new Object[][]{{"abcde", "JohnJohn"}, {"value", "Doe"}}));
         response.isOk().body("JohnJohn", equalTo("Doe"));
+    }
+
+    @Test
+    public void supportsPassingIntPathParamsToRequestSpec() {
+        RestResponse response = getUser
+                .call(requestPathParams(new Object[][]{{"firstName", "John"}, {"lastName", 42}}));
+        response.isOk().body("fullName", equalTo("John 42"));
+    }
+
+    @Test
+    public void canUsePathParamsWithNonStandardChars() {
+        final String nonStandardChars = "\\$£@\"){¤$";
+        RestResponse response = getUser
+                .call(requestPathParams(new Object[][]{{"firstName", nonStandardChars}, {"lastName", "Last"}}));
+        response.isOk().body("fullName", equalTo("\\$£@\"){¤$ Last"));
+    }
+
+    @Test
+    public void urlEncodesPathParamsInMap() throws Exception {
+        final Map<String, String> params = new HashMap<>();
+        params.put("firstName", "John: å");
+        params.put("lastName", "Doe");
+        RestResponse response = getUser
+                .call(requestData(d -> d.pathParams.addAll(params)));
+        response.isOk().body("fullName", equalTo("John: å Doe"));
+    }
+
+    @Test
+    public void unnamedQueryParametersWorks() throws Exception {
+        expect().statusCode(200).when().get("http://www.google.se/search?q={query}&hl=en", "query");
+    }
+
+    @Test
+    public void unnamedQueryParametersWorksJDI() throws Exception {
+        init(Google.class);
+        RestResponse response = searchGoogle.call();
+
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
+    public void passingInTooFewNamedPathParamsWithGivenThrowsIAEJDI() throws Exception {
+        RestResponse response = getUser
+                .call(requestPathParams(new Object[][]{{"firstName", "John"}}));
     }
 }

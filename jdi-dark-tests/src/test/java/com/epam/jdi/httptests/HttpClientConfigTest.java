@@ -19,7 +19,7 @@ import static io.restassured.RestAssured.requestSpecification;
 import static org.apache.http.client.params.ClientPNames.DEFAULT_HEADERS;
 import static org.hamcrest.Matchers.equalTo;
 
-public class HttpClientConfigTests extends WithJetty {
+public class HttpClientConfigTest extends WithJetty {
 
     @BeforeTest
     public void before() { init(JettyService.class, requestSpecification);

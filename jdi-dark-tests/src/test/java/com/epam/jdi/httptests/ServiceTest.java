@@ -70,7 +70,7 @@ public class ServiceTest {
 
     @Test
     public void statusTest() {
-        RestResponse resp = service.status.call("503");
+        RestResponse resp = ServiceExample.status.call("503");
         assertEquals(resp.status.code, 503);
         assertEquals(resp.status.type, SERVER_ERROR);
         resp.isEmpty();

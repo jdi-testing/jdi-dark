@@ -15,7 +15,7 @@
         <allure.maven>2.9</allure.maven>
         <aspectj.version>1.9.1</aspectj.version>
         <!--suppress UnresolvedMavenProperty -->
-        <profile>${env.BUILD_PROFILE}</profile>
+        <profile>$BUILD_PROFILE</profile>
     </properties>
 
     <dependencies>

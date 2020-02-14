@@ -17,8 +17,6 @@
         <jdi-light-saber.version>2.0.62</jdi-light-saber.version>
         <allure-rest-assured.version>2.13.1</allure-rest-assured.version>
         <log4j2.version>2.11.1</log4j2.version>
-        <!--suppress UnresolvedMavenProperty -->
-        <profile>${env.BUILD_PROFILE}</profile>
     </properties>
 
     <dependencies>

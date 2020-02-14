@@ -22,6 +22,7 @@ jobs:
     script:
     - echo ------------------- WELCOME TO JDI DARK ----------------------
     - mvn --version #it is helpful
+    - echo $BUILD_PROFILE
 
   - stage: compile
     name: Compile jdi code

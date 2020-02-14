@@ -88,7 +88,6 @@ public class RequestData extends DataClass<RequestData> {
         return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
     }
 
-
     /**
      * Set query parameters to request
      *

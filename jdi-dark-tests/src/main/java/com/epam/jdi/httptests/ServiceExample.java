@@ -39,7 +39,10 @@ public class ServiceExample {
     @PUT("/put") RestMethod putMethod;
     @PATCH("/patch") RestMethod patch;
     @DELETE("/delete") RestMethod delete;
-    @GET("/status/%s") RestMethod status;
+    @GET("/status/{status}") RestMethod status;
+
+    @GET("/status/{status}?q={value}") RestMethod statusWithQuery;
+    @PUT("/get?q=1") RestMethod getMethodWithQuery;
 
     @ContentType(HTML) @GET("/html")
     RestMethod getHTMLMethod;

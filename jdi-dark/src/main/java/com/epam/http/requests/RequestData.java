@@ -11,7 +11,6 @@ import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.internal.MapCreator;
-import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.MultiPartSpecification;
 
 import java.io.File;
@@ -30,7 +29,6 @@ public class RequestData extends DataClass<RequestData> {
     public String uri = null;
     public String path = null;
     public Object body = null;
-    public ObjectMapper objectMapper = null;
     public String contentType = null;
     public Headers headers = new Headers();
     public MultiMap<String, String> pathParams = new MultiMap<>();
@@ -148,7 +146,6 @@ public class RequestData extends DataClass<RequestData> {
         formParams.clear();
         cookies = new Cookies();
         body = null;
-        objectMapper = null;
         path = null;
         uri = null;
         contentType = null;

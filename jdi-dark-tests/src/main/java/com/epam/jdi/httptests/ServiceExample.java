@@ -29,7 +29,7 @@ public class ServiceExample {
     static RestMethod<Info> getInfo;
 
     public static Info getInfo() {
-        return getInfo.asData(Info.class);
+        return getInfo.callAsData(Info.class);
     }
 
     @Header(name = "Type", value = "Test")

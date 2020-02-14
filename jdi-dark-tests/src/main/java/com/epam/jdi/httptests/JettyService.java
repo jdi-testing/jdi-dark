@@ -40,7 +40,7 @@ public class JettyService {
     @GET("/cookie_with_no_value")
     public static RestMethod getCookieWithNoValue;
 
-    @GET("/response_cookie_with_no/reflect_value")
+    @GET("/response_cookie_with_no_value")
     public static RestMethod getResponseCookieWithNoValue;
 
     @GET("/cookie")
@@ -135,7 +135,7 @@ public class JettyService {
     public static RestMethod<Product[]> getProducts;
 
     public static List<Product> getProducts() {
-        return Arrays.asList(getProducts.asData(Product[].class));
+        return Arrays.asList(getProducts.callAsData(Product[].class));
     }
 
     @GET("/jsonStore")
@@ -224,6 +224,9 @@ public class JettyService {
 
     @POST("/multipart/text")
     public static RestMethod postMultipartText;
+
+    @GET("/textHTML")
+    public static RestMethod getTextHtml;
 
     @POST("multipart/multiple")
     public static RestMethod postMultipartMultiple;

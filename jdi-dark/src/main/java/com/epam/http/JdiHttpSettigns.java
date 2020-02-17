@@ -60,7 +60,7 @@ public class JdiHttpSettigns {
     }
 
     private static Properties getProperties(String path) {
-        logger.info("Properties file is: " + path + ".properties");
+        logger.info("Properties file is: " + path);
         File propertyFile = new File(path);
         Properties properties;
         if (propertyFile.exists()) {

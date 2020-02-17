@@ -45,7 +45,7 @@ public class JdiHttpSettigns {
             for(String p : params) {
                 String[] pairs = p.split("=");
                 DOMAIN.put(pairs[0].trim(), pairs[1]);
-            };
+            }
         }
         else {
             DOMAIN.put("domain", domain);

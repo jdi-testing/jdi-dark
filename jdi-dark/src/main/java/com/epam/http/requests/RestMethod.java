@@ -437,15 +437,13 @@ public class RestMethod<T> {
     private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
         if (namedParams.length > pathParams.length && queryString.isEmpty()) {
             String[] redundant_values = Arrays.copyOfRange(namedParams, pathParams.length, namedParams.length);
-            throw exception(String.format("Invalid number of path parameters. Expected %s , was %s.\n" +
-                            "Redundant param values : %s",
-                    pathParams.length, namedParams.length, Arrays.asList(redundant_values)));
+            throw exception("Invalid number of path parameters. Expected %s , was %s.\nRedundant param values : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(redundant_values));
         }
         if (namedParams.length < pathParams.length) {
             String[] missing_params = Arrays.copyOfRange(pathParams, namedParams.length, pathParams.length);
-            throw exception(String.format("Invalid number of path parameters. Expected %s, was %s.\n " +
-                            "Missing params : %s",
-                    pathParams.length, namedParams.length, Arrays.asList(missing_params)));
+            throw exception("Invalid number of path parameters. Expected %s, was %s.\nMissing params : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(missing_params));
         }
     }
 

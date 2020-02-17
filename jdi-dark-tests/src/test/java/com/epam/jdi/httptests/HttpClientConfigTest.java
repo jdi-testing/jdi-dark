@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 /**
  * This test is created as an example of possible RestAssured.config() use
+ * Please note the usage of RestAssured.reset() to restore default settings
  */
 
 public class HttpClientConfigTest extends WithJetty {

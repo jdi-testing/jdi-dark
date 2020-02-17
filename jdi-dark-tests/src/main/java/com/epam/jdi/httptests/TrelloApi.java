@@ -8,7 +8,9 @@ import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.requests.RestMethod;
+import com.julienvey.trello.domain.Board;
 
+import static com.epam.http.requests.RequestData.requestPathParams;
 import static io.restassured.http.ContentType.JSON;
 
 @ServiceDomain("$trello")
@@ -21,13 +23,17 @@ public class TrelloApi {
         public static final String BOARDS = "/boards";
 
         @ContentType(JSON) @GET(BOARDS)
-        public static RestMethod boardsGet;
+        public static RestMethod<Board> boardsGet;
 
         @ContentType(JSON) @POST(BOARDS)
-        public static RestMethod boardsPost;
+        public static RestMethod<Board> boardsPost;
 
         @ContentType(JSON) @GET("/boards/{board_id}")
         public static RestMethod getBoardById;
+
+        public static Board getBoard(String boardId) {
+                return getBoardById.call(requestPathParams("board_id", boardId)).getRaResponse().as(Board.class);
+        }
 
         @ContentType(JSON) @GET("/boards/{board_id}/cards")
         public static RestMethod getBoardCardsList;

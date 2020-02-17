@@ -6,12 +6,16 @@ import com.epam.jdi.tools.PropertyReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 import static com.epam.http.logger.LogLevels.parseLogLevel;
 import static com.epam.jdi.tools.PathUtils.mergePath;
 import static com.epam.jdi.tools.PropertyReader.fillAction;
+import static java.util.Arrays.asList;
 
 /**
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
@@ -20,23 +24,43 @@ public class JdiHttpSettigns {
     public static String TEST_PROPERTIES_PATH = "test.properties";
     public static boolean verifyOkStatus = false;
     public static ILogger logger = instance("JDI");
-    public static String DOMAIN;
+    public static Map<String, String> DOMAIN = new HashMap<>();
 
     public static String getDomain() {
-        if (DOMAIN != null)
-            return DOMAIN;
+        if (!DOMAIN.isEmpty())
+            return DOMAIN.get("domain");
         return "No Domain Found. Use test.properties or WebSettings.DOMAIN";
     }
 
-    public static void setDomain(String domain) { DOMAIN = domain; }
+    public static String getDomain(String domainId) {
+        if (!DOMAIN.isEmpty()) {
+            return DOMAIN.containsKey(domainId) ? DOMAIN.get(domainId) : "No Domain Found. Use test.properties.";
+        }
+        return "No Domain Found. Use test.properties.";
+    }
+
+    public static void setDomain(String domain) {
+        List<String> params = asList(domain.trim().split(","));
+        if (domain.contains("=")) {
+            for(String p : params) {
+                String[] pairs = p.split("=");
+                DOMAIN.put(pairs[0].trim(), pairs[1]);
+            }
+        }
+        else {
+            DOMAIN.put("domain", domain);
+        }
+    }
 
     public static synchronized void init() {
-        getProperties(TEST_PROPERTIES_PATH);
+        Properties properties = getProperties("pom.properties");
+        getProperties((properties.size() > 0) ? ( (!properties.getProperty("profile").contains("$")) ? properties.getProperty("profile").concat(".properties") : TEST_PROPERTIES_PATH) : TEST_PROPERTIES_PATH);
         fillAction(p -> setDomain(p), "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
     }
 
     private static Properties getProperties(String path) {
+        logger.info("Properties file is: " + path);
         File propertyFile = new File(path);
         Properties properties;
         if (propertyFile.exists()) {

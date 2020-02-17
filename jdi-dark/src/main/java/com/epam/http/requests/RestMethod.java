@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -399,6 +400,21 @@ public class RestMethod<T> {
         return call();
     }
 
+    private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
+        if (namedParams.length > pathParams.length && queryString.isEmpty()) {
+            String[] redundant_values = Arrays.copyOfRange(namedParams, pathParams.length, namedParams.length);
+            throw (new IllegalArgumentException(String.format("Invalid number of path parameters. Expected %s , was %s.\n" +
+                            "Redundant param values : " + Arrays.asList(redundant_values),
+                    pathParams.length, namedParams.length)));
+        }
+        if (namedParams.length < pathParams.length) {
+            String[] missing_params = Arrays.copyOfRange(pathParams, namedParams.length, pathParams.length);
+            throw (new IllegalArgumentException(String.format("Invalid number of path parameters. Expected %s, was %s.\n " +
+                            "Missing params : " + Arrays.asList(missing_params),
+                    pathParams.length, namedParams.length)));
+        }
+    }
+
     /**
      * Send HTTP request with specific named path parameters.
      *
@@ -411,15 +427,16 @@ public class RestMethod<T> {
             String queryString = substringAfter(path, "?");
             data.path = pathString;
             String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
+            catchPathParametersIllegalArguments(pathParams, namedParams, queryString);
             int index = 0;
-            for (String key: pathParams) {
+            for (String key : pathParams) {
                 userData.empty = false;
                 userData.pathParams.add(key, namedParams[index]);
                 index++;
             }
             if (!queryString.isEmpty()) {
                 String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
-                for (String key: queryParams) {
+                for (String key : queryParams) {
                     userData.empty = false;
                     userData.queryParams.add(key, namedParams[index]);
                     index++;

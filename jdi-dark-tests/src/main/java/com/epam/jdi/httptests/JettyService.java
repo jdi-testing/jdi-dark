@@ -183,13 +183,15 @@ public class JettyService {
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;
 
+    @GET("/{firstName}/{firstName}")
+    public static RestMethod getUserSameParameters;
+
     @GET("/{firstName}/{middleName}/{lastName}")
     public static RestMethod getUserWithLastName;
 
     @URL("http://www.google.se")
     @GET("/search?q={query}&hl=en")
     public static RestMethod searchGoogle;
-
 
     @GET("/{channelName}/item-import/rss/import?source={url}")
     public static RestMethod getMixedparam;

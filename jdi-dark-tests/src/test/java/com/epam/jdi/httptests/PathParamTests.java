@@ -18,11 +18,9 @@ import static com.epam.jdi.httptests.JettyService.getMixedparam;
 import static com.epam.jdi.httptests.JettyService.getParamAfterPath;
 import static com.epam.jdi.httptests.JettyService.getParamBeforePath;
 import static com.epam.jdi.httptests.JettyService.getUser;
+import static com.epam.jdi.httptests.JettyService.getUserSameParameters;
 import static com.epam.jdi.httptests.JettyService.searchGoogle;
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
-
 
 public class PathParamTests extends WithJetty {
     @BeforeClass
@@ -74,8 +72,20 @@ public class PathParamTests extends WithJetty {
     }
 
     @Test
+    public void unnamedPathParametersCanBeAppendedBeforeSubPath() {
+        RestResponse response = getParamBeforePath.callWithNamedParams("something");
+        response.isOk().body("value", equalTo("something"));
+    }
+
+    @Test
     public void namedPathParametersCanBeAppendedAfterSubPath() {
         RestResponse response = getParamAfterPath.call(requestPathParams("format", "json"));
+        response.isOk().body("value", equalTo("something"));
+    }
+
+    @Test
+    public void unnamedPathParametersCanBeAppendedAfterSubPath() {
+        RestResponse response = getParamAfterPath.callWithNamedParams("json");
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -111,6 +121,7 @@ public class PathParamTests extends WithJetty {
     @Test
     public void mixingUnnamedPathParametersAndQueryParametersWorks() {
         RestResponse response = getMixedparam.callWithNamedParams("games", "http://myurl.com");
+        response.assertThat().statusCode(404);
     }
 
     @Test
@@ -147,45 +158,6 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void
-    can_specify_space_only_named_path_params() {
-        given().
-                pathParam("firstName", "John").
-                pathParam("lastName", " ").
-                when().
-                get("/{firstName}/{lastName}").
-                then().
-                statusCode(200).
-                body("firstName", equalTo("John")).
-                body("lastName", equalTo(" "));
-    }
-
-    @Test
-    public void
-    can_specify_space_only_unnamed_path_params() {
-        when().
-                get("/{firstName}/{lastName}", "John", " ").
-                then().
-                statusCode(200).
-                body("firstName", equalTo("John")).
-                body("lastName", equalTo(" "));
-    }
-
-    @Test
-    public void
-    named_path_parameters_have_precedence_over_unnamed_path_params() {
-        given().
-                pathParam("middleName", "The Beast").
-                when().
-                get("/{firstName}/{middleName}/{lastName}", "John", "Doe").
-                then().
-                statusCode(200).
-                body("firstName", equalTo("John")).
-                body("middleName", equalTo("The Beast")).
-                body("lastName", equalTo("Doe"));
-    }
-
-    @Test
-    public void
     canSpecifySpacePathParamsWithoutKey() {
         RestResponse response = getUser.callWithNamedParams("John", " ");
         response.isOk().body("firstName", equalTo("John")).body("lastName", equalTo(" "));
@@ -211,10 +183,20 @@ public class PathParamTests extends WithJetty {
         response.isOk();
     }
 
+    @Test
+    public void passingInSinglePathParamsThatHaveBeenDefinedMultipleTimesWorks() throws Exception {
+        RestResponse response = getUserSameParameters
+                .call(requestPathParams(new Object[][]{{"firstName", "John"}}));
+        response.isOk().body("fullName", equalTo("John John"));
+    }
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
-    public void passingInTooFewNamedPathParamsWithGivenThrowsIAEJDI() {
-        RestResponse response = getUser
-                .call(requestPathParams(new Object[][]{{"firstName", "John"}}));
+    public void passingLessNamedPathParamsThanGivenThrowsIAE() {
+        getUser.call(requestPathParams(new Object[][]{{"firstName", "John"}}));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
+    public void passingLessPathParamsThanGivenThrowsIAE() {
+        getUser.callWithNamedParams("john");
     }
 }

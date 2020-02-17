@@ -1,24 +1,7 @@
 package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettigns;
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.FormParameter;
-import com.epam.http.annotations.FormParameters;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.HEAD;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.Headers;
-import com.epam.http.annotations.MultiPart;
-import com.epam.http.annotations.OPTIONS;
-import com.epam.http.annotations.PATCH;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.*;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
@@ -156,7 +139,7 @@ public class ServiceInit {
      */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper) {
         MethodData mtData = getMethodData(field);
-        String url = getDomain(c);
+        String url = field.isAnnotationPresent(URL.class) ? field.getAnnotation(URL.class).value() : getDomain(c);
         String path = mtData.getPath();
         RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
         method.setObjectMapper(objectMapper);
@@ -261,7 +244,9 @@ public class ServiceInit {
      */
     private static <T> String getDomain(Class<T> c) {
         return c.isAnnotationPresent(ServiceDomain.class)
-                ? c.getAnnotation(ServiceDomain.class).value()
+                ? ( c.getAnnotation(ServiceDomain.class).value().startsWith("$")
+                ? JdiHttpSettigns.getDomain(c.getAnnotation(ServiceDomain.class).value().substring(1))
+                : c.getAnnotation(ServiceDomain.class).value())
                 : JdiHttpSettigns.getDomain();
     }
 }

@@ -63,7 +63,7 @@ public class ParamTest extends WithJetty {
     @Test
     public void multipleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
         // For some reason Scalatra returns the order different when running in Intellij and Maven
-        JettyService.getNoValueParamWithParamInUrl.call("some&some1")
+        JettyService.getNoValueParam.call("some&some1")
                 .isOk().assertThat().body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
     }
 

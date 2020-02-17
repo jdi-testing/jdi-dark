@@ -24,4 +24,11 @@ public class RedirectTest {
         resp.assertThat().header("Location", "https://www.google.com/gmail/");
     }
 
+    @Test
+    public void configCanBeSetPerRequest2() {
+        RequestSpecification rs = redirect.getInitSpec().redirects().follow(true);
+        RestResponse resp = redirect.call(rs);
+        resp.assertThat().statusCode(HttpStatus.SC_OK);
+    }
+
 }

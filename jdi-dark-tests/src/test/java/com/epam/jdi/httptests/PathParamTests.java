@@ -195,7 +195,7 @@ public class PathParamTests extends WithJetty {
         getUser.call(requestPathParams(new Object[][]{{"firstName", "John"}}));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
+    @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
     public void passingLessPathParamsThanGivenThrowsIAE() {
         getUser.callWithNamedParams("john");
     }

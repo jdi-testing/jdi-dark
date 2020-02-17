@@ -400,21 +400,6 @@ public class RestMethod<T> {
         return call();
     }
 
-    private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
-        if (namedParams.length > pathParams.length && queryString.isEmpty()) {
-            String[] redundant_values = Arrays.copyOfRange(namedParams, pathParams.length, namedParams.length);
-            throw (new IllegalArgumentException(String.format("Invalid number of path parameters. Expected %s , was %s.\n" +
-                            "Redundant param values : " + Arrays.asList(redundant_values),
-                    pathParams.length, namedParams.length)));
-        }
-        if (namedParams.length < pathParams.length) {
-            String[] missing_params = Arrays.copyOfRange(pathParams, namedParams.length, pathParams.length);
-            throw (new IllegalArgumentException(String.format("Invalid number of path parameters. Expected %s, was %s.\n " +
-                            "Missing params : " + Arrays.asList(missing_params),
-                    pathParams.length, namedParams.length)));
-        }
-    }
-
     /**
      * Send HTTP request with specific named path parameters.
      *
@@ -444,6 +429,24 @@ public class RestMethod<T> {
             }
         }
         return call();
+    }
+
+    /**
+     * Catch errors when wrong count path parameters were specified.
+     */
+    private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
+        if (namedParams.length > pathParams.length && queryString.isEmpty()) {
+            String[] redundant_values = Arrays.copyOfRange(namedParams, pathParams.length, namedParams.length);
+            throw exception(String.format("Invalid number of path parameters. Expected %s , was %s.\n" +
+                            "Redundant param values : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(redundant_values)));
+        }
+        if (namedParams.length < pathParams.length) {
+            String[] missing_params = Arrays.copyOfRange(pathParams, namedParams.length, pathParams.length);
+            throw exception(String.format("Invalid number of path parameters. Expected %s, was %s.\n " +
+                            "Missing params : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(missing_params)));
+        }
     }
 
     /**

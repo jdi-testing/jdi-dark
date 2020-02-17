@@ -27,6 +27,8 @@ import io.restassured.specification.RequestSpecification;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.requests.RestMethodTypes.DELETE;
@@ -260,10 +262,16 @@ public class ServiceInit {
      * @return service domain string
      */
     private static <T> String getDomain(Class<T> c) {
-        return c.isAnnotationPresent(ServiceDomain.class)
-                ? ( c.getAnnotation(ServiceDomain.class).value().startsWith("$")
-                ? JdiHttpSettigns.getDomain(c.getAnnotation(ServiceDomain.class).value().substring(1))
-                : c.getAnnotation(ServiceDomain.class).value())
-                : JdiHttpSettigns.getDomain();
+        if (c.isAnnotationPresent(ServiceDomain.class)) {
+            Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(c.getAnnotation(ServiceDomain.class).value());
+            if (m.find()) {
+                return JdiHttpSettigns.getDomain(m.group(1));
+            }
+            else {
+                return c.getAnnotation(ServiceDomain.class).value();
+            }
+
+        }
+        return JdiHttpSettigns.getDomain();
     }
 }

@@ -88,8 +88,6 @@ public class HeaderTests extends WithJetty {
                 .header("MyHeader3", equalTo("MyValue3"));
     }
 
-
-
     /**
      * Here are previous test examples without using Service Object methods.
      * Request data here is modified using functional interface.

@@ -60,7 +60,7 @@ public class PostmanAuthTests {
 
     @Test
     public void authBaseFailTest() {
-        RequestSpecification spec = authBase.getInitSpec().header("Authorization", "Basic cG9zdG1hbjpwYXNzd29yBB==");
+        RequestSpecification spec = authBaseForm.getInitSpec().header("Authorization", "Basic cG9zdG1hbjpwYXNzd29yBB==");
         RestResponse resp = authBaseForm.call(spec);
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);

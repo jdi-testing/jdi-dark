@@ -9,13 +9,13 @@ import static com.epam.http.requests.RequestData.requestBody;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 
-import static com.epam.jdi.httptests.TrelloApi.getBoardCardById;
-import static com.epam.jdi.httptests.TrelloApi.boardsPost;
-import static com.epam.jdi.httptests.TrelloApi.getBoardById;
-import static com.epam.jdi.httptests.TrelloApi.getBoardCardsList;
-import static com.epam.jdi.httptests.TrelloApi.postNewCommentToCard;
-import static com.epam.jdi.httptests.TrelloApi.getAllMemberBoards;
-import static com.epam.jdi.httptests.TrelloApi.getCardByUniqueId;
+import static com.epam.jdi.httptests.TrelloService.getBoardCardById;
+import static com.epam.jdi.httptests.TrelloService.boardsPost;
+import static com.epam.jdi.httptests.TrelloService.getBoardById;
+import static com.epam.jdi.httptests.TrelloService.getBoardCardsList;
+import static com.epam.jdi.httptests.TrelloService.postNewCommentToCard;
+import static com.epam.jdi.httptests.TrelloService.getAllMemberBoards;
+import static com.epam.jdi.httptests.TrelloService.getCardByUniqueId;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -30,7 +30,7 @@ public class TrelloTests {
 
     @BeforeClass
     public void initService() {
-        init(TrelloApi.class);
+        init(TrelloService.class);
     }
 
     @Test

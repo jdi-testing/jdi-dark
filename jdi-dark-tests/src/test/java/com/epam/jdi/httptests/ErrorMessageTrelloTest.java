@@ -7,9 +7,9 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RequestData.requestPathParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloApi.deleteACardFromBoard;
-import static com.epam.jdi.httptests.TrelloApi.getBoardById;
-import static com.epam.jdi.httptests.TrelloApi.postNewCommentToCard;
+import static com.epam.jdi.httptests.TrelloService.deleteACardFromBoard;
+import static com.epam.jdi.httptests.TrelloService.getBoardById;
+import static com.epam.jdi.httptests.TrelloService.postNewCommentToCard;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -27,7 +27,7 @@ public class ErrorMessageTrelloTest {
 
     @BeforeMethod
     public void initService() {
-        init(TrelloApi.class);
+        init(TrelloService.class);
     }
 
     @Test(expectedExceptions = RuntimeException.class,

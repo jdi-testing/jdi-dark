@@ -52,6 +52,10 @@ public class JettyService {
             @Cookie(name = "token", value = "1234")})
     public static RestMethod getCookieWithCookies;
 
+    public void s(String c1, String v1) {
+        getCookieWithCookies.call();
+    }
+
     @PUT("/cookie")
     public static RestMethod putCookie;
 

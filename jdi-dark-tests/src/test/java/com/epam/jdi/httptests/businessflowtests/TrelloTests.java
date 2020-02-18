@@ -50,7 +50,6 @@ public class TrelloTests {
         Organization organization = TrelloDataGenerator.generateOrganization();
         Organization createOrg = TrelloService.createOrganization(organization);
 
-        //Create board
         //Crate board
         Board board = TrelloDataGenerator.generateBoard();
         board.setIdOrganization(createOrg.getId());

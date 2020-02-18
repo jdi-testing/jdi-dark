@@ -43,6 +43,13 @@ public class HeaderTests extends WithJetty {
     }
 
     @Test
+    public void requestDataAllowsSpecifyingHeaderUsingServiceObjectMethod() {
+        RestResponse response = JettyService.getHeaderCallWithSingleHeaderSpecifiedInRequest("MyHeader", "TestValue");
+        response.isOk();
+        response.assertThat().body(containsString("MyHeader"));
+    }
+
+    @Test
     public void requestDataAllowsSpecifyingMultipleHeaders() {
         RestResponse response = getHeader.call(
                 requestData(requestData ->
@@ -52,6 +59,14 @@ public class HeaderTests extends WithJetty {
                 .and().assertThat().body(containsString("SecondHeader"));
     }
 
+    @Test
+    public void requestDataAllowsSpecifyingMultipleHeadersUsingServiceObjectMethod() {
+        RestResponse response = JettyService.getHeaderCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray
+                (new Object[][]{{"MyHeader", "MyValue"}, {"SecondHeader", "MyValue2"}});
+        response.isOk();
+        response.assertThat().body(containsString("MyHeader"))
+                .and().assertThat().body(containsString("SecondHeader"));
+    }
 
     @Test
     public void allowsSupplyingMappingFunction() {
@@ -62,7 +77,7 @@ public class HeaderTests extends WithJetty {
 
     @Test(expectedExceptions = AssertionError.class,
             expectedExceptionsMessageRegExp = ".*Expected header .* was not a value greater than .* was .* Headers are:.*")
-    public void headerExceptionCanFailWhenUsingMappingFunction() throws Exception {
+    public void headerExceptionCanFailWhenUsingMappingFunction() {
         RestResponse response = getHello.call();
         response.isOk();
         response.assertThat().header("Content-Length", Integer::parseInt, greaterThan(1000));
@@ -118,13 +133,27 @@ public class HeaderTests extends WithJetty {
                 requestData(requestData ->
                         requestData.addHeaders(header1, header2, header3)));
         response.isOk();
+        Headers headers = response.headers();
         response.assertThat().header("MyHeader1", equalTo("MyValue1"))
                 .header("MyHeader2", equalTo("MyValue2"))
                 .header("MyHeader3", equalTo("MyValue3"));
     }
 
     @Test
-    public void orderIsMaintainedForMultiValueHeaders() throws Exception {
+    public void multipleHeadersTestExampleUsingServiceObjects() {
+        Header header1 = new Header("MyHeader1", "MyValue1");
+        Header header2 = new Header("MyHeader2", "MyValue2");
+        Header header3 = new Header("MyHeader3", "MyValue3");
+        RestResponse response = JettyService.getMultiHeadersReflectCallWithMultipleHeaderObjectsSpecifiedInRequest(
+                header1, header2, header3);
+        response.isOk();
+        response.assertThat().header("MyHeader1", equalTo("MyValue1"))
+                .header("MyHeader2", equalTo("MyValue2"))
+                .header("MyHeader3", equalTo("MyValue3"));
+    }
+
+    @Test
+    public void orderIsMaintainedForMultiValueHeaders() {
         RestResponse response = getMultiValueHeader.call();
         response.isOk();
         Headers headers = response.headers();
@@ -138,7 +167,7 @@ public class HeaderTests extends WithJetty {
     }
 
     @Test
-    public void requestSpecificationAllowsSpecifyingMultiValueHeaders() throws Exception {
+    public void requestSpecificationAllowsSpecifyingMultiValueHeaders() {
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
                         requestData.addHeader("MyHeader", "Something")
@@ -149,7 +178,18 @@ public class HeaderTests extends WithJetty {
     }
 
     @Test
-    public void requestDataAllowsSpecifyingMultipleHeadersAsObject() {
+    public void requestSpecificationAllowsSpecifyingMultiValueHeadersWithServiceObjectMethod() {
+        Header header1 = new Header("MyHeader", "Something");
+        Header header2 = new Header("MyHeader", "SomethingElse");
+        RestResponse response = JettyService.getMultiHeadersReflectCallWithMultipleHeaderObjectsSpecifiedInRequest(
+                header1, header2);
+        response.isOk();
+        assertThat(response.headers().getValues("MyHeader").size(), is(2));
+        assertThat(response.headers().getValues("MyHeader"), hasItems("Something", "SomethingElse"));
+    }
+
+    @Test
+    public void requestDataAllowsSpecifyingMultipleHeadersAsObjectArray() {
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
                         requestData.addHeaders(new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
@@ -161,10 +201,31 @@ public class HeaderTests extends WithJetty {
     }
 
     @Test
+    public void requestDataAllowsSpecifyingMultipleHeadersAsObjectArrayWithServiceObjectMethod() {
+        RestResponse response = JettyService.getHeaderCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(
+                new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
+                        {"Header_03", "Value_03"}});
+        response.isOk();
+        response.assertThat().header("Header_01",  equalTo("Value_01"))
+                .header("Header_02", equalTo("Value_02"))
+                .header("Header_03", equalTo("Value_03"));
+    }
+
+    @Test
     public void requestDataAllowsSpecifyingMultipleValueHeader() {
         RestResponse response = getMultiHeaderReflect.call(
                 requestData(requestData ->
                         requestData.addHeader("Header_Name", "Header_Value", "Header_Next_Value")));
+        response.isOk();
+        final List<String> headerListString = response.headers().getValues("Header_Name");
+        assertThat(headerListString.size(), is(2));
+        assertThat(headerListString, hasItems("Header_Value", "Header_Next_Value"));
+    }
+
+    @Test
+    public void requestDataAllowsSpecifyingMultipleValueHeaderWithServiceObjectMethod() {
+        RestResponse response = JettyService.getMultiHeadersReflectCallWithMultipleValueHeader(
+                "Header_Name", "Header_Value", "Header_Next_Value");
         response.isOk();
         final List<String> headerListString = response.headers().getValues("Header_Name");
         assertThat(headerListString.size(), is(2));

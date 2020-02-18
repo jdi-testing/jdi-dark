@@ -14,6 +14,7 @@ import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.URL;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
@@ -182,6 +183,19 @@ public class JettyService {
 
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;
+
+    @GET("/{firstName}/{firstName}")
+    public static RestMethod getUserSameParameters;
+
+    @GET("/{firstName}/{middleName}/{lastName}")
+    public static RestMethod getUserWithLastName;
+
+    @URL("http://www.google.se")
+    @GET("/search?q={query}&hl=en")
+    public static RestMethod searchGoogle;
+
+    @GET("/{channelName}/item-import/rss/import?source={url}")
+    public static RestMethod getMixedparam;
 
     @GET("/{path}.json")
     public static RestMethod getParamBeforePath;

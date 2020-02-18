@@ -1,4 +1,4 @@
-package com.epam.jdi.httptests.businessflowtests;
+package com.epam.jdi.httptests.utils;
 
 import com.julienvey.trello.domain.Board;
 import com.julienvey.trello.domain.Card;

@@ -1,32 +1,20 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.utils.TrelloDataGenerator;
+import com.julienvey.trello.domain.Board;
+import com.julienvey.trello.domain.Card;
+import com.julienvey.trello.domain.Organization;
+import com.julienvey.trello.domain.TList;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestData.requestPathParams;
-import static com.epam.http.requests.RequestData.requestBody;
-import static com.epam.http.requests.RequestData.requestData;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.epam.http.requests.ServiceInit.init;
 
-import static com.epam.jdi.httptests.TrelloService.getBoardCardById;
-import static com.epam.jdi.httptests.TrelloService.boardsPost;
-import static com.epam.jdi.httptests.TrelloService.getBoardById;
-import static com.epam.jdi.httptests.TrelloService.getBoardCardsList;
-import static com.epam.jdi.httptests.TrelloService.postNewCommentToCard;
-import static com.epam.jdi.httptests.TrelloService.getAllMemberBoards;
-import static com.epam.jdi.httptests.TrelloService.getCardByUniqueId;
-import static java.lang.String.format;
-import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.core.IsEqual.equalTo;
-
 public class TrelloTests {
-
-    public static final String BOARD_ID = "5a27e3b62fef5d3a74dca48a";
-    public static final String CARD_UNIQUE_ID = "5a27e722e2f04f3ab6924931";
 
     @BeforeClass
     public void initService() {
@@ -34,64 +22,42 @@ public class TrelloTests {
     }
 
     @Test
-    public void createNewBoardTest() {
-        String boardName = "Lorem ipsum board " + random(12, true, true);
-        RestResponse response = boardsPost
-                .call(requestBody(format("{\"name\": \"%s\"}", boardName)));
-        response.isOk().body("name", equalTo(boardName));
+    public void createCardInBoard() {
+
+        //Crate board
+        Board board = TrelloDataGenerator.generateBoard();
+        Board createdBoard = TrelloService.createBoard(board);
+        Board gotBoard = TrelloService.getBoard(createdBoard.getId());
+        Assert.assertEquals(gotBoard.getName(), createdBoard.getName(), "Name of created board is incorrect");
+
+        //Create list
+        TList tList = TrelloDataGenerator.generateList(createdBoard);
+        TList createdList = TrelloService.createList(tList);
+
+        //Create Card
+        Card card = TrelloDataGenerator.generateCard(createdBoard, createdList);
+        Card createdCard = TrelloService.addNewCardToBoard(card);
+
+        //Check that card was added
+        Board cardBoard = TrelloService.getCardBoard(createdCard.getId());
+        Assert.assertEquals(cardBoard.getName(), board.getName(), "Card wasn't added to board");
     }
 
     @Test
-    public void getBoardById() {
-        RestResponse response = getBoardById
-            .call(requestPathParams("board_id", BOARD_ID));
-        response.isOk().body("id", equalTo(BOARD_ID));
-    }
+    public void assignBoardToOrganization() {
 
-    @Test
-    public void getBoardCardsList() {
-        getBoardCardsList.call(requestPathParams("board_id", BOARD_ID))
-            .isOk().body("name.size()", equalTo(6));
-    }
+        //Create organization
+        Organization organization = TrelloDataGenerator.generateOrganization();
+        Organization createOrg = TrelloService.createOrganization(organization);
 
-    @Test
-    public void getCardByShortId() {
-        getBoardCardById.call(requestPathParams(new Object[][] {{"board_id", BOARD_ID}, {"short_card_id", "1"}}))
-            .isOk().assertThat().body("name", equalTo("Lorem ipsum dolor sit amet"));
-    }
+        //Crate board
+        Board board = TrelloDataGenerator.generateBoard();
+        board.setIdOrganization(createOrg.getId());
+        TrelloService.createBoard(board);
 
-    @Test
-    public void postNewCommentToCard() {
-        String newComment = "New comment" + random(7, true, false);
-        RestResponse response = postNewCommentToCard
-            .call(requestData(d -> {
-                d.pathParams.add("card_id", CARD_UNIQUE_ID);
-                d.body = format("{\"text\": \"%s\"}", newComment);}
-            ));
-        response.isOk()
-            .body("data.text", containsString(newComment));
-    }
+        //Check that organization contains created board
+        List<Board> boards = TrelloService.getOrganizationBoards(createOrg);
+        Assert.assertTrue(boards.stream().map(Board::getName).collect(Collectors.toList()).contains(board.getName()), "Board wasn't added to organization");
 
-    @Test
-    public void getAllUserBoards() {
-        RestResponse restResponse = getAllMemberBoards
-            .call(requestPathParams("user_name", "jdiframwork"));
-        restResponse.assertThat()
-            .body("name.size()", greaterThan(4));
-    }
-
-    @Test
-    public void getCardByUniqueId() {
-        RestResponse restResponse = getCardByUniqueId
-            .call(requestData(d -> {
-                d.queryParams.add("fields", "url,shortUrl");
-                d.pathParams.add("card_id", CARD_UNIQUE_ID);}));
-
-        restResponse.assertBody(new Object[][]{
-            {"url", containsString("https://trello.com/c/SSFPAlkB/1-lorem-ipsum-dolor-sit-amet")},
-            {"shortUrl", containsString("https://trello.com/c/SSFPAlkB")},
-            {"id", equalTo(CARD_UNIQUE_ID)},
-            {"keySet().size()", is(3)}
-        });
     }
 }

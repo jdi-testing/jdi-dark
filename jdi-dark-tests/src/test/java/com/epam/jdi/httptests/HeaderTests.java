@@ -157,7 +157,7 @@ public class HeaderTests extends WithJetty {
      * Below are examples of tests similar to RestAssured tests.
      * This examples mostly contain complex assertions and exception handling.
      */
-    
+
     @Test
     public void allowsSupplyingMappingFunction() {
         RestResponse response = getHello.call();

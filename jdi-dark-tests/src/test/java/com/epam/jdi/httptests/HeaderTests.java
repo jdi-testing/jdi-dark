@@ -202,7 +202,7 @@ public class HeaderTests extends WithJetty {
 
     @Test
     public void requestDataAllowsSpecifyingMultipleHeadersAsObjectArrayWithServiceObjectMethod() {
-        RestResponse response = JettyService.getHeaderCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(
+        RestResponse response = JettyService.getMultiHeadersReflectCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(
                 new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
                         {"Header_03", "Value_03"}});
         response.isOk();

@@ -95,6 +95,12 @@ public class JettyService {
                 requestData.addHeader(name, value, additionalValues)));
     }
 
+    public static RestResponse getMultiHeadersReflectCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(
+            Object[][] headers) {
+        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+                requestData.addHeaders(headers)));
+    }
+
     @DELETE("/cookie")
     public static RestMethod deleteCookie;
 

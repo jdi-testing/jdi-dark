@@ -11,7 +11,7 @@ import com.epam.http.requests.RestMethod;
 
 import static io.restassured.http.ContentType.JSON;
 
-@ServiceDomain("$trello")
+@ServiceDomain("${trello}")
 @QueryParameters({
         @QueryParameter(name = "key", value = "3445103a21ddca2619eaceb0e833d0db"),
         @QueryParameter(name = "token", value = "a9b951262e529821308e7ecbc3e4b7cfb14a24fef5ea500a68c69d374009fcc0")

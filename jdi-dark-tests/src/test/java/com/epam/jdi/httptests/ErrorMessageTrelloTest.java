@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RequestData.requestPathParams;
+import static com.epam.http.requests.RequestData.requestQueryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloApi.deleteACardFromBoard;
 import static com.epam.jdi.httptests.TrelloApi.getBoardById;
@@ -71,7 +72,7 @@ public class ErrorMessageTrelloTest {
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void deleteNotExistsCardFromBoard() {
         RestResponse response = deleteACardFromBoard
-                .call(requestPathParams("card_id", NOT_EXISTS_CARD_ID));
+                .call(requestQueryParams("card_id", NOT_EXISTS_CARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
         assertTrue(response.body.contains("Cannot DELETE"));

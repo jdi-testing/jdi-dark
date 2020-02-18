@@ -178,7 +178,8 @@ public class JettyService {
     public static RestMethod<Hello> postObject;
 
     @GET("/redirect")
-    public static RestMethod postRedirect;
+    @Header(name = "Redirect_test_header", value = "Redirect_test_header_value")
+    public static RestMethod getRedirect;
 
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;

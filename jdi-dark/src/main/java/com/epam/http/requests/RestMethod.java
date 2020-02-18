@@ -3,11 +3,11 @@ package com.epam.http.requests;
 import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.QueryParameter;
+import com.epam.http.logger.AllureLogger;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -41,7 +42,7 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  */
 public class RestMethod<T> {
 
-    private RequestSpecification spec = given().filter(new AllureRestAssured());
+    private RequestSpecification spec = given();
     private String url = null;
     private String path = null;
     private ObjectMapper objectMapper = null;
@@ -136,7 +137,7 @@ public class RestMethod<T> {
     }
 
     public RequestSpecification getInitSpec() {
-        return given().filter(new AllureRestAssured()).spec(spec).spec(getDataSpec(data));
+        return given().spec(spec).spec(getDataSpec(data));
     }
 
     public RequestSpecification getDataSpec() {
@@ -314,6 +315,8 @@ public class RestMethod<T> {
             maps.addAll(rd.getFields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
+        AllureLogger.startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
+                format("%s %s%s  %s", type, url != null ? url : "", path != null ? path : "", maps));
     }
 
     /**
@@ -411,15 +414,16 @@ public class RestMethod<T> {
             String queryString = substringAfter(path, "?");
             data.path = pathString;
             String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
+            catchPathParametersIllegalArguments(pathParams, namedParams, queryString);
             int index = 0;
-            for (String key: pathParams) {
+            for (String key : pathParams) {
                 userData.empty = false;
                 userData.pathParams.add(key, namedParams[index]);
                 index++;
             }
             if (!queryString.isEmpty()) {
                 String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
-                for (String key: queryParams) {
+                for (String key : queryParams) {
                     userData.empty = false;
                     userData.queryParams.add(key, namedParams[index]);
                     index++;
@@ -427,6 +431,22 @@ public class RestMethod<T> {
             }
         }
         return call();
+    }
+
+    /**
+     * Catch errors when wrong count path parameters were specified.
+     */
+    private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
+        if (namedParams.length > pathParams.length && queryString.isEmpty()) {
+            String[] redundant_values = Arrays.copyOfRange(namedParams, pathParams.length, namedParams.length);
+            throw exception("Invalid number of path parameters. Expected %s , was %s.\nRedundant param values : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(redundant_values));
+        }
+        if (namedParams.length < pathParams.length) {
+            String[] missing_params = Arrays.copyOfRange(pathParams, namedParams.length, pathParams.length);
+            throw exception("Invalid number of path parameters. Expected %s, was %s.\nMissing params : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(missing_params));
+        }
     }
 
     /**
@@ -569,7 +589,7 @@ public class RestMethod<T> {
      * return rest method
      */
     public RestMethod resetInitSpec() {
-        spec = given().filter(new AllureRestAssured());
+        spec = given();
         return this;
     }
 }

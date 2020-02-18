@@ -14,6 +14,7 @@ import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.URL;
 import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
@@ -66,16 +67,6 @@ public class JettyService {
 
     @GET("/header")
     public static RestMethod getHeader;
-
-//    public static RestResponse getHeaderCallWithSingleHeaderSpecifiedInRequest(String name, String value) {
-//        return getHeader.call(RequestData.requestData((requestData ->
-//                requestData.addHeader(name, value))));
-//    }
-//
-//    public static RestResponse getHeaderCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(Object[][] headers) {
-//        return getHeader.call(RequestData.requestData(requestData ->
-//                requestData.addHeaders(headers)));
-//    }
 
     @GET("/multiValueHeader")
     public static RestMethod getMultiValueHeader;
@@ -206,10 +197,24 @@ public class JettyService {
     public static RestMethod<Hello> postObject;
 
     @GET("/redirect")
-    public static RestMethod postRedirect;
+    @Header(name = "Redirect_test_header", value = "Redirect_test_header_value")
+    public static RestMethod getRedirect;
 
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;
+
+    @GET("/{firstName}/{firstName}")
+    public static RestMethod getUserSameParameters;
+
+    @GET("/{firstName}/{middleName}/{lastName}")
+    public static RestMethod getUserWithLastName;
+
+    @URL("http://www.google.se")
+    @GET("/search?q={query}&hl=en")
+    public static RestMethod searchGoogle;
+
+    @GET("/{channelName}/item-import/rss/import?source={url}")
+    public static RestMethod getMixedparam;
 
     @GET("/{path}.json")
     public static RestMethod getParamBeforePath;
@@ -258,9 +263,6 @@ public class JettyService {
 
     @POST("multipart/multiple")
     public static RestMethod postMultipartMultiple;
-
-    @GET("/noValueParam?some1&some2=one")
-    public static RestMethod getNoValueParamWithParamInUrl;
 
     @GET("/returnContentTypeAsBody")
     public static RestMethod getReturnContentTypeAsBody;

@@ -253,7 +253,6 @@ public class ServiceInit {
             else {
                 return c.getAnnotation(ServiceDomain.class).value();
             }
-
         }
         return JdiHttpSettigns.getDomain();
     }

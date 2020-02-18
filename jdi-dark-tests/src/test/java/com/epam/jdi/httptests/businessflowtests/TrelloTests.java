@@ -22,7 +22,7 @@ public class TrelloTests {
     }
 
     @Test
-    public void createCardInBoardTest() {
+    public void createCardInBoard() {
 
         //Crate board
         Board board = TrelloDataGenerator.generateBoard();

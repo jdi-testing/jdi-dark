@@ -8,11 +8,10 @@ import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
-import com.julienvey.trello.domain.Board;
-import com.julienvey.trello.domain.Card;
-import com.julienvey.trello.domain.Member;
-import com.julienvey.trello.domain.Organization;
-import com.julienvey.trello.domain.TList;
+import com.epam.jdi.dto.Board;
+import com.epam.jdi.dto.Card;
+import com.epam.jdi.dto.Organization;
+import com.epam.jdi.dto.TrelloList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,10 +61,6 @@ public class TrelloService {
     public static RestMethod membersGet;
 
     @ContentType(JSON)
-    @GET("/members/{id}")
-    public static RestMethod<Member> memberGet;
-
-    @ContentType(JSON)
     @DELETE("/cards")
     public static RestMethod deleteACardFromBoard;
 
@@ -91,10 +86,10 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST("/lists")
-    public static RestMethod<TList> createList;
+    public static RestMethod<TrelloList> createList;
 
-    public static TList createList(TList list) {
-        return createList.post(list, TList.class);
+    public static TrelloList createList(TrelloList list) {
+        return createList.post(list, TrelloList.class);
     }
 
     @ContentType(JSON)

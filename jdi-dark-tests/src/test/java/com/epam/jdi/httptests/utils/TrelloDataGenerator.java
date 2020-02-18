@@ -1,10 +1,9 @@
 package com.epam.jdi.httptests.utils;
 
-import com.julienvey.trello.domain.Board;
-import com.julienvey.trello.domain.Card;
-import com.julienvey.trello.domain.Member;
-import com.julienvey.trello.domain.Organization;
-import com.julienvey.trello.domain.TList;
+import com.epam.jdi.dto.Board;
+import com.epam.jdi.dto.Card;
+import com.epam.jdi.dto.Organization;
+import com.epam.jdi.dto.TrelloList;
 
 import java.util.Random;
 
@@ -16,14 +15,14 @@ public class TrelloDataGenerator {
         return board;
     }
 
-    public static TList generateList(Board board) {
-        TList tList = new TList();
+    public static TrelloList generateList(Board board) {
+        TrelloList tList = new TrelloList();
         tList.setName("JDI Test List number " + new Random().nextInt(Integer.MAX_VALUE));
         tList.setIdBoard(board.getId());
         return tList;
     }
 
-    public static Card generateCard(Board board, TList tList) {
+    public static Card generateCard(Board board, TrelloList tList) {
         Card card = new Card();
         card.setName("JDI Test Card number " + new Random().nextInt(Integer.MAX_VALUE));
         card.setIdBoard(board.getId());
@@ -38,11 +37,4 @@ public class TrelloDataGenerator {
         return organization;
     }
 
-    public static Member generateMember() {
-        Member member = new Member();
-        member.setFullName("JDI_member_" + new Random().nextInt(Integer.MAX_VALUE));
-        member.setEmail(member.getFullName() + "@gmail.com");
-        member.setMemberType("normal");
-        return member;
-    }
 }

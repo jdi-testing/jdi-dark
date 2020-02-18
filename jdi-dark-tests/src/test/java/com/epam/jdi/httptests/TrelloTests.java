@@ -1,10 +1,10 @@
 package com.epam.jdi.httptests;
 
+import com.epam.jdi.dto.Board;
+import com.epam.jdi.dto.Card;
+import com.epam.jdi.dto.Organization;
+import com.epam.jdi.dto.TrelloList;
 import com.epam.jdi.httptests.utils.TrelloDataGenerator;
-import com.julienvey.trello.domain.Board;
-import com.julienvey.trello.domain.Card;
-import com.julienvey.trello.domain.Organization;
-import com.julienvey.trello.domain.TList;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -31,8 +31,8 @@ public class TrelloTests {
         Assert.assertEquals(gotBoard.getName(), createdBoard.getName(), "Name of created board is incorrect");
 
         //Create list
-        TList tList = TrelloDataGenerator.generateList(createdBoard);
-        TList createdList = TrelloService.createList(tList);
+        TrelloList tList = TrelloDataGenerator.generateList(createdBoard);
+        TrelloList createdList = TrelloService.createList(tList);
 
         //Create Card
         Card card = TrelloDataGenerator.generateCard(createdBoard, createdList);

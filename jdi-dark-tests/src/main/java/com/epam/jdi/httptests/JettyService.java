@@ -67,15 +67,15 @@ public class JettyService {
     @GET("/header")
     public static RestMethod getHeader;
 
-    public static RestResponse getHeaderCallWithSingleHeaderSpecifiedInRequest(String name, String value) {
-        return getHeader.call(RequestData.requestData((requestData ->
-                requestData.addHeader(name, value))));
-    }
-
-    public static RestResponse getHeaderCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(Object[][] headers) {
-        return getHeader.call(RequestData.requestData(requestData ->
-                requestData.addHeaders(headers)));
-    }
+//    public static RestResponse getHeaderCallWithSingleHeaderSpecifiedInRequest(String name, String value) {
+//        return getHeader.call(RequestData.requestData((requestData ->
+//                requestData.addHeader(name, value))));
+//    }
+//
+//    public static RestResponse getHeaderCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(Object[][] headers) {
+//        return getHeader.call(RequestData.requestData(requestData ->
+//                requestData.addHeaders(headers)));
+//    }
 
     @GET("/multiValueHeader")
     public static RestMethod getMultiValueHeader;
@@ -83,22 +83,22 @@ public class JettyService {
     @GET("/multiHeaderReflect")
     public static RestMethod getMultiHeaderReflect;
 
-    public static RestResponse getMultiHeadersReflectCallWithMultipleHeaderObjectsSpecifiedInRequest(
+    public static RestResponse getWithMultipleHeaders(
             io.restassured.http.Header... headerObjects) {
         return getMultiHeaderReflect.call(
                 requestData(requestData -> requestData.addHeaders(headerObjects)));
     }
 
-    public static RestResponse getMultiHeadersReflectCallWithMultipleValueHeader(
-            String name, String value, String... additionalValues) {
-        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
-                requestData.addHeader(name, value, additionalValues)));
-    }
-
-    public static RestResponse getMultiHeadersReflectCallWithMultipleHeadersSpecifiedInRequestAsObjectsArray(
+    public static RestResponse getWithMultipleHeaders(
             Object[][] headers) {
         return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
                 requestData.addHeaders(headers)));
+    }
+
+    public static RestResponse getWithSingleHeader(
+            String name, String value, String... additionalValues) {
+        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+                requestData.addHeader(name, value, additionalValues)));
     }
 
     @DELETE("/cookie")

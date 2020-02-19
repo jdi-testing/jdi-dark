@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestData.requestBody;
 import static com.epam.http.requests.RequestData.requestData;
+import static com.epam.http.requests.RequestData.requestFormParams;
 import static com.epam.http.requests.RequestData.requestQueryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.bodyPost;
@@ -41,7 +42,7 @@ public class JSONPostTests extends WithJetty {
     @Test
     public void formParamsAcceptsIntArgumentsJDI() {
         RestResponse response = greetPost
-                .call(requestQueryParams(new Object[][]{{"firstName", 1234}, {"lastName", 5678}}));
+                .call(requestFormParams(new Object[][]{{"firstName", 1234}, {"lastName", 5678}}));
         response.isOk().body("greeting", equalTo("Greetings 1234 5678"));
     }
 
@@ -107,6 +108,12 @@ public class JSONPostTests extends WithJetty {
     }
 
     @Test
+    public void bodyWithSingleHamcrestMatchingUsingQueryParams() {
+        greetPost.call("firstName=John&lastName=Doe")
+                .isOk().assertThat().body(containsString("greeting"));
+    }
+
+    @Test
     public void requestAllowsSpecifyingCookie() {
         RestResponse response = cookiePost.call(requestData(requestData ->
                 requestData.addCookies("username", "John", "token", "1234")));
@@ -152,6 +159,4 @@ public class JSONPostTests extends WithJetty {
     public void requestAllowsSpecifyingBooleanForPost() {
         postReflect.call(requestBody(true)).isOk().body(equalTo("true"));
     }
-
-
 }

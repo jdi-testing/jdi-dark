@@ -14,6 +14,8 @@ import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.URL;
+import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
@@ -96,6 +98,10 @@ public class JettyService {
             @Cookie(name = "token", value = "1234")})
     public static RestMethod getCookieWithCookies;
 
+    public void s(String c1, String v1) {
+        getCookieWithCookies.call();
+    }
+
     public static RestResponse getCookieWithNameValuePair (String name, String value) {
         return getCookieWithCookies.call(requestData(requestData -> requestData.addCookies(name, value)));
     }
@@ -129,6 +135,24 @@ public class JettyService {
 
     @GET("/multiHeaderReflect")
     public static RestMethod getMultiHeaderReflect;
+
+    public static RestResponse getWithMultipleHeaders(
+            io.restassured.http.Header... headerObjects) {
+        return getMultiHeaderReflect.call(
+                requestData(requestData -> requestData.addHeaders(headerObjects)));
+    }
+
+    public static RestResponse getWithMultipleHeaders(
+            Object[][] headers) {
+        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+                requestData.addHeaders(headers)));
+    }
+
+    public static RestResponse getWithSingleHeader(
+            String name, String value, String... additionalValues) {
+        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+                requestData.addHeader(name, value, additionalValues)));
+    }
 
     @DELETE("/cookie")
     public static RestMethod deleteCookie;
@@ -241,6 +265,19 @@ public class JettyService {
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;
 
+    @GET("/{firstName}/{firstName}")
+    public static RestMethod getUserSameParameters;
+
+    @GET("/{firstName}/{middleName}/{lastName}")
+    public static RestMethod getUserWithLastName;
+
+    @URL("http://www.google.se")
+    @GET("/search?q={query}&hl=en")
+    public static RestMethod searchGoogle;
+
+    @GET("/{channelName}/item-import/rss/import?source={url}")
+    public static RestMethod getMixedparam;
+
     @GET("/{path}.json")
     public static RestMethod getParamBeforePath;
 
@@ -288,9 +325,6 @@ public class JettyService {
 
     @POST("multipart/multiple")
     public static RestMethod postMultipartMultiple;
-
-    @GET("/noValueParam?some1&some2=one")
-    public static RestMethod getNoValueParamWithParamInUrl;
 
     @GET("/returnContentTypeAsBody")
     public static RestMethod getReturnContentTypeAsBody;

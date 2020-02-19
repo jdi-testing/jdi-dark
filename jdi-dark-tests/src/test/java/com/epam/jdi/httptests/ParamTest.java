@@ -69,19 +69,19 @@ public class ParamTest extends WithJetty {
 
     @Test
     public void singleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithParamInUrl.call("some")
+        JettyService.getNoValueParam.call("some")
                 .isOk().assertThat().body(is("Params: some="));
     }
 
     @Test
     public void mixingStartingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithParamInUrl.call("some1&some2=one")
+        JettyService.getNoValueParam.call("some1&some2=one")
                 .isOk().assertThat().body(is("Params: some1=some2=one"));
     }
 
     @Test
     public void mixingEndingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithParamInUrl.call("some1=one&some2")
+        JettyService.getNoValueParam.call("some1=one&some2")
                 .isOk().assertThat().body(is("Params: some1=onesome2="));
     }
 

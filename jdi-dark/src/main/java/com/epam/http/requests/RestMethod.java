@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -413,15 +414,16 @@ public class RestMethod<T> {
             String queryString = substringAfter(path, "?");
             data.path = pathString;
             String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
+            catchPathParametersIllegalArguments(pathParams, namedParams, queryString);
             int index = 0;
-            for (String key: pathParams) {
+            for (String key : pathParams) {
                 userData.empty = false;
                 userData.pathParams.add(key, namedParams[index]);
                 index++;
             }
             if (!queryString.isEmpty()) {
                 String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
-                for (String key: queryParams) {
+                for (String key : queryParams) {
                     userData.empty = false;
                     userData.queryParams.add(key, namedParams[index]);
                     index++;
@@ -429,6 +431,22 @@ public class RestMethod<T> {
             }
         }
         return call();
+    }
+
+    /**
+     * Catch errors when wrong count path parameters were specified.
+     */
+    private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
+        if (namedParams.length > pathParams.length && queryString.isEmpty()) {
+            String[] redundant_values = Arrays.copyOfRange(namedParams, pathParams.length, namedParams.length);
+            throw exception("Invalid number of path parameters. Expected %s , was %s.\nRedundant param values : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(redundant_values));
+        }
+        if (namedParams.length < pathParams.length) {
+            String[] missing_params = Arrays.copyOfRange(pathParams, namedParams.length, pathParams.length);
+            throw exception("Invalid number of path parameters. Expected %s, was %s.\nMissing params : %s",
+                    pathParams.length, namedParams.length, Arrays.asList(missing_params));
+        }
     }
 
     /**
@@ -449,7 +467,8 @@ public class RestMethod<T> {
      * @return response body as object
      */
     public T post(Object body, Class<T> c) {
-        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
+        RestResponse<T> t = call(new RequestData().set(rd -> rd.body = body));
+        return t.getRaResponse().as(c);
     }
 
 

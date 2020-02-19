@@ -114,7 +114,7 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param paramName  form parameter name
      * @param paramValue form parameter value
-     * @return generated request data with provided query parameters
+     * @return generated request data with provided form parameters
      */
     public static RequestData requestFormParams(String paramName, String paramValue) {
         return requestFormParams(new Object[][]{{paramName, paramValue}});

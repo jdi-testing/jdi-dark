@@ -9,6 +9,9 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.epam.http.requests.ServiceInit.init;
 
 public class TrelloTests {
@@ -44,18 +47,17 @@ public class TrelloTests {
     public void assignBoardToOrganization() {
 
         //Create organization
-        Board board = TrelloDataGenerator.generateBoard();
         Organization organization = TrelloDataGenerator.generateOrganization();
-        Organization createOrg = TrelloService.createOrganization(board);
+        Organization createOrg = TrelloService.createOrganization(organization);
 
-//        //Crate board
-//        Board board = TrelloDataGenerator.generateBoard();
-//        board.setIdOrganization(createOrg.getId());
-//        TrelloService.createBoard(board);
+        //Crate board
+        Board board = TrelloDataGenerator.generateBoard();
+        board.setIdOrganization(createOrg.getId());
+        TrelloService.createBoard(board);
 
         //Check that organization contains created board
-//        List<Board> boards = TrelloService.getOrganizationBoards(createOrg);
-//        Assert.assertTrue(boards.stream().map(Board::getName).collect(Collectors.toList()).contains(board.getName()), "Board wasn't added to organization");
+        List<Board> boards = TrelloService.getOrganizationBoards(createOrg);
+        Assert.assertTrue(boards.stream().map(Board::getName).collect(Collectors.toList()).contains(board.getName()), "Board wasn't added to organization");
 
     }
 }

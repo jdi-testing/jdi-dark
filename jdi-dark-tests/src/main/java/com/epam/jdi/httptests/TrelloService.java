@@ -105,7 +105,7 @@ public class TrelloService {
     @POST("/organizations")
     public static RestMethod<Organization> createOrganization;
 
-    public static Organization createOrganization(Board organization) {
+    public static Organization createOrganization(Organization organization) {
         return createOrganization.post(organization, Organization.class);
     }
 

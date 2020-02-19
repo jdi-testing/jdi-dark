@@ -8,6 +8,7 @@ import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Organization;
 import com.epam.jdi.httptests.utils.TrelloDataGenerator;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -22,7 +23,7 @@ public class ErrorHandlerTests {
     ILogger logger = new HTTPLogger("JDI Error Handler");
 
     @BeforeClass
-    public void iniServiceSettings() {
+    public void initServiceSettings() {
         ErrorHandler errorHandler = new ErrorHandler() {
             @Override
             public boolean hasError(RestResponse restResponse) throws IOException {
@@ -32,7 +33,7 @@ public class ErrorHandlerTests {
 
             @Override
             public void handleError(RestResponse restResponse) throws IOException {
-                throw new IOException("Error is caught: " + restResponse.getBody());
+                Assert.fail("Exception is caught: " + restResponse.toString());
             }
         };
         serviceSettings = ServiceSettings.builder().errorHandler(errorHandler).build();

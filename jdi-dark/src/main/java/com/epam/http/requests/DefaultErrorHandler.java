@@ -23,7 +23,6 @@ public class DefaultErrorHandler implements ErrorHandler {
     }
 
     public void handleError(RestResponse restResponse) throws IOException {
-        String message = restResponse.getStatus() + " body: " + restResponse.getBody();
-        throw new IOException(message);
+        throw new IOException(restResponse.toString());
     }
 }

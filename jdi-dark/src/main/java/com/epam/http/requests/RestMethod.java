@@ -20,7 +20,6 @@ import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.testng.Assert;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -349,7 +348,7 @@ public class RestMethod<T> {
         try {
             handleResponse(response);
         } catch (IOException e) {
-            Assert.fail("I/O error on " + type + " request for \"" + url + ((RequestSpecificationImpl) runSpec).getBasePath() + "\": " + e.getMessage());
+            logger.error("I/O error on " + type + " request for \"" + url + ((RequestSpecificationImpl) runSpec).getBasePath() + "\": " + e.getMessage());
         }
         return response;
     }

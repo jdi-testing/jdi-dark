@@ -15,11 +15,13 @@ import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +56,8 @@ public class RestMethod<T> {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
-    private ResponseStatusType expectedStatus = OK;
+
+    private ErrorHandler errorHandler = new DefaultErrorHandler();
 
     public RestMethod() {
     }
@@ -151,6 +154,17 @@ public class RestMethod<T> {
      */
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Set custome error handler
+     *
+     * @param errorHandler
+     */
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        if (errorHandler != null) {
+            this.errorHandler = errorHandler;
+        }
     }
 
     /**
@@ -280,11 +294,6 @@ public class RestMethod<T> {
         data.cookies = new Cookies(cookieList);
     }
 
-    public RestMethod expectStatus(ResponseStatusType status) {
-        expectedStatus = status;
-        return this;
-    }
-
     /**
      * Set query parameters to HTTP request.
      *
@@ -335,7 +344,21 @@ public class RestMethod<T> {
         }
         logRequest(data, userData);
         userData.clear();
-        return doRequest(type, runSpec, expectedStatus);
+        RestResponse response = doRequest(type, runSpec);
+        try {
+            handleResponse(response);
+        } catch (IOException e) {
+            logger.error("I/O error on " + type + " request for \"" + url + ((RequestSpecificationImpl) runSpec).getBasePath() + "\": " + e.getMessage());
+        }
+        return response;
+    }
+
+    protected void handleResponse(RestResponse restResponse) throws IOException {
+        boolean hasError = errorHandler.hasError(restResponse);
+        if (hasError) {
+            errorHandler.handleError(restResponse);
+        }
+
     }
 
     /**
@@ -350,7 +373,7 @@ public class RestMethod<T> {
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
         logRequest(data);
-        return doRequest(type, runSpec, expectedStatus);
+        return doRequest(type, runSpec);
     }
 
     /**

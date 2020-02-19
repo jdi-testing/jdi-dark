@@ -52,6 +52,8 @@ public class ServiceInit {
         }
     }
 
+
+
     /**
      * Initialise the Service Object class.
      *
@@ -59,40 +61,18 @@ public class ServiceInit {
      * @return initialised Service Object
      */
     public static <T> T init(Class<T> c) {
-        return init(c, null, null);
+        return init(c, ServiceSettings.builder().build());
     }
+
 
     /**
      * Initialise the Service Object class.
      *
      * @param c                    class describing Service
-     * @param requestSpecification custom request specification
+     * @param serviceSettings predefined settings for service
      * @return initialised Service Object
      */
-    public static <T> T init(Class<T> c, RequestSpecification requestSpecification) {
-        return init(c, requestSpecification, null);
-    }
-
-    /**
-     * Initialise the Service Object class.
-     *
-     * @param c            class describing Service
-     * @param objectMapper custom objectMapper
-     * @return initialised Service Object
-     */
-    public static <T> T init(Class<T> c, ObjectMapper objectMapper) {
-        return init(c, null, objectMapper);
-    }
-
-    /**
-     * Initialise the Service Object class.
-     *
-     * @param c                    class describing Service
-     * @param requestSpecification custom request specification
-     * @param objectMapper         custom objectMapper
-     * @return initialised Service Object
-     */
-    public static <T> T init(Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper) {
+    public static <T> T init(Class<T> c, ServiceSettings serviceSettings) {
         preInit();
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> f.getType().equals(RestMethod.class));
@@ -100,15 +80,16 @@ public class ServiceInit {
             try {
                 method.setAccessible(true);
                 if (isStatic(method.getModifiers()))
-                    method.set(null, getRestMethod(method, c, requestSpecification, objectMapper));
+                    method.set(null, getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler()));
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
-                    method.set(getService(c), getRestMethod(method, c, requestSpecification, objectMapper));
+                    method.set(getService(c), getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler()));
             } catch (IllegalAccessException ex) {
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
             }
         }
         return getService(c);
     }
+
 
     private static Object service;
 
@@ -139,12 +120,13 @@ public class ServiceInit {
      * @param objectMapper         custom ObjectMapper
      * @return http method with request data
      */
-    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper) {
+    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler) {
         MethodData mtData = getMethodData(field);
         String url = field.isAnnotationPresent(URL.class) ? field.getAnnotation(URL.class).value() : getDomain(c);
         String path = mtData.getPath();
         RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
         method.setObjectMapper(objectMapper);
+        method.setErrorHandler(errorHandler);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))

@@ -15,13 +15,14 @@ import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.annotations.URL;
+import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
-
 import java.util.Arrays;
 import java.util.List;
 
+import static com.epam.http.requests.RequestData.requestData;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
@@ -76,6 +77,24 @@ public class JettyService {
 
     @GET("/multiHeaderReflect")
     public static RestMethod getMultiHeaderReflect;
+
+    public static RestResponse getWithMultipleHeaders(
+            io.restassured.http.Header... headerObjects) {
+        return getMultiHeaderReflect.call(
+                requestData(requestData -> requestData.addHeaders(headerObjects)));
+    }
+
+    public static RestResponse getWithMultipleHeaders(
+            Object[][] headers) {
+        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+                requestData.addHeaders(headers)));
+    }
+
+    public static RestResponse getWithSingleHeader(
+            String name, String value, String... additionalValues) {
+        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+                requestData.addHeader(name, value, additionalValues)));
+    }
 
     @DELETE("/cookie")
     public static RestMethod deleteCookie;

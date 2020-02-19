@@ -17,10 +17,11 @@ import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
+import io.restassured.response.Response;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import static com.epam.http.requests.RequestData.requestData;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
@@ -34,11 +35,32 @@ public class JettyService {
     @GET("/multiCookieRequest")
     public static RestMethod getMultiCookieRequest;
 
+    public static RestResponse getMultiCookiesArray (String name1, String value1, String name2, String value2) {
+        return getMultiCookieRequest.call(requestData(
+                requestData -> requestData.addCookies(new Object[][]{
+                        {name1, value1},
+                        {name2, value2}
+                })));
+    }
+
+    public static RestResponse getMultiCookieWithName (String value1, String value2) {
+        return getMultiCookieRequest.call(requestData(
+                requestData -> requestData.addCookie("key1", value1, value2)));
+    }
+
+    public static RestResponse getMultiCookieSpecified (String name, String value) {
+        return getMultiCookieRequest.call(requestData(requestData -> requestData.addCookies(name, value)));
+    }
+
     @GET("/setCookies")
     public static RestMethod setCookies;
 
     @GET("/cookie_with_no_value")
     public static RestMethod getCookieWithNoValue;
+
+    public static RestResponse getCookieWithOnlyName (String name) {
+        return getCookieWithNoValue.call(requestData(requestData -> requestData.addCookie(name)));
+    }
 
     @GET("/response_cookie_with_no_value")
     public static RestMethod getResponseCookieWithNoValue;
@@ -46,16 +68,52 @@ public class JettyService {
     @GET("/cookie")
     public static RestMethod getCookie;
 
+    public static RestResponse getCookieSpecifiedUsingMap (String name1, String name2) {
+        Map<String, String> cookies = new LinkedHashMap<String, String>();
+        cookies.put(name1, "John");
+        cookies.put(name2, "1234");
+
+        return getCookie.call(requestData(
+                requestData -> requestData.addCookies(cookies)));
+    }
+
+    public static RestResponse getMultipleCookieSpecifiedUsingMap (String name1, String name2, String name3) {
+        Map<String, String> cookies = new LinkedHashMap<String, String>();
+        cookies.put(name1, "John");
+        cookies.put(name2, "1234");
+
+        return JettyService.getCookie.call(requestData(
+                requestData -> requestData.addCookies(cookies).addCookies(name3, "value1")));
+    }
+
+    public static RestResponse getCookieWithCookiePairsNames(String name1, String name2) {
+        return getCookie.call(requestData(
+                requestData -> requestData.addCookies(name1, "name1Value", name2, "name2Value")));
+    }
+
     @GET("/cookie")
     @Cookies({@Cookie(name = "username", value = "John"),
             @Cookie(name = "token", value = "1234")})
     public static RestMethod getCookieWithCookies;
+
+    public static RestResponse getCookieWithNameValuePair (String name, String value) {
+        return getCookieWithCookies.call(requestData(requestData -> requestData.addCookies(name, value)));
+    }
 
     @PUT("/cookie")
     public static RestMethod putCookie;
 
     @POST("/reflect")
     public static RestMethod<Hello> postReflect;
+
+    public static RestResponse postEmptyCookie (String name) {
+         return postReflect.call(requestData(requestData -> requestData.addCookie(name)));
+    }
+
+    public static RestResponse postSpecifiedCookie (String name, String value) {
+        return postReflect.call(requestData(requestData ->
+                requestData.addCookie(name, value)));
+    }
 
     @GET("/html_with_cookie")
     public static RestMethod getHtmlWithCookie;

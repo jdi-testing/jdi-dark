@@ -39,12 +39,12 @@ public class ErrorHandlerTests {
         serviceSettings = ServiceSettings.builder().errorHandler(errorHandler).build();
     }
 
-    @BeforeClass
+    @BeforeClass(dependsOnMethods = {"initServiceSettings"})
     public void initService() {
         init(TrelloService.class, serviceSettings);
     }
 
-    @Test
+    @Test(expectedExceptions = {AssertionError.class})
     public void assignBoardToOrganization() {
 
         //Create organization

@@ -40,7 +40,6 @@ public class TestsWithPreconditions {
 
     @Test (dataProvider = "createNewBoards")
     public void createNewBoardTest(String boardName) {
-        String boardNameRes = "Lorem ipsum board " + boardName;
         boardsPost.call(requestBody(format("{\"name\": \"%s\"}", boardName)))
                 .isOk().body("name", equalTo(boardName));
     }
@@ -67,6 +66,7 @@ public class TestsWithPreconditions {
                 .body("shortUrl",equalTo(expectedShortUrl))
                 .body("url",equalTo(expectedUrl));
     }
+
     @Test (dataProvider = "dataProviderFromCSV")
     public void getBoardTest(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
         Board gotBoard = TrelloService.getBoard(boardId);
@@ -74,5 +74,4 @@ public class TestsWithPreconditions {
         Assert.assertEquals(gotBoard.getShortUrl(), expectedShortUrl, "Actual Board ShortUrl doesn't correspond expected");
         Assert.assertEquals(gotBoard.getUrl(), expectedUrl, "Actual Board URL doesn't correspond expected");
     }
-
 }

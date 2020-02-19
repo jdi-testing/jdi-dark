@@ -1,7 +1,5 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.logger.HTTPLogger;
-import com.epam.http.logger.ILogger;
 import com.epam.http.requests.ErrorHandler;
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.ResponseStatusType;
@@ -20,7 +18,6 @@ import static com.epam.http.response.ResponseStatusType.ERROR;
 public class ErrorHandlerTests {
 
     private ServiceSettings serviceSettings;
-    ILogger logger = new HTTPLogger("JDI Error Handler");
 
     @BeforeClass
     public void initServiceSettings() {

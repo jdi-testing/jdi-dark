@@ -19,6 +19,7 @@ import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -285,4 +286,7 @@ public class JettyService {
 
     @POST("/returnContentTypeAsBody")
     public static RestMethod postReturnContentTypeAsBody;
+
+    @POST("/jsonBodyAcceptHeader")
+    public static RestMethod postJsonBodyAcceptHeader;
 }

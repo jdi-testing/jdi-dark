@@ -2,6 +2,7 @@ package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettigns;
 import com.epam.http.annotations.*;
+import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;

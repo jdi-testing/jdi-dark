@@ -1,6 +1,6 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.requests.ErrorHandler;
+import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;

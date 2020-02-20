@@ -4,6 +4,8 @@ import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.logger.AllureLogger;
+import com.epam.http.requests.errorhandler.DefaultErrorHandler;
+import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;

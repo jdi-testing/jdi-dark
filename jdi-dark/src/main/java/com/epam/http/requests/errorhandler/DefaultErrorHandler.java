@@ -1,4 +1,4 @@
-package com.epam.http.requests;
+package com.epam.http.requests.errorhandler;
 
 import com.epam.http.response.ResponseStatus;
 import com.epam.http.response.ResponseStatusType;

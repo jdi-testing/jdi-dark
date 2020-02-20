@@ -1,5 +1,6 @@
 package com.epam.http.requests;
 
+import com.epam.http.requests.errorhandler.ErrorHandler;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 

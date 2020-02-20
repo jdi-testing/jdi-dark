@@ -2,6 +2,7 @@ package com.epam.http.requests;
 
 import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.MultiPart;
+import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.logger.AllureLogger;
 import com.epam.http.response.ResponseStatusType;
@@ -296,7 +297,7 @@ public class RestMethod<T> {
     }
 
     /**
-     * Set query parameters to HTTP request.
+     * Set multiPart parameters to HTTP request.
      *
      * @param multiPartParams multiPart params
      */
@@ -307,6 +308,12 @@ public class RestMethod<T> {
     public void addFormParameters(FormParameter... params) {
         data.formParams.addAll(new MapArray<>(params,
                 FormParameter::name, FormParameter::value));
+    }
+
+    public void setProxy(Proxy proxyParams) {
+        data.proxySpecifications.add(new RequestSpecBuilder().setProxy(proxyParams.host()).setPort(proxyParams.port()).build());
+        //data.proxySpecifications.add(new ProxySpecification(proxyParams.host(), proxyParams.port(), proxyParams.scheme()));
+
     }
 
     private void logRequest(RequestData... rds) {

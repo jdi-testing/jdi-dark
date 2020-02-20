@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests;
 
+import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.specification.RequestSpecification;
@@ -27,7 +28,7 @@ public class ServiceTest {
     public void before() {
         requestSpecification = given().filter(new AllureRestAssured());
         requestSpecification.auth().basic("user", "password");
-        service = init(ServiceExample.class, requestSpecification);
+        service = init(ServiceExample.class, ServiceSettings.builder().requestSpecification(requestSpecification).build());
     }
 
     @Test

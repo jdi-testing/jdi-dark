@@ -37,17 +37,14 @@ public class JettyService {
     @GET("/multiCookieRequest")
     public static RestMethod getMultiCookieRequest;
 
-    public static RestResponse getMultiCookiesArray (String name1, String value1, String name2, String value2) {
+    public static RestResponse getMultiCookiesArray (Object[][] cookiesArray) {
         return getMultiCookieRequest.call(requestData(
-                requestData -> requestData.addCookies(new Object[][]{
-                        {name1, value1},
-                        {name2, value2}
-                })));
+                requestData -> requestData.addCookies(cookiesArray)));
     }
 
-    public static RestResponse getMultiCookieWithName (String value1, String value2) {
+    public static RestResponse getMultiCookieWithOneName(String name, String value1, String value2) {
         return getMultiCookieRequest.call(requestData(
-                requestData -> requestData.addCookie("key1", value1, value2)));
+                requestData -> requestData.addCookie(name, value1, value2)));
     }
 
     public static RestResponse getMultiCookieSpecified (String name, String value) {
@@ -70,27 +67,19 @@ public class JettyService {
     @GET("/cookie")
     public static RestMethod getCookie;
 
-    public static RestResponse getCookieSpecifiedUsingMap (String name1, String name2) {
-        Map<String, String> cookies = new LinkedHashMap<String, String>();
-        cookies.put(name1, "John");
-        cookies.put(name2, "1234");
-
+    public static RestResponse getCookieSpecifiedUsingMap (Map<String, String> cookieMap) {
         return getCookie.call(requestData(
-                requestData -> requestData.addCookies(cookies)));
+                requestData -> requestData.addCookies(cookieMap)));
     }
 
-    public static RestResponse getMultipleCookieSpecifiedUsingMap (String name1, String name2, String name3) {
-        Map<String, String> cookies = new LinkedHashMap<String, String>();
-        cookies.put(name1, "John");
-        cookies.put(name2, "1234");
-
+    public static RestResponse getMultipleCookieSpecifiedUsingMap (Map<String, String> cookieMap, String addCookieName, String addCookieValue) {
         return JettyService.getCookie.call(requestData(
-                requestData -> requestData.addCookies(cookies).addCookies(name3, "value1")));
+                requestData -> requestData.addCookies(cookieMap).addCookies(addCookieName, addCookieValue)));
     }
 
-    public static RestResponse getCookieWithCookiePairsNames(String name1, String name2) {
+    public static RestResponse getSpecifiedCookiePairs(String namePair1, String valuePair1, String namePair2, String valuePair2) {
         return getCookie.call(requestData(
-                requestData -> requestData.addCookies(name1, "name1Value", name2, "name2Value")));
+                requestData -> requestData.addCookies(namePair1, valuePair1,namePair2, valuePair2)));
     }
 
     @GET("/cookie")

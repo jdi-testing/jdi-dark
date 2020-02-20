@@ -8,8 +8,6 @@ import static com.epam.http.response.ResponseStatusType.ERROR;
 import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
 
 public class DefaultErrorHandler implements ErrorHandler {
-    public DefaultErrorHandler() {
-    }
 
     public boolean hasError(RestResponse restResponse) {
         ResponseStatus status = restResponse.getStatus();

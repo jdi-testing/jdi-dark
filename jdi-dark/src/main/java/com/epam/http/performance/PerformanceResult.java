@@ -2,7 +2,7 @@ package com.epam.http.performance;
 
 import com.epam.http.response.RestResponse;
 
-import static com.epam.http.response.ResponseStatusType.ERROR;
+import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 
 /**
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
@@ -24,7 +24,7 @@ public class PerformanceResult {
         AverageResponseTime = (AverageResponseTime * NumberOfRequests + response.responseTime())
                 / (NumberOfRequests + 1);
         NumberOfRequests++;
-        if (response.status.type == ERROR)
+        if (response.status.type == CLIENT_ERROR)
             NumberOfFails++;
 
     }

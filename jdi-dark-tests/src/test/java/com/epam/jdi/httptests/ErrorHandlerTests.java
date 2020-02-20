@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.http.response.ResponseStatusType.ERROR;
+import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 
 public class ErrorHandlerTests {
 
@@ -23,7 +23,7 @@ public class ErrorHandlerTests {
             @Override
             public boolean hasError(RestResponse restResponse) {
                 //only Client errors will be caught
-                return ResponseStatusType.getStatusTypeFromCode(restResponse.getStatus().code) == ERROR;
+                return ResponseStatusType.getStatusTypeFromCode(restResponse.getStatus().code) == CLIENT_ERROR;
             }
 
             @Override

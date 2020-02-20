@@ -11,7 +11,7 @@ import static com.epam.jdi.tools.LinqUtils.first;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public enum ResponseStatusType {
-    OK(2), REDIRECT(3), ERROR(4), SERVER_ERROR(5);
+    OK(2), REDIRECT(3), CLIENT_ERROR(4), SERVER_ERROR(5);
 
     public int firstNumber;
     public static List<ResponseStatusType> allValues() {

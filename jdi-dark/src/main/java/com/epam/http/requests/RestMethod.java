@@ -17,13 +17,11 @@ import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
-import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -347,20 +345,15 @@ public class RestMethod<T> {
         logRequest(data, userData);
         userData.clear();
         RestResponse response = doRequest(type, runSpec);
-        try {
-            handleResponse(response);
-        } catch (IOException e) {
-            logger.error("I/O error on " + type + " request for \"" + url + ((RequestSpecificationImpl) runSpec).getBasePath() + "\": " + e.getMessage());
-        }
+        handleResponse(response);
         return response;
     }
 
-    protected void handleResponse(RestResponse restResponse) throws IOException {
+    private void handleResponse(RestResponse restResponse) {
         boolean hasError = errorHandler.hasError(restResponse);
         if (hasError) {
             errorHandler.handleError(restResponse);
         }
-
     }
 
     /**

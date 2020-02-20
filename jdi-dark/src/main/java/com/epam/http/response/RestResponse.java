@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.logger;
-import static com.epam.http.response.ResponseStatusType.ERROR;
+import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 import static com.epam.http.response.ResponseStatusType.OK;
 import static com.epam.jdi.tools.StringUtils.LINE_BREAK;
 import static java.lang.String.format;
@@ -90,7 +90,7 @@ public class RestResponse<T> {
      * @return result of assertion
      */
     public ValidatableResponse hasErrors() {
-        return isStatus(ERROR);
+        return isStatus(CLIENT_ERROR);
     }
 
     /**

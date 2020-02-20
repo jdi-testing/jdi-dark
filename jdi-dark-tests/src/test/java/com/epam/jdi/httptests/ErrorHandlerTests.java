@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.requests.ServiceSettings;
+import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Organization;
@@ -10,10 +10,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.http.response.ResponseStatusType.ERROR;
+import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 
 public class ErrorHandlerTests {
 
@@ -23,13 +21,13 @@ public class ErrorHandlerTests {
     public void initServiceSettings() {
         ErrorHandler errorHandler = new ErrorHandler() {
             @Override
-            public boolean hasError(RestResponse restResponse) throws IOException {
+            public boolean hasError(RestResponse restResponse) {
                 //only Client errors will be caught
-                return ResponseStatusType.getStatusTypeFromCode(restResponse.getStatus().code) == ERROR;
+                return ResponseStatusType.getStatusTypeFromCode(restResponse.getStatus().code) == CLIENT_ERROR;
             }
 
             @Override
-            public void handleError(RestResponse restResponse) throws IOException {
+            public void handleError(RestResponse restResponse) {
                 Assert.fail("Exception is caught: " + restResponse.toString());
             }
         };

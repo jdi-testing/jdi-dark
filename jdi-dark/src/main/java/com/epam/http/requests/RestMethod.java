@@ -5,6 +5,8 @@ import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.logger.AllureLogger;
+import com.epam.http.requests.errorhandler.DefaultErrorHandler;
+import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
@@ -55,7 +57,8 @@ public class RestMethod<T> {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
-    private ResponseStatusType expectedStatus = OK;
+
+    private ErrorHandler errorHandler = new DefaultErrorHandler();
 
     public RestMethod() {
     }
@@ -152,6 +155,17 @@ public class RestMethod<T> {
      */
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Set custome error handler
+     *
+     * @param errorHandler
+     */
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        if (errorHandler != null) {
+            this.errorHandler = errorHandler;
+        }
     }
 
     /**
@@ -281,11 +295,6 @@ public class RestMethod<T> {
         data.cookies = new Cookies(cookieList);
     }
 
-    public RestMethod expectStatus(ResponseStatusType status) {
-        expectedStatus = status;
-        return this;
-    }
-
     /**
      * Set query parameters to HTTP request.
      *
@@ -342,7 +351,16 @@ public class RestMethod<T> {
         }
         logRequest(data, userData);
         userData.clear();
-        return doRequest(type, runSpec, expectedStatus);
+        RestResponse response = doRequest(type, runSpec);
+        handleResponse(response);
+        return response;
+    }
+
+    private void handleResponse(RestResponse restResponse) {
+        boolean hasError = errorHandler.hasError(restResponse);
+        if (hasError) {
+            errorHandler.handleError(restResponse);
+        }
     }
 
     /**
@@ -357,7 +375,7 @@ public class RestMethod<T> {
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
         logRequest(data);
-        return doRequest(type, runSpec, expectedStatus);
+        return doRequest(type, runSpec);
     }
 
     /**

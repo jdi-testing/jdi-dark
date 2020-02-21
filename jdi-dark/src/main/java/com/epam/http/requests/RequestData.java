@@ -103,6 +103,27 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set form parameters to request
+     *
+     * @param params form parameters
+     * @return generated request data with provided form parameters
+     */
+    public static RequestData requestFormParams(Object[][] params) {
+        return new RequestData().set(rd -> rd.formParams = new MultiMap<>(params));
+    }
+
+    /**
+     * Set form parameters to request
+     *
+     * @param paramName  form parameter name
+     * @param paramValue form parameter value
+     * @return generated request data with provided form parameters
+     */
+    public static RequestData requestFormParams(String paramName, String paramValue) {
+        return requestFormParams(new Object[][]{{paramName, paramValue}});
+    }
+
+    /**
      * Set content type to request data.
      *
      * @param contentType  content type as string

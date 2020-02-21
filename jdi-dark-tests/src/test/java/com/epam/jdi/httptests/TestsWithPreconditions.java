@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static com.epam.http.requests.RequestData.requestBody;
@@ -18,7 +19,6 @@ import static com.epam.http.requests.RequestData.requestPathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloService.boardsPost;
 import static java.lang.String.format;
-import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class TestsWithPreconditions {
@@ -32,9 +32,9 @@ public class TestsWithPreconditions {
     @DataProvider(name = "createNewBoards")
     public static Object[][] createNewBoards() {
         return new Object[][] {
-                { "Board B1-" + random(5, true, true)},
-                { "Board B2-" + random(5, true, true)},
-                { "Board B3-" + random(5, true, true)}
+                { "Board B1-" + LocalDateTime.now()},
+                { "Board B2-" + LocalDateTime.now()},
+                { "Board B3-" + LocalDateTime.now()}
         };
     }
 

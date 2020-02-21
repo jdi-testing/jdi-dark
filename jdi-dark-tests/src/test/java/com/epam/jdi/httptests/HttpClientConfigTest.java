@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests;
 
+import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.RestAssured;
@@ -27,7 +28,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class HttpClientConfigTest extends WithJetty {
 
     @BeforeTest
-    public void before() { init(JettyService.class, requestSpecification);
+    public void before() { init(JettyService.class, ServiceSettings.builder().requestSpecification(requestSpecification).build());
     }
 
     @Test

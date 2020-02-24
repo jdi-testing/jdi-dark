@@ -1,7 +1,26 @@
 package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettigns;
-import com.epam.http.annotations.*;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
+import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.FormParameter;
+import com.epam.http.annotations.FormParameters;
+import com.epam.http.annotations.GET;
+import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.MultiPart;
+import com.epam.http.annotations.OPTIONS;
+import com.epam.http.annotations.PATCH;
+import com.epam.http.annotations.POST;
+import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.Proxy;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.URL;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
@@ -162,6 +181,8 @@ public class ServiceInit {
             method.addFormParameters(field.getAnnotation(FormParameters.class).value());
         if (field.isAnnotationPresent(MultiPart.class))
             method.addMultiPartParams(field.getAnnotation(MultiPart.class));
+        if (field.isAnnotationPresent(Proxy.class))
+            method.setProxy(field.getAnnotation(Proxy.class));
         return method;
     }
 

@@ -320,9 +320,17 @@ public class RestMethod<T> {
     }
 
     public void setProxy(Proxy proxyParams) {
-        data.proxySpecifications.add(new RequestSpecBuilder().setProxy(proxyParams.host()).setPort(proxyParams.port()).build());
-        //data.proxySpecifications.add(new ProxySpecification(proxyParams.host(), proxyParams.port(), proxyParams.scheme()));
-
+        /*data.proxySpecification.
+        RequestSpecification proxySpecification = new RequestSpecBuilder().setProxy(proxyParams.host()).setPort(proxyParams.port()).build();
+        data.proxySpecification..add((ProxySpecification) new RequestSpecBuilder().setProxy(proxyParams.host()).setPort(proxyParams.port()).build());
+        //data.proxySpecifications.add(new ProxySpecification(proxyParams.host(), proxyParams.port(), proxyParams.scheme()));*/
+        //this.spec.proxy(proxyParams.host(), proxyParams.port(), proxyParams.scheme());
+        data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
+                /*.withScheme(proxyParams.scheme())
+                .and()
+                .withHost(proxyParams.host())
+                .and()
+                .withPort(proxyParams.port());*/
     }
 
     private void logRequest(RequestData... rds) {
@@ -533,6 +541,9 @@ public class RestMethod<T> {
         if (requestData.multiPartSpecifications.size() > 0) {
             userData.multiPartSpecifications = requestData.multiPartSpecifications;
         }
+        if (requestData.proxySpecification != null) {
+            userData.proxySpecification = requestData.proxySpecification;
+        }
         return call();
     }
 
@@ -584,7 +595,9 @@ public class RestMethod<T> {
         } else if (data.body != null) {
             spec.body(data.body);
         }
-
+        if (data.proxySpecification != null) {
+            spec.proxy(data.proxySpecification);
+        }
         return spec;
     }
 

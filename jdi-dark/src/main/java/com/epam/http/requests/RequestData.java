@@ -5,7 +5,6 @@ import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.map.MultiMap;
 import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
@@ -38,7 +37,7 @@ public class RequestData extends DataClass<RequestData> {
     public MultiMap<String, String> formParams = new MultiMap<>();
     public Cookies cookies = new Cookies();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
-    public ArrayList<ProxySpecification> proxySpecifications = new ArrayList<>();
+    public ProxySpecification proxySpecification = null;
 
     /**
      * Set request data fields based on lambda function.
@@ -159,8 +158,8 @@ public class RequestData extends DataClass<RequestData> {
         multiPartSpecifications.add(new MultiPartSpecBuilder(file).build());
     }
 
-    public void setProxy(RequestSpecBuilder requestSpecBuilder) {
-        proxySpecifications.add(requestSpecBuilder.build());
+    public void setProxySpecification(String scheme, String host, int port) {
+        this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
     }
 
     /**
@@ -178,7 +177,7 @@ public class RequestData extends DataClass<RequestData> {
         contentType = null;
         empty = true;
         multiPartSpecifications.clear();
-        proxySpecifications.clear();
+        proxySpecification = null;
     }
 
     /**

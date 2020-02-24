@@ -158,6 +158,13 @@ public class RequestData extends DataClass<RequestData> {
         multiPartSpecifications.add(new MultiPartSpecBuilder(file).build());
     }
 
+    /**
+     * Set proxy parameters to request data.
+     *
+     * @param scheme
+     * @param host
+     * @param port
+     */
     public void setProxySpecification(String scheme, String host, int port) {
         this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
     }

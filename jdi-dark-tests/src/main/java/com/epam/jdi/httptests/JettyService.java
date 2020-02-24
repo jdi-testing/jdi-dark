@@ -292,6 +292,9 @@ public class JettyService {
     public static RestMethod postJsonBodyAcceptHeader;
 
     @GET("/greetJSON")
-    @Proxy(host = "192.168.0.10", port = 9453, scheme = "https")
+    @Proxy(host = "127.0.0.1", port = 8888, scheme = "http")
+    public static RestMethod getGreenJSONWithProxyParams;
+
+    @GET("/greetJSON")
     public static RestMethod getGreenJSON;
 }

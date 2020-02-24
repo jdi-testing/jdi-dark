@@ -2,6 +2,7 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.requests.RequestData;
 import com.epam.jdi.httptests.support.WithJetty;
+import io.restassured.specification.ProxySpecification;
 import org.apache.commons.io.FileUtils;
 import org.littleshoot.proxy.HttpProxyServer;
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
+import static org.hamcrest.Matchers.equalTo;
 
 public class ProxyTest extends WithJetty {
 
@@ -34,28 +36,41 @@ public class ProxyTest extends WithJetty {
     }
 
     @Test
-    public void using_proxy_with_proxy_specification() {
+    public void usingProxyWithSetProxySpecification() {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
         JettyService.getGreenJSON.call(RequestData.requestData(rd -> {
-            //rd.requestPathParams((new Object[][]{{"firstName", "John"}, {"lastName", "Doe"}}));
-            //rd.setProxy(new RequestSpecBuilder().setProxy("localhost").setPort(8888));
             rd.setProxySpecification("http", "localhost", 8888);
             rd.queryParams.addAll(params);
-        }));
-
-
-        /*given().
-                proxy(host("localhost").and().withPort(8888).and().withScheme("http")).
-                param("firstName", "John").
-                param("lastName", "Doe").
-                when().
-                get("/greetJSON").
-                then().
-                header("Via", not(emptyOrNullString())).
+        })).isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
-                body("greeting.lastName", equalTo("Doe"));*/
+                body("greeting.lastName", equalTo("Doe"));
+    }
+
+    @Test
+    public void usingProxyAnnotationOnServiceLayer() {
+        final Map<String, String> params = new HashMap<>();
+        params.put("firstName", "John");
+        params.put("lastName", "Doe");
+        JettyService.getGreenJSONWithProxyParams.call(RequestData.requestData(rd -> {
+            rd.queryParams.addAll(params);
+        })).isOk().assertThat().
+                body("greeting.firstName", equalTo("John")).
+                body("greeting.lastName", equalTo("Doe"));
+    }
+
+    @Test
+    public void usingProxySpecification() {
+        final Map<String, String> params = new HashMap<>();
+        params.put("firstName", "John");
+        params.put("lastName", "Doe");
+        JettyService.getGreenJSON.call(RequestData.requestData(rd -> {
+            rd.queryParams.addAll(params);
+            rd.proxySpecification = ProxySpecification.host("localhost");
+        })).isOk().assertThat().
+                body("greeting.firstName", equalTo("John")).
+                body("greeting.lastName", equalTo("Doe"));
     }
 
 

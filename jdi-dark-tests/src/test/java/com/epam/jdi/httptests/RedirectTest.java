@@ -20,8 +20,7 @@ public class RedirectTest {
 
     @Test
     public void configCanBeSetPerRequest() {
-        RequestSpecification rs = redirect.getInitSpec().config(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)));
-        RestResponse resp = redirect.call(rs);
+        RestResponse resp = redirect.call(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)));
         resp.assertThat().statusCode(HttpStatus.SC_MOVED_PERMANENTLY);
         resp.assertThat().header("Location", "https://www.google.com/gmail/");
     }

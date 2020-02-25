@@ -56,11 +56,9 @@ public class ConfigITest extends WithJetty {
 
     @Test
     public void supportsConfiguringJsonConfigProperties() {
-        RequestSpecification rs = getJsonStore.getInitSpec().
-                config(RestAssuredConfig.newConfig().
-                        jsonConfig(JsonConfig.jsonConfig().
-                                numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)));
-        RestResponse resp = getJsonStore.call(rs);
+        RestResponse resp = getJsonStore.call(RestAssuredConfig.newConfig().
+                jsonConfig(JsonConfig.jsonConfig().
+                        numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)));
         resp.isOk()
                 .rootPath("store.book")
                 .body("price.min()", is(new BigDecimal("8.95")))

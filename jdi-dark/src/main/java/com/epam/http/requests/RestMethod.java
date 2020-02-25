@@ -12,6 +12,7 @@ import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
@@ -367,6 +368,21 @@ public class RestMethod<T> {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
+        logRequest(data);
+        return doRequest(type, runSpec);
+    }
+
+    /**
+     * Send HTTP request with Rest Assured Request Specification with specific config
+     *
+     * @param restAssuredConfig Rest Assured config
+     * @return response
+     */
+    public RestResponse call(RestAssuredConfig restAssuredConfig) {
+        if (type == null) {
+            throw exception("HttpMethodType not specified");
+        }
+        RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
         logRequest(data);
         return doRequest(type, runSpec);
     }

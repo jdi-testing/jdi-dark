@@ -8,9 +8,8 @@ Can be found [here](https://jdi-docs.github.io/jdi-dark)<br/>
 For fast start you can go through [tutorial](https://jdi-docs.github.io/jdi-dark/#tutorial)
 
 ## Running test examples
-Before first running test examples execute next maven commands:
-
-**clean**<br/>
+Before first running test examples execute next maven commands:  
+**clean**    
 **compile**
 
 

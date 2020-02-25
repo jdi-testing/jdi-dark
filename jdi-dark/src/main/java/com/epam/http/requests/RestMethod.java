@@ -314,23 +314,23 @@ public class RestMethod<T> {
         data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
     }
 
+    /**
+     * Set form parameters to HTTP request.
+     *
+     * @param params
+     */
     public void addFormParameters(FormParameter... params) {
         data.formParams.addAll(new MapArray<>(params,
                 FormParameter::name, FormParameter::value));
     }
 
+    /**
+     * Set proxy parameters to the request.
+     *
+     * @param proxyParams
+     */
     public void setProxy(Proxy proxyParams) {
-        /*data.proxySpecification.
-        RequestSpecification proxySpecification = new RequestSpecBuilder().setProxy(proxyParams.host()).setPort(proxyParams.port()).build();
-        data.proxySpecification..add((ProxySpecification) new RequestSpecBuilder().setProxy(proxyParams.host()).setPort(proxyParams.port()).build());
-        //data.proxySpecifications.add(new ProxySpecification(proxyParams.host(), proxyParams.port(), proxyParams.scheme()));*/
-        //this.spec.proxy(proxyParams.host(), proxyParams.port(), proxyParams.scheme());
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
-                /*.withScheme(proxyParams.scheme())
-                .and()
-                .withHost(proxyParams.host())
-                .and()
-                .withPort(proxyParams.port());*/
     }
 
     private void logRequest(RequestData... rds) {

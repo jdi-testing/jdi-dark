@@ -11,7 +11,3 @@ For fast start you can go through [tutorial](https://jdi-docs.github.io/jdi-dark
 Before first running test examples execute next maven commands:  
 **clean**    
 **compile**
-
-
-
-

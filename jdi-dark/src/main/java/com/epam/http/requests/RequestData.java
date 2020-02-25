@@ -12,6 +12,7 @@ import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.internal.MapCreator;
 import io.restassured.specification.MultiPartSpecification;
+import io.restassured.specification.ProxySpecification;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class RequestData extends DataClass<RequestData> {
     public MultiMap<String, String> formParams = new MultiMap<>();
     public Cookies cookies = new Cookies();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
+    public ProxySpecification proxySpecification = null;
 
     /**
      * Set request data fields based on lambda function.
@@ -100,6 +102,27 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set form parameters to request
+     *
+     * @param params form parameters
+     * @return generated request data with provided form parameters
+     */
+    public static RequestData requestFormParams(Object[][] params) {
+        return new RequestData().set(rd -> rd.formParams = new MultiMap<>(params));
+    }
+
+    /**
+     * Set form parameters to request
+     *
+     * @param paramName  form parameter name
+     * @param paramValue form parameter value
+     * @return generated request data with provided form parameters
+     */
+    public static RequestData requestFormParams(String paramName, String paramValue) {
+        return requestFormParams(new Object[][]{{paramName, paramValue}});
+    }
+
+    /**
      * Set content type to request data.
      *
      * @param contentType  content type as string
@@ -136,6 +159,17 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set proxy parameters to request data.
+     *
+     * @param scheme
+     * @param host
+     * @param port
+     */
+    public void setProxySpecification(String scheme, String host, int port) {
+        this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
+    }
+
+    /**
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {
@@ -150,6 +184,7 @@ public class RequestData extends DataClass<RequestData> {
         contentType = null;
         empty = true;
         multiPartSpecifications.clear();
+        proxySpecification = null;
     }
 
     /**

@@ -2,14 +2,18 @@ package com.epam.http.requests;
 
 import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.MultiPart;
+import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.logger.AllureLogger;
+import com.epam.http.requests.errorhandler.DefaultErrorHandler;
+import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
@@ -54,7 +58,8 @@ public class RestMethod<T> {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
-    private ResponseStatusType expectedStatus = OK;
+
+    private ErrorHandler errorHandler = new DefaultErrorHandler();
 
     public RestMethod() {
     }
@@ -151,6 +156,17 @@ public class RestMethod<T> {
      */
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Set custome error handler
+     *
+     * @param errorHandler
+     */
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        if (errorHandler != null) {
+            this.errorHandler = errorHandler;
+        }
     }
 
     /**
@@ -280,11 +296,6 @@ public class RestMethod<T> {
         data.cookies = new Cookies(cookieList);
     }
 
-    public RestMethod expectStatus(ResponseStatusType status) {
-        expectedStatus = status;
-        return this;
-    }
-
     /**
      * Set query parameters to HTTP request.
      *
@@ -296,7 +307,7 @@ public class RestMethod<T> {
     }
 
     /**
-     * Set query parameters to HTTP request.
+     * Set multiPart parameters to HTTP request.
      *
      * @param multiPartParams multiPart params
      */
@@ -304,9 +315,23 @@ public class RestMethod<T> {
         data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
     }
 
+    /**
+     * Set form parameters to HTTP request.
+     *
+     * @param params
+     */
     public void addFormParameters(FormParameter... params) {
         data.formParams.addAll(new MapArray<>(params,
                 FormParameter::name, FormParameter::value));
+    }
+
+    /**
+     * Set proxy parameters to the request.
+     *
+     * @param proxyParams
+     */
+    public void setProxy(Proxy proxyParams) {
+        data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
 
     private void logRequest(RequestData... rds) {
@@ -335,7 +360,16 @@ public class RestMethod<T> {
         }
         logRequest(data, userData);
         userData.clear();
-        return doRequest(type, runSpec, expectedStatus);
+        RestResponse response = doRequest(type, runSpec);
+        handleResponse(response);
+        return response;
+    }
+
+    private void handleResponse(RestResponse restResponse) {
+        boolean hasError = errorHandler.hasError(restResponse);
+        if (hasError) {
+            errorHandler.handleError(restResponse);
+        }
     }
 
     /**
@@ -350,7 +384,22 @@ public class RestMethod<T> {
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
         logRequest(data);
-        return doRequest(type, runSpec, expectedStatus);
+        return doRequest(type, runSpec);
+    }
+
+    /**
+     * Send HTTP request with Rest Assured Request Specification with specific config
+     *
+     * @param restAssuredConfig Rest Assured config
+     * @return response
+     */
+    public RestResponse call(RestAssuredConfig restAssuredConfig) {
+        if (type == null) {
+            throw exception("HttpMethodType not specified");
+        }
+        RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
+        logRequest(data);
+        return doRequest(type, runSpec);
     }
 
     /**
@@ -508,6 +557,9 @@ public class RestMethod<T> {
         if (requestData.multiPartSpecifications.size() > 0) {
             userData.multiPartSpecifications = requestData.multiPartSpecifications;
         }
+        if (requestData.proxySpecification != null) {
+            userData.proxySpecification = requestData.proxySpecification;
+        }
         return call();
     }
 
@@ -559,7 +611,9 @@ public class RestMethod<T> {
         } else if (data.body != null) {
             spec.body(data.body);
         }
-
+        if (data.proxySpecification != null) {
+            spec.proxy(data.proxySpecification);
+        }
         return spec;
     }
 

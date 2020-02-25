@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests;
 
+import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.qameta.allure.restassured.AllureRestAssured;
@@ -252,10 +253,10 @@ public class CookiesTests extends WithJetty {
     @Test
     public void supportsCookiesFromRequestSpecification() {
         RequestSpecification rs = given().filter(new AllureRestAssured()).cookie("SpecCookie1", "SpecCookieValue1");
-        init(JettyService.class, rs);
+        init(JettyService.class, ServiceSettings.builder().requestSpecification(rs).build());
 
         RestResponse response = JettyService.getMultiCookieSpecified("userCookie1", "userValue1");
         assertThat(response.body, equalTo("[{\"SpecCookie1\":\"SpecCookieValue1\"},{\"userCookie1\":\"userValue1\"}]"));
-        init(JettyService.class, given().filter(new AllureRestAssured()));
+        init(JettyService.class, ServiceSettings.builder().requestSpecification(given().filter(new AllureRestAssured())).build());
     }
 }

@@ -18,4 +18,13 @@ public class ResponseStatus extends DataClass<ResponseStatus> {
         type = ResponseStatusType.getStatusTypeFromCode(code);
         text = response.statusLine().substring(13);
     }
+
+    @Override
+    public String toString() {
+        return "ResponseStatus{" +
+                "type=" + type +
+                ", text='" + text + '\'' +
+                ", code=" + code +
+                '}';
+    }
 }

@@ -11,6 +11,7 @@ import com.epam.http.annotations.Header;
 import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
+import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
@@ -331,4 +332,14 @@ public class JettyService {
 
     @POST("/returnContentTypeAsBody")
     public static RestMethod postReturnContentTypeAsBody;
+
+    @POST("/jsonBodyAcceptHeader")
+    public static RestMethod postJsonBodyAcceptHeader;
+
+    @GET("/greetJSON")
+    @Proxy(host = "127.0.0.1", port = 8888, scheme = "http")
+    public static RestMethod getGreenJSONWithProxyParams;
+
+    @GET("/greetJSON")
+    public static RestMethod getGreenJSON;
 }

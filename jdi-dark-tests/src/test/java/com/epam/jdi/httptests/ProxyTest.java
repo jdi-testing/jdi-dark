@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ProxyTest extends WithJetty {
 
-    static HttpProxyServer proxyServer;
+    static private HttpProxyServer proxyServer;
 
     @BeforeClass
     public void before() {

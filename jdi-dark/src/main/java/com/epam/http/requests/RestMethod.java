@@ -33,6 +33,7 @@ import static com.epam.http.JdiHttpSettigns.getDomain;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
+import static io.restassured.RestAssured.basic;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
@@ -560,6 +561,10 @@ public class RestMethod<T> {
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
+
+        if (requestData.authenticationScheme != null) {
+            userData.authenticationScheme = requestData.authenticationScheme;
+        }
         return call();
     }
 
@@ -569,16 +574,16 @@ public class RestMethod<T> {
      * @return request specification
      */
     public RequestSpecification getDataSpec(RequestData data) {
-        RequestSpecification spec = new RequestSpecBuilder().build();
+        RequestSpecification spec = new RequestSpecBuilder().setAuth(data.authenticationScheme).build();
         if (url != null) {
             spec.baseUri(url);
         }
         if (path != null) {
             spec.basePath(path);
         }
-        if (data == null) {
-            return spec;
-        }
+//        if (data == null) {
+//            return spec;
+//        }
         if (data.uri != null) {
             spec.baseUri(data.uri);
         }

@@ -30,4 +30,12 @@ public class AuthorizationPostman {
     public static RestResponse callPostmanCustomAuth(AuthenticationScheme authenticationScheme) {
         return postmanAuthCustom.call(requestData(requestData -> requestData.setAuth(authenticationScheme)));
     }
+
+    @ContentType(JSON)
+    @GET("digest-auth")
+    static RestMethod postmanAuthDigest;
+
+    public static RestResponse callPostmanDigestAuth(AuthenticationScheme authenticationScheme) {
+        return postmanAuthCustom.call(requestData(requestData -> requestData.setAuth(authenticationScheme)));
+    }
 }

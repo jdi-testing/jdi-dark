@@ -1,6 +1,6 @@
 package com.epam.jdi.httptests.authRoles;
 
-public class PostmanBasicUser {
+public class PostmanUserCustomAuthExample {
     public static final String oauth_consumer_key = "\"RKCGzna7bv9YD57c\"";
     public static final String oauth_signature_method = "\"HMAC-SHA1\"";
     public static final String oauth_timestamp = "\"1472121255\"";

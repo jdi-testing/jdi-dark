@@ -7,3 +7,4 @@ target/
 *.xlsx
 allure-results/
 allure-report/
+.allure/

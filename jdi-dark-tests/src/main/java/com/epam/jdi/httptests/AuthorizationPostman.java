@@ -29,6 +29,10 @@ public class AuthorizationPostman {
     @GET("oauth1")
     static RestMethod postmanAuthCustom;
 
+    public static RestResponse callPostmanServiceCustomAuth() {
+        return postmanAuthCustom.call();
+    }
+
     public static RestResponse callPostmanCustomAuth(AuthenticationScheme authenticationScheme) {
         return postmanAuthCustom.call(requestData(requestData -> requestData.setAuth(authenticationScheme)));
     }

@@ -41,9 +41,9 @@ public class OauthCustomAuthScheme implements AuthenticationScheme {
         httpBuilder.getClient().addRequestInterceptor(
                 (request, context) ->
                         request.addHeader("Authorization", "OAuth oauth_consumer_key="+oauthConsumerKey+",oauth_signature_method="
-                                +oauthSignatureMethod+",oauth_timestamp="
-                                +oauthTimestamp+",oauth_nonce="+oauthNonce+",oauth_version="
-                                +oauthVersion+",oauth_signature="+oauthSignature));
+                +oauthSignatureMethod+",oauth_timestamp="
+                +oauthTimestamp+",oauth_nonce="+oauthNonce+",oauth_version="
+                +oauthVersion+",oauth_signature="+oauthSignature));
     }
 }
 

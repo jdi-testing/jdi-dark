@@ -16,7 +16,7 @@ import static com.epam.jdi.httptests.AuthorizationPostman.callPostmanDigestAuth;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
 
-public class AuthTests {
+public class AuthentificationTests {
 
     @BeforeClass
     public void before() {

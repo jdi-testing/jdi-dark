@@ -8,6 +8,7 @@ import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
+import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Board;
 import com.epam.jdi.dto.Card;
 import com.epam.jdi.dto.Organization;
@@ -116,5 +117,4 @@ public class TrelloService {
     public static List<Board> getOrganizationBoards(Organization organization) {
         return Arrays.asList(getOrganizationBoards.call(requestPathParams("id", organization.getId())).getRaResponse().as(Board[].class));
     }
-
 }

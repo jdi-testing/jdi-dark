@@ -19,6 +19,7 @@ import com.epam.http.annotations.URL;
 import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
 import java.util.*;
@@ -149,6 +150,10 @@ public class JettyService {
     @GET("/greet")
     public static RestMethod getGreet;
 
+    public static RestResponse getGreetWithSpecifiedQueryParamsByMap(Map<String, String> queryParamsMap) {
+        return getGreet.call(requestData(d -> d.queryParams.addAll(queryParamsMap)));
+    }
+
     @DELETE("/greet")
     public static RestMethod deleteGreet;
 
@@ -178,6 +183,14 @@ public class JettyService {
 
     @POST("/greet")
     public static RestMethod greetPost;
+
+    public static RestResponse greetPostWithSpecifiedContentTypeAndFromParamsByMap(String contentType,
+                                                                                   Map<String, String> formParamsMap) {
+        return greetPost.call(requestData(rd -> {
+            rd.setContentType(contentType);
+            rd.formParams.addAll(formParamsMap);
+        }));
+    }
 
     @POST("/notexist")
     public static RestMethod notFoundedURIPost;
@@ -228,20 +241,58 @@ public class JettyService {
     @GET("/noValueParam")
     public static RestMethod getNoValueParam;
 
+    public static RestResponse getNoValueParamWithSpecifiedQueryParamsByKeyValue(String paramName, String paramValue) {
+        return getNoValueParam.call(requestData(d -> d.queryParams.add(paramName, paramValue)));
+    }
+
+    public static RestResponse getNoValueParamWithSpecifiedQueryParamsByString(String queryParam) {
+        return getNoValueParam.call(queryParam);
+    }
+
     @PUT("/noValueParam")
     public static RestMethod putNoValueParam;
 
+    public static RestResponse putNoValueParamWithSpecifiedFormParamsByKeyValue(String formParamKey,
+                                                                                String formParamValue) {
+        return putNoValueParam.call(requestData(rd -> rd.formParams.add(formParamKey, formParamValue)));
+    }
+
     @POST("/noValueParam")
     public static RestMethod postNoValueParam;
+
+    public static RestResponse postNoValueParamWithSpecifiedFormParamsByKeyValue(String formParamKey,
+                                                                                 String formParamValue) {
+        return postNoValueParam.call(requestData(rd -> rd.formParams.add(formParamKey, formParamValue)));
+    }
+
+    public static RestResponse postNoValueParamWithSpecifiedFormParamsByMap(Map<String, String> formParamsMap) {
+        return postNoValueParam.call(requestData(rd -> rd.formParams.addAll(formParamsMap)));
+    }
 
     @POST("/noValueParam")
     @FormParameters(
             @FormParameter(name = "some1", value = "one")
     )
-    public static RestMethod postNoValueParamDefinedFormParam;
+    public static RestMethod postNoValueParamWithPreDefinedFormParam;
+
+    public static RestResponse postNoValueParamWithPreDefinedFormParamAndAddNewOneByKeyValue(String addedFormParamKey,
+                                                                                             String addedFormParamValue) {
+        return postNoValueParamWithPreDefinedFormParam.call(requestData(rd -> {
+            rd.formParams.add(addedFormParamKey, addedFormParamValue);
+        }));
+    }
 
     @POST("/charEncoding")
     public static RestMethod postCharEncoding;
+
+    public static RestResponse postCharEncodingWithSpecifiedContentTypeAndFormParamByKeyValue(String contentType,
+                                                                                              String formParamKey,
+                                                                                              String formParamValue) {
+        return postCharEncoding.call(requestData(rd -> {
+            rd.contentType = contentType;
+            rd.formParams.add(formParamKey, formParamValue);
+        }));
+    }
 
     @POST("/reflect")
     @ContentType(JSON)
@@ -314,6 +365,14 @@ public class JettyService {
 
     @POST("multipart/multiple")
     public static RestMethod postMultipartMultiple;
+
+    public static RestResponse postMultipartMultipleWithSpecifiedFormParamsAndMultiPartSpecBuilders(Map<String, String> formParamsMap,
+                                                                                                    MultiPartSpecBuilder... multiPartSpecBuilders) {
+        return postMultipartMultiple.call(requestData(rd -> {
+            rd.formParams.addAll(formParamsMap);
+            Arrays.stream(multiPartSpecBuilders).forEach(rd::setMultiPart);
+        }));
+    }
 
     @GET("/returnContentTypeAsBody")
     public static RestMethod getReturnContentTypeAsBody;

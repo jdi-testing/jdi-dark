@@ -5,45 +5,45 @@ import io.restassured.internal.http.HTTPBuilder;
 
 public class OauthCustomAuthScheme implements AuthenticationScheme {
 
-    private String oauth_consumer_key;
-    private String oauth_signature_method;
-    private String oauth_timestamp;
-    private String oauth_nonce;
-    private String oauth_version;
-    private String oauth_signature;
+    private String oauthConsumerKey;
+    private String oauthSignatureMethod;
+    private String oauthTimestamp;
+    private String oauthNonce;
+    private String oauthVersion;
+    private String oauthSignature;
 
-    public void setOauth_consumer_key(String oauth_consumer_key) {
-        this.oauth_consumer_key = oauth_consumer_key;
+    public void setOauthConsumerKey(String oauthConsumerKey) {
+        this.oauthConsumerKey = oauthConsumerKey;
     }
 
-    public void setOauth_signature_method(String oauth_signature_method) {
-        this.oauth_signature_method = oauth_signature_method;
+    public void setOauthSignatureMethod(String oauthSignatureMethod) {
+        this.oauthSignatureMethod = oauthSignatureMethod;
     }
 
-    public void setOauth_timestamp(String oauth_timestamp) {
-        this.oauth_timestamp = oauth_timestamp;
+    public void setOauthTimestamp(String oauthTimestamp) {
+        this.oauthTimestamp = oauthTimestamp;
     }
 
-    public void setOauth_nonce(String oauth_nonce) {
-        this.oauth_nonce = oauth_nonce;
+    public void setOauthNonce(String oauthNonce) {
+        this.oauthNonce = oauthNonce;
     }
 
-    public void setOauth_version(String oauth_version) {
-        this.oauth_version = oauth_version;
+    public void setOauthVersion(String oauthVersion) {
+        this.oauthVersion = oauthVersion;
     }
 
-    public void setOauth_signature(String oauth_signature) {
-        this.oauth_signature = oauth_signature;
+    public void setOauthSignature(String oauthSignature) {
+        this.oauthSignature = oauthSignature;
     }
 
     @Override
     public void authenticate(HTTPBuilder httpBuilder) {
         httpBuilder.getClient().addRequestInterceptor(
                 (request, context) ->
-                        request.addHeader("Authorization", "OAuth oauth_consumer_key="+oauth_consumer_key+",oauth_signature_method="
-                                +oauth_signature_method+",oauth_timestamp="
-                                +oauth_timestamp+",oauth_nonce="+oauth_nonce+",oauth_version="
-                                +oauth_version+",oauth_signature="+oauth_signature));
+                        request.addHeader("Authorization", "OAuth oauth_consumer_key="+oauthConsumerKey+",oauth_signature_method="
+                                +oauthSignatureMethod+",oauth_timestamp="
+                                +oauthTimestamp+",oauth_nonce="+oauthNonce+",oauth_version="
+                                +oauthVersion+",oauth_signature="+oauthSignature));
     }
 }
 

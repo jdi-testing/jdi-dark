@@ -33,7 +33,6 @@ import static com.epam.http.JdiHttpSettigns.getDomain;
 import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
-import static io.restassured.RestAssured.basic;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
@@ -162,7 +161,7 @@ public class RestMethod<T> {
     /**
      * Set custome error handler
      *
-     * @param errorHandler
+     * @param errorHandler error Handler
      */
     public void setErrorHandler(ErrorHandler errorHandler) {
         if (errorHandler != null) {
@@ -319,7 +318,7 @@ public class RestMethod<T> {
     /**
      * Set form parameters to HTTP request.
      *
-     * @param params
+     * @param params params
      */
     public void addFormParameters(FormParameter... params) {
         data.formParams.addAll(new MapArray<>(params,
@@ -329,7 +328,7 @@ public class RestMethod<T> {
     /**
      * Set proxy parameters to the request.
      *
-     * @param proxyParams
+     * @param proxyParams proxyParams
      */
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
@@ -525,7 +524,7 @@ public class RestMethod<T> {
     /**
      * Send HTTP request with invoked request data.
      *
-     * @param requestData
+     * @param requestData requestData
      * @return response
      */
     public RestResponse call(RequestData requestData) {

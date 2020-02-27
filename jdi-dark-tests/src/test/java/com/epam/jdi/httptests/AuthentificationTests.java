@@ -1,8 +1,8 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.authRoles.PostmanUserBasicAuth;
-import com.epam.jdi.httptests.authRoles.PostmanUserCustomAuthExample;
+import com.epam.jdi.httptests.authroles.PostmanUserBasicAuth;
+import com.epam.jdi.httptests.authroles.PostmanUserCustomAuthExample;
 import com.epam.jdi.httptests.utils.OauthCustomAuthScheme;
 import io.restassured.authentication.BasicAuthScheme;
 import org.apache.http.HttpStatus;
@@ -46,12 +46,12 @@ public class AuthentificationTests {
     @Test
     public void authCustomTest() {
         OauthCustomAuthScheme oauthScheme = new OauthCustomAuthScheme();
-        oauthScheme.setOauth_consumer_key(PostmanUserCustomAuthExample.oauth_consumer_key);
-        oauthScheme.setOauth_signature_method(PostmanUserCustomAuthExample.oauth_signature_method);
-        oauthScheme.setOauth_timestamp(PostmanUserCustomAuthExample.oauth_timestamp);
-        oauthScheme.setOauth_nonce(PostmanUserCustomAuthExample.oauth_nonce);
-        oauthScheme.setOauth_version(PostmanUserCustomAuthExample.oauth_version);
-        oauthScheme.setOauth_signature(PostmanUserCustomAuthExample.oauth_signature);
+        oauthScheme.setOauthConsumerKey(PostmanUserCustomAuthExample.oauthConsumerKey);
+        oauthScheme.setOauthSignatureMethod(PostmanUserCustomAuthExample.oauthSignatureMethod);
+        oauthScheme.setOauthTimestamp(PostmanUserCustomAuthExample.oauthTimestamp);
+        oauthScheme.setOauthNonce(PostmanUserCustomAuthExample.oauthNonce);
+        oauthScheme.setOauthVersion(PostmanUserCustomAuthExample.oauthVersion);
+        oauthScheme.setOauthSignature(PostmanUserCustomAuthExample.oauthSignature);
         RestResponse resp = callPostmanCustomAuth(oauthScheme);
         resp.isOk().assertThat().
                 body("status", equalTo("pass"));

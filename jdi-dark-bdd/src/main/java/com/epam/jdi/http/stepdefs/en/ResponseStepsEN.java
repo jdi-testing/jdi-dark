@@ -19,7 +19,7 @@ public class ResponseStepsEN {
 
     @Then("^Performance results don't have any fails$")
     public void performanceResultsDonTHaveAnyFails() {
-        Assert.assertTrue(performanceResult.get().NoFails());
+        assertTrue(performanceResult.get().NoFails());
     }
 
     @And("^I check number of requests$")
@@ -44,7 +44,7 @@ public class ResponseStepsEN {
             if(type.equalsIgnoreCase(responseStatusType.name()))
                 typeMatches = true;
         }
-        Assert.assertTrue(typeMatches);
+        assertTrue(typeMatches);
     }
 
     @And("^Response \"([^\"]*)\" is \"([^\"]*)\"$")
@@ -65,14 +65,14 @@ public class ResponseStepsEN {
     @Then("^I check if performance results contain any fails$")
     public void iCheckIfPerformanceResultsContainAnyFails() {
         long numberOfFails = performanceResult.get().NumberOfFails;
-        Assert.assertEquals(numberOfFails, 0,
+        assertEquals(numberOfFails, 0,
                 format("There were %s failures.", numberOfFails));
     }
 
     @And("^Average response time is lesser than (\\d+) sec$")
     public void averageResponseTime(long seconds) {
         long respTime = performanceResult.get().AverageResponseTime;
-        Assert.assertTrue(respTime < seconds*1000,
+        assertTrue(respTime < seconds*1000,
                 format("Average response time %s msec but expected not more than 2 sec", respTime));
     }
 

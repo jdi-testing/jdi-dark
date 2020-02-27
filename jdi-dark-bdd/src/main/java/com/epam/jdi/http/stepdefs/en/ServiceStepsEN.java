@@ -18,6 +18,6 @@ public class ServiceStepsEN {
 
     @When("^I do status request with (\\d+) code$")
     public void iCallStatusRequest(int status) throws IllegalAccessException, NoSuchFieldException {
-        restResponse.set(getRestMethod("status").call(String.valueOf(status)));
+        restResponse.set(getRestMethod("status").callWithNamedParams(String.valueOf(status)));
     }
 }

@@ -52,7 +52,7 @@
     <modules>
         <module>jdi-dark</module>
         <module>jdi-dark-tests</module>
-<!--        <module>jdi-dark-bdd</module>-->
-<!--        <module>jdi-dark-bdd-tests</module>-->
+        <module>jdi-dark-bdd</module>
+        <module>jdi-dark-bdd-tests</module>
     </modules>
 </project>

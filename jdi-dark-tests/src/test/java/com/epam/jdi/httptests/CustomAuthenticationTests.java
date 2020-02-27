@@ -13,6 +13,9 @@ import static com.epam.jdi.httptests.AuthorizationPostman.callPostmanServiceCust
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
 
+/**
+ * This test shows the usage of custom
+ */
 public class CustomAuthenticationTests {
 
     @BeforeClass

@@ -23,6 +23,7 @@ public class BasicAuthHandler implements AuthenticationHandler{
         this.password = password;
     }
 
+    @Override
     public RequestSpecification handleAuth(RequestSpecification requestSpecification) {
         return requestSpecification.auth().basic(username, password);
     }

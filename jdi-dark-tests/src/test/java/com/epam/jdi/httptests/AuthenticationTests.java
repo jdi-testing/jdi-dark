@@ -19,6 +19,12 @@ import static org.testng.AssertJUnit.assertEquals;
 
 public class AuthenticationTests {
 
+/**
+ * In @BeforeClass we can setup our Authentication handler.
+ * The handler must implement AuthenticationHandler interface.
+ * This handler should be passed to Service Settings to affect the whole service.
+ */
+
     @BeforeClass
     public void before() {
         AuthenticationHandler authHandler = new BasicAuthHandler();
@@ -27,6 +33,9 @@ public class AuthenticationTests {
         init(AuthorizationPostman.class, ServiceSettings.builder().authenticationHandler(authHandler).build());
     }
 
+    /**
+     * This test represents basic authorization using services setings.
+     */
     @Test
     public void authBaseTest() {
         RestResponse resp = callPostmanServiceAuthBasic();
@@ -34,6 +43,11 @@ public class AuthenticationTests {
         assertEquals(resp.status.code, HttpStatus.SC_OK);
     }
 
+    /**
+     *  In this test we override service setting using our custom Authentication Scheme.
+     *  Such scheme must implents AuthentificationScheme interface.
+     *  It will basically populate request with required data.
+     */
     @Test
     public void authBaseTestOverrideCredetialsWithCustomAuthScheme() {
         BasicAuthScheme basic = new BasicAuthScheme();
@@ -43,12 +57,19 @@ public class AuthenticationTests {
         assertEquals(resp.status.code, HttpStatus.SC_UNAUTHORIZED);
     }
 
+    /**
+     * This test shows digest authorization in work
+     */
     @Test
     public void authDigestTest() {
         RestResponse resp =  callPostmanServiceAuthBasic();
         resp.isOk().assertThat().body("authenticated", equalTo(true));
         assertEquals(resp.status.code, HttpStatus.SC_OK);
-}
+    }
+
+    /**
+     * In this test we are overriding service setings to pass custom Authentication Scheme.
+     */
 
     @Test
     public void authCustomAuthSchemeTest() {

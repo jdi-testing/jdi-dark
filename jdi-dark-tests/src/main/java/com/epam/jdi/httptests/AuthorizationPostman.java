@@ -17,6 +17,10 @@ public class AuthorizationPostman {
     @GET("basic-auth")
     static RestMethod postmanAuthBasic;
 
+    public static RestResponse callPostmanServiceAuthBasic() {
+        return postmanAuthBasic.call();
+    }
+
     public static RestResponse callPostmanAuthBasic(AuthenticationScheme authenticationScheme) {
         return postmanAuthBasic.call(requestData(requestData -> requestData.setAuth(authenticationScheme)));
     }

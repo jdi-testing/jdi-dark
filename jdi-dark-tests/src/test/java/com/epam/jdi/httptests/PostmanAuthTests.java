@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.httptests.PostmanAuth.auth2;
 import static com.epam.jdi.httptests.PostmanAuth.authBase;
 import static com.epam.jdi.httptests.PostmanAuth.authBaseForm;
 import static com.epam.jdi.httptests.PostmanAuth.authDigest;

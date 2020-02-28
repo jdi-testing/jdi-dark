@@ -363,10 +363,8 @@ public class RestMethod<T> {
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
-        System.out.println(runSpec.toString());
         logRequest(data, userData);
         userData.clear();
-        System.out.println(runSpec);
         RestResponse response = doRequest(type, runSpec);
         handleResponse(response);
         return response;

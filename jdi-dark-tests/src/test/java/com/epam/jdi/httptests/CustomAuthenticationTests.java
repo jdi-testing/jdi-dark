@@ -3,7 +3,6 @@ package com.epam.jdi.httptests;
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.utils.OauthCustomAuthScheme;
-import io.restassured.authentication.AuthenticationScheme;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

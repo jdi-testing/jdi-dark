@@ -11,6 +11,7 @@ import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
+import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
@@ -19,11 +20,11 @@ import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -161,11 +162,17 @@ public class RestMethod<T> {
     /**
      * Set custome error handler
      *
-     * @param errorHandler
+     * @param errorHandler error Handler
      */
     public void setErrorHandler(ErrorHandler errorHandler) {
         if (errorHandler != null) {
             this.errorHandler = errorHandler;
+        }
+    }
+
+    public void setAuthenticationScheme(AuthenticationScheme authenticationScheme) {
+        if (authenticationScheme != null) {
+            data.authenticationScheme = authenticationScheme;
         }
     }
 
@@ -205,7 +212,6 @@ public class RestMethod<T> {
      * Adds header without value to HTTP request
      *
      * @param name of header
-     * @return generated request data with provided header
      */
     public void addHeader(String name) {
         addHeader(name, "");
@@ -217,7 +223,6 @@ public class RestMethod<T> {
      * @param name             of header
      * @param value            of header
      * @param additionalValues of header
-     * @return generated request data with provided header
      */
     public void addHeader(String name, String value, String... additionalValues) {
         List<Header> headerList = new ArrayList<>(data.headers.asList());
@@ -318,7 +323,7 @@ public class RestMethod<T> {
     /**
      * Set form parameters to HTTP request.
      *
-     * @param params
+     * @param params params
      */
     public void addFormParameters(FormParameter... params) {
         data.formParams.addAll(new MapArray<>(params,
@@ -328,7 +333,7 @@ public class RestMethod<T> {
     /**
      * Set proxy parameters to the request.
      *
-     * @param proxyParams
+     * @param proxyParams proxyParams
      */
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
@@ -516,15 +521,14 @@ public class RestMethod<T> {
      * @return response body as object
      */
     public T post(Object body, Class<T> c) {
-        RestResponse<T> t = call(new RequestData().set(rd -> rd.body = body));
-        return t.getRaResponse().as(c);
+        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
     }
 
 
     /**
      * Send HTTP request with invoked request data.
      *
-     * @param requestData
+     * @param requestData requestData
      * @return response
      */
     public RestResponse call(RequestData requestData) {
@@ -559,6 +563,12 @@ public class RestMethod<T> {
         }
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
+        }
+        if (requestData.authenticationScheme != null) {
+            userData.authenticationScheme = requestData.authenticationScheme;
+        }
+        else {
+            userData.authenticationScheme = data.authenticationScheme;
         }
         return call();
     }
@@ -613,6 +623,9 @@ public class RestMethod<T> {
         }
         if (data.proxySpecification != null) {
             spec.proxy(data.proxySpecification);
+        }
+        if (data.authenticationScheme != null) {
+            ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authenticationScheme);
         }
         return spec;
     }

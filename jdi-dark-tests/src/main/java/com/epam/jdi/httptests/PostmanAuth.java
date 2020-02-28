@@ -17,7 +17,11 @@ public class PostmanAuth {
     @Headers({
             @Header(name = "Authorization", value = "Basic cG9zdG1hbjpwYXNzd29yZA==")
     })
+
     static RestMethod<PostmanInfo> authBase;
+    @ContentType(JSON)
+    @GET("basic-auth")
+    static RestMethod<PostmanInfo> auth2;
 
     @ContentType(JSON)
     @GET("basic-auth")

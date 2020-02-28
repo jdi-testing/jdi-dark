@@ -116,5 +116,4 @@ public class TrelloService {
     public static List<Board> getOrganizationBoards(Organization organization) {
         return Arrays.asList(getOrganizationBoards.call(requestPathParams("id", organization.getId())).getRaResponse().as(Board[].class));
     }
-
 }

@@ -521,8 +521,7 @@ public class RestMethod<T> {
      * @return response body as object
      */
     public T post(Object body, Class<T> c) {
-        RestResponse<T> t = call(new RequestData().set(rd -> rd.body = body));
-        return t.getRaResponse().as(c);
+        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
     }
 
 

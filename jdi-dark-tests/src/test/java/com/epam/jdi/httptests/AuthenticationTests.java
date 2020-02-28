@@ -1,10 +1,9 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.requests.ServiceSettings;
-import com.epam.http.requests.authhandler.BasicAuthHandler;
-import com.epam.http.requests.authhandler.AuthenticationHandler;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.utils.OauthCustomAuthScheme;
+import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.authentication.BasicAuthScheme;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
@@ -27,10 +26,10 @@ public class AuthenticationTests {
 
     @BeforeClass
     public void before() {
-        AuthenticationHandler authHandler = new BasicAuthHandler();
-        ((BasicAuthHandler)authHandler).setUsername("postman");
-        ((BasicAuthHandler)authHandler).setPassword("password");
-        init(AuthorizationPostman.class, ServiceSettings.builder().authenticationHandler(authHandler).build());
+        BasicAuthScheme authScheme = new BasicAuthScheme();
+        authScheme.setUserName("postman");
+        authScheme.setPassword("password");
+        init(AuthorizationPostman.class, ServiceSettings.builder().authenticationScheme(authScheme).build());
     }
 
     /**

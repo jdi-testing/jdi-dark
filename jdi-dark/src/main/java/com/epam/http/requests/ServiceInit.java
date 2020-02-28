@@ -21,11 +21,11 @@ import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.annotations.URL;
-import com.epam.http.requests.authhandler.AuthenticationHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
+import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 
@@ -101,9 +101,9 @@ public class ServiceInit {
             try {
                 method.setAccessible(true);
                 if (isStatic(method.getModifiers()))
-                    method.set(null, getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationHandler()));
+                    method.set(null, getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme()));
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
-                    method.set(getService(c), getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationHandler()));
+                    method.set(getService(c), getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme()));
             } catch (IllegalAccessException ex) {
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
             }
@@ -142,14 +142,15 @@ public class ServiceInit {
      * @return http method with request data
      */
     private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification,
-            ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationHandler authenticationHandler) {
+                                                ObjectMapper objectMapper, ErrorHandler errorHandler,
+                                                AuthenticationScheme authenticationScheme) {
         MethodData mtData = getMethodData(field);
         String url = field.isAnnotationPresent(URL.class) ? field.getAnnotation(URL.class).value() : getDomain(c);
         String path = mtData.getPath();
         RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
         method.setObjectMapper(objectMapper);
         method.setErrorHandler(errorHandler);
-        method.setAuthenticationHandler(authenticationHandler);
+        method.setAuthenticationScheme(authenticationScheme);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
@@ -229,7 +230,7 @@ public class ServiceInit {
      * @param domain     string
      * @param uri        adres string
      * @param methodName string
-     * @param className
+     * @param className className
      * @return normalized URL as string
      */
     private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {

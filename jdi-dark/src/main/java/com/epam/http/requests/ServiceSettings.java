@@ -1,7 +1,7 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.authhandler.AuthenticationHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
+import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 
@@ -10,13 +10,13 @@ public class ServiceSettings {
     private final RequestSpecification requestSpecification;
     private final ObjectMapper objectMapper;
     private final ErrorHandler errorHandler;
-    private final AuthenticationHandler authenticationHandler;
+    private final AuthenticationScheme authenticationScheme;
 
-    private ServiceSettings(RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationHandler authenticationHandler) {
+    private ServiceSettings(RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationScheme authenticationScheme) {
         this.requestSpecification = requestSpecification;
         this.objectMapper = objectMapper;
         this.errorHandler = errorHandler;
-        this.authenticationHandler = authenticationHandler;
+        this.authenticationScheme = authenticationScheme;
     }
 
     public RequestSpecification getRequestSpecification() {
@@ -31,7 +31,7 @@ public class ServiceSettings {
         return errorHandler;
     }
 
-    public AuthenticationHandler getAuthenticationHandler() { return authenticationHandler; }
+    public AuthenticationScheme getAuthenticationScheme() { return authenticationScheme; }
 
     public static Builder builder() {
         return new ServiceSettings.Builder();
@@ -42,7 +42,7 @@ public class ServiceSettings {
         private RequestSpecification requestSpecification;
         private ObjectMapper objectMapper;
         private ErrorHandler errorHandler;
-        private AuthenticationHandler authenticationHandler;
+        private AuthenticationScheme authenticationScheme;
 
         public Builder requestSpecification(RequestSpecification requestSpecification) {
             this.requestSpecification = requestSpecification;
@@ -59,13 +59,13 @@ public class ServiceSettings {
             return this;
         }
 
-        public Builder authenticationHandler(AuthenticationHandler authenticationHandler) {
-            this.authenticationHandler = authenticationHandler;
+        public Builder authenticationScheme(AuthenticationScheme authenticationScheme) {
+            this.authenticationScheme = authenticationScheme;
             return this;
         }
 
         public ServiceSettings build() {
-            return new ServiceSettings(requestSpecification, objectMapper, errorHandler, authenticationHandler);
+            return new ServiceSettings(requestSpecification, objectMapper, errorHandler, authenticationScheme);
         }
     }
 }

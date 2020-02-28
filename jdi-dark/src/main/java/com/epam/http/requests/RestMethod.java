@@ -5,13 +5,13 @@ import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.logger.AllureLogger;
-import com.epam.http.requests.authhandler.AuthenticationHandler;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
+import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
@@ -20,6 +20,7 @@ import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +61,6 @@ public class RestMethod<T> {
     private RestMethodTypes type;
 
     private ErrorHandler errorHandler = new DefaultErrorHandler();
-    private AuthenticationHandler authenticationHandler;
 
     public RestMethod() {
     }
@@ -170,9 +170,9 @@ public class RestMethod<T> {
         }
     }
 
-    public void setAuthenticationHandler(AuthenticationHandler authenticationHandlerFromSettings) {
-        if (authenticationHandlerFromSettings != null) {
-            this.authenticationHandler = authenticationHandlerFromSettings;
+    public void setAuthenticationScheme(AuthenticationScheme authenticationScheme) {
+        if (authenticationScheme != null) {
+            data.authenticationScheme = authenticationScheme;
         }
     }
 
@@ -212,7 +212,6 @@ public class RestMethod<T> {
      * Adds header without value to HTTP request
      *
      * @param name of header
-     * @return generated request data with provided header
      */
     public void addHeader(String name) {
         addHeader(name, "");
@@ -224,7 +223,6 @@ public class RestMethod<T> {
      * @param name             of header
      * @param value            of header
      * @param additionalValues of header
-     * @return generated request data with provided header
      */
     public void addHeader(String name, String value, String... additionalValues) {
         List<Header> headerList = new ArrayList<>(data.headers.asList());
@@ -362,7 +360,6 @@ public class RestMethod<T> {
         }
         getQueryParamsFromPath();
         RequestSpecification runSpec = getInitSpec();
-        runSpec = handleAuth(runSpec);
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
@@ -380,10 +377,6 @@ public class RestMethod<T> {
         if (hasError) {
             errorHandler.handleError(restResponse);
         }
-    }
-
-    private RequestSpecification handleAuth(RequestSpecification requestSpecification) {
-        return authenticationHandler.handleAuth(requestSpecification);
     }
 
     /**
@@ -574,9 +567,11 @@ public class RestMethod<T> {
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
-
         if (requestData.authenticationScheme != null) {
             userData.authenticationScheme = requestData.authenticationScheme;
+        }
+        else {
+            userData.authenticationScheme = data.authenticationScheme;
         }
         return call();
     }
@@ -587,7 +582,7 @@ public class RestMethod<T> {
      * @return request specification
      */
     public RequestSpecification getDataSpec(RequestData data) {
-        RequestSpecification spec = new RequestSpecBuilder().setAuth(data.authenticationScheme).build();
+        RequestSpecification spec = new RequestSpecBuilder().build();
         if (url != null) {
             spec.baseUri(url);
         }
@@ -631,6 +626,9 @@ public class RestMethod<T> {
         }
         if (data.proxySpecification != null) {
             spec.proxy(data.proxySpecification);
+        }
+        if (data.authenticationScheme != null) {
+            ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authenticationScheme);
         }
         return spec;
     }

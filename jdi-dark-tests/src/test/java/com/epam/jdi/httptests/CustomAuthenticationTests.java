@@ -1,9 +1,9 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.requests.ServiceSettings;
-import com.epam.http.requests.authhandler.AuthenticationHandler;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.utils.CustomAuthHandler;
+import com.epam.jdi.httptests.utils.OauthCustomAuthScheme;
+import io.restassured.authentication.AuthenticationScheme;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -20,14 +20,14 @@ public class CustomAuthenticationTests {
 
     @BeforeClass
     public void before() {
-        AuthenticationHandler authHandler = new CustomAuthHandler();
-        ((CustomAuthHandler)authHandler).setOauthConsumerKey("\"RKCGzna7bv9YD57c\"");
-        ((CustomAuthHandler)authHandler).setOauthSignatureMethod("\"HMAC-SHA1\"");
-        ((CustomAuthHandler)authHandler).setOauthTimestamp("\"1472121255\"");
-        ((CustomAuthHandler)authHandler).setOauthNonce("\"e5VR16\"");
-        ((CustomAuthHandler)authHandler).setOauthVersion("\"1.0\"");
-        ((CustomAuthHandler)authHandler).setOauthSignature("\"Or%2F2PqPg21wp967CASJtoo%2BF5Kk%3D\"");
-        init(AuthorizationPostman.class, ServiceSettings.builder().authenticationHandler(authHandler).build());
+        OauthCustomAuthScheme authScheme = new OauthCustomAuthScheme();
+        authScheme.setOauthConsumerKey("\"RKCGzna7bv9YD57c\"");
+        authScheme.setOauthSignatureMethod("\"HMAC-SHA1\"");
+        authScheme.setOauthTimestamp("\"1472121255\"");
+        authScheme.setOauthNonce("\"e5VR16\"");
+        authScheme.setOauthVersion("\"1.0\"");
+        authScheme.setOauthSignature("\"Or%2F2PqPg21wp967CASJtoo%2BF5Kk%3D\"");
+        init(AuthorizationPostman.class, ServiceSettings.builder().authenticationScheme(authScheme).build());
     }
 
     @Test

@@ -40,7 +40,7 @@ public class RequestData extends DataClass<RequestData> {
     public Cookies cookies = new Cookies();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
     public ProxySpecification proxySpecification = null;
-    public AuthenticationScheme authenticationScheme = new NoAuthScheme();
+    public AuthenticationScheme authenticationScheme = null;
 
     /**
      * Set request data fields based on lambda function.
@@ -168,9 +168,9 @@ public class RequestData extends DataClass<RequestData> {
     /**
      * Set proxy parameters to request data.
      *
-     * @param scheme
-     * @param host
-     * @param port
+     * @param scheme scheme
+     * @param host host
+     * @param port port
      */
     public void setProxySpecification(String scheme, String host, int port) {
         this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
@@ -192,6 +192,7 @@ public class RequestData extends DataClass<RequestData> {
         empty = true;
         multiPartSpecifications.clear();
         proxySpecification = null;
+        authenticationScheme = null;
     }
 
     /**

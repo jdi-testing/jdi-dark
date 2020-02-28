@@ -10,16 +10,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.http.requests.RequestData.requestData;
-import static com.epam.http.requests.RequestData.requestPathParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getMatrix;
-import static com.epam.jdi.httptests.JettyService.getMixedparam;
-import static com.epam.jdi.httptests.JettyService.getParamAfterPath;
-import static com.epam.jdi.httptests.JettyService.getParamBeforePath;
-import static com.epam.jdi.httptests.JettyService.getUser;
-import static com.epam.jdi.httptests.JettyService.getUserSameParameters;
-import static com.epam.jdi.httptests.JettyService.searchGoogle;
+import static com.epam.jdi.httptests.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 
 public class PathParamTests extends WithJetty {
@@ -30,15 +22,15 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void supportsPassingPathParamsToRequestSpec() {
-        RestResponse response = getUser
-                .call(requestPathParams(new Object[][]{{"firstName", "John"}, {"lastName", "Doe"}}));
+        Object[][] pathParams = new Object[][]{{"firstName", "John"}, {"lastName", "Doe"}};
+        RestResponse response = getUserPathParamsSetByArray(pathParams);
         response.isOk().body("fullName", equalTo("John Doe"));
     }
 
     @Test
     public void urlEncodesPathParams() {
-        RestResponse response = getUser
-                .call(requestPathParams(new Object[][]{{"firstName", "John:()"}, {"lastName", "Doe"}}));
+        Object[][] pathParams = new Object[][]{{"firstName", "John:()"}, {"lastName", "Doe"}};
+        RestResponse response = getUserPathParamsSetByArray(pathParams);
         response.isOk().body("fullName", equalTo("John:() Doe"));
     }
 
@@ -47,8 +39,8 @@ public class PathParamTests extends WithJetty {
         RestAssured.urlEncodingEnabled = false;
         final String encoded = URLEncoder.encode("John:()", "UTF-8");
         try {
-            RestResponse response = getUser
-                    .call(requestPathParams(new Object[][]{{"firstName", encoded}, {"lastName", "Doe"}}));
+            Object[][] pathParams = new Object[][]{{"firstName", encoded}, {"lastName", "Doe"}};
+            RestResponse response = getUserPathParamsSetByArray(pathParams);
             response.isOk().body("fullName", equalTo("John:() Doe"));
         } finally {
             RestAssured.reset();
@@ -60,14 +52,13 @@ public class PathParamTests extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John2");
         params.put("lastName", "Doe");
-        RestResponse response = getUser
-                .call(requestData(d -> d.pathParams.addAll(params)));
+        RestResponse response = getUserPathParamsSetByMap(params);
         response.isOk().body("fullName", equalTo("John2 Doe"));
     }
 
     @Test
     public void namedPathParametersCanBeAppendedBeforeSubPath() {
-        RestResponse response = getParamBeforePath.call(requestPathParams("path", "something"));
+        RestResponse response = getNamedParamBeforePath("path", "something");
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -79,7 +70,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void namedPathParametersCanBeAppendedAfterSubPath() {
-        RestResponse response = getParamAfterPath.call(requestPathParams("format", "json"));
+        RestResponse response = getNamedParamAfterPath("format", "json");
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -96,8 +87,7 @@ public class PathParamTests extends WithJetty {
             final Map<String, String> params = new HashMap<>();
             params.put("firstName", "John%20å");
             params.put("lastName", "Doe");
-            RestResponse response = getUser
-                    .call(requestData(d -> d.pathParams.addAll(params)));
+            RestResponse response = getUserPathParamsSetByMap(params);
             response.isOk().body("fullName", equalTo("John å Doe"));
         } finally {
             RestAssured.reset();
@@ -106,8 +96,8 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void usePathParametersShorterTheTemplateName() {
-        RestResponse response = getMatrix
-                .call(requestPathParams(new Object[][]{{"abcde", "John"}, {"value", "Doe"}}));
+        Object[][] pathParams = new Object[][]{{"abcde", "John"}, {"value", "Doe"}};
+        RestResponse response = getMatrixPathParamsSetByArray(pathParams);
         response.isOk().body("John", equalTo("Doe"));
     }
 
@@ -126,23 +116,23 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void usePathParametersLongerTheTemplateName() {
-        RestResponse response = getMatrix
-                .call(requestPathParams(new Object[][]{{"abcde", "JohnJohn"}, {"value", "Doe"}}));
+        Object[][] pathParams = new Object[][]{{"abcde", "JohnJohn"}, {"value", "Doe"}};
+        RestResponse response = getMatrixPathParamsSetByArray(pathParams);
         response.isOk().body("JohnJohn", equalTo("Doe"));
     }
 
     @Test
     public void supportsPassingIntPathParamsToRequestSpec() {
-        RestResponse response = getUser
-                .call(requestPathParams(new Object[][]{{"firstName", "John"}, {"lastName", 42}}));
+        Object[][] pathParams = new Object[][]{{"firstName", "John"}, {"lastName", 42}};
+        RestResponse response = getUserPathParamsSetByArray(pathParams);
         response.isOk().body("fullName", equalTo("John 42"));
     }
 
     @Test
     public void canUsePathParamsWithNonStandardChars() {
         final String nonStandardChars = "\\$£@\"){¤$";
-        RestResponse response = getUser
-                .call(requestPathParams(new Object[][]{{"firstName", nonStandardChars}, {"lastName", "Last"}}));
+        Object[][] pathParams = new Object[][]{{"firstName", nonStandardChars}, {"lastName", "Last"}};
+        RestResponse response = getUserPathParamsSetByArray(pathParams);
         response.isOk().body("fullName", equalTo("\\$£@\"){¤$ Last"));
     }
 
@@ -151,8 +141,7 @@ public class PathParamTests extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John: å");
         params.put("lastName", "Doe");
-        RestResponse response = getUser
-                .call(requestData(d -> d.pathParams.addAll(params)));
+        RestResponse response = getUserPathParamsSetByMap(params);
         response.isOk().body("fullName", equalTo("John: å Doe"));
     }
 
@@ -165,8 +154,8 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void canSpecifyEmptyPath() {
-        RestResponse response = getUser
-                .call(requestPathParams(new Object[][]{{"firstName", "John"}, {"lastName", ""}}));
+        Object[][] pathParams = new Object[][]{{"firstName", "John"}, {"lastName", ""}};
+        RestResponse response = getUserPathParamsSetByArray(pathParams);
         response.assertThat().statusCode(404);
     }
 
@@ -179,20 +168,21 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void queryParametersWorksWithoutKeys() {
-        RestResponse response = searchGoogle.call("query");
+        RestResponse response = searchGoogleSpecificParam("query");
         response.isOk();
     }
 
     @Test
     public void passingInSinglePathParamsThatHaveBeenDefinedMultipleTimesWorks() throws Exception {
-        RestResponse response = getUserSameParameters
-                .call(requestPathParams(new Object[][]{{"firstName", "John"}}));
+        Object[][] pathParams = new Object[][]{{"firstName", "John"}};
+        RestResponse response = getUserSameParametersSetByArray(pathParams);
         response.isOk().body("fullName", equalTo("John John"));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
     public void passingLessNamedPathParamsThanGivenThrowsIAE() {
-        getUser.call(requestPathParams(new Object[][]{{"firstName", "John"}}));
+        Object[][] pathParams = new Object[][]{{"firstName", "John"}};
+        getUserPassPathParamsSetByArray(pathParams);
     }
 
     @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")

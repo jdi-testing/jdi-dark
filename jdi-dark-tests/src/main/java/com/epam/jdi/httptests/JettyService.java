@@ -150,7 +150,7 @@ public class JettyService {
     @GET("/greet")
     public static RestMethod getGreet;
 
-    public static RestResponse getGreetWithSpecifiedQueryParamsByMap(Map<String, String> queryParamsMap) {
+    public static RestResponse getGreetWithMapOfQueryParams(Map<String, String> queryParamsMap) {
         return getGreet.call(requestData(d -> d.queryParams.addAll(queryParamsMap)));
     }
 
@@ -184,8 +184,8 @@ public class JettyService {
     @POST("/greet")
     public static RestMethod greetPost;
 
-    public static RestResponse greetPostWithSpecifiedContentTypeAndFromParamsByMap(String contentType,
-                                                                                   Map<String, String> formParamsMap) {
+    public static RestResponse greetPostWithContentTypeAndMapOfFormParams(String contentType,
+                                                                          Map<String, String> formParamsMap) {
         return greetPost.call(requestData(rd -> {
             rd.setContentType(contentType);
             rd.formParams.addAll(formParamsMap);
@@ -241,31 +241,31 @@ public class JettyService {
     @GET("/noValueParam")
     public static RestMethod getNoValueParam;
 
-    public static RestResponse getNoValueParamWithSpecifiedQueryParamsByKeyValue(String paramName, String paramValue) {
+    public static RestResponse getNoValueParamWithKeyValueQueryParam(String paramName, String paramValue) {
         return getNoValueParam.call(requestData(d -> d.queryParams.add(paramName, paramValue)));
     }
 
-    public static RestResponse getNoValueParamWithSpecifiedQueryParamsByString(String queryParam) {
+    public static RestResponse getNoValueParamWithStringQueryParams(String queryParam) {
         return getNoValueParam.call(queryParam);
     }
 
     @PUT("/noValueParam")
     public static RestMethod putNoValueParam;
 
-    public static RestResponse putNoValueParamWithSpecifiedFormParamsByKeyValue(String formParamKey,
-                                                                                String formParamValue) {
+    public static RestResponse putNoValueParamWithKeyValueFormParam(String formParamKey,
+                                                                    String formParamValue) {
         return putNoValueParam.call(requestData(rd -> rd.formParams.add(formParamKey, formParamValue)));
     }
 
     @POST("/noValueParam")
     public static RestMethod postNoValueParam;
 
-    public static RestResponse postNoValueParamWithSpecifiedFormParamsByKeyValue(String formParamKey,
-                                                                                 String formParamValue) {
+    public static RestResponse postNoValueParamWithKeyValueFormParam(String formParamKey,
+                                                                     String formParamValue) {
         return postNoValueParam.call(requestData(rd -> rd.formParams.add(formParamKey, formParamValue)));
     }
 
-    public static RestResponse postNoValueParamWithSpecifiedFormParamsByMap(Map<String, String> formParamsMap) {
+    public static RestResponse postNoValueParamWithMapOfFormParams(Map<String, String> formParamsMap) {
         return postNoValueParam.call(requestData(rd -> rd.formParams.addAll(formParamsMap)));
     }
 
@@ -275,8 +275,8 @@ public class JettyService {
     )
     public static RestMethod postNoValueParamWithPreDefinedFormParam;
 
-    public static RestResponse postNoValueParamWithPreDefinedFormParamAndAddNewOneByKeyValue(String addedFormParamKey,
-                                                                                             String addedFormParamValue) {
+    public static RestResponse postNoValueParamWithPreDefinedFormParamAndNewKeyValueParam(String addedFormParamKey,
+                                                                                          String addedFormParamValue) {
         return postNoValueParamWithPreDefinedFormParam.call(requestData(rd -> {
             rd.formParams.add(addedFormParamKey, addedFormParamValue);
         }));
@@ -285,9 +285,9 @@ public class JettyService {
     @POST("/charEncoding")
     public static RestMethod postCharEncoding;
 
-    public static RestResponse postCharEncodingWithSpecifiedContentTypeAndFormParamByKeyValue(String contentType,
-                                                                                              String formParamKey,
-                                                                                              String formParamValue) {
+    public static RestResponse postCharEncodingWithContentTypeAndKeyValueFormParam(String contentType,
+                                                                                   String formParamKey,
+                                                                                   String formParamValue) {
         return postCharEncoding.call(requestData(rd -> {
             rd.contentType = contentType;
             rd.formParams.add(formParamKey, formParamValue);
@@ -366,8 +366,8 @@ public class JettyService {
     @POST("multipart/multiple")
     public static RestMethod postMultipartMultiple;
 
-    public static RestResponse postMultipartMultipleWithSpecifiedFormParamsAndMultiPartSpecBuilders(Map<String, String> formParamsMap,
-                                                                                                    MultiPartSpecBuilder... multiPartSpecBuilders) {
+    public static RestResponse postMultipartMultipleWithFormParamsAndMultiPartBuilders(Map<String, String> formParamsMap,
+                                                                                       MultiPartSpecBuilder... multiPartSpecBuilders) {
         return postMultipartMultiple.call(requestData(rd -> {
             rd.formParams.addAll(formParamsMap);
             Arrays.stream(multiPartSpecBuilders).forEach(rd::setMultiPart);

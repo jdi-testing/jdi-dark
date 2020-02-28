@@ -141,9 +141,7 @@ public class ServiceInit {
      * @param objectMapper         custom ObjectMapper
      * @return http method with request data
      */
-    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification,
-                                                ObjectMapper objectMapper, ErrorHandler errorHandler,
-                                                AuthenticationScheme authenticationScheme) {
+    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationScheme authenticationScheme) {
         MethodData mtData = getMethodData(field);
         String url = field.isAnnotationPresent(URL.class) ? field.getAnnotation(URL.class).value() : getDomain(c);
         String path = mtData.getPath();

@@ -152,6 +152,12 @@ public class RequestData extends DataClass<RequestData> {
         multiPartSpecifications.add(multiPartSpecBuilder.build());
     }
 
+    /**
+     * Set authentication scheme to request data
+     * This allows authentcation for requests
+     * @param authScheme authentication scheme: from restassured or custom
+     */
+
     public void setAuth(AuthenticationScheme authScheme) {
         authenticationScheme = authScheme;
     }

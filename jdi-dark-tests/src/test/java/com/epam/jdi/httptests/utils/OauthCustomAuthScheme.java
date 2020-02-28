@@ -3,6 +3,9 @@ package com.epam.jdi.httptests.utils;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.internal.http.HTTPBuilder;
 
+/**
+ * Here's an example of a custom authentication scheme.
+ */
 public class OauthCustomAuthScheme implements AuthenticationScheme {
 
     private String oauthConsumerKey;

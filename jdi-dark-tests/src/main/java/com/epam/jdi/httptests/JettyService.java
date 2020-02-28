@@ -16,7 +16,6 @@ import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.annotations.URL;
-import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
@@ -133,13 +132,13 @@ public class JettyService {
 
     public static RestResponse getWithMultipleHeaders(
             Object[][] headers) {
-        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+        return getMultiHeaderReflect.call(requestData(requestData ->
                 requestData.addHeaders(headers)));
     }
 
     public static RestResponse getWithSingleHeader(
             String name, String value, String... additionalValues) {
-        return getMultiHeaderReflect.call(RequestData.requestData(requestData ->
+        return getMultiHeaderReflect.call(requestData(requestData ->
                 requestData.addHeader(name, value, additionalValues)));
     }
 

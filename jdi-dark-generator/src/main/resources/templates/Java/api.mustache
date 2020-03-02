@@ -1,0 +1,50 @@
+{{>licenseInfo}}
+package {{package}};
+
+import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.ContentType;
+
+{{#imports}}import {{import}};
+{{/imports}}
+
+{{>generatedAnnotation}}
+{{#operations}}
+@ServiceDomain(${domain})
+public class {{classname}} {
+
+  {{#operation}}
+  /**
+   * {{summary}}
+   * {{notes}}
+   {{#allParams}}
+   * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}
+   {{/allParams}}
+   {{#returnType}}
+   * @return {{returnType}}
+   {{/returnType}}
+   * @throws ApiException if fails to make API call
+   {{#isDeprecated}}
+   * @deprecated
+   {{/isDeprecated}}
+   */
+
+  {{#isDeprecated}}
+  @Deprecated
+  {{/isDeprecated}}
+  {{#produces}}@ContentType("{{mediaType}}"){{/produces}}
+  {{#queryParams}}
+  @QueryParameters({
+          @QueryParameter(name = "firstName", value = "John"),
+          @QueryParameter(name = "lastName", value = "Doe")
+  })
+  {{/queryParams}}
+  {{#formParams}}
+  @FormParameters(
+          @FormParameter(name = "some1", value = "one")
+  )
+  {{/formParams}}
+  @{{httpMethod}}("{{path}}")
+  public static RestMethod {{operationId}};
+  {{/operation}}
+}
+{{/operations}}

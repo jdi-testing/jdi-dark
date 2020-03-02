@@ -1,55 +1,202 @@
 package com.epam.generator;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.samskivert.mustache.Mustache.Compiler;
+import io.swagger.models.Model;
+import io.swagger.models.Operation;
+import io.swagger.models.Swagger;
+import io.swagger.models.properties.Property;
+
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import io.swagger.models.ModelImpl;
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public interface Generator {
+    String getName();
 
-import io.swagger.models.Swagger;
-import io.swagger.parser.SwaggerParser;
+    String getHelp();
 
-public class Generator {
+    Map<String, Object> additionalProperties();
 
-    public static void main(String[] args) {
+    Map<String, Object> vendorExtensions();
 
-        Options options = new Options();
-        options.addOption("h", "help", false, "shows this message");
-        options.addOption("c", "config", true, "location of the configuration file");
+    String testPackage();
 
-        CommandLine cmd = null;
-        try {
-            CommandLineParser parser = new BasicParser();
+    String apiPackage();
 
-            cmd = parser.parse(options, args);
-            if (cmd.hasOption("d")) {
-                System.out.println("Option");
-                return;
-            }
-        }
-        catch(Exception ex) {
+    String apiFileFolder();
 
-        }
-        Swagger swagger = new SwaggerParser().read("http://petstore.swagger.io/v2/swagger.json");
+    String apiTestFileFolder();
 
-        if (swagger == null) {
-            throw new RuntimeException("The swagger specification supplied was not valid");
-        }
+    String apiDocFileFolder();
 
-        List<File> files = new ArrayList<File>();
-        // models
-        List<Object> allModels = new ArrayList<Object>();
-        new ModelGenerator(swagger).generate(files, allModels);
+    String fileSuffix();
 
-        System.out.println("swagger: " + swagger);
-    }
+    String outputFolder();
+
+    String templateDir();
+
+    String embeddedTemplateDir();
+
+    String modelFileFolder();
+
+    String modelTestFileFolder();
+
+    String modelPackage();
+
+    String toApiName(String name);
+
+    String toEndpointVarName(String name);
+
+    String toApiVarName(String name);
+
+    String toModelName(String name);
+
+    String toParamName(String name);
+
+    String escapeText(String text);
+
+    String escapeReservedWord(String name);
+
+    String getTypeDeclaration(Property p);
+
+    void processOpts();
+
+    String generateExamplePath(String path, Operation operation);
+
+    String getInvokerPackage();
+
+    void setInvokerPackage(String inputSpec);
+
+    String getInputSpec();
+
+    void setInputSpec(String inputSpec);
+
+    String getOutputDir();
+
+    void setOutputDir(String dir);
+
+    GeneratedModel fromModel(String name, Model model, Map<String, Model> allDefinitions);
+
+    GeneratedOperation fromOperation(String resourcePath, String httpMethod, Operation operation, Map<String, Model> definitions, Swagger swagger);
+
+    Set<String> defaultIncludes();
+
+    Map<String, String> instantiationTypes();
+
+    Map<String, String> importMapping();
+
+    Map<String, String> apiTemplateFiles();
+
+    Map<String, String> modelTemplateFiles();
+
+    Map<String, String> apiTestTemplateFiles();
+
+    void preprocessSwagger(Swagger swagger);
+
+    void processSwagger(Swagger swagger);
+
+    Compiler processCompiler(Compiler compiler);
+
+    String sanitizeTag(String tag);
+
+    String toApiFilename(String name);
+
+    String toModelFilename(String name);
+
+    String toApiTestFilename(String name);
+
+    String toModelTestFilename(String name);
+
+    String toApiDocFilename(String name);
+
+    String toModelDocFilename(String name);
+
+    String toModelImport(String name);
+
+    String toApiImport(String name);
+
+    void addOperationToGroup(String tag, String resourcePath, Operation operation, GeneratedOperation co, Map<String, List<GeneratedOperation>> operations);
+
+    Map<String, Object> postProcessAllModels(Map<String, Object> objs);
+
+    Map<String, Object> postProcessModels(Map<String, Object> objs);
+
+    Map<String, Object> postProcessOperations(Map<String, Object> objs);
+
+    Map<String, Object> postProcessOperationsWithModels(Map<String, Object> objs, List<Object> allModels);
+
+    Map<String, Object> postProcessSupportingFileData(Map<String, Object> objs);
+
+    void postProcessModelProperty(GeneratedModel model, GeneratedProperty property);
+
+    void postProcessParameter(GeneratedParameter parameter);
+
+    String apiFilename(String templateName, String tag);
+
+    String apiTestFilename(String templateName, String tag);
+
+    boolean shouldOverwrite(String filename);
+
+    boolean isSkipOverwrite();
+
+    void setSkipOverwrite(boolean skipOverwrite);
+
+    boolean isRemoveOperationIdPrefix();
+
+    void setRemoveOperationIdPrefix(boolean removeOperationIdPrefix);
+
+    public boolean isHideGenerationTimestamp();
+
+    public void setHideGenerationTimestamp(boolean hideGenerationTimestamp);
+
+    Map<String, String> supportedLibraries();
+
+    void setLibrary(String library);
+
+    /**
+     * Library template (sub-template).
+     *
+     * @return libray template
+     */
+    String getLibrary();
+
+    void setGitUserId(String gitUserId);
+
+    String getGitUserId();
+
+    void setGitRepoId(String gitRepoId);
+
+    String getGitRepoId();
+
+    void setReleaseNote(String releaseNote);
+
+    String getReleaseNote();
+
+    void setHttpUserAgent(String httpUserAgent);
+
+    String getHttpUserAgent();
+
+    String getCommonTemplateDir();
+
+    void setIgnoreFilePathOverride(String ignoreFileOverride);
+
+    String getIgnoreFilePathOverride();
+
+    String toBooleanGetter(String name);
+
+    String toSetter(String name);
+
+    String toGetter(String name);
+
+    String sanitizeName(String name);
+
+    void setSkipAliasGeneration(Boolean skipAliasGeneration);
+
+    Boolean getSkipAliasGeneration();
+
+    boolean getIgnoreImportMapping();
+
+    void setIgnoreImportMapping(boolean ignoreImportMapping);
+
+    boolean defaultIgnoreImportMappingOption();
 }

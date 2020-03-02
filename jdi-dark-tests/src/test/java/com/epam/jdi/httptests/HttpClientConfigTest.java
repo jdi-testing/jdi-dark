@@ -32,7 +32,7 @@ public class HttpClientConfigTest extends WithJetty {
     }
 
     @Test
-    public void followsRedirectsWhileKeepingHeadersSpecifiedIfRestAssuredConfig() throws Exception {
+    public void followsRedirectsWhileKeepingHeadersSpecifiedIfRestAssuredConfig() {
         final List<Header> httpClientHeaders = new ArrayList<Header>();
         httpClientHeaders.add(new BasicHeader("header1", "value1"));
         httpClientHeaders.add(new BasicHeader("header2", "value2"));

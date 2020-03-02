@@ -4,6 +4,7 @@ import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.map.MultiMap;
+import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
@@ -38,6 +39,7 @@ public class RequestData extends DataClass<RequestData> {
     public Cookies cookies = new Cookies();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
     public ProxySpecification proxySpecification = null;
+    public AuthenticationScheme authenticationScheme = null;
 
     /**
      * Set request data fields based on lambda function.
@@ -150,6 +152,16 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set authentication scheme to request data
+     * This allows authentcation for requests
+     * @param authScheme authentication scheme: from restassured or custom
+     */
+
+    public void setAuth(AuthenticationScheme authScheme) {
+        authenticationScheme = authScheme;
+    }
+
+    /**
      * Set multipart parameters to request data.
      *
      * @param file  File parameter
@@ -161,9 +173,9 @@ public class RequestData extends DataClass<RequestData> {
     /**
      * Set proxy parameters to request data.
      *
-     * @param scheme
-     * @param host
-     * @param port
+     * @param scheme scheme
+     * @param host host
+     * @param port port
      */
     public void setProxySpecification(String scheme, String host, int port) {
         this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
@@ -185,6 +197,7 @@ public class RequestData extends DataClass<RequestData> {
         empty = true;
         multiPartSpecifications.clear();
         proxySpecification = null;
+        authenticationScheme = null;
     }
 
     /**

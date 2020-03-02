@@ -1,4 +1,3 @@
-@smoke
 Feature: Request headers check
 
   Scenario: Pass headers and check response

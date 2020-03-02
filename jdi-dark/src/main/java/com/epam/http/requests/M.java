@@ -5,6 +5,6 @@ package com.epam.http.requests;
  * Email: roman.iovlev.jdi@gmail.com; Skype: roman.iovlev
  */
 
-public class M<T> extends RestMethod<T> {
+public class M<T> extends RestMethod {
 
 }

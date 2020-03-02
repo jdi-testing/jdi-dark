@@ -100,7 +100,7 @@ public class JettyService {
     public static RestMethod putCookie;
 
     @POST("/reflect")
-    public static RestMethod<Hello> postReflect;
+    public static RestMethod postReflect;
 
     public static RestResponse postEmptyCookie(String name) {
         return postReflect.call(requestData(requestData -> requestData.addCookie(name)));
@@ -200,23 +200,23 @@ public class JettyService {
     public static RestMethod headerPost;
 
     @GET("/hello")
-    public static RestMethod<Hello> getHello;
+    public static RestMethod getHello;
 
     @QueryParameters({
             @QueryParameter(name = "firstName", value = "John"),
             @QueryParameter(name = "lastName", value = "Doe")
     })
     @GET("/greetXML")
-    public static RestMethod<Greeting> getGreetXml;
+    public static RestMethod getGreetXml;
 
     @GET("/mimeTypeWithPlusJson")
-    public static RestMethod<Message> getMimeType;
+    public static RestMethod getMimeType;
 
     @GET("/shopping")
     public static RestMethod getShopping;
 
     @GET("/products")
-    public static RestMethod<Product[]> getProducts;
+    public static RestMethod getProducts;
 
     public static List<Product> getProducts() {
         return Arrays.asList(getProducts.callAsData(Product[].class));
@@ -296,7 +296,7 @@ public class JettyService {
 
     @POST("/reflect")
     @ContentType(JSON)
-    public static RestMethod<Hello> postObject;
+    public static RestMethod postObject;
 
     @GET("/redirect")
     @Header(name = "Redirect_test_header", value = "Redirect_test_header_value")

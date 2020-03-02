@@ -30,11 +30,11 @@ public class TrelloService {
 
     @ContentType(JSON)
     @GET(BOARDS)
-    public static RestMethod<Board> boardsGet;
+    public static RestMethod boardsGet;
 
     @ContentType(JSON)
     @POST(BOARDS)
-    public static RestMethod<Board> boardsPost;
+    public static RestMethod boardsPost;
 
     public static Board createBoard(Board board) {
         return boardsPost.post(board, Board.class);
@@ -42,7 +42,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @GET("/boards/{board_id}")
-    public static RestMethod<Board> getBoardById;
+    public static RestMethod getBoardById;
 
     public static Board getBoard(String boardId) {
         return getBoardById.call(requestPathParams("board_id", boardId)).getRaResponse().as(Board.class);
@@ -66,7 +66,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST("/cards")
-    public static RestMethod<Card> addNewCardToBoard;
+    public static RestMethod addNewCardToBoard;
 
     public static Card addNewCardToBoard(Card card) {
         return addNewCardToBoard.post(card, Card.class);
@@ -74,7 +74,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @GET("/cards/{id}/board")
-    public static RestMethod<Board> getCardBoard;
+    public static RestMethod getCardBoard;
 
     public static Board getCardBoard(String cardId) {
         return getCardBoard.call(requestPathParams("id", cardId)).getRaResponse().as(Board.class);
@@ -86,7 +86,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST("/lists")
-    public static RestMethod<TrelloList> createList;
+    public static RestMethod createList;
 
     public static TrelloList createList(TrelloList list) {
         return createList.post(list, TrelloList.class);
@@ -103,7 +103,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST("/organizations")
-    public static RestMethod<Organization> createOrganization;
+    public static RestMethod createOrganization;
 
     public static Organization createOrganization(Organization organization) {
         return createOrganization.post(organization, Organization.class);
@@ -111,7 +111,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @GET("/organizations/{id}/boards")
-    public static RestMethod<Board[]> getOrganizationBoards;
+    public static RestMethod getOrganizationBoards;
 
     public static List<Board> getOrganizationBoards(Organization organization) {
         return Arrays.asList(getOrganizationBoards.call(requestPathParams("id", organization.getId())).getRaResponse().as(Board[].class));

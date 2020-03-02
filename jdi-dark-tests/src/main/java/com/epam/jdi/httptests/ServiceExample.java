@@ -26,7 +26,7 @@ public class ServiceExample {
         @Header(name = "Name", value = "Roman"),
         @Header(name = "Id", value = "Test")
     })
-    static RestMethod<Info> getInfo;
+    static RestMethod getInfo;
 
     public static Info getInfo() {
         return getInfo.callAsData(Info.class);

@@ -45,7 +45,7 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
-public class RestMethod<T> {
+public class RestMethod {
 
     private RequestSpecification spec = given();
     private String url = null;
@@ -413,7 +413,7 @@ public class RestMethod<T> {
      * @param c class to make mapping response body to object
      * @return Java object
      */
-    public T callAsData(Class<T> c) {
+    public <T> T callAsData(Class<T> c) {
         if (objectMapper == null) {
             return call().getRaResponse().body().as(c);
         } else {
@@ -520,7 +520,7 @@ public class RestMethod<T> {
      * @param c    type of response body
      * @return response body as object
      */
-    public T post(Object body, Class<T> c) {
+    public <T> T post(Object body, Class<T> c) {
         return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
     }
 

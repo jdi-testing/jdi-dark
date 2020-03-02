@@ -23,6 +23,7 @@ import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import java.util.*;
 
 import static com.epam.http.requests.RequestData.requestData;
+import static com.epam.http.requests.RequestData.requestPathParams;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
@@ -253,8 +254,28 @@ public class JettyService {
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;
 
+    public static RestResponse getUserPathParamsSetByArray(Object[][] array) {
+        return getUser
+                .call(requestPathParams(array));
+    }
+
+    public static RestResponse getUserPathParamsSetByMap(Map<String, String> params) {
+        return getUser
+                .call(requestData(d -> d.pathParams.addAll(params)));
+    }
+
+    public static void getUserPassPathParamsSetByArray(Object[][] array) {
+        getUser
+                .call(requestPathParams(array));
+    }
+
     @GET("/{firstName}/{firstName}")
     public static RestMethod getUserSameParameters;
+
+    public static RestResponse getUserSameParametersSetByArray(Object[][] array) {
+        return getUserSameParameters
+                .call(requestPathParams(array));
+    }
 
     @GET("/{firstName}/{middleName}/{lastName}")
     public static RestMethod getUserWithLastName;
@@ -263,17 +284,34 @@ public class JettyService {
     @GET("/search?q={query}&hl=en")
     public static RestMethod searchGoogle;
 
+    public static RestResponse searchGoogleSpecificParam(String param) {
+        return searchGoogle.call(param);
+    }
+
     @GET("/{channelName}/item-import/rss/import?source={url}")
     public static RestMethod getMixedparam;
 
     @GET("/{path}.json")
     public static RestMethod getParamBeforePath;
 
+    public static RestResponse getNamedParamBeforePath(String paramName, String paramValue) {
+        return getParamBeforePath.call(requestPathParams(paramName, paramValue));
+    }
+
     @GET("/something.{format}")
     public static RestMethod getParamAfterPath;
 
+    public static RestResponse getNamedParamAfterPath(String paramName, String paramValue) {
+        return getParamAfterPath.call(requestPathParams(paramName, paramValue));
+    }
+
     @GET("/matrix;{abcde}={value}")
     public static RestMethod getMatrix;
+
+    public static RestResponse getMatrixPathParamsSetByArray(Object[][] array) {
+        return getMatrix
+                .call(requestPathParams(array));
+    }
 
     @GET("/cookie_with_no_value")
     @Cookie(name = "some_cookie")

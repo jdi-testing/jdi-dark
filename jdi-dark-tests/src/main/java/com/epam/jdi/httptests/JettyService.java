@@ -21,10 +21,14 @@ import com.epam.http.response.RestResponse;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
+import static com.epam.http.requests.RequestData.requestBody;
 import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.RequestData.requestPathParams;
+import static com.epam.http.requests.RequestData.requestQueryParams;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
@@ -102,6 +106,10 @@ public class JettyService {
     @POST("/reflect")
     public static RestMethod<Hello> postReflect;
 
+    public static RestResponse postReflectWithBody(Object body) {
+        return postReflect.call(requestBody(body));
+    }
+
     public static RestResponse postEmptyCookie(String name) {
         return postReflect.call(requestData(requestData -> requestData.addCookie(name)));
     }
@@ -168,18 +176,34 @@ public class JettyService {
     @POST("/jsonBody")
     public static RestMethod jsonBodyPost;
 
+    public static RestResponse jsonBodyPost(String body) {
+        return jsonBodyPost.call(requestBody(body));
+    }
+
     @POST("/secured/hello")
     public static RestMethod unauthorizedPost;
 
     @POST("/cookie")
     public static RestMethod cookiePost;
 
+    public static RestResponse cookiePost(String name, String value, Object... cookieNameValuePairs) {
+        return cookiePost.call(requestData(requestData -> requestData.addCookies(name, value, cookieNameValuePairs)));
+    }
+
     @POST("/param-reflect")
     public static RestMethod paramUrlPost;
+
+    public static RestResponse paramUrlPostWithKeyValueQueryParam(String formParamKey, String formParamValue) {
+        return paramUrlPost.call(requestQueryParams(formParamKey, formParamValue));
+    }
 
     @ContentType(TEXT)
     @POST("/body")
     public static RestMethod bodyPost;
+
+    public static RestResponse bodyPost(Object body) {
+        return postReflect.call(requestBody(body));
+    }
 
     @POST("/greet")
     public static RestMethod greetPost;
@@ -190,6 +214,14 @@ public class JettyService {
             rd.setContentType(contentType);
             rd.formParams.addAll(formParamsMap);
         }));
+    }
+
+    public static RestResponse greetPostWithStringOfQueryParams(String queryParams) {
+        return greetPost.call(queryParams);
+    }
+
+    public static RestResponse greetPost(Object[][] queryParams) {
+        return greetPost.call(requestQueryParams(queryParams));
     }
 
     @POST("/notexist")
@@ -431,6 +463,13 @@ public class JettyService {
 
     @POST("/jsonBodyAcceptHeader")
     public static RestMethod postJsonBodyAcceptHeader;
+
+    public static RestResponse postJsonBodyAcceptHeader(String headerName, String headerValue, String body) {
+        return postJsonBodyAcceptHeader.call(requestData(d -> {
+            d.addHeader(headerName, headerValue);
+            d.body = body;
+        }));
+    }
 
     @GET("/greetJSON")
     @Proxy(host = "127.0.0.1", port = 8888, scheme = "http")

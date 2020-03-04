@@ -4,6 +4,7 @@ import com.epam.jdi.httptests.support.WithJetty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
@@ -37,8 +38,8 @@ public class ObjectMappingForWholeProjectTests extends WithJetty {
     @Test(priority = 0)
     public void mapResponseToObjectXml() {
         Greeting greetingObject = JettyService.getGreetXml.callAsData(Greeting.class);
-        assertThat(greetingObject.getFirstName(), equalTo("John"));
-        assertThat(greetingObject.getLastName(), equalTo("Doe"));
+        assertThat(greetingObject.firstName, equalTo("John"));
+        assertThat(greetingObject.lastName, equalTo("Doe"));
     }
 
     @Test
@@ -56,8 +57,9 @@ public class ObjectMappingForWholeProjectTests extends WithJetty {
     @Test
     public void sendObjectToRequest() {
         final Hello object = new Hello();
-        object.setHello("Hello world");
+        object.hello = "Hello world";
+        new RequestSpecBuilder().build().body(object);
         Hello response = JettyService.postObject.post(object, Hello.class);
-        Assert.assertEquals(response.getHello(), "Hello world", "Response is incorrect");
+        Assert.assertEquals(response.hello, "Hello world", "Response is incorrect");
     }
 }

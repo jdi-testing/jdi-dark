@@ -229,6 +229,9 @@ public class RestResponse {
     public ValidatableResponse assertThat() {
         return raResponse.then();
     }
+    public <T> T asData(Class<T> cl) {
+        return getRaResponse().as(cl);
+    }
 
     /**
      * Verify the status of response.

@@ -20,8 +20,7 @@ public class RestRequest {
     public static RestResponse doRequest(
             RestMethodTypes methodType, RequestSpecification spec) {
         Response response;
-        long time;
-        time = currentTimeMillis();
+        long time = currentTimeMillis();
         response = methodType.method.apply(spec);
         time = currentTimeMillis() - time;
         RestResponse resp = new RestResponse(response, time);

@@ -14,8 +14,8 @@ import java.io.Reader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.epam.http.requests.RequestData.requestBody;
-import static com.epam.http.requests.RequestData.requestPathParams;
+import static com.epam.http.requests.RequestDataInfo.requestBody;
+import static com.epam.http.requests.RequestDataInfo.requestPathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloService.boardsPost;
 import static java.lang.String.format;
@@ -70,8 +70,8 @@ public class TestsWithPreconditions {
     @Test (dataProvider = "dataProviderFromCSV")
     public void getBoardTest(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
         Board gotBoard = TrelloService.getBoard(boardId);
-        Assert.assertEquals(gotBoard.getName(), expectedName, "Actual Board Name doesn't correspond expected");
-        Assert.assertEquals(gotBoard.getShortUrl(), expectedShortUrl, "Actual Board ShortUrl doesn't correspond expected");
-        Assert.assertEquals(gotBoard.getUrl(), expectedUrl, "Actual Board URL doesn't correspond expected");
+        Assert.assertEquals(gotBoard.name, expectedName, "Actual Board Name doesn't correspond expected");
+        Assert.assertEquals(gotBoard.shortUrl, expectedShortUrl, "Actual Board ShortUrl doesn't correspond expected");
+        Assert.assertEquals(gotBoard.url, expectedUrl, "Actual Board URL doesn't correspond expected");
     }
 }

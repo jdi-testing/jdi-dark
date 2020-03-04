@@ -11,18 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getMatrixPathParamsSetByArray;
-import static com.epam.jdi.httptests.JettyService.getMixedparam;
-import static com.epam.jdi.httptests.JettyService.getParamAfterPath;
-import static com.epam.jdi.httptests.JettyService.getNamedParamAfterPath;
-import static com.epam.jdi.httptests.JettyService.getParamBeforePath;
-import static com.epam.jdi.httptests.JettyService.getUser;
-import static com.epam.jdi.httptests.JettyService.getUserSameParametersSetByArray;
-import static com.epam.jdi.httptests.JettyService.searchGoogleSpecificParam;
-import static com.epam.jdi.httptests.JettyService.getUserPassPathParamsSetByArray;
-import static com.epam.jdi.httptests.JettyService.getNamedParamBeforePath;
-import static com.epam.jdi.httptests.JettyService.getUserPathParamsSetByArray;
-import static com.epam.jdi.httptests.JettyService.getUserPathParamsSetByMap;
+import static com.epam.jdi.httptests.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 
 public class PathParamTests extends WithJetty {

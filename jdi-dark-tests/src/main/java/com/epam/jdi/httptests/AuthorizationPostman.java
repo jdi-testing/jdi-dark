@@ -7,7 +7,7 @@ import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.authentication.AuthenticationScheme;
 
-import static com.epam.http.requests.RequestData.requestData;
+import static com.epam.http.requests.RequestDataInfo.auth;
 import static io.restassured.http.ContentType.JSON;
 
 @ServiceDomain("https://postman-echo.com/")
@@ -22,7 +22,7 @@ public class AuthorizationPostman {
     }
 
     public static RestResponse callPostmanAuthBasic(AuthenticationScheme authenticationScheme) {
-        return postmanAuthBasic.call(requestData(requestData -> requestData.setAuth(authenticationScheme)));
+        return postmanAuthBasic.call(auth(authenticationScheme));
     }
 
     @ContentType(JSON)
@@ -34,7 +34,7 @@ public class AuthorizationPostman {
     }
 
     public static RestResponse callPostmanCustomAuth(AuthenticationScheme authenticationScheme) {
-        return postmanAuthCustom.call(requestData(requestData -> requestData.setAuth(authenticationScheme)));
+        return postmanAuthCustom.call(auth(authenticationScheme));
     }
 
     @ContentType(JSON)
@@ -42,6 +42,6 @@ public class AuthorizationPostman {
     public static RestMethod postmanAuthDigest;
 
     public static RestResponse callPostmanDigestAuth(AuthenticationScheme authenticationScheme) {
-        return postmanAuthCustom.call(requestData(requestData -> requestData.setAuth(authenticationScheme)));
+        return postmanAuthCustom.call(auth(authenticationScheme));
     }
 }

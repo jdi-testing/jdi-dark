@@ -11,10 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 /**
  * This class is using for param cases for JettyService
@@ -36,9 +33,9 @@ public class ParamTest extends WithJetty {
     @Test
     public void noValueParamWhenUsingQueryParamWithGetRequest() {
         JettyService.getNoValueParamWithKeyValueQueryParam(PARAM_NAME, StringUtils.EMPTY)
-                .isOk()
-                .assertThat()
-                .body(equalTo("Params: some="));
+            .isOk()
+            .assertThat()
+            .body(equalTo("Params: some="));
     }
 
     @Test
@@ -60,9 +57,9 @@ public class ParamTest extends WithJetty {
         queryParamsMap.put(LAST_NAME, LAST_NAME_VALUE);
 
         JettyService.getGreetWithMapOfQueryParams(queryParamsMap)
-                .isOk()
-                .assertThat()
-                .body("greeting", equalTo("Greetings  Doe"));
+            .isOk()
+            .assertThat()
+            .body("greeting", equalTo("Greetings  Doe"));
     }
 
     @Test

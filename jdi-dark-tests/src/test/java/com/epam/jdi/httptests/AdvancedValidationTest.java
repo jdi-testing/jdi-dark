@@ -5,12 +5,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.*;
 
 /**
  * This class is using for advanced validation cases for JettyService
@@ -26,19 +21,19 @@ public class AdvancedValidationTest extends WithJetty {
     @Test
     public void groceriesContainsChocolateAndCoffee() {
         JettyService.getShopping.call().isOk().assertThat()
-                .body("shopping.category.find { it.@type == 'groceries' }", hasItems("Chocolate", "Coffee"));
+            .body("shopping.category.find { it.@type == 'groceries' }", hasItems("Chocolate", "Coffee"));
     }
 
     @Test
     public void groceriesContainsChocolateAndCoffeeUsingDoubleStarNotation() {
         JettyService.getShopping.call().isOk().assertThat()
-                .body("**.find { it.@type == 'groceries' }", hasItems("Chocolate", "Coffee"));
+            .body("**.find { it.@type == 'groceries' }", hasItems("Chocolate", "Coffee"));
     }
 
     @Test
     public void advancedJsonValidation() {
         JettyService.getJsonStore.call().isOk().assertThat()
-                .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
+            .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
                 rootPath("store.book").
                 body("findAll { book -> book.price < 10 }.title", hasItems("Sayings of the Century", "Moby Dick")).
                 body("author.collect { it.length() }.sum()", equalTo(53));
@@ -47,7 +42,7 @@ public class AdvancedValidationTest extends WithJetty {
     @Test
     public void advancedJsonValidation2() {
         JettyService.getJsonStore.call().isOk().assertThat()
-                .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
+            .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
                 rootPath("store.book").
                 body("findAll { book -> book.price < 10 }.title", hasItems("Sayings of the Century", "Moby Dick")).
                 body("price.min()", equalTo(8.95f)).
@@ -60,9 +55,9 @@ public class AdvancedValidationTest extends WithJetty {
     @Test
     public void products() {
         JettyService.getProducts.call().isOk().assertThat()
-                .body("price.sum()", is(38.0d))
-                .body("dimensions.width.min()", is(1.0f))
-                .body("name.collect { it.length() }.max()", is(16))
-                .body("dimensions.multiply(2).height.sum()", is(21.0));
+            .body("price.sum()", is(38.0d))
+            .body("dimensions.width.min()", is(1.0f))
+            .body("name.collect { it.length() }.max()", is(16))
+            .body("dimensions.multiply(2).height.sum()", is(21.0));
     }
 }

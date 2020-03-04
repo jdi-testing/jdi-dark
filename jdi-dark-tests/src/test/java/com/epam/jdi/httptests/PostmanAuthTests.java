@@ -14,13 +14,9 @@ import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.epam.http.requests.RequestData.requestData;
+import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.PostmanAuth.authBase;
-import static com.epam.jdi.httptests.PostmanAuth.authBaseForm;
-import static com.epam.jdi.httptests.PostmanAuth.authDigest;
-import static com.epam.jdi.httptests.PostmanAuth.authHawk;
-import static com.epam.jdi.httptests.PostmanAuth.oauth;
+import static com.epam.jdi.httptests.PostmanAuth.*;
 import static com.wealdtech.hawk.Hawk.calculateMAC;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
@@ -80,9 +76,9 @@ public class PostmanAuthTests {
     @Test
     public void authDigestFailTest() {
         RestResponse resp = authDigest.call(requestData(rd ->
-                rd.addHeaders(new Object[][]{
-                        {"Authorization", "Digest username=\"postman\", realm=\"Users\", nonce=\"ni1LiL0O37PRRhofWdCLmwFsnEtH1lew\", uri=\"/digest-auth\", response=\"254679099562cf07df9b6f5d8d15db45\", opaque=\"\""}
-                })));
+            rd.addHeaders(new Object[][]{
+                    {"Authorization", "Digest username=\"postman\", realm=\"Users\", nonce=\"ni1LiL0O37PRRhofWdCLmwFsnEtH1lew\", uri=\"/digest-auth\", response=\"254679099562cf07df9b6f5d8d15db45\", opaque=\"\""}
+            })));
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }

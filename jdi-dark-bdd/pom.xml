@@ -6,8 +6,8 @@
 
     <groupId>com.epam.jdi</groupId>
     <artifactId>jdi-dark-bdd</artifactId>
-    <name>EPAM JDI HTTP Cucumber</name>
-    <version>1.0.1</version>
+    <name>JDI Dark BDD</name>
+    <version>1.0.2</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>

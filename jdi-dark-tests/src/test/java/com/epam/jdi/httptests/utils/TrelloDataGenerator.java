@@ -10,31 +10,28 @@ import java.util.Random;
 public class TrelloDataGenerator {
 
     public static Board generateBoard() {
-        Board board = new Board();
-        board.setName("JDI Test Board number " + new Random().nextInt(Integer.MAX_VALUE));
-        return board;
+        return new Board().set(b -> b.name = "JDI Test Board number " + new Random().nextInt(Integer.MAX_VALUE));
     }
 
     public static TrelloList generateList(Board board) {
-        TrelloList tList = new TrelloList();
-        tList.setName("JDI Test List number " + new Random().nextInt(Integer.MAX_VALUE));
-        tList.setIdBoard(board.getId());
-        return tList;
+        return new TrelloList().set(tList -> {
+            tList.name = "JDI Test List number " + new Random().nextInt(Integer.MAX_VALUE);
+            tList.idBoard = board.id;
+        });
     }
 
     public static Card generateCard(Board board, TrelloList tList) {
-        Card card = new Card();
-        card.setName("JDI Test Card number " + new Random().nextInt(Integer.MAX_VALUE));
-        card.setIdBoard(board.getId());
-        card.setIdList(tList.getId());
-        return card;
+        return new Card().set(c -> {
+            c.name = "JDI Test Card number " + new Random().nextInt(Integer.MAX_VALUE);
+            c.idBoard = board.id;
+            c.idList = tList.id;
+        });
     }
 
     public static Organization generateOrganization() {
-        Organization organization = new Organization();
-        organization.setName("JDI Org " + new Random().nextInt(Integer.MAX_VALUE));
-        organization.setDisplayName(organization.getName());
-        return organization;
+        return new Organization().set(o -> {
+            o.name = "JDI Org " + new Random().nextInt(Integer.MAX_VALUE);
+            o.displayName = o.name;
+        });
     }
-
 }

@@ -15,9 +15,7 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getJsonStore;
-import static com.epam.jdi.httptests.JettyService.getRedirect;
-import static com.epam.jdi.httptests.JettyService.postReflect;
+import static com.epam.jdi.httptests.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
@@ -31,8 +29,8 @@ public class ConfigITest extends WithJetty {
     @Test
     public void configCanBeSetPerRequest() {
         RequestSpecification rs = getRedirect.getInitSpec()
-                .config(RestAssuredConfig.newConfig()
-                        .redirect(RedirectConfig.redirectConfig().followRedirects(false))).param("url", "/hello");
+            .config(RestAssuredConfig.newConfig()
+                    .redirect(RedirectConfig.redirectConfig().followRedirects(false))).param("url", "/hello");
         RestResponse response = getRedirect.call(rs);
         response.assertThat()
                 .statusCode(302)
@@ -44,24 +42,24 @@ public class ConfigITest extends WithJetty {
     public void supportsSpecifyingDefaultContentCharset() {
         String body = "Something {\\\\+$%???";
         RequestSpecification rs = postReflect.getInitSpec()
-                .config(RestAssuredConfig.newConfig()
-                        .encoderConfig(EncoderConfig.encoderConfig()
-                                .defaultContentCharset("US-ASCII")));
+            .config(RestAssuredConfig.newConfig()
+                    .encoderConfig(EncoderConfig.encoderConfig()
+                            .defaultContentCharset("US-ASCII")));
         postReflect.setContentType(ContentType.TEXT);
         RestResponse resp = postReflect.call(rs.body(body));
         resp.isOk().assertThat()
-                .header("Content-Type", is("text/plain; charset=US-ASCII"))
-                .body(equalTo(body));
+            .header("Content-Type", is("text/plain; charset=US-ASCII"))
+            .body(equalTo(body));
     }
 
     @Test
     public void supportsConfiguringJsonConfigProperties() {
         RestResponse resp = getJsonStore.call(RestAssuredConfig.newConfig().
-                jsonConfig(JsonConfig.jsonConfig().
-                        numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)));
+            jsonConfig(JsonConfig.jsonConfig().
+                    numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)));
         resp.isOk()
-                .rootPath("store.book")
-                .body("price.min()", is(new BigDecimal("8.95")))
-                .body("price.max()", is(new BigDecimal("22.99")));
+            .rootPath("store.book")
+            .body("price.min()", is(new BigDecimal("8.95")))
+            .body("price.max()", is(new BigDecimal("22.99")));
     }
 }

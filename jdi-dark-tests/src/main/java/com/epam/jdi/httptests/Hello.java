@@ -1,22 +1,7 @@
 package com.epam.jdi.httptests;
 
-public class Hello {
-    private String hello;
-    private String goodbye;
+import com.epam.jdi.tools.DataClass;
 
-    public String getHello() {
-        return hello;
-    }
-
-    public void setHello(String hello) {
-        this.hello = hello;
-    }
-
-    public void setGoodbye(String goodbye) {
-        this.goodbye = goodbye;
-    }
-
-    public String getGoodbye() {
-        return goodbye;
-    }
+public class Hello  extends DataClass<Hello> {
+    public String hello, goodbye;
 }

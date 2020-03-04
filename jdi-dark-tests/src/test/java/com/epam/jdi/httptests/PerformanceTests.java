@@ -9,7 +9,7 @@ import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.ServiceExample.getInfo;
 
 
-public class PerformanceTests {
+class PerformanceTests {
 
     @Test
     public void isAliveTest() {
@@ -20,7 +20,7 @@ public class PerformanceTests {
     public void printTest() {
         init(ServiceExample.class);
         PerformanceResult pr = loadService(5, getInfo);
-        Assert.assertTrue(pr.NoFails(), "Number of fails: " + pr.NumberOfFails);
+        Assert.assertTrue(pr.noFails(), "Number of fails: " + pr.NumberOfFails);
         System.out.println("Average time: " + pr.AverageResponseTime + "ms");
         System.out.println("Requests amount: " + pr.NumberOfRequests);
     }

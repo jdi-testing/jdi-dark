@@ -7,6 +7,7 @@ import com.epam.http.requests.updaters.*;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
+import com.epam.jdi.tools.func.JAction2;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
@@ -18,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -30,6 +32,7 @@ import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOfRange;
+import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
@@ -196,8 +199,8 @@ public class RestMethod {
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
-
-    private void logRequest(RequestData... rds) {
+    public static JAction2<RestMethod, List<RequestData>> LOG_REQUEST = RestMethod::logRequest;
+    public void logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
             maps.addAll(rd.fields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
@@ -221,7 +224,7 @@ public class RestMethod {
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
-        logRequest(data, userData);
+        LOG_REQUEST.execute(this, asList(data, userData));
         userData.clear();
         RestResponse response = doRequest(type, runSpec);
         handleResponse(response);
@@ -246,7 +249,7 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
-        logRequest(data);
+        LOG_REQUEST.execute(this, singletonList(data));
         return doRequest(type, runSpec);
     }
 
@@ -261,7 +264,7 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
-        logRequest(data);
+        LOG_REQUEST.execute(this, singletonList(data));
         return doRequest(type, runSpec);
     }
 

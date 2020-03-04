@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.requests.RestMethodTypes.*;
 import static com.epam.jdi.tools.LinqUtils.where;
+import static com.epam.jdi.tools.ReflectionUtils.isClass;
 import static java.lang.reflect.Modifier.isStatic;
 
 /**
@@ -78,7 +79,7 @@ public class ServiceInit {
     public static <T> T init(Class<T> c, ServiceSettings serviceSettings) {
         preInit();
         List<Field> methods = where(c.getDeclaredFields(),
-                f -> f.getType().equals(RestMethod.class));
+                f -> isClass(f.getType(), RestMethod.class));
         for (Field method : methods) {
             try {
                 method.setAccessible(true);

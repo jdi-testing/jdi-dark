@@ -1,7 +1,10 @@
 package com.epam.http.response;
 
 import com.epam.http.logger.AllureLogger;
+import com.epam.http.requests.RequestData;
+import com.epam.http.requests.RestMethod;
 import com.epam.jdi.tools.func.JAction1;
+import com.epam.jdi.tools.func.JAction2;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.http.Header;
@@ -49,6 +52,9 @@ public class RestResponse {
         body = raResponse.body().asString();
         status = new ResponseStatus(raResponse);
         contentType = raResponse.contentType();
+    }
+    public static JAction1<RestResponse> LOG_RESPONSE = restResponse -> restResponse.logResponse();
+    public void logResponse() {
         logger.info(toString());
         AllureLogger.passStep(toString());
     }

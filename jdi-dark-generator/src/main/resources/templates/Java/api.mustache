@@ -2,7 +2,8 @@
 package {{package}};
 
 import com.epam.http.annotations.ServiceDomain;
-import com.epam.http.annotations.ContentType;
+import com.epam.http.requests.RestMethod;
+import com.epam.http.response.RestResponse;
 
 {{#imports}}import {{import}};
 {{/imports}}
@@ -11,8 +12,8 @@ import com.epam.http.annotations.ContentType;
 {{#operations}}
 @ServiceDomain(${domain})
 public class {{classname}} {
-
   {{#operation}}
+
   /**
    * {{summary}}
    * {{notes}}
@@ -26,25 +27,34 @@ public class {{classname}} {
    {{#isDeprecated}}
    * @deprecated
    {{/isDeprecated}}
-   */
-
+  */
+  {{#consumes}}
   {{#isDeprecated}}
   @Deprecated
   {{/isDeprecated}}
-  {{#produces}}@ContentType("{{mediaType}}"){{/produces}}
+  @ContentType({{enumMedia}})
   {{#queryParams}}
-  @QueryParameters({
-          @QueryParameter(name = "firstName", value = "John"),
-          @QueryParameter(name = "lastName", value = "Doe")
-  })
+  @QueryParameter(name = "{{paramName}}", value = {{{example}}})
   {{/queryParams}}
   {{#formParams}}
-  @FormParameters(
-          @FormParameter(name = "some1", value = "one")
-  )
+  @FormParameter(name = "{{paramName}}", value = {{{example}}})
   {{/formParams}}
   @{{httpMethod}}("{{path}}")
-  public static RestMethod {{operationId}};
+  public static RestMethod{{#returnType}}<{{returnType}}>{{/returnType}} {{operationId}}{{enumMedia}};
+  {{/consumes}}
+  {{^hasConsumes}}
+  {{#isDeprecated}}
+  @Deprecated
+  {{/isDeprecated}}
+  {{#queryParams}}
+  @QueryParameter(name = "{{paramName}}", value = {{{example}}})
+  {{/queryParams}}
+  {{#formParams}}
+  @FormParameter(name = "{{paramName}}", value = {{{example}}})
+  {{/formParams}}
+  @{{httpMethod}}("{{path}}")
+  public static RestMethod{{#returnType}}<{{{returnType}}}>{{/returnType}} {{operationId}}{{enumMedia}};
+  {{/hasConsumes}}
   {{/operation}}
 }
 {{/operations}}

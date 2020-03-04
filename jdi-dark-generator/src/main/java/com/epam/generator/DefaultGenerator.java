@@ -17,6 +17,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.samskivert.mustache.Mustache.Compiler;
 
+import  io.restassured.http.ContentType;
+
 import io.swagger.models.ArrayModel;
 import io.swagger.models.ComposedModel;
 import io.swagger.models.Model;
@@ -2028,6 +2030,15 @@ public class DefaultGenerator {
         return fromOperation(path, httpMethod, operation, definitions, null);
     }
 
+    private ContentType toEnumMedia(String type) {
+        for (ContentType contentType : ContentType.values()) {
+            if (contentType.equals(ContentType.fromContentType(type))) {
+                return contentType;
+            }
+        }
+        return ContentType.ANY;
+    }
+
     /**
      * Convert Swagger Operation object to Codegen Operation object
      *
@@ -2092,16 +2103,14 @@ public class DefaultGenerator {
                 } else {
                     mediaType.put("mediaType", escapeText(escapeQuotationMark(key)));
                 }
-                count += 1;
-                if (count < consumes.size()) {
-                    mediaType.put("hasMore", "true");
-                } else {
-                    mediaType.put("hasMore", null);
-                }
+                ContentType enumMediaType = toEnumMedia(key);
+                mediaType.put("enumMedia", enumMediaType.name());
+                imports.add(enumMediaType.name());
                 c.add(mediaType);
             }
             op.consumes = c;
             op.hasConsumes = true;
+            imports.add("ContentType");
         }
 
         List<String> produces = new ArrayList<String>();
@@ -2252,21 +2261,23 @@ public class DefaultGenerator {
                 }
 
                 allParams.add(p);
-                // Issue #2561 (neilotoole) : Moved setting of is<Type>Param flags
-                // from here to fromParameter().
                 if (param instanceof QueryParameter) {
                     queryParams.add(p.copy());
+                    imports.add("QueryParameter");
                 } else if (param instanceof PathParameter) {
                     pathParams.add(p.copy());
                 } else if (param instanceof HeaderParameter) {
                     headerParams.add(p.copy());
+                    imports.add("HeaderParameter");
                 } else if (param instanceof CookieParameter) {
                     cookieParams.add(p.copy());
+                    imports.add("Cookie");
                 } else if (param instanceof BodyParameter) {
                     bodyParam = p;
                     bodyParams.add(p.copy());
                 } else if (param instanceof FormParameter) {
                     formParams.add(p.copy());
+                    imports.add("FormParameter");
                 }
 
                 if (p.required) { //required parameters
@@ -3261,7 +3272,6 @@ public class DefaultGenerator {
     public String apiFilename(String templateName, String tag) {
         String suffix = apiTemplateFiles().get(templateName);
         String folder = apiFileFolder();
-        System.out.println("folder: " + folder);
         return apiFileFolder() + File.separator + toApiFilename(tag) + suffix;
     }
 

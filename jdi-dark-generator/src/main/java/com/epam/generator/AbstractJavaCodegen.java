@@ -242,10 +242,18 @@ public abstract class AbstractJavaCodegen extends DefaultGenerator implements Ge
         importMapping.put("options", "com.epam.http.annotations.OPTIONS");
         importMapping.put("head", "com.epam.http.annotations.HEAD");
         importMapping.put("patch", "com.epam.http.annotations.PATCH");
-        importMapping.put("", "com.epam.http.annotations.QueryParameters");
-        importMapping.put("", "com.epam.http.annotations.QueryParameter");
-        importMapping.put("", "com.epam.http.requests.RestMethod");
-        importMapping.put("", "io.restassured.http.ContentType.JSON");
+        importMapping.put("QueryParameter", "com.epam.http.annotations.QueryParameter");
+        importMapping.put("FormParameter", "com.epam.http.annotations.FormParameter");
+        importMapping.put("HeaderParameter", "com.epam.http.annotations.HeaderParameter");
+        importMapping.put("Cookie", "com.epam.http.annotations.Cookie");
+        importMapping.put("RestMethod", "com.epam.http.requests.RestMethod");
+        importMapping.put("JSON", "io.restassured.http.ContentType.JSON");
+        importMapping.put("ANY", "io.restassured.http.ContentType.ANY");
+        importMapping.put("BINARY", "io.restassured.http.ContentType.BINARY");
+        importMapping.put("HTML", "io.restassured.http.ContentType.HTML");
+        importMapping.put("TEXT", "io.restassured.http.ContentType.TEXT");
+        importMapping.put("URLENC", "io.restassured.http.ContentType.URLENC");
+        importMapping.put("XML", "io.restassured.http.ContentType.XML");
 
         this.sanitizeConfig();
 

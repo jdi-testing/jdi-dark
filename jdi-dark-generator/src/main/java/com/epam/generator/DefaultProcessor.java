@@ -13,6 +13,7 @@ import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.util.Json;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -20,7 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,7 +50,6 @@ public class DefaultProcessor extends AbstractProcessor {
     protected Boolean isGenerateModels = null;
     protected Boolean isGenerateSupportingFiles = null;
     protected Boolean isGenerateApiTests = null;
-    protected Boolean isGenerateTests = null;
     protected String basePath;
     protected String basePathWithoutHost;
     protected String contextPath;
@@ -118,9 +123,9 @@ public class DefaultProcessor extends AbstractProcessor {
             if(isGenerateModels == null) {
                 isGenerateModels = false;
             }
-            //if(isGenerateSupportingFiles == null) {
-            //    isGenerateSupportingFiles = false;
-            //}
+            if(isGenerateSupportingFiles == null) {
+                isGenerateSupportingFiles = false;
+            }
         }
         // model/api tests and documentation options rely on parent generate options (api or model) and no other options.
         // They default to true in all scenarios and can only be marked false explicitly
@@ -388,6 +393,96 @@ public class DefaultProcessor extends AbstractProcessor {
             Json.prettyPrint(allOperations);
         }
 
+    }
+
+    protected void generateSupportingFiles(List<File> files, Map<String, Object> bundle) {
+        if (!isGenerateSupportingFiles) {
+            return;
+        }
+        Set<String> supportingFilesToGenerate = null;
+        String supportingFiles = System.getProperty(CodegenConstants.SUPPORTING_FILES);
+        boolean generateAll = false;
+        if (supportingFiles != null && supportingFiles.equalsIgnoreCase("true")) {
+            generateAll = true;
+        } else if (supportingFiles != null && !supportingFiles.isEmpty()) {
+            supportingFilesToGenerate = new HashSet<String>(Arrays.asList(supportingFiles.split(",")));
+        }
+
+        for (SupportingFile support : config.supportingFiles()) {
+            try {
+                String outputFolder = config.outputFolder();
+                if (StringUtils.isNotEmpty(support.folder)) {
+                    outputFolder += File.separator + support.folder;
+                }
+                File of = new File(outputFolder);
+                if (!of.isDirectory()) {
+                    of.mkdirs();
+                }
+                String outputFilename = outputFolder + File.separator + support.destinationFilename.replace('/', File.separatorChar);
+                if (!config.shouldOverwrite(outputFilename)) {
+                    LOGGER.info("Skipped overwriting " + outputFilename);
+                    continue;
+                }
+                String templateFile;
+                if (support instanceof GlobalSupportingFile) {
+                    templateFile = config.getCommonTemplateDir() + File.separator + support.templateFile;
+                } else {
+                    templateFile = getFullTemplateFile(config, support.templateFile);
+                }
+                boolean shouldGenerate = true;
+                if (!generateAll && supportingFilesToGenerate != null && !supportingFilesToGenerate.isEmpty()) {
+                    shouldGenerate = supportingFilesToGenerate.contains(support.destinationFilename);
+                }
+                if (!shouldGenerate) {
+                    continue;
+                }
+
+                if (ignoreProcessor.allowsFile(new File(outputFilename))) {
+                    if (templateFile.endsWith("mustache")) {
+                        String template = readTemplate(templateFile);
+                        Mustache.Compiler compiler = Mustache.compiler();
+                        compiler = config.processCompiler(compiler);
+                        Template tmpl = compiler
+                                .withLoader(new Mustache.TemplateLoader() {
+                                    @Override
+                                    public Reader getTemplate(String name) {
+                                        return getTemplateReader(getFullTemplateFile(config, name + ".mustache"));
+                                    }
+                                })
+                                .defaultValue("")
+                                .compile(template);
+
+                        writeToFile(outputFilename, tmpl.execute(bundle));
+                        files.add(new File(outputFilename));
+                    } else {
+                        InputStream in = null;
+
+                        try {
+                            in = new FileInputStream(templateFile);
+                        } catch (Exception e) {
+                            // continue
+                        }
+                        if (in == null) {
+                            in = this.getClass().getClassLoader().getResourceAsStream(getCPResourcePath(templateFile));
+                        }
+                        File outputFile = new File(outputFilename);
+                        OutputStream out = new FileOutputStream(outputFile, false);
+                        if (in != null) {
+                            LOGGER.info("writing file " + outputFile);
+                            IOUtils.copy(in, out);
+                            out.close();
+                        } else {
+                            LOGGER.error("can't open " + templateFile + " for input");
+                        }
+                        files.add(outputFile);
+                    }
+                } else {
+                    LOGGER.info("Skipped generation of " + outputFilename + " due to rule in .swagger-codegen-ignore");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Could not generate supporting file '" + support + "'", e);
+            }
+        }
     }
 
     public List<File> generate(GeneratorOptions opts) {

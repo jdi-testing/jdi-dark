@@ -1,14 +1,9 @@
 package com.epam.http.requests;
 
-import com.epam.http.logger.AllureLogger;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.tools.func.JAction2;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import java.util.List;
-
-import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.response.RestResponse.LOG_RESPONSE;
 import static java.lang.System.currentTimeMillis;
 

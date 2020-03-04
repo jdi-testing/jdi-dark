@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;

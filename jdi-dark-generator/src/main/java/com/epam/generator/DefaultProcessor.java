@@ -112,10 +112,16 @@ public class DefaultProcessor extends AbstractProcessor {
         } else {
             isGenerateModels = System.getProperty(GeneratorConstants.MODELS) != null ? Boolean.TRUE : getGeneratorPropertyDefaultSwitch(GeneratorConstants.MODELS, null);
         }
+        String supportingFilesProperty = System.getProperty(GeneratorConstants.SUPPORTING_FILES);
+        if (((supportingFilesProperty != null) && supportingFilesProperty.equalsIgnoreCase("false"))) {
+            isGenerateSupportingFiles = false;
+        } else {
+            isGenerateSupportingFiles = supportingFilesProperty != null ? Boolean.TRUE : getGeneratorPropertyDefaultSwitch(GeneratorConstants.SUPPORTING_FILES, null);
+        }
 
         if (isGenerateApis == null && isGenerateModels == null && isGenerateSupportingFiles == null) {
             // no specifics are set, generate everything
-            isGenerateApis = isGenerateModels /*= isGenerateSupportingFiles*/ = true;
+            isGenerateApis = isGenerateModels = isGenerateSupportingFiles = true;
         } else {
             if(isGenerateApis == null) {
                 isGenerateApis = false;
@@ -127,6 +133,7 @@ public class DefaultProcessor extends AbstractProcessor {
                 isGenerateSupportingFiles = false;
             }
         }
+
         // model/api tests and documentation options rely on parent generate options (api or model) and no other options.
         // They default to true in all scenarios and can only be marked false explicitly
         isGenerateApiTests = System.getProperty(GeneratorConstants.API_TESTS) != null ? Boolean.valueOf(System.getProperty(GeneratorConstants.API_TESTS)) : getGeneratorPropertyDefaultSwitch(GeneratorConstants.API_TESTS, true);
@@ -384,6 +391,23 @@ public class DefaultProcessor extends AbstractProcessor {
                     }
                 }
 
+                if(isGenerateApiTests) {
+                    // to generate api test files
+                    for (String templateName : config.apiTestTemplateFiles().keySet()) {
+                        String filename = config.apiTestFilename(templateName, tag);
+                        // do not overwrite test file that already exists
+                        if (new File(filename).exists()) {
+                            LOGGER.info("File exists. Skipped overwriting " + filename);
+                            continue;
+                        }
+
+                        File written = processTemplateToFile(operation, templateName, filename);
+                        if (written != null) {
+                            files.add(written);
+                        }
+                    }
+                }
+
             } catch (Exception e) {
                 throw new RuntimeException("Could not generate api file for '" + tag + "'", e);
             }
@@ -400,7 +424,7 @@ public class DefaultProcessor extends AbstractProcessor {
             return;
         }
         Set<String> supportingFilesToGenerate = null;
-        String supportingFiles = System.getProperty(CodegenConstants.SUPPORTING_FILES);
+        String supportingFiles = System.getProperty(GeneratorConstants.SUPPORTING_FILES);
         boolean generateAll = false;
         if (supportingFiles != null && supportingFiles.equalsIgnoreCase("true")) {
             generateAll = true;
@@ -424,11 +448,11 @@ public class DefaultProcessor extends AbstractProcessor {
                     continue;
                 }
                 String templateFile;
-                if (support instanceof GlobalSupportingFile) {
+                /*if (support instanceof GlobalSupportingFile) {
                     templateFile = config.getCommonTemplateDir() + File.separator + support.templateFile;
-                } else {
+                } else {*/
                     templateFile = getFullTemplateFile(config, support.templateFile);
-                }
+                //}
                 boolean shouldGenerate = true;
                 if (!generateAll && supportingFilesToGenerate != null && !supportingFilesToGenerate.isEmpty()) {
                     shouldGenerate = supportingFilesToGenerate.contains(support.destinationFilename);
@@ -437,7 +461,7 @@ public class DefaultProcessor extends AbstractProcessor {
                     continue;
                 }
 
-                if (ignoreProcessor.allowsFile(new File(outputFilename))) {
+                //if (ignoreProcessor.allowsFile(new File(outputFilename))) {
                     if (templateFile.endsWith("mustache")) {
                         String template = readTemplate(templateFile);
                         Mustache.Compiler compiler = Mustache.compiler();
@@ -476,13 +500,58 @@ public class DefaultProcessor extends AbstractProcessor {
                         }
                         files.add(outputFile);
                     }
-                } else {
-                    LOGGER.info("Skipped generation of " + outputFilename + " due to rule in .swagger-codegen-ignore");
-                }
+                //} else {
+                    //LOGGER.info("Skipped generation of " + outputFilename + " due to rule in .swagger-codegen-ignore");
+                //}
             } catch (Exception e) {
                 throw new RuntimeException("Could not generate supporting file '" + support + "'", e);
             }
         }
+    }
+
+    protected Map<String, Object> buildSupportFileBundle(List<Object> allOperations, List<Object> allModels) {
+
+        Map<String, Object> bundle = new HashMap<String, Object>();
+        bundle.putAll(config.additionalProperties());
+        bundle.put("apiPackage", config.apiPackage());
+
+        Map<String, Object> apis = new HashMap<String, Object>();
+        apis.put("apis", allOperations);
+
+        if (swagger.getHost() != null) {
+            bundle.put("host", swagger.getHost());
+        }
+        bundle.put("hostWithoutBasePath", getHostWithoutBasePath());
+        bundle.put("swagger", this.swagger);
+        bundle.put("basePath", basePath);
+        bundle.put("basePathWithoutHost", basePathWithoutHost);
+        bundle.put("scheme", getScheme());
+        bundle.put("contextPath", contextPath);
+        bundle.put("apiInfo", apis);
+        bundle.put("models", allModels);
+        bundle.put("apiFolder", config.apiPackage().replace('.', File.separatorChar));
+        bundle.put("modelPackage", config.modelPackage());
+        /*List<CodegenSecurity> authMethods = config.fromSecurity(swagger.getSecurityDefinitions());
+        if (authMethods != null && !authMethods.isEmpty()) {
+            bundle.put("authMethods", authMethods);
+            bundle.put("hasAuthMethods", true);
+        }
+        if (swagger.getExternalDocs() != null) {
+            bundle.put("externalDocs", swagger.getExternalDocs());
+        }
+        for (int i = 0; i < allModels.size() - 1; i++) {
+            HashMap<String, CodegenModel> cm = (HashMap<String, CodegenModel>) allModels.get(i);
+            CodegenModel m = cm.get("model");
+            m.hasMoreModels = true;
+        }*/
+
+        config.postProcessSupportingFileData(bundle);
+
+        if (System.getProperty("debugSupportingFiles") != null) {
+            LOGGER.info("############ Supporting file info ############");
+            Json.prettyPrint(bundle);
+        }
+        return bundle;
     }
 
     public List<File> generate(GeneratorOptions opts) {
@@ -504,6 +573,9 @@ public class DefaultProcessor extends AbstractProcessor {
         // apis
         List<Object> allOperations = new ArrayList<Object>();
         generateApis(files, allOperations, allModels);
+        // supporting files
+        Map<String, Object> bundle = buildSupportFileBundle(allOperations, allModels);
+        generateSupportingFiles(files, bundle);
 
         config.processSwagger(swagger);
         return files;
@@ -699,7 +771,7 @@ public class DefaultProcessor extends AbstractProcessor {
         Set<String> allImports = new LinkedHashSet<String>();
         for (String key : definitions.keySet()) {
             Model mm = definitions.get(key);
-            if(mm.getVendorExtensions() !=  null && mm.getVendorExtensions().containsKey("x-codegen-ignore")) {
+            /*if(mm.getVendorExtensions() !=  null && mm.getVendorExtensions().containsKey("x-codegen-ignore")) {
                 // skip this model
                 LOGGER.debug("skipping model " + key);
                 return null;
@@ -708,7 +780,7 @@ public class DefaultProcessor extends AbstractProcessor {
                 String codegenImport = mm.getVendorExtensions().get("x-codegen-import-mapping").toString();
                 config.importMapping().put(key, codegenImport);
                 allImports.add(codegenImport);
-            }
+            }*/
             GeneratedModel cm = config.fromModel(key, mm, allDefinitions);
             Map<String, Object> mo = new HashMap<String, Object>();
             mo.put("model", cm);

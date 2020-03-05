@@ -65,6 +65,8 @@ public interface Generator {
 
     String getInvokerPackage();
 
+    List<SupportingFile> supportingFiles();
+
     void setInvokerPackage(String inputSpec);
 
     String getInputSpec();

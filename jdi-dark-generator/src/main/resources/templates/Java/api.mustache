@@ -3,14 +3,17 @@ package {{package}};
 
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.RestMethod;
-import com.epam.http.response.RestResponse;
 
 {{#imports}}import {{import}};
 {{/imports}}
 
-{{>generatedAnnotation}}
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 {{#operations}}
-@ServiceDomain(${domain})
+@ServiceDomain("${domain}")
 public class {{classname}} {
   {{#operation}}
 
@@ -23,7 +26,6 @@ public class {{classname}} {
    {{#returnType}}
    * @return {{returnType}}
    {{/returnType}}
-   * @throws ApiException if fails to make API call
    {{#isDeprecated}}
    * @deprecated
    {{/isDeprecated}}
@@ -33,12 +35,27 @@ public class {{classname}} {
   @Deprecated
   {{/isDeprecated}}
   @ContentType({{enumMedia}})
+  {{#queryParams.0}}
+  @QueryParameters({
   {{#queryParams}}
-  @QueryParameter(name = "{{paramName}}", value = {{{example}}})
+      @QueryParameter(name = "{{paramName}}", value = "{{testExample}}"){{^-last}},{{/-last}}
   {{/queryParams}}
+  })
+  {{/queryParams.0}}
+  {{#formParams.0}}
+  @FormParameters({
   {{#formParams}}
-  @FormParameter(name = "{{paramName}}", value = {{{example}}})
+      @FormParameter(name = "{{paramName}}", value = "{{testExample}}"){{^-last}},{{/-last}}
   {{/formParams}}
+  })
+  {{/formParams.0}}
+  {{#headerParams.0}}
+  @Headers({
+  {{#headerParams}}
+      @Header(name = "{{paramName}}", value = "{{testExample}}"){{^-last}},{{/-last}}
+  {{/headerParams}}
+  })
+  {{/headerParams.0}}
   @{{httpMethod}}("{{path}}")
   public static RestMethod{{#returnType}}<{{returnType}}>{{/returnType}} {{operationId}}{{enumMedia}};
   {{/consumes}}
@@ -46,12 +63,27 @@ public class {{classname}} {
   {{#isDeprecated}}
   @Deprecated
   {{/isDeprecated}}
+  {{#queryParams.0}}
+  @QueryParameters({
   {{#queryParams}}
-  @QueryParameter(name = "{{paramName}}", value = {{{example}}})
+      @QueryParameter(name = "{{paramName}}", value = "{{testExample}}"){{^-last}},{{/-last}}
   {{/queryParams}}
+  })
+  {{/queryParams.0}}
+  {{#formParams.0}}
+  @FormParameters({
   {{#formParams}}
-  @FormParameter(name = "{{paramName}}", value = {{{example}}})
+      @FormParameter(name = "{{paramName}}", value = "{{testExample}}"){{^-last}},{{/-last}}
   {{/formParams}}
+  })
+  {{/formParams.0}}
+  {{#headerParams.0}}
+  @Headers({
+  {{#headerParams}}
+      @Header(name = "{{paramName}}", value = "{{testExample}}"){{^-last}},{{/-last}}
+  {{/headerParams}}
+  })
+  {{/headerParams.0}}
   @{{httpMethod}}("{{path}}")
   public static RestMethod{{#returnType}}<{{{returnType}}}>{{/returnType}} {{operationId}}{{enumMedia}};
   {{/hasConsumes}}

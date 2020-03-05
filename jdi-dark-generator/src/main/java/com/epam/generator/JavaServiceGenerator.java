@@ -74,21 +74,21 @@ public class JavaServiceGenerator extends AbstractJavaCodegen
         //Common files
         writeOptional(outputFolder, new SupportingFile("pom.mustache", "", "pom.xml"));
         writeOptional(outputFolder, new SupportingFile("README.mustache", "", "README.md"));
-        writeOptional(outputFolder, new SupportingFile("build.gradle.mustache", "", "build.gradle"));
-        writeOptional(outputFolder, new SupportingFile("build.sbt.mustache", "", "build.sbt"));
-        writeOptional(outputFolder, new SupportingFile("settings.gradle.mustache", "", "settings.gradle"));
-        writeOptional(outputFolder, new SupportingFile("gradle.properties.mustache", "", "gradle.properties"));
-        writeOptional(outputFolder, new SupportingFile("manifest.mustache", projectFolder, "AndroidManifest.xml"));
-        supportingFiles.add(new SupportingFile("travis.mustache", "", ".travis.yml"));
-        supportingFiles.add(new SupportingFile("ApiClient.mustache", invokerFolder, "ApiClient.java"));
+        //writeOptional(outputFolder, new SupportingFile("build.gradle.mustache", "", "build.gradle"));
+        //writeOptional(outputFolder, new SupportingFile("build.sbt.mustache", "", "build.sbt"));
+        //writeOptional(outputFolder, new SupportingFile("settings.gradle.mustache", "", "settings.gradle"));
+        //writeOptional(outputFolder, new SupportingFile("gradle.properties.mustache", "", "gradle.properties"));
+        //writeOptional(outputFolder, new SupportingFile("manifest.mustache", projectFolder, "AndroidManifest.xml"));
+        //supportingFiles.add(new SupportingFile("travis.mustache", "", ".travis.yml"));
+        //supportingFiles.add(new SupportingFile("ApiClient.mustache", invokerFolder, "ApiClient.java"));
 
-        supportingFiles.add(new SupportingFile( "gradlew.mustache", "", "gradlew") );
-        supportingFiles.add(new SupportingFile( "gradlew.bat.mustache", "", "gradlew.bat") );
-        supportingFiles.add(new SupportingFile( "gradle-wrapper.properties.mustache",
-                gradleWrapperPackage.replace( ".", File.separator ), "gradle-wrapper.properties") );
-        supportingFiles.add(new SupportingFile( "gradle-wrapper.jar",
-                gradleWrapperPackage.replace( ".", File.separator ), "gradle-wrapper.jar") );
-        supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
+        //supportingFiles.add(new SupportingFile( "gradlew.mustache", "", "gradlew") );
+        //supportingFiles.add(new SupportingFile( "gradlew.bat.mustache", "", "gradlew.bat") );
+        //supportingFiles.add(new SupportingFile( "gradle-wrapper.properties.mustache",
+        //        gradleWrapperPackage.replace( ".", File.separator ), "gradle-wrapper.properties") );
+        //supportingFiles.add(new SupportingFile( "gradle-wrapper.jar",
+        //        gradleWrapperPackage.replace( ".", File.separator ), "gradle-wrapper.jar") );
+        //supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
     }
 
     @SuppressWarnings("unchecked")
@@ -120,52 +120,6 @@ public class JavaServiceGenerator extends AbstractJavaCodegen
     }
 
     @Override
-    public void postProcessModelProperty(GeneratedModel model, GeneratedProperty property) {
-        super.postProcessModelProperty(model, property);
-        if(!BooleanUtils.toBoolean(model.isEnum)) {
-            //final String lib = getLibrary();
-            //Needed imports for Jackson based libraries
-            if(additionalProperties.containsKey("jackson")) {
-                model.imports.add("JsonProperty");
-                model.imports.add("JsonValue");
-            }
-            if(additionalProperties.containsKey("gson")) {
-                model.imports.add("SerializedName");
-                model.imports.add("TypeAdapter");
-                model.imports.add("JsonAdapter");
-                model.imports.add("JsonReader");
-                model.imports.add("JsonWriter");
-                model.imports.add("IOException");
-            }
-        } else { // enum class
-            //Needed imports for Jackson's JsonCreator
-            if(additionalProperties.containsKey("jackson")) {
-                model.imports.add("JsonValue");
-                model.imports.add("JsonCreator");
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public Map<String, Object> postProcessAllModels(Map<String, Object> objs) {
-        Map<String, Object> allProcessedModels = super.postProcessAllModels(objs);
-        if(!additionalProperties.containsKey("gsonFactoryMethod")) {
-            List<Object> allModels = new ArrayList<Object>();
-            for (String name: allProcessedModels.keySet()) {
-                Map<String, Object> models = (Map<String, Object>)allProcessedModels.get(name);
-                try {
-                    allModels.add(((List<Object>) models.get("models")).get(0));
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            additionalProperties.put("parent", modelInheritanceSupportInGson(allModels));
-        }
-        return allProcessedModels;
-    }
-
-    @Override
     public Map<String, Object> postProcessModelsEnum(Map<String, Object> objs) {
         objs = super.postProcessModelsEnum(objs);
         //Needed import for Gson based libraries
@@ -187,34 +141,6 @@ public class JavaServiceGenerator extends AbstractJavaCodegen
         return objs;
     }
 
-    private List<Map<String, Object>> modelInheritanceSupportInGson(List<?> allModels) {
-        LinkedListMultimap<GeneratedModel, GeneratedModel> byParent = LinkedListMultimap.create();
-        for (Object m : allModels) {
-            Map entry = (Map) m;
-            GeneratedModel parent = ((GeneratedModel)entry.get("model")).parentModel;
-            if(null!= parent) {
-                byParent.put(parent, ((GeneratedModel)entry.get("model")));
-            }
-        }
-        List<Map<String, Object>> parentsList = new ArrayList<>();
-        for (GeneratedModel parentModel : byParent.keySet()) {
-            List<Map<String, Object>> childrenList = new ArrayList<>();
-            Map<String, Object> parent = new HashMap<>();
-            parent.put("classname", parentModel.classname);
-            List<GeneratedModel> childrenModels = byParent.get(parentModel);
-            for (GeneratedModel model : childrenModels) {
-                Map<String, Object> child = new HashMap<>();
-                child.put("name", model.name);
-                child.put("classname", model.classname);
-                childrenList.add(child);
-            }
-            parent.put("children", childrenList);
-            parent.put("discriminator", parentModel.discriminator);
-            parentsList.add(parent);
-        }
-        return parentsList;
-    }
-
     public void setParcelableModel(boolean parcelableModel) {
         this.parcelableModel = parcelableModel;
     }
@@ -222,8 +148,5 @@ public class JavaServiceGenerator extends AbstractJavaCodegen
     public void setUseRuntimeException(boolean useRuntimeException) {
         this.useRuntimeException = useRuntimeException;
     }
-
-    final private static Pattern JSON_MIME_PATTERN = Pattern.compile("(?i)application\\/json(;.*)?");
-    final private static Pattern JSON_VENDOR_MIME_PATTERN = Pattern.compile("(?i)application\\/vnd.(.*)+json(;.*)?");
 
 }

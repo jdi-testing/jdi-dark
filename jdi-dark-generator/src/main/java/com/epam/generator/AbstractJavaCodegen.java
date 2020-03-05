@@ -124,14 +124,6 @@ public abstract class AbstractJavaCodegen extends DefaultGenerator implements Ge
         cliOptions.add(new CliOption("hideGenerationTimestamp", "hides the timestamp when files were generated"));
         cliOptions.add(CliOption.newBoolean(WITH_XML, "whether to include support for application/xml content type and include XML annotations in the model (works with libraries that provide support for JSON and XML)"));
 
-        Map<String, String> dateOptions = new HashMap<String, String>();
-        dateOptions.put("java8", "Java 8 native JSR310 (preferred for jdk 1.8+) - note: this also sets \"" + JAVA8_MODE + "\" to true");
-        dateOptions.put("threetenbp", "Backport of JSR310 (preferred for jdk < 1.8)");
-        dateOptions.put("java8-localdatetime", "Java 8 using LocalDateTime (for legacy app only)");
-        dateOptions.put("java8-instant", "Java 8 using Instant");
-        dateOptions.put("joda", "Joda (for legacy app only)");
-        dateOptions.put("legacy", "Legacy java.util.Date (if you really have a good reason not to use threetenbp");
-
         CliOption java8Mode = new CliOption(JAVA8_MODE, "Option. Use Java8 classes instead of third party equivalents");
         Map<String, String> java8ModeOptions = new HashMap<String, String>();
         java8ModeOptions.put("true", "Use Java 8 classes such as Base64");
@@ -242,18 +234,21 @@ public abstract class AbstractJavaCodegen extends DefaultGenerator implements Ge
         importMapping.put("options", "com.epam.http.annotations.OPTIONS");
         importMapping.put("head", "com.epam.http.annotations.HEAD");
         importMapping.put("patch", "com.epam.http.annotations.PATCH");
+        importMapping.put("QueryParameters", "com.epam.http.annotations.QueryParameters");
         importMapping.put("QueryParameter", "com.epam.http.annotations.QueryParameter");
+        importMapping.put("FormParameters", "com.epam.http.annotations.FormParameters");
         importMapping.put("FormParameter", "com.epam.http.annotations.FormParameter");
-        importMapping.put("HeaderParameter", "com.epam.http.annotations.HeaderParameter");
+        importMapping.put("Headers", "com.epam.http.annotations.Headers");
+        importMapping.put("Header", "com.epam.http.annotations.Header");
         importMapping.put("Cookie", "com.epam.http.annotations.Cookie");
         importMapping.put("RestMethod", "com.epam.http.requests.RestMethod");
-        importMapping.put("JSON", "io.restassured.http.ContentType.JSON");
-        importMapping.put("ANY", "io.restassured.http.ContentType.ANY");
-        importMapping.put("BINARY", "io.restassured.http.ContentType.BINARY");
-        importMapping.put("HTML", "io.restassured.http.ContentType.HTML");
-        importMapping.put("TEXT", "io.restassured.http.ContentType.TEXT");
-        importMapping.put("URLENC", "io.restassured.http.ContentType.URLENC");
-        importMapping.put("XML", "io.restassured.http.ContentType.XML");
+        importMapping.put("JSON", "static io.restassured.http.ContentType.JSON");
+        importMapping.put("ANY", "static io.restassured.http.ContentType.ANY");
+        importMapping.put("BINARY", "static io.restassured.http.ContentType.BINARY");
+        importMapping.put("HTML", "static io.restassured.http.ContentType.HTML");
+        importMapping.put("TEXT", "static io.restassured.http.ContentType.TEXT");
+        importMapping.put("URLENC", "static io.restassured.http.ContentType.URLENC");
+        importMapping.put("XML", "static io.restassured.http.ContentType.XML");
 
         this.sanitizeConfig();
 
@@ -735,15 +730,6 @@ public abstract class AbstractJavaCodegen extends DefaultGenerator implements Ge
             codegenModel = AbstractJavaCodegen.reconcileInlineEnums(codegenModel, parentCodegenModel);
         }
         return codegenModel;
-    }
-
-    @Override
-    public void postProcessModelProperty(GeneratedModel model, GeneratedProperty property) {
-        if(!BooleanUtils.toBoolean(model.isEnum)) {
-            // needed by all pojos, but not enums
-            model.imports.add("ApiModelProperty");
-            model.imports.add("ApiModel");
-        }
     }
 
     @Override

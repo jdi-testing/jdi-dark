@@ -1,0 +1,43 @@
+{{>licenseInfo}}
+
+package {{package}};
+
+import com.epam.http.response.RestResponse;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import static com.epam.http.requests.ServiceInit.init;
+
+/**
+ * API tests for {{classname}}
+ */
+public class {{classname}}Test {
+
+    private {{classname}} service;
+
+    @BeforeClass
+    public void before() { service = init({{classname}}.class); }
+
+    {{#operations}}{{#operation}}
+    /**
+     * {{summary}}
+     * {{notes}}
+     */
+    {{#consumes}}
+    @Test
+    public void {{operationId}}{{enumMedia}}Test() {
+        RestResponse resp = {{classname}}.{{operationId}}{{enumMedia}}.call();
+        resp.isOk();
+        // TODO: test validations
+    }
+    {{/consumes}}
+    {{^consumes}}
+        @Test
+        public void {{operationId}}Test() {
+        RestResponse resp = {{classname}}.{{operationId}}.call();
+        resp.isOk();
+        // TODO: test validations
+        }
+    {{/consumes}}
+    {{/operation}}{{/operations}}
+}

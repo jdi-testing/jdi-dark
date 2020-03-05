@@ -8,6 +8,7 @@ public class GeneratorConstants {
     // NOTE: We may want to move these to a separate class to avoid confusion or modification.
     public static final String APIS = "apis";
     public static final String MODELS = "models";
+    public static final String SUPPORTING_FILES = "supportingFiles";
     public static final String API_TESTS = "apiTests";
     /* /end System Properties */
 

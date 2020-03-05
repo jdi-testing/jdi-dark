@@ -11,13 +11,14 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 
 import static com.epam.http.requests.RequestDataInfo.requestBody;
-import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getJsonStore;
 import static io.restassured.config.JsonConfig.jsonConfig;
 import static io.restassured.path.xml.XmlPath.CompatibilityMode.HTML;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
@@ -70,17 +71,16 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void putCanReturnBodyAsString() {
-        final String body = JettyService.putCookie.call(requestData(requestData ->
-                requestData.addCookies("username", "John", "token", "1234"))).body;
+        final String body = JettyService.putCookie.call(rd -> rd.addCookies("username", "John", "token", "1234")).body;
         assertEquals("username, token", body);
     }
 
     @Test
     public void deleteCanReturnBodyAsString() {
-        final String body = JettyService.deleteGreet.call(requestData(d -> {
-            d.queryParams.add("firstName", "John");
-            d.queryParams.add("lastName", "Doe");
-        })).body;
+        final String body = JettyService.deleteGreet.call(rd -> {
+            rd.queryParams.add("firstName", "John");
+            rd.queryParams.add("lastName", "Doe");
+        }).body;
         assertEquals("{\"greeting\":\"Greetings John Doe\"}", body);
     }
 

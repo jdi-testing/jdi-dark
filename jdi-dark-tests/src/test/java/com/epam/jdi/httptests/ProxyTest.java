@@ -13,7 +13,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -40,10 +39,10 @@ public class ProxyTest extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
-        JettyService.getGreenJSON.call(requestData(rd -> {
+        JettyService.getGreenJSON.call(rd -> {
             rd.setProxySpecification("http", "localhost", 8888);
             rd.queryParams.addAll(params);
-        })).isOk().assertThat().
+        }).isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
                 body("greeting.lastName", equalTo("Doe"));
     }
@@ -53,9 +52,8 @@ public class ProxyTest extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
-        JettyService.getGreenJSONWithProxyParams.call(requestData(rd -> {
-            rd.queryParams.addAll(params);
-        })).isOk().assertThat().
+        JettyService.getGreenJSONWithProxyParams.call(rd -> rd.queryParams.addAll(params))
+                .isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
                 body("greeting.lastName", equalTo("Doe"));
     }
@@ -65,10 +63,10 @@ public class ProxyTest extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
-        JettyService.getGreenJSON.call(requestData(rd -> {
+        JettyService.getGreenJSON.call(rd -> {
             rd.queryParams.addAll(params);
             rd.proxySpecification = ProxySpecification.host("localhost");
-        })).isOk().assertThat().
+        }).isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
                 body("greeting.lastName", equalTo("Doe"));
     }

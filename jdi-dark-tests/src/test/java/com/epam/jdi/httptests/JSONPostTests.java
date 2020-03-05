@@ -14,9 +14,7 @@ import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.headerPost;
 import static com.epam.jdi.httptests.JettyService.notFoundedURIPost;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.*;
 
 public class JSONPostTests extends WithJetty {
     @BeforeClass

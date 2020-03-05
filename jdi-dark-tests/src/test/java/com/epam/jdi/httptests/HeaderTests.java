@@ -9,19 +9,11 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static com.epam.http.requests.RequestData.requestData;
+import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getHello;
-import static com.epam.jdi.httptests.JettyService.getLotto;
-import static com.epam.jdi.httptests.JettyService.getMultiHeaderReflect;
-import static com.epam.jdi.httptests.JettyService.getMultiValueHeader;
+import static com.epam.jdi.httptests.JettyService.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.*;
 
 public class HeaderTests extends WithJetty {
 

@@ -12,13 +12,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static com.epam.http.requests.RestMethodTypes.GET;
-import static com.epam.http.requests.RestMethodTypes.POST;
-import static com.epam.http.requests.RestMethodTypes.PUT;
-import static com.epam.http.requests.RestMethodTypes.PATCH;
 import static com.epam.http.requests.RestMethodTypes.DELETE;
+import static com.epam.http.requests.RestMethodTypes.GET;
 import static com.epam.http.requests.RestMethodTypes.HEAD;
 import static com.epam.http.requests.RestMethodTypes.OPTIONS;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD})

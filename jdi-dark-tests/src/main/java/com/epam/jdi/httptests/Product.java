@@ -3,12 +3,11 @@ package com.epam.jdi.httptests;
 import java.util.List;
 
 public class Product {
-
     public Integer id;
     public String name;
     public Float price;
     public List<String> tags;
-    public Dimensions demensions;
+    public Dimensions dimensions;
     public WarehouseLocation warehouseLocation;
 
     private static class Dimensions {

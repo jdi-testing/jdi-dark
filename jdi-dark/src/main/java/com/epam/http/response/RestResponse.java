@@ -49,6 +49,9 @@ public class RestResponse {
         body = raResponse.body().asString();
         status = new ResponseStatus(raResponse);
         contentType = raResponse.contentType();
+    }
+    public static JAction1<RestResponse> LOG_RESPONSE = restResponse -> restResponse.logResponse();
+    public void logResponse() {
         logger.info(toString());
         AllureLogger.passStep(toString());
     }
@@ -228,6 +231,9 @@ public class RestResponse {
      */
     public ValidatableResponse assertThat() {
         return raResponse.then();
+    }
+    public <T> T asData(Class<T> cl) {
+        return getRaResponse().as(cl);
     }
 
     /**

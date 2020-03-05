@@ -10,16 +10,14 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 
-import static com.epam.http.requests.RequestData.requestBody;
-import static com.epam.http.requests.RequestData.requestData;
+import static com.epam.http.requests.RequestDataInfo.requestBody;
+import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getJsonStore;
 import static io.restassured.config.JsonConfig.jsonConfig;
 import static io.restassured.path.xml.XmlPath.CompatibilityMode.HTML;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
 
@@ -48,7 +46,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void whenParamsSpecifiedCanReturnBodyAsString() {
-        RestResponse response = JettyService.postGreetXml.call(requestData(requestData -> requestData.body = "firstName=John&lastName=Doe&"));
+        RestResponse response = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe&"));
         final String body = response.body;
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +

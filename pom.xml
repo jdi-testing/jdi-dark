@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.epam.jdi</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <artifactId>jdi-dark-project</artifactId>
     <name>JDI Dark Project</name>
     <packaging>pom</packaging>
@@ -52,7 +52,7 @@
     <modules>
         <module>jdi-dark</module>
         <module>jdi-dark-tests</module>
-<!--        <module>jdi-dark-bdd</module>-->
-<!--        <module>jdi-dark-bdd-tests</module>-->
+        <module>jdi-dark-bdd</module>
+        <module>jdi-dark-bdd-tests</module>
     </modules>
 </project>

@@ -46,8 +46,8 @@ public class ObjectMappingForServiceTests extends WithJetty {
     @Test
     public void sendObjectToRequest() {
         final Hello object = new Hello();
-        object.setHello("Hello world");
+        object.hello = "Hello world";
         Hello response = JettyService.postObject.post(object, Hello.class);
-        Assert.assertEquals(response.getHello(), "Hello world", "Response is incorrect");
+        Assert.assertEquals(response.hello, "Hello world", "Response is incorrect");
     }
 }

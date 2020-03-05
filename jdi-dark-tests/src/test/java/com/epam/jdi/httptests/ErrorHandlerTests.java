@@ -5,13 +5,14 @@ import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Organization;
-import com.epam.jdi.httptests.utils.TrelloDataGenerator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
+import static com.epam.jdi.httptests.TrelloService.createOrganization;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 
 public class ErrorHandlerTests {
 
@@ -41,13 +42,12 @@ public class ErrorHandlerTests {
 
     @Test(expectedExceptions = {AssertionError.class})
     public void assignBoardToOrganization() {
-
         //Create organization
-        Organization organization = TrelloDataGenerator.generateOrganization();
-        organization.setName(null);
-        organization.setDisplayName(null);
+        Organization organization = generateOrganization().set(o -> {
+            o.name = null; o.displayName = null;
+        });
         //this endpoint causes 400 error
-        TrelloService.createOrganization(organization);
+        createOrganization(organization);
     }
 
 }

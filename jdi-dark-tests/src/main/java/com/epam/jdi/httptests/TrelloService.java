@@ -1,23 +1,18 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.*;
+import com.epam.http.requests.DataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.jdi.dto.Board;
 import com.epam.jdi.dto.Card;
 import com.epam.jdi.dto.Organization;
 import com.epam.jdi.dto.TrelloList;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static com.epam.http.requests.RequestData.requestPathParams;
+import static com.epam.http.requests.RequestDataInfo.requestPathParams;
 import static io.restassured.http.ContentType.JSON;
+import static java.util.Arrays.asList;
 
 @ServiceDomain("${trello}")
 @QueryParameters({
@@ -25,7 +20,6 @@ import static io.restassured.http.ContentType.JSON;
         @QueryParameter(name = "token", value = "a9b951262e529821308e7ecbc3e4b7cfb14a24fef5ea500a68c69d374009fcc0")
 })
 public class TrelloService {
-
     public static final String BOARDS = "/boards";
 
     @ContentType(JSON)
@@ -34,10 +28,10 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST(BOARDS)
-    public static RestMethod boardsPost;
+    public static DataMethod<Board> boardsPost;
 
     public static Board createBoard(Board board) {
-        return boardsPost.post(board, Board.class);
+        return boardsPost.callObject(board);
     }
 
     @ContentType(JSON)
@@ -114,6 +108,6 @@ public class TrelloService {
     public static RestMethod getOrganizationBoards;
 
     public static List<Board> getOrganizationBoards(Organization organization) {
-        return Arrays.asList(getOrganizationBoards.call(requestPathParams("id", organization.getId())).getRaResponse().as(Board[].class));
+        return asList(getOrganizationBoards.call(requestPathParams("id", organization.id)).getRaResponse().as(Board[].class));
     }
 }

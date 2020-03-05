@@ -6,7 +6,6 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.hamcrest.Matcher;
-import org.testng.Assert;
 
 import static com.epam.jdi.http.Utils.performanceResult;
 import static com.epam.jdi.http.Utils.restResponse;
@@ -14,12 +13,13 @@ import static java.lang.String.format;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class ResponseStepsEN {
 
     @Then("^Performance results don't have any fails$")
     public void performanceResultsDonTHaveAnyFails() {
-        assertTrue(performanceResult.get().NoFails());
+        assertTrue(performanceResult.get().noFails());
     }
 
     @And("^I check number of requests$")

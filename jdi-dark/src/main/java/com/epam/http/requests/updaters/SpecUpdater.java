@@ -15,9 +15,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public abstract class SpecUpdater<A extends Annotation, T> {
-    JFunc1<Collection<T>, RequestData> store;
-    JFunc1<A, T> transform;
-    JFunc2<String, String, T> transformNameValue;
+    public JFunc1<Collection<T>, RequestData> store;
+    public JFunc1<A, T> transform;
+    public JFunc2<String, String, T> transformNameValue;
     public SpecUpdater(JFunc1<Collection<T>, RequestData> store, JFunc1<A, T> transform, JFunc2<String, String, T> transformNameValue) {
         this.store = store;
         this.transform = transform;

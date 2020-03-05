@@ -6,7 +6,7 @@ import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.jdi.tools.ReflectionUtils.getGenericType;
 
 public class DataMethod<T> extends RestMethod {
-    Class<T> cl;
+    public Class<T> cl;
     public DataMethod(Field field) {
         this.cl = (Class<T>) getGenericType(field);
     }

@@ -11,27 +11,27 @@ public class PostmanAuth {
     @ContentType(JSON)
     @GET("basic-auth")
     @Headers({
-            @Header(name = "Authorization", value = "Basic cG9zdG1hbjpwYXNzd29yZA==")
+                oublic @Header(name = "Authorization", value = "Basic cG9zdG1hbjpwYXNzd29yZA==")
     })
 
     static RestMethod authBase;
-    @ContentType(JSON)
+    public @ContentType(JSON)
     @GET("basic-auth")
     static RestMethod auth2;
 
-    @ContentType(JSON)
+    public @ContentType(JSON)
     @GET("basic-auth")
     static RestMethod authBaseForm;
 
-    @ContentType(JSON)
+    public @ContentType(JSON)
     @GET("digest-auth")
     static RestMethod authDigest;
 
-    @ContentType(JSON)
+    public @ContentType(JSON)
     @GET("auth/hawk")
     static RestMethod authHawk;
 
-    @ContentType(JSON)
+    public @ContentType(JSON)
     @GET("oauth1")
     static RestMethod oauth;
 }

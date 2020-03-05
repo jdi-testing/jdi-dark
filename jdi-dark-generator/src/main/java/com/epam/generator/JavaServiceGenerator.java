@@ -1,8 +1,5 @@
 package com.epam.generator;
 
-import com.google.common.collect.LinkedListMultimap;
-import org.apache.commons.lang3.BooleanUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,6 +86,8 @@ public class JavaServiceGenerator extends AbstractJavaCodegen
         //supportingFiles.add(new SupportingFile( "gradle-wrapper.jar",
         //        gradleWrapperPackage.replace( ".", File.separator ), "gradle-wrapper.jar") );
         //supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
+        supportingFiles.add(new SupportingFile("test.mustache", "src/test/java/resources", "test.properties"));
+        supportingFiles.add(new SupportingFile("general.mustache", "src/test/java/resources", "test.xml"));
     }
 
     @SuppressWarnings("unchecked")

@@ -447,12 +447,8 @@ public class DefaultProcessor extends AbstractProcessor {
                     LOGGER.info("Skipped overwriting " + outputFilename);
                     continue;
                 }
-                String templateFile;
-                /*if (support instanceof GlobalSupportingFile) {
-                    templateFile = config.getCommonTemplateDir() + File.separator + support.templateFile;
-                } else {*/
-                    templateFile = getFullTemplateFile(config, support.templateFile);
-                //}
+                String templateFile = getFullTemplateFile(config, support.templateFile);
+
                 boolean shouldGenerate = true;
                 if (!generateAll && supportingFilesToGenerate != null && !supportingFilesToGenerate.isEmpty()) {
                     shouldGenerate = supportingFilesToGenerate.contains(support.destinationFilename);
@@ -771,16 +767,7 @@ public class DefaultProcessor extends AbstractProcessor {
         Set<String> allImports = new LinkedHashSet<String>();
         for (String key : definitions.keySet()) {
             Model mm = definitions.get(key);
-            /*if(mm.getVendorExtensions() !=  null && mm.getVendorExtensions().containsKey("x-codegen-ignore")) {
-                // skip this model
-                LOGGER.debug("skipping model " + key);
-                return null;
-            }
-            else if(mm.getVendorExtensions() !=  null && mm.getVendorExtensions().containsKey("x-codegen-import-mapping")) {
-                String codegenImport = mm.getVendorExtensions().get("x-codegen-import-mapping").toString();
-                config.importMapping().put(key, codegenImport);
-                allImports.add(codegenImport);
-            }*/
+
             GeneratedModel cm = config.fromModel(key, mm, allDefinitions);
             Map<String, Object> mo = new HashMap<String, Object>();
             mo.put("model", cm);
@@ -812,7 +799,7 @@ public class DefaultProcessor extends AbstractProcessor {
             imports.add(item);
         }
         objs.put("imports", imports);
-        //config.postProcessModels(objs);
+        config.postProcessModels(objs);
         return objs;
     }
 }

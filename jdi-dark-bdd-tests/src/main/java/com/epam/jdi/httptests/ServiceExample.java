@@ -15,25 +15,25 @@ import static io.restassured.http.ContentType.JSON;
 
 @ServiceDomain("http://httpbin.org/")
 public class ServiceExample {
-    @ContentType(JSON)
-    @GET("/get")
-    @Headers({
+    public @ContentType(JSON)
+    public @GET("/get")
+    public @Headers({
             @Header(name = "Name", value = "Roman"),
             @Header(name = "Id", value = "Test")
     })
-    RestMethod getMethod;
+    R estMethod getMethod;
 
-    @Header(name = "Type", value = "Test")
+    public  @Header(name = "Type", value = "Test")
     @POST("/post")
     RestMethod postMethod;
 
-    @PUT("/put")
+    public @PUT("/put")
     RestMethod putMethod;
-    @PATCH("/patch")
+    public @PATCH("/patch")
     RestMethod patch;
-    @DELETE("/delete")
+    public @DELETE("/delete")
     RestMethod delete;
-    @GET("/status/%s")
+    public @GET("/status/%s")
     RestMethod status;
 
 }

@@ -1,6 +1,5 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.requests.RequestData;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.specification.ProxySpecification;
 import org.apache.commons.io.FileUtils;
@@ -14,6 +13,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -40,7 +40,7 @@ public class ProxyTest extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
-        JettyService.getGreenJSON.call(RequestData.requestData(rd -> {
+        JettyService.getGreenJSON.call(requestData(rd -> {
             rd.setProxySpecification("http", "localhost", 8888);
             rd.queryParams.addAll(params);
         })).isOk().assertThat().
@@ -53,7 +53,7 @@ public class ProxyTest extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
-        JettyService.getGreenJSONWithProxyParams.call(RequestData.requestData(rd -> {
+        JettyService.getGreenJSONWithProxyParams.call(requestData(rd -> {
             rd.queryParams.addAll(params);
         })).isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
@@ -65,7 +65,7 @@ public class ProxyTest extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
-        JettyService.getGreenJSON.call(RequestData.requestData(rd -> {
+        JettyService.getGreenJSON.call(requestData(rd -> {
             rd.queryParams.addAll(params);
             rd.proxySpecification = ProxySpecification.host("localhost");
         })).isOk().assertThat().

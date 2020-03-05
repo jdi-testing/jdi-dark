@@ -4,13 +4,9 @@ import com.epam.http.response.RestResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestData.requestData;
-import static com.epam.http.requests.RequestData.requestPathParams;
-import static com.epam.http.requests.RequestData.requestQueryParams;
+import static com.epam.http.requests.RequestDataInfo.*;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloService.deleteACardFromBoard;
-import static com.epam.jdi.httptests.TrelloService.getBoardById;
-import static com.epam.jdi.httptests.TrelloService.postNewCommentToCard;
+import static com.epam.jdi.httptests.TrelloService.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 

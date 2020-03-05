@@ -1,41 +1,37 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.FormParameter;
-import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.Proxy;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.logger.AllureLogger;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
+import com.epam.http.requests.updaters.*;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
-import com.epam.jdi.tools.map.MapArray;
+import com.epam.jdi.tools.func.JAction2;
 import io.restassured.authentication.AuthenticationScheme;
-import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
-import io.restassured.http.ContentType;
-import io.restassured.http.Cookie;
-import io.restassured.http.Cookies;
-import io.restassured.http.Header;
-import io.restassured.http.Headers;
+import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.getDomain;
 import static com.epam.http.JdiHttpSettigns.logger;
+import static com.epam.http.logger.AllureLogger.startStep;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
 import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
+import static java.util.Arrays.copyOfRange;
+import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
@@ -55,7 +51,11 @@ public class RestMethod {
     public RequestData getData() {
         return data;
     }
-
+    public HeaderUpdater header = new HeaderUpdater(this::getData);
+    public CookieUpdater cookies = new CookieUpdater(this::getData);
+    public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
+    public FormParamsUpdater formParams = new FormParamsUpdater(this::getData);
+    public MultipartUpdater multipart = new MultipartUpdater(this::getData);
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
@@ -123,9 +123,8 @@ public class RestMethod {
      */
     public RestMethod(RestMethodTypes type, String path, RequestSpecification requestSpecification) {
         this(type, path);
-        if (requestSpecification != null) {
-            this.spec = spec.spec(requestSpecification);
-        }
+        if (requestSpecification == null) return;
+        this.spec = spec.spec(requestSpecification);
     }
 
     /**
@@ -137,11 +136,17 @@ public class RestMethod {
      */
     public RestMethod(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
         this(type, path, url);
-        if (requestSpecification != null) {
-            this.spec = spec.spec(requestSpecification);
-        }
+        if (requestSpecification == null) return;
+        this.spec = spec.spec(requestSpecification);
     }
-
+    public void setup(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
+        this.type = type;
+        this.path = path;
+        this.url = url;
+        this.data = new RequestData();
+        if (requestSpecification == null) return;
+        this.spec = spec.spec(requestSpecification);
+    }
     public RequestSpecification getInitSpec() {
         return given().spec(spec).spec(getDataSpec(data));
     }
@@ -156,6 +161,7 @@ public class RestMethod {
      * @param objectMapper object mapper which will be used for body serialization/deserialization
      */
     public void setObjectMapper(ObjectMapper objectMapper) {
+        if (objectMapper == null) return;
         this.objectMapper = objectMapper;
     }
 
@@ -165,72 +171,13 @@ public class RestMethod {
      * @param errorHandler error Handler
      */
     public void setErrorHandler(ErrorHandler errorHandler) {
-        if (errorHandler != null) {
-            this.errorHandler = errorHandler;
-        }
+        if (errorHandler == null) return;
+        this.errorHandler = errorHandler;
     }
 
     public void setAuthenticationScheme(AuthenticationScheme authenticationScheme) {
-        if (authenticationScheme != null) {
-            data.authenticationScheme = authenticationScheme;
-        }
-    }
-
-    /**
-     * Set header to HTTP request.
-     *
-     * @param header field name and value presented as annotation
-     */
-    public void addHeader(com.epam.http.annotations.Header header) {
-        addHeader(header.name(), header.value());
-    }
-
-    /**
-     * Set header to HTTP request.
-     *
-     * @param headers pairs of field name and value presented as annotation
-     */
-    public void addHeaders(com.epam.http.annotations.Header... headers) {
-        for (com.epam.http.annotations.Header header : headers) {
-            addHeader(header);
-        }
-    }
-
-    /**
-     * Set header to HTTP request.
-     *
-     * @param name  of header
-     * @param value of header
-     */
-    public void addHeader(String name, String value) {
-        List<Header> headerList = new ArrayList<>(data.headers.asList());
-        headerList.add(new Header(name, value));
-        data.headers = new Headers(headerList);
-    }
-
-    /**
-     * Adds header without value to HTTP request
-     *
-     * @param name of header
-     */
-    public void addHeader(String name) {
-        addHeader(name, "");
-    }
-
-    /**
-     * Adds header with multiple values to HTTP request
-     *
-     * @param name             of header
-     * @param value            of header
-     * @param additionalValues of header
-     */
-    public void addHeader(String name, String value, String... additionalValues) {
-        List<Header> headerList = new ArrayList<>(data.headers.asList());
-        headerList.add(new Header(name, value));
-        for (String headerValue : additionalValues) {
-            headerList.add(new Header(name, headerValue));
-        }
-        data.headers = new Headers(headerList);
+        if (authenticationScheme == null) return;
+        data.authenticationScheme = authenticationScheme;
     }
 
     /**
@@ -239,95 +186,8 @@ public class RestMethod {
      * @param ct Rest Assured Content-Type
      */
     public void setContentType(ContentType ct) {
+        if (ct == null) return;
         data.contentType = ct.toString();
-    }
-
-    /**
-     * Set cookie to HTTP request.
-     *
-     * @param cookie field name and value presented as annotation
-     */
-    public void addCookie(com.epam.http.annotations.Cookie cookie) {
-        addCookie(cookie.name(), cookie.value());
-    }
-
-    /**
-     * Set cookie to HTTP request.
-     *
-     * @param cookies pairs of field name and value presented as annotation
-     */
-    public void addCookies(com.epam.http.annotations.Cookie... cookies) {
-        for (com.epam.http.annotations.Cookie cookie : cookies) {
-            addCookie(cookie);
-        }
-    }
-
-    /**
-     * Set cookie to HTTP request.
-     *
-     * @param name  of cookie
-     * @param value of cookie
-     */
-    public void addCookie(String name, String value) {
-        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
-        cookieList.add(new Cookie.Builder(name, value).build());
-        data.cookies = new Cookies(cookieList);
-    }
-
-    /**
-     * Set cookie without value to HTTP request.
-     *
-     * @param name of cookie
-     */
-    public void addCookie(String name) {
-        addCookie(name, "");
-    }
-
-    /**
-     * Set cookie with multiple values to HTTP request.
-     *
-     * @param name             of cookie
-     * @param value            of cookie
-     * @param additionalValues additional values of the cookie
-     */
-    public void addCookie(String name, String value, String[] additionalValues) {
-        List<Cookie> cookieList = new ArrayList<>(data.cookies.asList());
-        cookieList.add(new Cookie.Builder(name, value).build());
-        if (additionalValues != null) {
-            for (String cookieValue : additionalValues) {
-                cookieList.add(new Cookie.Builder(name, cookieValue).build());
-            }
-        }
-        data.cookies = new Cookies(cookieList);
-    }
-
-    /**
-     * Set query parameters to HTTP request.
-     *
-     * @param params collection of query parameters from HTTP method field annotation
-     */
-    public void addQueryParameters(QueryParameter... params) {
-        data.queryParams.addAll(new MapArray<>(params,
-                QueryParameter::name, QueryParameter::value));
-    }
-
-    /**
-     * Set multiPart parameters to HTTP request.
-     *
-     * @param multiPartParams multiPart params
-     */
-    public void addMultiPartParams(MultiPart multiPartParams) {
-        data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
-    }
-
-    /**
-     * Set form parameters to HTTP request.
-     *
-     * @param params params
-     */
-    public void addFormParameters(FormParameter... params) {
-        data.formParams.addAll(new MapArray<>(params,
-                FormParameter::name, FormParameter::value));
     }
 
     /**
@@ -338,14 +198,14 @@ public class RestMethod {
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
-
-    private void logRequest(RequestData... rds) {
+    public static JAction2<RestMethod, List<RequestData>> LOG_REQUEST = RestMethod::logRequest;
+    public void logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
-            maps.addAll(rd.getFields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+            maps.addAll(rd.fields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
-        AllureLogger.startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
+        startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
                 format("%s %s%s  %s", type, url != null ? url : "", path != null ? path : "", maps));
     }
 
@@ -363,7 +223,7 @@ public class RestMethod {
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
-        logRequest(data, userData);
+        LOG_REQUEST.execute(this, asList(data, userData));
         userData.clear();
         RestResponse response = doRequest(type, runSpec);
         handleResponse(response);
@@ -388,7 +248,7 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
-        logRequest(data);
+        LOG_REQUEST.execute(this, singletonList(data));
         return doRequest(type, runSpec);
     }
 
@@ -403,7 +263,7 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
-        logRequest(data);
+        LOG_REQUEST.execute(this, singletonList(data));
         return doRequest(type, runSpec);
     }
 
@@ -414,11 +274,9 @@ public class RestMethod {
      * @return Java object
      */
     public <T> T callAsData(Class<T> c) {
-        if (objectMapper == null) {
-            return call().getRaResponse().body().as(c);
-        } else {
-            return call().getRaResponse().body().as(c, objectMapper);
-        }
+        return objectMapper == null
+            ? call().getRaResponse().body().as(c)
+            : call().getRaResponse().body().as(c, objectMapper);
     }
 
     /**
@@ -492,14 +350,14 @@ public class RestMethod {
      */
     private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
         if (namedParams.length > pathParams.length && queryString.isEmpty()) {
-            String[] redundant_values = Arrays.copyOfRange(namedParams, pathParams.length, namedParams.length);
+            String[] redundant_values = copyOfRange(namedParams, pathParams.length, namedParams.length);
             throw exception("Invalid number of path parameters. Expected %s , was %s.\nRedundant param values : %s",
-                    pathParams.length, namedParams.length, Arrays.asList(redundant_values));
+                    pathParams.length, namedParams.length, asList(redundant_values));
         }
         if (namedParams.length < pathParams.length) {
-            String[] missing_params = Arrays.copyOfRange(pathParams, namedParams.length, pathParams.length);
+            String[] missing_params = copyOfRange(pathParams, namedParams.length, pathParams.length);
             throw exception("Invalid number of path parameters. Expected %s, was %s.\nMissing params : %s",
-                    pathParams.length, namedParams.length, Arrays.asList(missing_params));
+                    pathParams.length, namedParams.length, asList(missing_params));
         }
     }
 
@@ -564,13 +422,15 @@ public class RestMethod {
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
-        if (requestData.authenticationScheme != null) {
-            userData.authenticationScheme = requestData.authenticationScheme;
-        }
-        else {
-            userData.authenticationScheme = data.authenticationScheme;
-        }
+        userData.authenticationScheme = requestData.authenticationScheme == null
+            ? data.authenticationScheme
+            : requestData.authenticationScheme;
         return call();
+    }
+    public RestResponse call(JAction1<RequestData> action) {
+        RequestData rd = new RequestData();
+        action.execute(rd);
+        return call(rd);
     }
 
     /**

@@ -10,10 +10,11 @@ import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.http.requests.RequestData.requestQueryParams;
+import static com.epam.http.requests.RequestDataInfo.requestQueryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getRedirect;
 import static io.restassured.RestAssured.requestSpecification;

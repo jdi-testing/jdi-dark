@@ -1,8 +1,6 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
-import io.restassured.config.RedirectConfig;
-import io.restassured.config.RestAssuredConfig;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
@@ -10,6 +8,8 @@ import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.Config.redirect;
+import static io.restassured.config.RedirectConfig.redirectConfig;
+import static io.restassured.config.RestAssuredConfig.config;
 
 public class RedirectTest {
 
@@ -20,7 +20,7 @@ public class RedirectTest {
 
     @Test
     public void configCanBeSetPerRequest() {
-        RestResponse resp = redirect.call(RestAssuredConfig.config().redirect(RedirectConfig.redirectConfig().followRedirects(false)));
+        RestResponse resp = redirect.call(config().redirect(redirectConfig().followRedirects(false)));
         resp.assertThat().statusCode(HttpStatus.SC_MOVED_PERMANENTLY);
         resp.assertThat().header("Location", "https://www.google.com/gmail/");
     }

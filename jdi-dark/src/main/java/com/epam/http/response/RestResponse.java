@@ -50,11 +50,6 @@ public class RestResponse {
         status = new ResponseStatus(raResponse);
         contentType = raResponse.contentType();
     }
-    public static JAction1<RestResponse> LOG_RESPONSE = restResponse -> restResponse.logResponse();
-    public void logResponse() {
-        logger.info(toString());
-        AllureLogger.passStep(toString());
-    }
 
     public RestResponse set(JAction1<RestResponse> valueFunc) {
         RestResponse thisObj = this;

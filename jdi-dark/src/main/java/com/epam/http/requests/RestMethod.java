@@ -46,11 +46,26 @@ public class RestMethod {
     private RequestSpecification spec = given();
     private String url = null;
     private String path = null;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public RestMethodTypes getType() {
+        return type;
+    }
+
     private ObjectMapper objectMapper = null;
 
     public RequestData getData() {
         return data;
     }
+
+
     public HeaderUpdater header = new HeaderUpdater(this::getData);
     public CookieUpdater cookies = new CookieUpdater(this::getData);
     public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
@@ -59,6 +74,10 @@ public class RestMethod {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
+
+    public RequestData getUserData() {
+        return userData;
+    }
 
     private ErrorHandler errorHandler = new DefaultErrorHandler();
 
@@ -139,6 +158,7 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
+
     public void setup(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
         this.type = type;
         this.path = path;
@@ -147,6 +167,7 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
+
     public RequestSpecification getInitSpec() {
         return given().spec(spec).spec(getDataSpec(data));
     }
@@ -198,16 +219,6 @@ public class RestMethod {
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
-    public static JAction2<RestMethod, List<RequestData>> LOG_REQUEST = RestMethod::logRequest;
-    public void logRequest(List<RequestData> rds) {
-        ArrayList<String> maps = new ArrayList<>();
-        for (RequestData rd : rds) {
-            maps.addAll(rd.fields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
-        }
-        logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
-        startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
-                format("%s %s%s  %s", type, url != null ? url : "", path != null ? path : "", maps));
-    }
 
     /**
      * Send HTTP request
@@ -223,7 +234,6 @@ public class RestMethod {
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
-        LOG_REQUEST.execute(this, asList(data, userData));
         userData.clear();
         RestResponse response = doRequest(type, runSpec);
         handleResponse(response);
@@ -248,7 +258,6 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
-        LOG_REQUEST.execute(this, singletonList(data));
         return doRequest(type, runSpec);
     }
 
@@ -263,7 +272,6 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
-        LOG_REQUEST.execute(this, singletonList(data));
         return doRequest(type, runSpec);
     }
 
@@ -275,8 +283,8 @@ public class RestMethod {
      */
     public <T> T callAsData(Class<T> c) {
         return objectMapper == null
-            ? call().getRaResponse().body().as(c)
-            : call().getRaResponse().body().as(c, objectMapper);
+                ? call().getRaResponse().body().as(c)
+                : call().getRaResponse().body().as(c, objectMapper);
     }
 
     /**
@@ -423,10 +431,11 @@ public class RestMethod {
             userData.proxySpecification = requestData.proxySpecification;
         }
         userData.authenticationScheme = requestData.authenticationScheme == null
-            ? data.authenticationScheme
-            : requestData.authenticationScheme;
+                ? data.authenticationScheme
+                : requestData.authenticationScheme;
         return call();
     }
+
     public RestResponse call(JAction1<RequestData> action) {
         RequestData rd = new RequestData();
         action.execute(rd);

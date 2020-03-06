@@ -12,25 +12,24 @@ import static io.qameta.allure.model.Status.PASSED;
 public class AllureLogger {
     public static boolean writeToAllure = true;
 
-    public static void startStep(String message, String requestData) {
-        if (!writeToAllure) return;
-
+    public static String startStep(String message, String requestData) {
         StepResult step = new StepResult().withName(message).withStatus(PASSED);
-        getLifecycle().startStep(UUID.randomUUID().toString(), step);
+        String uuid = UUID.randomUUID().toString();
+        getLifecycle().startStep(uuid, step);
         attachRequest(message, requestData);
+        return uuid;
     }
 
-    public static void failStep() {
+    public static void failStep(String uuid) {
         if (!writeToAllure) return;
-
-        getLifecycle().updateStep(s -> s.setStatus(FAILED));
+        getLifecycle().updateStep(uuid, s -> s.withStatus(FAILED));
         getLifecycle().stopStep();
     }
 
-    public static void passStep(String responseData) {
+    public static void passStep(String responseData, String stepUuid) {
         if (!writeToAllure) return;
-
         attachResponse(responseData);
+        getLifecycle().updateStep(stepUuid, s -> s.withStatus(PASSED));
         getLifecycle().stopStep();
     }
 

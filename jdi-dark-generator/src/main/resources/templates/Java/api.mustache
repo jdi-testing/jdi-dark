@@ -57,7 +57,7 @@ public class {{classname}} {
   })
   {{/headerParams.0}}
   @{{httpMethod}}("{{path}}")
-  public static RestMethod{{#returnType}}<{{returnType}}>{{/returnType}} {{operationId}}{{enumMedia}};
+  public static RestMethod {{operationId}}{{enumMedia}};
   {{/consumes}}
   {{^hasConsumes}}
   {{#isDeprecated}}
@@ -85,7 +85,7 @@ public class {{classname}} {
   })
   {{/headerParams.0}}
   @{{httpMethod}}("{{path}}")
-  public static RestMethod{{#returnType}}<{{{returnType}}}>{{/returnType}} {{operationId}}{{enumMedia}};
+  public static RestMethod {{operationId}}{{enumMedia}};
   {{/hasConsumes}}
   {{/operation}}
 }

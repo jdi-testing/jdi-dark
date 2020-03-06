@@ -4,6 +4,7 @@ import com.epam.http.annotations.FormParameter;
 import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.TrustStore;
 import com.epam.http.logger.AllureLogger;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
@@ -23,8 +24,11 @@ import io.restassured.http.Headers;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -339,6 +343,16 @@ public class RestMethod<T> {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
 
+//    /**
+//     * Set trustStore parameters to the request.
+//     *
+//     * @param trustStore trustStore
+//     */
+
+    public void setTrustStore(TrustStore trustStore) {
+        data.trustStore = new Pair<>(trustStore.pathToJks(), trustStore.password());
+    }
+
     private void logRequest(RequestData... rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
@@ -564,6 +578,9 @@ public class RestMethod<T> {
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
+        if (!requestData.trustStore.equals(new Pair<>(null,null))) {
+            userData.trustStore = requestData.trustStore;
+        }
         if (requestData.authenticationScheme != null) {
             userData.authenticationScheme = requestData.authenticationScheme;
         }
@@ -623,6 +640,9 @@ public class RestMethod<T> {
         }
         if (data.proxySpecification != null) {
             spec.proxy(data.proxySpecification);
+        }
+        if (!data.trustStore.equals(new Pair<>(null,null))) {
+            spec.trustStore(data.trustStore.getKey(), data.trustStore.getValue());
         }
         if (data.authenticationScheme != null) {
             ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authenticationScheme);

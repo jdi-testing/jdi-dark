@@ -20,6 +20,7 @@ import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.QueryParameter;
 import com.epam.http.annotations.QueryParameters;
 import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.TrustStore;
 import com.epam.http.annotations.URL;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.jdi.tools.func.JAction;
@@ -131,7 +132,6 @@ public class ServiceInit {
         }
     }
 
-
     /**
      * Check whether the annotation present and add these values to request data.
      *
@@ -145,6 +145,7 @@ public class ServiceInit {
         MethodData mtData = getMethodData(field);
         String url = field.isAnnotationPresent(URL.class) ? field.getAnnotation(URL.class).value() : getDomain(c);
         String path = mtData.getPath();
+
         RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
         method.setObjectMapper(objectMapper);
         method.setErrorHandler(errorHandler);
@@ -172,6 +173,8 @@ public class ServiceInit {
             method.addFormParameters(c.getAnnotation(FormParameter.class));
         if (c.isAnnotationPresent(FormParameters.class))
             method.addFormParameters(c.getAnnotation(FormParameters.class).value());
+        if (c.isAnnotationPresent(TrustStore.class))
+            method.setTrustStore(c.getAnnotation(TrustStore.class));
         /* Case for method annotations*/
         if (field.isAnnotationPresent(QueryParameter.class))
             method.addQueryParameters(field.getAnnotation(QueryParameter.class));
@@ -185,6 +188,9 @@ public class ServiceInit {
             method.addMultiPartParams(field.getAnnotation(MultiPart.class));
         if (field.isAnnotationPresent(Proxy.class))
             method.setProxy(field.getAnnotation(Proxy.class));
+        if (field.isAnnotationPresent(TrustStore.class))
+            method.setTrustStore(field.getAnnotation(TrustStore.class));
+
         return method;
     }
 

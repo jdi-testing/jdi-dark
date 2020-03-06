@@ -14,9 +14,12 @@ import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.PostmanAuth.*;
+import static com.epam.jdi.httptests.PostmanAuth.authBase;
+import static com.epam.jdi.httptests.PostmanAuth.authBaseForm;
+import static com.epam.jdi.httptests.PostmanAuth.authDigest;
+import static com.epam.jdi.httptests.PostmanAuth.authHawk;
+import static com.epam.jdi.httptests.PostmanAuth.oauth;
 import static com.wealdtech.hawk.Hawk.calculateMAC;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
@@ -75,10 +78,10 @@ public class PostmanAuthTests {
 
     @Test
     public void authDigestFailTest() {
-        RestResponse resp = authDigest.call(requestData(rd ->
-            rd.addHeaders(new Object[][]{
-                    {"Authorization", "Digest username=\"postman\", realm=\"Users\", nonce=\"ni1LiL0O37PRRhofWdCLmwFsnEtH1lew\", uri=\"/digest-auth\", response=\"254679099562cf07df9b6f5d8d15db45\", opaque=\"\""}
-            })));
+        RestResponse resp = authDigest.call(rd ->
+                rd.addHeaders(new Object[][]{
+                        {"Authorization", "Digest username=\"postman\", realm=\"Users\", nonce=\"ni1LiL0O37PRRhofWdCLmwFsnEtH1lew\", uri=\"/digest-auth\", response=\"254679099562cf07df9b6f5d8d15db45\", opaque=\"\""}
+                }));
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
@@ -93,10 +96,10 @@ public class PostmanAuthTests {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         long ts = timestamp.getTime() / 1000;
         String mac = calculateMAC(hawkCredentials, Hawk.AuthType.HEADER, ts, uri, "x9Feni", "GET", null, null, null, null);
-        RestResponse resp = authHawk.call(requestData(rd ->
+        RestResponse resp = authHawk.call(rd ->
                 rd.addHeaders(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"" + ts + "\", nonce=\"x9Feni\", mac=\"" + mac + "\""}
-                })));
+                }));
         resp.isOk().assertThat()
                 .statusCode(HttpStatus.SC_OK)
                 .body("message", equalTo("Hawk Authentication Successful"));
@@ -111,10 +114,10 @@ public class PostmanAuthTests {
         HawkCredentials hawkCredentials = hc.key(key).keyId(id).algorithm(HawkCredentials.Algorithm.SHA256).build();
         long ts = 1234567890;
         String mac = calculateMAC(hawkCredentials, Hawk.AuthType.HEADER, ts, uri, "x9Feni", "GET", null, null, null, null);
-        RestResponse resp = authHawk.call(requestData(rd ->
+        RestResponse resp = authHawk.call(rd ->
                 rd.addHeaders(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"" + ts + "\", nonce=\"x9Feni\", mac=\"" + mac + "\""}
-                })));
+                }));
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED)
                 .body("statusCode", equalTo(401))
@@ -131,10 +134,10 @@ public class PostmanAuthTests {
         body.put("error", "Unauthorized");
         body.put("message", "Bad mac");
         body.put("attributes", attr);
-        RestResponse resp = authHawk.call(requestData(rd ->
+        RestResponse resp = authHawk.call(rd ->
                 rd.addHeaders(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"ts\", nonce=\"x9Feni\", mac=\"mac\""}
-                })));
+                }));
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED)
                 .body("", equalTo(body));
@@ -144,10 +147,10 @@ public class PostmanAuthTests {
     public void oauthTest() {
         String key = "RKCGzna7bv9YD57c";
         String nonce = "R6MyHe5WCRx";
-        RestResponse resp = oauth.call(requestData(rd ->
+        RestResponse resp = oauth.call(rd ->
                 rd.addHeaders(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}
-                })));
+                }));
         resp.isOk().assertThat()
                 .statusCode(HttpStatus.SC_OK)
                 .body("status", equalTo("pass"))
@@ -158,10 +161,10 @@ public class PostmanAuthTests {
     public void oauthFailTest() {
         String key = "RKCGzna7bv9YD57";
         String nonce = "R6MyHe5WCRx";
-        RestResponse resp = oauth.call(requestData(rd ->
+        RestResponse resp = oauth.call(rd ->
                 rd.addHeaders(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}
-                })));
+                }));
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED)
                 .body("status", equalTo("fail"))

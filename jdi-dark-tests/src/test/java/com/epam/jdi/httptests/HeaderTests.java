@@ -9,11 +9,18 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.*;
+import static com.epam.jdi.httptests.JettyService.getHello;
+import static com.epam.jdi.httptests.JettyService.getLotto;
+import static com.epam.jdi.httptests.JettyService.getMultiHeaderReflect;
+import static com.epam.jdi.httptests.JettyService.getMultiValueHeader;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class HeaderTests extends WithJetty {
 
@@ -31,7 +38,7 @@ public class HeaderTests extends WithJetty {
     public void requestDataAllowsSpecifyingHeader() {
         RestResponse response = JettyService.getWithSingleHeader("MyHeader", "TestValue");
         response.isOk();
-        response.assertThat().header("MyHeader",  equalTo("TestValue"));
+        response.assertThat().header("MyHeader", equalTo("TestValue"));
     }
 
     @Test
@@ -51,7 +58,7 @@ public class HeaderTests extends WithJetty {
                 new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
                         {"Header_03", "Value_03"}});
         response.isOk();
-        response.assertThat().header("Header_01",  equalTo("Value_01"))
+        response.assertThat().header("Header_01", equalTo("Value_01"))
                 .header("Header_02", equalTo("Value_02"))
                 .header("Header_03", equalTo("Value_03"));
     }
@@ -88,19 +95,16 @@ public class HeaderTests extends WithJetty {
 
     @Test
     public void requestDataAllowsSpecifyingHeaderWithoutServiceObjectMethods() {
-        RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData ->
-                        requestData.addHeader("MyHeader", "TestValue")));
+        RestResponse response = getMultiHeaderReflect.call(rd ->
+                rd.addHeader("MyHeader", "TestValue"));
         response.isOk();
-        response.assertThat().header("MyHeader",  equalTo("TestValue"));
+        response.assertThat().header("MyHeader", equalTo("TestValue"));
     }
 
     @Test
     public void requestSpecificationAllowsSpecifyingMultiValueHeadersWithoutServiceObjectMethod() {
-        RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData ->
-                        requestData.addHeader("MyHeader", "Something")
-                                .addHeader("MyHeader", "SomethingElse")));
+        RestResponse response = getMultiHeaderReflect.call(rd ->
+                rd.addHeader("MyHeader", "Something").addHeader("MyHeader", "SomethingElse"));
         response.isOk();
         assertThat(response.headers().getValues("MyHeader").size(), is(2));
         assertThat(response.headers().getValues("MyHeader"), hasItems("Something", "SomethingElse"));
@@ -108,12 +112,11 @@ public class HeaderTests extends WithJetty {
 
     @Test
     public void requestDataAllowsSpecifyingMultipleHeadersAsObjectArrayWithoutServiceObjectMethod() {
-        RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData ->
-                        requestData.addHeaders(new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
-                                {"Header_03", "Value_03"}})));
+        RestResponse response = getMultiHeaderReflect.call(rd ->
+                rd.addHeaders(new Object[][]{{"Header_01", "Value_01"}, {"Header_02", "Value_02"},
+                        {"Header_03", "Value_03"}}));
         response.isOk();
-        response.assertThat().header("Header_01",  equalTo("Value_01"))
+        response.assertThat().header("Header_01", equalTo("Value_01"))
                 .header("Header_02", equalTo("Value_02"))
                 .header("Header_03", equalTo("Value_03"));
     }
@@ -121,8 +124,7 @@ public class HeaderTests extends WithJetty {
     @Test
     public void requestDataAllowsSpecifyingMultipleValueHeaderWithoutServiceObjectMethod() {
         RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData ->
-                        requestData.addHeader("Header_Name", "Header_Value", "Header_Next_Value")));
+                rd -> rd.addHeader("Header_Name", "Header_Value", "Header_Next_Value"));
         response.isOk();
         final List<String> headerListString = response.headers().getValues("Header_Name");
         assertThat(headerListString.size(), is(2));
@@ -134,8 +136,7 @@ public class HeaderTests extends WithJetty {
         Header header1 = new Header("MyHeader1", "MyValue1");
         Header header2 = new Header("MyHeader2", "MyValue2");
         Header header3 = new Header("MyHeader3", "MyValue3");
-        RestResponse response = getMultiHeaderReflect.call(
-                requestData(requestData -> requestData.addHeaders(header1, header2, header3)));
+        RestResponse response = getMultiHeaderReflect.call(rd -> rd.addHeaders(header1, header2, header3));
         response.isOk();
         response.assertThat().header("MyHeader1", equalTo("MyValue1"))
                 .header("MyHeader2", equalTo("MyValue2"))
@@ -163,7 +164,7 @@ public class HeaderTests extends WithJetty {
     }
 
     @Test
-    public void supportsHeaderStringMatching(){
+    public void supportsHeaderStringMatching() {
         RestResponse response = getLotto.call();
         response.assertThat().header("Content-Type", "application/json;charset=utf-8");
     }

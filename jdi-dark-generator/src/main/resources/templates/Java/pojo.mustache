@@ -4,7 +4,7 @@
 @ApiModel(description = "{{{description}}}"){{/description}}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{{#parcelableModel}}implements Parcelable {{#serializableModel}}, Serializable {{/serializableModel}}{{/parcelableModel}}{{^parcelableModel}}{{#serializableModel}}implements Serializable {{/serializableModel}}{{/parcelableModel}}{
+public class {{classname}} extends DataClass<{{classname}}>{
 
   {{#vars}}
   {{^isContainer}}

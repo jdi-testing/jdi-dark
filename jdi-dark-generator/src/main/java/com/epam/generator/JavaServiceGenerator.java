@@ -87,7 +87,8 @@ public class JavaServiceGenerator extends AbstractJavaCodegen
         //        gradleWrapperPackage.replace( ".", File.separator ), "gradle-wrapper.jar") );
         //supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
         supportingFiles.add(new SupportingFile("test.mustache", "src/test/java/resources", "test.properties"));
-        supportingFiles.add(new SupportingFile("general.mustache", "src/test/java/resources", "test.xml"));
+        supportingFiles.add(new SupportingFile("general.mustache", "src/test/java/resources", "general.xml"));
+        supportingFiles.add(new SupportingFile("pomproperties.mustache", "src/test/java/resources", "pom.properties"));
     }
 
     @SuppressWarnings("unchecked")

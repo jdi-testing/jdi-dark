@@ -3,15 +3,22 @@ package com.epam.http.requests;
 import com.epam.http.annotations.Proxy;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
-import com.epam.http.requests.updaters.*;
+import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.FormParamsUpdater;
+import com.epam.http.requests.updaters.HeaderUpdater;
+import com.epam.http.requests.updaters.MultipartUpdater;
+import com.epam.http.requests.updaters.QueryParamsUpdater;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
-import com.epam.jdi.tools.func.JAction2;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
-import io.restassured.http.*;
+import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
@@ -23,15 +30,11 @@ import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.getDomain;
-import static com.epam.http.JdiHttpSettigns.logger;
-import static com.epam.http.logger.AllureLogger.startStep;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;
 import static io.restassured.RestAssured.given;
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOfRange;
-import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
@@ -46,6 +49,16 @@ public class RestMethod {
     private RequestSpecification spec = given();
     private String url = null;
     private String path = null;
+    private ObjectMapper objectMapper = null;
+
+    public HeaderUpdater header = new HeaderUpdater(this::getData);
+    public CookieUpdater cookies = new CookieUpdater(this::getData);
+    public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
+    public FormParamsUpdater formParams = new FormParamsUpdater(this::getData);
+    public MultipartUpdater multipart = new MultipartUpdater(this::getData);
+    private RequestData data;
+    private RequestData userData = new RequestData();
+    private RestMethodTypes type;
 
     public String getUrl() {
         return url;
@@ -59,21 +72,9 @@ public class RestMethod {
         return type;
     }
 
-    private ObjectMapper objectMapper = null;
-
     public RequestData getData() {
         return data;
     }
-
-
-    public HeaderUpdater header = new HeaderUpdater(this::getData);
-    public CookieUpdater cookies = new CookieUpdater(this::getData);
-    public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
-    public FormParamsUpdater formParams = new FormParamsUpdater(this::getData);
-    public MultipartUpdater multipart = new MultipartUpdater(this::getData);
-    private RequestData data;
-    private RequestData userData = new RequestData();
-    private RestMethodTypes type;
 
     public RequestData getUserData() {
         return userData;

@@ -3,6 +3,7 @@ package com.epam.http.logger.aspects;
 import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class LogObject {
@@ -11,9 +12,9 @@ public class LogObject {
     private RestMethod restMethod;
     private List<RequestData> rd;
 
-    public LogObject(RestMethod restMethod, List<RequestData> rd) {
+    public LogObject(RestMethod restMethod) {
         this.restMethod = restMethod;
-        this.rd = rd;
+        this.rd = Arrays.asList(restMethod.getUserData(), restMethod.getData());
     }
 
     public void setUuid(String uuid) {

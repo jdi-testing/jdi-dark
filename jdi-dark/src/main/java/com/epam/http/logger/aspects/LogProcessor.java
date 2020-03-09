@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class LogProcessor {
 
     @Pointcut(value = "execution(* com.epam.http.requests.RestMethod.call())")
-    private void callPointCut() { // empty
+    protected void callPointCut() { // empty
     }
 
     @Around("callPointCut()")

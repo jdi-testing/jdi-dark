@@ -1,6 +1,5 @@
 package com.epam.http.response;
 
-import com.epam.http.logger.AllureLogger;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
@@ -15,7 +14,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.JdiHttpSettigns.logger;
 import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 import static com.epam.http.response.ResponseStatusType.OK;
 import static com.epam.jdi.tools.StringUtils.LINE_BREAK;

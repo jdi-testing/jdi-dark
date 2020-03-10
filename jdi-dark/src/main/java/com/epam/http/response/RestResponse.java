@@ -268,7 +268,7 @@ public class RestResponse {
             errors += format("Wrong status type %s. Expected: %s", status.type, rs.type) + LINE_BREAK;
         if (!status.text.equals(rs.text))
             errors += format("Wrong status text %s. Expected: %s", status.text, rs.text);
-        if (!"".equals(errors))
+        if (!STRING_EMPTY.equals(errors))
             throw exception(errors);
         return this;
     }

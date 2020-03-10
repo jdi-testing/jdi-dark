@@ -10,6 +10,7 @@ import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static com.epam.jdi.http.Utils.restResponse;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -38,7 +39,7 @@ public class DeleteTest extends WithJetty {
             {USERNAME, FIRST_NAME_VALUE},
             {TOKEN, TOKEN_VALUE}
         }));
-        assertEquals(response.body, "username, token");
+        assertEquals(restResponse.get().getBody(), "username, token");
     }
 
     @Test

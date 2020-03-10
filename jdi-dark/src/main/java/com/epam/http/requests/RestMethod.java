@@ -16,7 +16,7 @@ import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
-import javafx.util.Pair;
+import com.epam.jdi.tools.pairs.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -199,7 +199,7 @@ public class RestMethod {
 //     */
 
     public void setTrustStore(TrustStore trustStore) {
-        data.trustStore = new Pair<>(trustStore.pathToJks(), trustStore.password());
+        data.trustStore = new Pair(trustStore.pathToJks(), trustStore.password());
     }
 
     /**
@@ -500,7 +500,7 @@ public class RestMethod {
             spec.proxy(data.proxySpecification);
         }
         if (!data.trustStore.equals(new Pair<>(null,null))) {
-            spec.trustStore(data.trustStore.getKey(), data.trustStore.getValue());
+            spec.trustStore(data.trustStore.key, data.trustStore.value);
         }
         if (data.authenticationScheme != null) {
             ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authenticationScheme);

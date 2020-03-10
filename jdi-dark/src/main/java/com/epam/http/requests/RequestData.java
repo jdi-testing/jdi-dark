@@ -10,7 +10,7 @@ import io.restassured.http.*;
 import io.restassured.internal.MapCreator;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
-import javafx.util.Pair;
+import com.epam.jdi.tools.pairs.Pair;
 
 import java.io.File;
 import java.security.KeyStore;

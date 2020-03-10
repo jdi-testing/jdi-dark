@@ -126,7 +126,7 @@ public class RequestData extends DataClass<RequestData> {
         multiPartSpecifications.clear();
         proxySpecification = null;
         authenticationScheme = null;
-        trustStore = null;
+        trustStore = new Pair<>(null, null);
     }
 
     /**

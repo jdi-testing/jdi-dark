@@ -1,21 +1,20 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.requests.ServiceSettings;
 import com.epam.jdi.httptests.support.WithJetty;
-import io.restassured.authentication.CertAuthScheme;
-import io.restassured.authentication.CertificateAuthSettings;
 import static com.epam.http.requests.RequestData.requestTrustStore;
-import javafx.util.Pair;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyServiceHttps.getGreet;
 import static com.epam.jdi.httptests.JettyServiceHttps.getHello;
+import static com.epam.jdi.httptests.JettyServiceHttps.getJsonStore;
 import static com.epam.jdi.httptests.JettyServiceHttps.getProducts;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 public class SslAnnotationAndRequestDataTests extends WithJetty {
 
@@ -32,11 +31,11 @@ public class SslAnnotationAndRequestDataTests extends WithJetty {
 
     @Test
     public void givenTrustStoreUsingRequestData() {
-        getGreet.call(requestData(d -> {
-            d.queryParams.add("firstName", "John");
-            d.queryParams.add("lastName", "");
-            d.trustStore = new Pair<>("src/test/resources/jetty_localhost_client.jks", "test1234");
-        })).isOk().assertThat().body("greeting", equalTo("Greetings John "));
+        getJsonStore.call(requestTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234")).isOk().assertThat()
+                .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
+                rootPath("store.book").
+                body("findAll { book -> book.price < 10 }.title", hasItems("Sayings of the Century", "Moby Dick")).
+                body("author.collect { it.length() }.sum()", equalTo(53));
     }
 
     @Test
@@ -47,5 +46,4 @@ public class SslAnnotationAndRequestDataTests extends WithJetty {
                 .body("name.collect { it.length() }.max()", is(16))
                 .body("dimensions.multiply(2).height.sum()", is(21.0));
     }
-
 }

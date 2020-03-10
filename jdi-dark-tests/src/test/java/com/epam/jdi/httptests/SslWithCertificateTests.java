@@ -7,7 +7,6 @@ import io.restassured.authentication.CertificateAuthSettings;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestData.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyServiceHttps.getGreet;
 import static com.epam.jdi.httptests.JettyServiceHttps.getHello;
@@ -31,11 +30,9 @@ public class SslWithCertificateTests extends WithJetty {
 
     @Test
     public void whenLastParamInGetRequestEndsWithEqualItsTreatedAsANoValueParam() {
-        getGreet.call(requestData(d -> {
+        getGreet.call(d -> {
             d.queryParams.add("firstName", "John");
             d.queryParams.add("lastName", "");
-        })).isOk().assertThat().body("greeting", equalTo("Greetings John "));
+        }).isOk().assertThat().body("greeting", equalTo("Greetings John "));
     }
-
-
 }

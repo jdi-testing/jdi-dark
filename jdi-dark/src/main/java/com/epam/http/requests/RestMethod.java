@@ -1,6 +1,7 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.Proxy;
+import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.requests.updaters.*;
@@ -15,6 +16,7 @@ import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -188,6 +190,16 @@ public class RestMethod {
     public void setContentType(ContentType ct) {
         if (ct == null) return;
         data.contentType = ct.toString();
+    }
+
+    //    /**
+//     * Set trustStore parameters to the request.
+//     *
+//     * @param trustStore trustStore
+//     */
+
+    public void setTrustStore(TrustStore trustStore) {
+        data.trustStore = new Pair<>(trustStore.pathToJks(), trustStore.password());
     }
 
     /**
@@ -422,6 +434,9 @@ public class RestMethod {
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
+        if (!requestData.trustStore.equals(new Pair<>(null,null))) {
+            userData.trustStore = requestData.trustStore;
+        }
         userData.authenticationScheme = requestData.authenticationScheme == null
             ? data.authenticationScheme
             : requestData.authenticationScheme;
@@ -483,6 +498,9 @@ public class RestMethod {
         }
         if (data.proxySpecification != null) {
             spec.proxy(data.proxySpecification);
+        }
+        if (!data.trustStore.equals(new Pair<>(null,null))) {
+            spec.trustStore(data.trustStore.getKey(), data.trustStore.getValue());
         }
         if (data.authenticationScheme != null) {
             ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authenticationScheme);

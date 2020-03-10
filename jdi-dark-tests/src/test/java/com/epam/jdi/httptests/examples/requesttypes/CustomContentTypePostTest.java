@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestDataInfo.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
 
-public class BodyWithCustomContentTypeTest extends WithJetty {
+public class CustomContentTypePostTest extends WithJetty {
 
     @BeforeTest
     public void before() {

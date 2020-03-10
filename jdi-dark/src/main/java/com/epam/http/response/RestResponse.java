@@ -119,7 +119,7 @@ public class RestResponse {
     }
 
     public ValidatableResponse isEmpty() {
-        return validate("".equals(this.body));
+        return validate("".equals(this.body);
     }
 
     /**

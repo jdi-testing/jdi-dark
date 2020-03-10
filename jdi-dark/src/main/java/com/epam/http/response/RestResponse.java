@@ -119,7 +119,7 @@ public class RestResponse {
     }
 
     public ValidatableResponse isEmpty() {
-        return validate(r -> body.equals(""));
+        return validate("".equals(this.body));
     }
 
     /**
@@ -250,7 +250,7 @@ public class RestResponse {
             errors += format("Wrong status type %s. Expected: %s", status.type, rs.type) + LINE_BREAK;
         if (!status.text.equals(rs.text))
             errors += format("Wrong status text %s. Expected: %s", status.text, rs.text);
-        if (!errors.equals(""))
+        if (!"".equals(errors))
             throw exception(errors);
         return this;
     }

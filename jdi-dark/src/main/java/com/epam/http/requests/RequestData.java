@@ -13,10 +13,8 @@ import io.restassured.specification.ProxySpecification;
 import com.epam.jdi.tools.pairs.Pair;
 
 import java.io.File;
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

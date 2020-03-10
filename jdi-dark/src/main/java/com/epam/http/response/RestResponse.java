@@ -35,7 +35,7 @@ public class RestResponse {
     private ResponseStatus status = null;
     private String contentType = "";
 
-    public String ggtRestResponseBody(){
+    public String getRestResponseBody(){
         return body;
     }
     public void setRestResponseBody(String sBody){
@@ -49,7 +49,7 @@ public class RestResponse {
     public void  setResponseStatus(ResponseStatus status) {
         this.status = status;
     }
-    public String GetContentType() {return this.contentType; }
+    public String getContentType() {return this.contentType; }
     public void setContentType(String sContentType)
     {
         this.contentType = sContentType;
@@ -135,9 +135,6 @@ public class RestResponse {
         return this.status;
     }
 
-    public String getContentType() {
-        return this.contentType;
-    }
 
     public ValidatableResponse isEmpty() {
         return validate(r -> STRING_EMPTY.equals(body));

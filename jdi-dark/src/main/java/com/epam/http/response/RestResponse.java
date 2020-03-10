@@ -27,12 +27,33 @@ import static java.lang.String.format;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestResponse {
+    public static final String STRING_EMPTY ="";
 
     private final Response raResponse;
     private final long responseTimeMSec;
-    public String body = null;
-    public ResponseStatus status = null;
-    public String contentType = "";
+    private String body = null;
+    private ResponseStatus status = null;
+    private String contentType = "";
+
+    public String ggtRestResponseBody(){
+        return body;
+    }
+    public void setRestResponseBody(String sBody){
+        this.body = sBody;
+    }
+
+    public ResponseStatus getResponseStatus(){
+        return status;
+    }
+
+    public void  setResponseStatus(ResponseStatus status) {
+        this.status = status;
+    }
+    public String GetContentType() {return this.contentType; }
+    public void setContentType(String sContentType)
+    {
+        this.contentType = sContentType;
+    }
 
     public RestResponse() {
         this.raResponse = null;
@@ -119,7 +140,7 @@ public class RestResponse {
     }
 
     public ValidatableResponse isEmpty() {
-        return validate(r -> body.equals(""));
+        return validate(r -> STRING_EMPTY.equals(body));
     }
 
     /**
@@ -250,7 +271,7 @@ public class RestResponse {
             errors += format("Wrong status type %s. Expected: %s", status.type, rs.type) + LINE_BREAK;
         if (!status.text.equals(rs.text))
             errors += format("Wrong status text %s. Expected: %s", status.text, rs.text);
-        if (!errors.equals(""))
+        if (!"".equals(errors))
             throw exception(errors);
         return this;
     }

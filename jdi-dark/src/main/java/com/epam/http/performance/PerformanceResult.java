@@ -12,7 +12,7 @@ public class PerformanceResult {
     public long AverageResponseTime = 0;
     public long NumberOfRequests = 0;
     public long NumberOfFails = 0;
-    public boolean NoFails() {
+    public boolean noFails() {
         return NumberOfFails == 0;
     }
 

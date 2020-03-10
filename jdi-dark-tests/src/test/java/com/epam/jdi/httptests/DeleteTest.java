@@ -2,17 +2,12 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.map.MapArray;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestData.requestBody;
-import static com.epam.http.requests.RequestData.requestData;
-import static com.epam.http.requests.RequestData.requestQueryParams;
+import static com.epam.http.requests.RequestDataInfo.*;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.deleteBody;
-import static com.epam.jdi.httptests.JettyService.deleteCookie;
-import static com.epam.jdi.httptests.JettyService.deleteGreet;
+import static com.epam.jdi.httptests.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.assertEquals;
@@ -39,19 +34,18 @@ public class DeleteTest extends WithJetty {
 
     @Test
     public void requestSpecificationAllowsSpecifyingCookie() {
-        RestResponse response = deleteCookie.call(requestData(requestData ->
-                requestData.addCookies(new MapArray<>(new Object[][]{
-                        {USERNAME, FIRST_NAME_VALUE},
-                        {TOKEN, TOKEN_VALUE}
-                }))));
+        RestResponse response = deleteCookie.call(cookies().addAll(new Object[][]{
+            {USERNAME, FIRST_NAME_VALUE},
+            {TOKEN, TOKEN_VALUE}
+        }));
         assertEquals(response.body, "username, token");
     }
 
     @Test
     public void bodyHamcrestMatcherWithKey() {
-        deleteGreet.call(requestData(d -> {
-            d.queryParams.add(FIRST_NAME, FIRST_NAME_VALUE);
-            d.queryParams.add(LAST_NAME, LAST_NAME_VALUE);
+        deleteGreet.call(queryParams().addAll(new Object[][] {
+            { FIRST_NAME, FIRST_NAME_VALUE },
+            { LAST_NAME, LAST_NAME_VALUE }
         })).isOk().assertThat().body("greeting", equalTo("Greetings John Doe"));
     }
 

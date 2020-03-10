@@ -1,27 +1,14 @@
 package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettigns;
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.FormParameter;
-import com.epam.http.annotations.FormParameters;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.HEAD;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.Headers;
-import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.OPTIONS;
 import com.epam.http.annotations.PATCH;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.Proxy;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.ServiceDomain;
-import com.epam.http.annotations.TrustStore;
-import com.epam.http.annotations.URL;
+import com.epam.http.annotations.*;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
@@ -36,14 +23,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RestMethodTypes.DELETE;
-import static com.epam.http.requests.RestMethodTypes.GET;
-import static com.epam.http.requests.RestMethodTypes.HEAD;
-import static com.epam.http.requests.RestMethodTypes.OPTIONS;
-import static com.epam.http.requests.RestMethodTypes.PATCH;
-import static com.epam.http.requests.RestMethodTypes.POST;
-import static com.epam.http.requests.RestMethodTypes.PUT;
+import static com.epam.http.requests.RestMethodTypes.*;
 import static com.epam.jdi.tools.LinqUtils.where;
+import static com.epam.jdi.tools.ReflectionUtils.isClass;
 import static java.lang.reflect.Modifier.isStatic;
 
 /**
@@ -97,15 +79,16 @@ public class ServiceInit {
     public static <T> T init(Class<T> c, ServiceSettings serviceSettings) {
         preInit();
         List<Field> methods = where(c.getDeclaredFields(),
-                f -> f.getType().equals(RestMethod.class));
+                f -> isClass(f.getType(), RestMethod.class));
         for (Field method : methods) {
             try {
                 method.setAccessible(true);
+                Object rm = getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme());
                 if (isStatic(method.getModifiers()))
-                    method.set(null, getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme()));
+                    method.set(null, rm);
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
-                    method.set(getService(c), getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme()));
-            } catch (IllegalAccessException ex) {
+                    method.set(getService(c), rm);
+            } catch (Throwable ex) {
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
             }
         }
@@ -132,6 +115,7 @@ public class ServiceInit {
         }
     }
 
+
     /**
      * Check whether the annotation present and add these values to request data.
      *
@@ -141,21 +125,25 @@ public class ServiceInit {
      * @param objectMapper         custom ObjectMapper
      * @return http method with request data
      */
-    private static <T> RestMethod getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationScheme authenticationScheme) {
+    private static <T> Object getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationScheme authenticationScheme) {
         MethodData mtData = getMethodData(field);
-        String url = field.isAnnotationPresent(URL.class) ? field.getAnnotation(URL.class).value() : getDomain(c);
-        String path = mtData.getPath();
-
-        RestMethod method = new RestMethod(mtData.getType(), url, path, requestSpecification);
+        String url = field.isAnnotationPresent(URL.class)
+            ? field.getAnnotation(URL.class).value()
+            : getDomain(c);
+        String path = mtData.path;
+        RestMethod method = field.getType() == DataMethod.class
+            ? new DataMethod<>(field)
+            : new RestMethod();
+        method.setup(mtData.type, path, url, requestSpecification);
         method.setObjectMapper(objectMapper);
         method.setErrorHandler(errorHandler);
         method.setAuthenticationScheme(authenticationScheme);
         if (field.isAnnotationPresent(ContentType.class))
             method.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
-            method.addHeader(field.getAnnotation(Header.class));
+            method.header.add(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
-            method.addHeaders(field.getAnnotation(Headers.class).value());
+            method.header.addAll(field.getAnnotation(Headers.class).value());
         if (field.isAnnotationPresent(Cookie.class)) {
             setupCookie(method, field.getAnnotation(Cookie.class));
         }
@@ -166,42 +154,36 @@ public class ServiceInit {
         }
         /* Case for class annotations*/
         if (c.isAnnotationPresent(QueryParameter.class))
-            method.addQueryParameters(c.getAnnotation(QueryParameter.class));
+            method.queryParams.add(c.getAnnotation(QueryParameter.class));
         if (c.isAnnotationPresent(QueryParameters.class))
-            method.addQueryParameters(c.getAnnotation(QueryParameters.class).value());
+            method.queryParams.addAll(c.getAnnotation(QueryParameters.class).value());
         if (c.isAnnotationPresent(FormParameter.class))
-            method.addFormParameters(c.getAnnotation(FormParameter.class));
+            method.formParams.add(c.getAnnotation(FormParameter.class));
         if (c.isAnnotationPresent(FormParameters.class))
-            method.addFormParameters(c.getAnnotation(FormParameters.class).value());
-        if (c.isAnnotationPresent(TrustStore.class))
-            method.setTrustStore(c.getAnnotation(TrustStore.class));
+            method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
         /* Case for method annotations*/
         if (field.isAnnotationPresent(QueryParameter.class))
-            method.addQueryParameters(field.getAnnotation(QueryParameter.class));
+            method.queryParams.add(field.getAnnotation(QueryParameter.class));
         if (field.isAnnotationPresent(QueryParameters.class))
-            method.addQueryParameters(field.getAnnotation(QueryParameters.class).value());
+            method.queryParams.addAll(field.getAnnotation(QueryParameters.class).value());
         if (field.isAnnotationPresent(FormParameter.class))
-            method.addFormParameters(field.getAnnotation(FormParameter.class));
+            method.formParams.add(field.getAnnotation(FormParameter.class));
         if (field.isAnnotationPresent(FormParameters.class))
-            method.addFormParameters(field.getAnnotation(FormParameters.class).value());
+            method.formParams.addAll(field.getAnnotation(FormParameters.class).value());
         if (field.isAnnotationPresent(MultiPart.class))
-            method.addMultiPartParams(field.getAnnotation(MultiPart.class));
+            method.multipart.add(field.getAnnotation(MultiPart.class));
         if (field.isAnnotationPresent(Proxy.class))
             method.setProxy(field.getAnnotation(Proxy.class));
-        if (field.isAnnotationPresent(TrustStore.class))
-            method.setTrustStore(field.getAnnotation(TrustStore.class));
-
         return method;
     }
 
     private static void setupCookie(RestMethod method, Cookie cookie) {
         if (cookie.value().equals("[unassigned]")) {
-            method.addCookie(cookie.name());
-        } else if (cookie.additionalValues()[0].equals("[unassigned]")) {
-            method.addCookie(cookie.name(), cookie.value());
-        } else {
-            method.addCookie(cookie.name(), cookie.value(), cookie.additionalValues());
-        }
+            method.cookies.add(cookie.name());
+        } else
+            method.cookies.add(cookie);
+            if (!cookie.additionalValues()[0].equals("[unassigned]"))
+                method.cookies.add(cookie.name(), cookie.additionalValues());
     }
 
     /**
@@ -257,15 +239,11 @@ public class ServiceInit {
      * @return service domain string
      */
     private static <T> String getDomain(Class<T> c) {
-        if (c.isAnnotationPresent(ServiceDomain.class)) {
-            Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(c.getAnnotation(ServiceDomain.class).value());
-            if (m.find()) {
-                return JdiHttpSettigns.getDomain(m.group(1));
-            }
-            else {
-                return c.getAnnotation(ServiceDomain.class).value();
-            }
-        }
-        return JdiHttpSettigns.getDomain();
+        if (!c.isAnnotationPresent(ServiceDomain.class))
+            return JdiHttpSettigns.getDomain();
+        Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(c.getAnnotation(ServiceDomain.class).value());
+        return m.find()
+            ? JdiHttpSettigns.getDomain(m.group(1))
+            : c.getAnnotation(ServiceDomain.class).value();
     }
 }

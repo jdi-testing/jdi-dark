@@ -1,23 +1,18 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.*;
+import com.epam.http.requests.DataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.jdi.dto.Board;
 import com.epam.jdi.dto.Card;
 import com.epam.jdi.dto.Organization;
 import com.epam.jdi.dto.TrelloList;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static com.epam.http.requests.RequestData.requestPathParams;
+import static com.epam.http.requests.RequestDataInfo.requestPathParams;
 import static io.restassured.http.ContentType.JSON;
+import static java.util.Arrays.asList;
 
 @ServiceDomain("${trello}")
 @QueryParameters({
@@ -25,24 +20,23 @@ import static io.restassured.http.ContentType.JSON;
         @QueryParameter(name = "token", value = "a9b951262e529821308e7ecbc3e4b7cfb14a24fef5ea500a68c69d374009fcc0")
 })
 public class TrelloService {
-
     public static final String BOARDS = "/boards";
 
     @ContentType(JSON)
     @GET(BOARDS)
-    public static RestMethod<Board> boardsGet;
+    public static RestMethod boardsGet;
 
     @ContentType(JSON)
     @POST(BOARDS)
-    public static RestMethod<Board> boardsPost;
+    public static DataMethod<Board> boardsPost;
 
     public static Board createBoard(Board board) {
-        return boardsPost.post(board, Board.class);
+        return boardsPost.callObject(board);
     }
 
     @ContentType(JSON)
     @GET("/boards/{board_id}")
-    public static RestMethod<Board> getBoardById;
+    public static RestMethod getBoardById;
 
     public static Board getBoard(String boardId) {
         return getBoardById.call(requestPathParams("board_id", boardId)).getRaResponse().as(Board.class);
@@ -66,7 +60,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST("/cards")
-    public static RestMethod<Card> addNewCardToBoard;
+    public static RestMethod addNewCardToBoard;
 
     public static Card addNewCardToBoard(Card card) {
         return addNewCardToBoard.post(card, Card.class);
@@ -74,7 +68,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @GET("/cards/{id}/board")
-    public static RestMethod<Board> getCardBoard;
+    public static RestMethod getCardBoard;
 
     public static Board getCardBoard(String cardId) {
         return getCardBoard.call(requestPathParams("id", cardId)).getRaResponse().as(Board.class);
@@ -86,7 +80,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST("/lists")
-    public static RestMethod<TrelloList> createList;
+    public static RestMethod createList;
 
     public static TrelloList createList(TrelloList list) {
         return createList.post(list, TrelloList.class);
@@ -103,7 +97,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST("/organizations")
-    public static RestMethod<Organization> createOrganization;
+    public static RestMethod createOrganization;
 
     public static Organization createOrganization(Organization organization) {
         return createOrganization.post(organization, Organization.class);
@@ -111,9 +105,9 @@ public class TrelloService {
 
     @ContentType(JSON)
     @GET("/organizations/{id}/boards")
-    public static RestMethod<Board[]> getOrganizationBoards;
+    public static RestMethod getOrganizationBoards;
 
     public static List<Board> getOrganizationBoards(Organization organization) {
-        return Arrays.asList(getOrganizationBoards.call(requestPathParams("id", organization.getId())).getRaResponse().as(Board[].class));
+        return asList(getOrganizationBoards.call(requestPathParams("id", organization.id)).getRaResponse().as(Board[].class));
     }
 }

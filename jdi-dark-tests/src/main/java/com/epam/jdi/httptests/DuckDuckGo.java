@@ -6,7 +6,6 @@ import com.epam.http.requests.RestMethod;
 
 @ServiceDomain("https://duckduckgo.com/")
 public class DuckDuckGo {
-
     @GET("")
     static RestMethod simpleGet;
 }

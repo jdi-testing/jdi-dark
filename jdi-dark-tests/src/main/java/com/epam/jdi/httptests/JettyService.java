@@ -1,31 +1,17 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.FormParameter;
-import com.epam.http.annotations.FormParameters;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.MultiPart;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.Proxy;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.ServiceDomain;
-import com.epam.http.annotations.URL;
+import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-import static com.epam.http.requests.RequestData.requestData;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.http.ContentType.TEXT;
-import static io.restassured.http.ContentType.URLENC;
+import static com.epam.http.requests.RequestDataInfo.*;
+import static io.restassured.http.ContentType.*;
 
 @ServiceDomain("http://localhost:8080")
 public class JettyService {
@@ -37,17 +23,15 @@ public class JettyService {
     public static RestMethod getMultiCookieRequest;
 
     public static RestResponse getMultiCookiesArray(Object[][] cookiesArray) {
-        return getMultiCookieRequest.call(requestData(
-                requestData -> requestData.addCookies(cookiesArray)));
+        return getMultiCookieRequest.call(cookies().addAll(cookiesArray));
     }
 
     public static RestResponse getMultiCookieWithOneName(String name, String value1, String value2) {
-        return getMultiCookieRequest.call(requestData(
-                requestData -> requestData.addCookie(name, value1, value2)));
+        return getMultiCookieRequest.call(cookies().add(name, value1, value2));
     }
 
     public static RestResponse getMultiCookieSpecified(String name, String value) {
-        return getMultiCookieRequest.call(requestData(requestData -> requestData.addCookies(name, value)));
+        return getMultiCookieRequest.call(cookies().add(name, value));
     }
 
     @GET("/setCookies")
@@ -57,7 +41,7 @@ public class JettyService {
     public static RestMethod getCookieWithNoValue;
 
     public static RestResponse getCookieWithOnlyName(String name) {
-        return getCookieWithNoValue.call(requestData(requestData -> requestData.addCookie(name)));
+        return getCookieWithNoValue.call(cookies().add(name));
     }
 
     @GET("/response_cookie_with_no_value")
@@ -67,18 +51,15 @@ public class JettyService {
     public static RestMethod getCookie;
 
     public static RestResponse getCookieSpecifiedUsingMap(Map<String, String> cookieMap) {
-        return getCookie.call(requestData(
-                requestData -> requestData.addCookies(cookieMap)));
+        return getCookie.call(cookies().addAll(cookieMap));
     }
 
     public static RestResponse getMultipleCookieSpecifiedUsingMap(Map<String, String> cookieMap, String addCookieName, String addCookieValue) {
-        return JettyService.getCookie.call(requestData(
-                requestData -> requestData.addCookies(cookieMap).addCookies(addCookieName, addCookieValue)));
+        return JettyService.getCookie.call(cookies().addAll(cookieMap).addCookies(addCookieName, addCookieValue));
     }
 
     public static RestResponse getSpecifiedCookiePairs(String namePair1, String valuePair1, String namePair2, String valuePair2) {
-        return getCookie.call(requestData(
-                requestData -> requestData.addCookies(namePair1, valuePair1, namePair2, valuePair2)));
+        return getCookie.call(cookies().addAll(new Object[][]{{namePair1, valuePair1}, {namePair2, valuePair2}}));
     }
 
     @GET("/cookie")
@@ -86,27 +67,26 @@ public class JettyService {
             @Cookie(name = "token", value = "1234")})
     public static RestMethod getCookieWithCookies;
 
-    public void s(String c1, String v1) {
-        getCookieWithCookies.call();
-    }
-
     public static RestResponse getCookieWithNameValuePair(String name, String value) {
-        return getCookieWithCookies.call(requestData(requestData -> requestData.addCookies(name, value)));
+        return getCookieWithCookies.call(cookies().add(name, value));
     }
 
     @PUT("/cookie")
     public static RestMethod putCookie;
 
     @POST("/reflect")
-    public static RestMethod<Hello> postReflect;
+    public static RestMethod postReflect;
+
+    public static RestResponse postReflectWithBody(Object body) {
+        return postReflect.call(requestBody(body));
+    }
 
     public static RestResponse postEmptyCookie(String name) {
-        return postReflect.call(requestData(requestData -> requestData.addCookie(name)));
+        return postReflect.call(cookies().add(name));
     }
 
     public static RestResponse postSpecifiedCookie(String name, String value) {
-        return postReflect.call(requestData(requestData ->
-                requestData.addCookie(name, value)));
+        return postReflect.call(cookies().add(name, value));
     }
 
     @GET("/html_with_cookie")
@@ -126,20 +106,17 @@ public class JettyService {
 
     public static RestResponse getWithMultipleHeaders(
             io.restassured.http.Header... headerObjects) {
-        return getMultiHeaderReflect.call(
-                requestData(requestData -> requestData.addHeaders(headerObjects)));
+        return getMultiHeaderReflect.call(headers().addAll(headerObjects));
     }
 
     public static RestResponse getWithMultipleHeaders(
             Object[][] headers) {
-        return getMultiHeaderReflect.call(requestData(requestData ->
-                requestData.addHeaders(headers)));
+        return getMultiHeaderReflect.call(rd -> rd.addHeaders(headers));
     }
 
     public static RestResponse getWithSingleHeader(
             String name, String value, String... additionalValues) {
-        return getMultiHeaderReflect.call(requestData(requestData ->
-                requestData.addHeader(name, value, additionalValues)));
+        return getMultiHeaderReflect.call(rd -> rd.addHeader(name, value, additionalValues));
     }
 
     @DELETE("/cookie")
@@ -147,6 +124,10 @@ public class JettyService {
 
     @GET("/greet")
     public static RestMethod getGreet;
+
+    public static RestResponse getGreetWithMapOfQueryParams(Map<String, String> queryParamsMap) {
+        return getGreet.call(rd -> rd.queryParams.addAll(queryParamsMap));
+    }
 
     @DELETE("/greet")
     public static RestMethod deleteGreet;
@@ -162,21 +143,53 @@ public class JettyService {
     @POST("/jsonBody")
     public static RestMethod jsonBodyPost;
 
+    public static RestResponse jsonBodyPost(String body) {
+        return jsonBodyPost.call(requestBody(body));
+    }
+
     @POST("/secured/hello")
     public static RestMethod unauthorizedPost;
 
     @POST("/cookie")
     public static RestMethod cookiePost;
 
+    public static RestResponse cookiePost(String name, String value, Object... cookieNameValuePairs) {
+        return cookiePost.call(rd -> rd.addCookies(name, value, cookieNameValuePairs));
+    }
+
     @POST("/param-reflect")
     public static RestMethod paramUrlPost;
+
+    public static RestResponse paramUrlPostWithKeyValueQueryParam(String formParamKey, String formParamValue) {
+        return paramUrlPost.call(requestQueryParams(formParamKey, formParamValue));
+    }
 
     @ContentType(TEXT)
     @POST("/body")
     public static RestMethod bodyPost;
 
+    public static RestResponse bodyPost(Object body) {
+        return postReflect.call(requestBody(body));
+    }
+
     @POST("/greet")
     public static RestMethod greetPost;
+
+    public static RestResponse greetPostWithContentTypeAndMapOfFormParams(
+            String contentType, Map<String, String> formParamsMap) {
+        return greetPost.call(rd -> {
+            rd.setContentType(contentType);
+            rd.formParams.addAll(formParamsMap);
+        });
+    }
+
+    public static RestResponse greetPostWithStringOfQueryParams(String queryParams) {
+        return greetPost.call(queryParams);
+    }
+
+    public static RestResponse greetPost(Object[][] queryParams) {
+        return greetPost.call(requestQueryParams(queryParams));
+    }
 
     @POST("/notexist")
     public static RestMethod notFoundedURIPost;
@@ -186,23 +199,23 @@ public class JettyService {
     public static RestMethod headerPost;
 
     @GET("/hello")
-    public static RestMethod<Hello> getHello;
+    public static RestMethod getHello;
 
     @QueryParameters({
             @QueryParameter(name = "firstName", value = "John"),
             @QueryParameter(name = "lastName", value = "Doe")
     })
     @GET("/greetXML")
-    public static RestMethod<Greeting> getGreetXml;
+    public static RestMethod getGreetXml;
 
     @GET("/mimeTypeWithPlusJson")
-    public static RestMethod<Message> getMimeType;
+    public static RestMethod getMimeType;
 
     @GET("/shopping")
     public static RestMethod getShopping;
 
     @GET("/products")
-    public static RestMethod<Product[]> getProducts;
+    public static RestMethod getProducts;
 
     public static List<Product> getProducts() {
         return Arrays.asList(getProducts.callAsData(Product[].class));
@@ -227,24 +240,59 @@ public class JettyService {
     @GET("/noValueParam")
     public static RestMethod getNoValueParam;
 
+    public static RestResponse getNoValueParamWithKeyValueQueryParam(String paramName, String paramValue) {
+        return getNoValueParam.call(rd -> rd.queryParams.add(paramName, paramValue));
+    }
+
+    public static RestResponse getNoValueParamWithStringQueryParams(String queryParam) {
+        return getNoValueParam.call(queryParam);
+    }
+
     @PUT("/noValueParam")
     public static RestMethod putNoValueParam;
 
+    public static RestResponse putNoValueParamWithKeyValueFormParam(
+            String formParamKey, String formParamValue) {
+        return putNoValueParam.call(rd -> rd.formParams.add(formParamKey, formParamValue));
+    }
+
     @POST("/noValueParam")
     public static RestMethod postNoValueParam;
+
+    public static RestResponse postNoValueParamWithKeyValueFormParam(
+            String formParamKey, String formParamValue) {
+        return postNoValueParam.call(rd -> rd.formParams.add(formParamKey, formParamValue));
+    }
+
+    public static RestResponse postNoValueParamWithMapOfFormParams(Map<String, String> formParamsMap) {
+        return postNoValueParam.call(rd -> rd.formParams.addAll(formParamsMap));
+    }
 
     @POST("/noValueParam")
     @FormParameters(
             @FormParameter(name = "some1", value = "one")
     )
-    public static RestMethod postNoValueParamDefinedFormParam;
+    public static RestMethod postNoValueParamWithPreDefinedFormParam;
+
+    public static RestResponse postNoValueParamWithPreDefinedFormParamAndNewKeyValueParam(
+            String addedFormParamKey, String addedFormParamValue) {
+        return postNoValueParamWithPreDefinedFormParam.call((rd -> rd.formParams.add(addedFormParamKey, addedFormParamValue)));
+    }
 
     @POST("/charEncoding")
     public static RestMethod postCharEncoding;
 
+    public static RestResponse postCharEncodingWithContentTypeAndKeyValueFormParam(
+            String contentType, String formParamKey, String formParamValue) {
+        return postCharEncoding.call(rd -> {
+            rd.contentType = contentType;
+            rd.formParams.add(formParamKey, formParamValue);
+        });
+    }
+
     @POST("/reflect")
     @ContentType(JSON)
-    public static RestMethod<Hello> postObject;
+    public static RestMethod postObject;
 
     @GET("/redirect")
     @Header(name = "Redirect_test_header", value = "Redirect_test_header_value")
@@ -253,8 +301,25 @@ public class JettyService {
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;
 
+    public static RestResponse getUserPathParamsSetByArray(Object[][] array) {
+        return getUser.call(requestPathParams(array));
+    }
+
+    public static RestResponse getUserPathParamsSetByMap(Map<String, String> params) {
+        return getUser.call(rd -> rd.pathParams.addAll(params));
+    }
+
+    public static void getUserPassPathParamsSetByArray(Object[][] array) {
+        getUser.call(requestPathParams(array));
+    }
+
     @GET("/{firstName}/{firstName}")
     public static RestMethod getUserSameParameters;
+
+    public static RestResponse getUserSameParametersSetByArray(Object[][] array) {
+        return getUserSameParameters
+                .call(requestPathParams(array));
+    }
 
     @GET("/{firstName}/{middleName}/{lastName}")
     public static RestMethod getUserWithLastName;
@@ -263,17 +328,34 @@ public class JettyService {
     @GET("/search?q={query}&hl=en")
     public static RestMethod searchGoogle;
 
+    public static RestResponse searchGoogleSpecificParam(String param) {
+        return searchGoogle.call(param);
+    }
+
     @GET("/{channelName}/item-import/rss/import?source={url}")
     public static RestMethod getMixedparam;
 
     @GET("/{path}.json")
     public static RestMethod getParamBeforePath;
 
+    public static RestResponse getNamedParamBeforePath(String paramName, String paramValue) {
+        return getParamBeforePath.call(requestPathParams(paramName, paramValue));
+    }
+
     @GET("/something.{format}")
     public static RestMethod getParamAfterPath;
 
+    public static RestResponse getNamedParamAfterPath(String paramName, String paramValue) {
+        return getParamAfterPath.call(requestPathParams(paramName, paramValue));
+    }
+
     @GET("/matrix;{abcde}={value}")
     public static RestMethod getMatrix;
+
+    public static RestResponse getMatrixPathParamsSetByArray(Object[][] array) {
+        return getMatrix
+                .call(requestPathParams(array));
+    }
 
     @GET("/cookie_with_no_value")
     @Cookie(name = "some_cookie")
@@ -314,6 +396,14 @@ public class JettyService {
     @POST("multipart/multiple")
     public static RestMethod postMultipartMultiple;
 
+    public static RestResponse postMultipartMultipleWithFormParamsAndMultiPartBuilders(Map<String, String> formParamsMap,
+                                                                                       MultiPartSpecBuilder... multiPartSpecBuilders) {
+        return postMultipartMultiple.call(rd -> {
+            rd.formParams.addAll(formParamsMap);
+            Arrays.stream(multiPartSpecBuilders).forEach(rd::setMultiPart);
+        });
+    }
+
     @GET("/returnContentTypeAsBody")
     public static RestMethod getReturnContentTypeAsBody;
 
@@ -334,6 +424,13 @@ public class JettyService {
 
     @POST("/jsonBodyAcceptHeader")
     public static RestMethod postJsonBodyAcceptHeader;
+
+    public static RestResponse postJsonBodyAcceptHeader(String headerName, String headerValue, String body) {
+        return postJsonBodyAcceptHeader.call((rd -> {
+            rd.addHeader(headerName, headerValue);
+            rd.body = body;
+        }));
+    }
 
     @GET("/greetJSON")
     @Proxy(host = "127.0.0.1", port = 8888, scheme = "http")

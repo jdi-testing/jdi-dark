@@ -7,13 +7,12 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.specification.RequestSpecification;
-import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.nio.charset.StandardCharsets;
-import static com.epam.http.requests.RequestData.requestData;
 
+import static com.epam.http.requests.RequestDataInfo.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getContentTypeAsBody;
 import static com.epam.jdi.httptests.JettyService.getHeadersWithValues;
@@ -26,6 +25,8 @@ import static com.epam.jdi.httptests.JettyService.postReturnContentTypeAsBody;
 import static com.epam.jdi.httptests.JettyService.postTextUriList;
 import static com.epam.jdi.httptests.JettyService.putReflect;
 import static io.restassured.RestAssured.config;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.remove;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
@@ -54,30 +55,31 @@ public class ContentTypeTests extends WithJetty {
                 .assertThat().contentType(ContentType.JSON).and().assertThat().statusCode(204);
     }
 
-    @Test public void
+    @Test
+    public void
     contentTypeIsSentToTheServerWhenUsingAGetRequest() {
-        getContentTypeAsBody.call(requestData(d -> {
-            d.queryParams.add("foo", "bar");
-            d.contentType = ContentType.XML.withCharset("utf-8").toString();
-        })).assertThat().body(equalTo(ContentType.XML.withCharset("utf-8")));
+        getContentTypeAsBody.call(rd -> {
+            rd.queryParams.add("foo", "bar");
+            rd.contentType = ContentType.XML.withCharset("utf-8");
+        }).assertThat().body(equalTo(ContentType.XML.withCharset("utf-8")));
     }
 
     @Test
     public void noContentTypeIsSentByDefaultWhenUsingGetRequest() {
         RestResponse response = getContentTypeAsBody
-                .call(requestData(d ->
-                        d.queryParams.add("foo", "bar")));
+                .call(rd ->
+                        rd.queryParams.add("foo", "bar"));
         response.assertThat().body(equalTo("null"));
     }
 
     @Test
     public void whenFormParamAreSuppliedWithGetRequestAndContentTypeIsExplicitlyDefinedThenContentTypeIsNotAutomaticallySetToFormEncoded() {
         RestResponse response = getReturnContentTypeAsBody
-                .call(requestData(d -> {
-                    d.contentType = ContentType.JSON.toString();
-                    d.queryParams.add("firstName", "John");
-                    d.queryParams.add("lastName", "Doe");
-                }));
+                .call(rd -> {
+                    rd.contentType = ContentType.JSON.toString();
+                    rd.queryParams.add("firstName", "John");
+                    rd.queryParams.add("lastName", "Doe");
+                });
         response.isOk().assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
     }
 
@@ -90,10 +92,10 @@ public class ContentTypeTests extends WithJetty {
                 "tag:foo@example.com,2012-07-01:bright-copper-kettles\n" +
                 "urn:isbn:0-061-99881-8";
         RestResponse response = postTextUriList
-                .call(requestData(d -> {
-                    d.contentType = "application/uri-list+text";
-                    d.body = uriList;
-                }));
+                .call(rd -> {
+                    rd.contentType = "application/uri-list+text";
+                    rd.body = uriList;
+                });
         response.isOk().assertThat().body("uris.size()", is(6));
     }
 
@@ -106,26 +108,24 @@ public class ContentTypeTests extends WithJetty {
                 "tag:foo@example.com,2012-07-01:bright-copper-kettles\n" +
                 "urn:isbn:0-061-99881-8";
         RestResponse response = postTextUriList
-                .call(requestData(d -> {
-                    d.contentType = "text/uri-list";
-                    d.body = uriList;
-                }));
+                .call(rd -> {
+                    rd.contentType = "text/uri-list";
+                    rd.body = uriList;
+                });
         response.isOk().assertThat().body("uris.size()", is(6));
     }
 
     @Test
     public void contentTypeIsTextPlainWithDefaultCharsetWhenNoContentTypeIsSpecifiedForPutRequests() {
-        RestResponse response = putReflect
-                .call(requestData(d ->
-                        d.queryParams.add("foo", "bar")));
+        RestResponse response = putReflect.call(queryParams().add("foo", "bar"));
         response.isOk().contentType(toJetty9(ContentType.TEXT.withCharset(config().getEncoderConfig().defaultContentCharset())));
     }
 
     @Test
     public void contentTypeIsApplicationXWwwFormUrlencodedWithDefaultCharsetWhenNoContentTypeIsSpecifiedForPostRequests() {
         RestResponse response = postContentTypeAsBody
-                .call(requestData(d ->
-                        d.queryParams.add("foo", "bar")));
+                .call(rd ->
+                        rd.queryParams.add("foo", "bar"));
         response.assertThat().body(equalTo(ContentType.URLENC.withCharset(config().getEncoderConfig().defaultContentCharset())));
     }
 
@@ -133,16 +133,14 @@ public class ContentTypeTests extends WithJetty {
     public void contentTypeValidationIsCaseInsensitive() {
         // Since we provide no content-type (null) Scalatra will return a default content-type which is the
         // same as specified in config().getEncoderConfig().defaultContentCharset() but with charset as lower case.
-        getReflect.call(requestData(d ->
-                d.queryParams.add("foo", "bar")))
+        getReflect.call(rd -> rd.queryParams.add("foo", "bar"))
                 .assertThat().contentType(toJetty9(ContentType.TEXT.withCharset(config().getEncoderConfig().defaultContentCharset())));
     }
 
     @Test
     public void headerWithContentTypeEnumWorks() {
         postReturnContentTypeAsBody
-                .call(requestData(d ->
-                        d.headers = new Headers(new Header("Content-Type", ContentType.JSON.toString()))))
+                .call(rd -> rd.headers = new Headers(new Header("Content-Type", ContentType.JSON.toString())))
                 .assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
     }
 
@@ -175,7 +173,7 @@ public class ContentTypeTests extends WithJetty {
     }
 
     private String toJetty9(String charset) {
-        return StringUtils.lowerCase(StringUtils.remove(charset, " "));
+        return lowerCase(remove(charset, " "));
     }
 
     @Test
@@ -210,14 +208,15 @@ public class ContentTypeTests extends WithJetty {
                 .isOk().assertThat().body(equalTo(ContentType.JSON.withCharset(StandardCharsets.ISO_8859_1.toString())));
     }
 
-    @Test (expectedExceptions = {IllegalArgumentException.class},
+    @Test(expectedExceptions = {IllegalArgumentException.class},
             expectedExceptionsMessageRegExp =
                     ".* know how to encode encode as a byte stream.\n\nPlease use EncoderConfig .*" +
                             ".*to specify how to serialize data for this content-type.*")
     public void showsANiceErrorMessageWhenFailedToEncodeContent() throws Exception {
-        postTextUriList.call(requestData(d -> {
-            d.contentType = "my-text";
-            d.body = "encode";}));
+        postTextUriList.call(rd -> {
+            rd.contentType = "my-text";
+            rd.body = "encode";
+        });
     }
 
     @Test

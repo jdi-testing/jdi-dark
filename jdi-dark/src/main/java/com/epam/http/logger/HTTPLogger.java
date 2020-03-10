@@ -9,12 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
-import static com.epam.http.logger.LogLevels.DEBUG;
-import static com.epam.http.logger.LogLevels.INFO;
-import static com.epam.http.logger.LogLevels.OFF;
-import static com.epam.http.logger.LogLevels.STEP;
-import static com.epam.http.logger.LogLevels.TRACE;
-import static com.epam.http.logger.LogLevels.getLog4j2Level;
+import static com.epam.http.logger.LogLevels.*;
 import static com.epam.jdi.tools.StringUtils.format;
 import static org.apache.logging.log4j.LogManager.getLogger;
 import static org.apache.logging.log4j.core.config.Configurator.setLevel;

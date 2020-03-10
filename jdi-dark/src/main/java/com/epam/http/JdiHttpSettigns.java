@@ -27,16 +27,15 @@ public class JdiHttpSettigns {
     public static Map<String, String> DOMAIN = new HashMap<>();
 
     public static String getDomain() {
-        if (!DOMAIN.isEmpty())
-            return DOMAIN.get("domain");
-        return "No Domain Found. Use test.properties or WebSettings.DOMAIN";
+        return !DOMAIN.isEmpty()
+            ? DOMAIN.get("domain")
+            : "No Domain Found. Use test.properties or WebSettings.DOMAIN";
     }
 
     public static String getDomain(String domainId) {
-        if (!DOMAIN.isEmpty()) {
-            return DOMAIN.containsKey(domainId) ? DOMAIN.get(domainId) : "No Domain Found. Use test.properties.";
-        }
-        return "No Domain Found. Use test.properties.";
+        return !DOMAIN.isEmpty()
+            ? DOMAIN.getOrDefault(domainId, "No Domain Found. Use test.properties.")
+            : "No Domain Found. Use test.properties.";
     }
 
     public static void setDomain(String domain) {
@@ -81,7 +80,7 @@ public class JdiHttpSettigns {
     private static Properties getCiProperties(String path, File propertyFile) {
         Properties properties = new Properties();
         try {
-            System.out.println("Property file found: " + propertyFile.getAbsolutePath());
+            logger.debug("Property file found: " + propertyFile.getAbsolutePath());
             properties.load(new FileInputStream(propertyFile));
         } catch (IOException ex) {
             throw new RuntimeException("Couldn't load properties for CI Server" + path);

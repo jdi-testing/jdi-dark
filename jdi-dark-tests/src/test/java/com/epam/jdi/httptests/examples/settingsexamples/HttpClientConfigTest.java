@@ -1,7 +1,8 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.settingsexamples;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;

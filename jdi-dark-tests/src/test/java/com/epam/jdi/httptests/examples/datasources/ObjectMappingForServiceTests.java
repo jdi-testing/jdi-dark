@@ -1,6 +1,10 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.datasources;
 
 import com.epam.http.requests.ServiceSettings;
+import com.epam.jdi.httptests.Hello;
+import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.httptests.Message;
+import com.epam.jdi.httptests.Product;
 import com.epam.jdi.httptests.support.WithJetty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import io.restassured.internal.mapping.Jackson2Mapper;

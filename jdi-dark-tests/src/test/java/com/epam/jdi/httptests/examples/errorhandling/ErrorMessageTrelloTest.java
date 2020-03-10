@@ -1,12 +1,16 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.errorhandling;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.TrelloService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestDataInfo.*;
+import static com.epam.http.requests.RequestDataInfo.requestPathParams;
+import static com.epam.http.requests.RequestDataInfo.requestQueryParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloService.*;
+import static com.epam.jdi.httptests.TrelloService.deleteACardFromBoard;
+import static com.epam.jdi.httptests.TrelloService.getBoardById;
+import static com.epam.jdi.httptests.TrelloService.postNewCommentToCard;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 

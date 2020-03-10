@@ -1,6 +1,7 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.setparamsrequest;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.RestAssured;
 import org.testng.annotations.BeforeClass;
@@ -11,7 +12,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.*;
+import static com.epam.jdi.httptests.JettyService.getMatrixPathParamsSetByArray;
+import static com.epam.jdi.httptests.JettyService.getMixedparam;
+import static com.epam.jdi.httptests.JettyService.getNamedParamAfterPath;
+import static com.epam.jdi.httptests.JettyService.getNamedParamBeforePath;
+import static com.epam.jdi.httptests.JettyService.getParamAfterPath;
+import static com.epam.jdi.httptests.JettyService.getParamBeforePath;
+import static com.epam.jdi.httptests.JettyService.getUser;
+import static com.epam.jdi.httptests.JettyService.getUserPassPathParamsSetByArray;
+import static com.epam.jdi.httptests.JettyService.getUserPathParamsSetByArray;
+import static com.epam.jdi.httptests.JettyService.getUserPathParamsSetByMap;
+import static com.epam.jdi.httptests.JettyService.getUserSameParametersSetByArray;
+import static com.epam.jdi.httptests.JettyService.searchGoogleSpecificParam;
 import static org.hamcrest.Matchers.equalTo;
 
 public class PathParamTests extends WithJetty {

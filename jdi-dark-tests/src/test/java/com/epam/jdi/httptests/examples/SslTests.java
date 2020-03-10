@@ -1,5 +1,6 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples;
 
+import com.epam.jdi.httptests.DuckDuckGo;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 

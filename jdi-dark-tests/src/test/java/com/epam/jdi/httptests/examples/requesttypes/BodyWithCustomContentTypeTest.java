@@ -1,6 +1,7 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.requesttypes;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import org.hamcrest.core.IsEqual;
 import org.testng.annotations.BeforeTest;

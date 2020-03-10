@@ -1,10 +1,11 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.errorhandling;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Organization;
+import com.epam.jdi.httptests.TrelloService;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

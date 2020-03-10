@@ -1,5 +1,6 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.setparamsrequest;
 
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.builder.MultiPartSpecBuilder;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 /**
  * This class is using for param cases for JettyService

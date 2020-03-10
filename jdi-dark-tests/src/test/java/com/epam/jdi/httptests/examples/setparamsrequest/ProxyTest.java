@@ -1,5 +1,6 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.setparamsrequest;
 
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.specification.ProxySpecification;
 import org.apache.commons.io.FileUtils;

@@ -1,14 +1,17 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.authorization;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.AuthorizationPostman;
 import io.restassured.authentication.BasicAuthScheme;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.AuthorizationPostman.*;
+import static com.epam.jdi.httptests.AuthorizationPostman.callPostmanAuthBasic;
+import static com.epam.jdi.httptests.AuthorizationPostman.callPostmanCustomAuth;
+import static com.epam.jdi.httptests.AuthorizationPostman.callPostmanServiceAuthBasic;
 import static com.epam.jdi.httptests.utils.Defaults.defaultOauthScheme;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;

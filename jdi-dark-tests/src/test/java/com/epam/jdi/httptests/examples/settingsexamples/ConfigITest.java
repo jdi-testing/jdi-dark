@@ -1,6 +1,7 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.settingsexamples;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.JsonConfig;
@@ -15,7 +16,9 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.*;
+import static com.epam.jdi.httptests.JettyService.getJsonStore;
+import static com.epam.jdi.httptests.JettyService.getRedirect;
+import static com.epam.jdi.httptests.JettyService.postReflect;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 

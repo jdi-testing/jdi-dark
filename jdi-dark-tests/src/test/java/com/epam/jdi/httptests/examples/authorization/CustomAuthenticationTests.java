@@ -1,7 +1,8 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.authorization;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.AuthorizationPostman;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

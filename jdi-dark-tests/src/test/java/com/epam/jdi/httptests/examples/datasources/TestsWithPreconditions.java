@@ -1,6 +1,7 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.datasources;
 
 import com.epam.jdi.dto.Board;
+import com.epam.jdi.httptests.TrelloService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.testng.Assert;

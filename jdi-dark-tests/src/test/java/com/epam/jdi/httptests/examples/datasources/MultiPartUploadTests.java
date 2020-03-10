@@ -1,5 +1,6 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.datasources;
 
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.BeforeTest;

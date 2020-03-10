@@ -1,13 +1,19 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.requesttypes;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestDataInfo.*;
+import static com.epam.http.requests.RequestDataInfo.cookies;
+import static com.epam.http.requests.RequestDataInfo.queryParams;
+import static com.epam.http.requests.RequestDataInfo.requestBody;
+import static com.epam.http.requests.RequestDataInfo.requestQueryParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.*;
+import static com.epam.jdi.httptests.JettyService.deleteBody;
+import static com.epam.jdi.httptests.JettyService.deleteCookie;
+import static com.epam.jdi.httptests.JettyService.deleteGreet;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.assertEquals;

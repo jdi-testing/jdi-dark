@@ -1,6 +1,8 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.authorization;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.PostmanAuth;
+import com.epam.jdi.httptests.PostmanInfo;
 import com.wealdtech.hawk.Hawk;
 import com.wealdtech.hawk.HawkCredentials;
 import io.restassured.specification.RequestSpecification;

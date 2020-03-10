@@ -1,7 +1,8 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.setparamsrequest;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Cookie;
@@ -20,7 +21,12 @@ import java.util.Map;
 import static com.epam.http.requests.ServiceInit.init;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class CookiesTests extends WithJetty {
 

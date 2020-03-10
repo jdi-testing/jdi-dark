@@ -1,6 +1,7 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.setparamsrequest;
 
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.httptests.Config;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;

@@ -3,24 +3,24 @@
 <suite name="Http tests" parallel="methods" thread-count="1">
     <test name="Tests">
         <classes>
-            <class name="com.epam.jdi.httptests.AdvancedValidationTest"/>
-            <class name="com.epam.jdi.httptests.BodyWithCustomContentTypeTest"/>
-            <class name="com.epam.jdi.httptests.CookiesTests"/>
-            <class name="com.epam.jdi.httptests.DeleteTest"/>
-            <class name="com.epam.jdi.httptests.ErrorMessageTrelloTest"/>
-            <class name="com.epam.jdi.httptests.HeaderTests"/>
-            <class name="com.epam.jdi.httptests.JSONPostTests"/>
-            <class name="com.epam.jdi.httptests.MultiPartUploadTests"/>
-            <class name="com.epam.jdi.httptests.ObjectMappingForServiceTests"/>
-            <class name="com.epam.jdi.httptests.ParamTest"/>
-            <class name="com.epam.jdi.httptests.PerformanceTests"/>
-            <class name="com.epam.jdi.httptests.PostmanAuthTests"/>
-            <class name="com.epam.jdi.httptests.PathParamTests"/>
-            <class name="com.epam.jdi.httptests.ResponseTests"/>
-            <class name="com.epam.jdi.httptests.ServiceTest"/>
-            <class name="com.epam.jdi.httptests.TrelloTests"/>
-            <class name="com.epam.jdi.httptests.ContentTypeTests"/>
-            <class name="com.epam.jdi.httptests.TestsWithPreconditions"></class>
+            <class name="com.epam.jdi.httptests.examples.validationresponse.AdvancedValidationTest"/>
+            <class name="com.epam.jdi.httptests.examples.requesttypes.BodyWithCustomContentTypeTest"/>
+            <class name="com.epam.jdi.httptests.examples.setparamsrequest.CookiesTests"/>
+            <class name="com.epam.jdi.httptests.examples.requesttypes.DeleteTest"/>
+            <class name="com.epam.jdi.httptests.examples.errorhandling.ErrorMessageTrelloTest"/>
+            <class name="com.epam.jdi.httptests.examples.setparamsrequest.HeaderTests"/>
+            <class name="com.epam.jdi.httptests.examples.requesttypes.JSONPostTests"/>
+            <class name="com.epam.jdi.httptests.examples.datasources.MultiPartUploadTests"/>
+            <class name="com.epam.jdi.httptests.examples.datasources.ObjectMappingForServiceTests"/>
+            <class name="com.epam.jdi.httptests.examples.setparamsrequest.ParamTest"/>
+            <class name="com.epam.jdi.httptests.examples.PerformanceTests"/>
+            <class name="com.epam.jdi.httptests.examples.authorization.PostmanAuthTests"/>
+            <class name="com.epam.jdi.httptests.examples.setparamsrequest.PathParamTests"/>
+            <class name="com.epam.jdi.httptests.examples.validationresponse.ResponseTests"/>
+            <class name="com.epam.jdi.httptests.examples.ServiceTest"/>
+            <class name="com.epam.jdi.httptests.examples.TrelloTests"/>
+            <class name="com.epam.jdi.httptests.examples.setparamsrequest.ContentTypeTests"/>
+            <class name="com.epam.jdi.httptests.examples.datasources.TestsWithPreconditions"></class>
         </classes>
     </test>
 </suite>

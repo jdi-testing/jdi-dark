@@ -1,11 +1,17 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.validationresponse;
 
+import com.epam.jdi.httptests.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 /**
  * This class is using for advanced validation cases for JettyService

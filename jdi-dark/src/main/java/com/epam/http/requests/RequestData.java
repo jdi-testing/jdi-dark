@@ -10,6 +10,7 @@ import io.restassured.http.*;
 import io.restassured.internal.MapCreator;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
+import com.epam.jdi.tools.pairs.Pair;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class RequestData extends DataClass<RequestData> {
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
     public ProxySpecification proxySpecification = null;
     public AuthenticationScheme authenticationScheme = null;
+    public Pair<String, String> trustStore = null;
+//            new Pair<>(null,null);
 
     public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
     /**
@@ -96,6 +99,17 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
+     * Set trustStore parameters to request data.
+     *
+     * @param pathToJks pathToJks
+     * @param password password
+     */
+    public RequestData requestTrustStore(String pathToJks, String password){
+        this.trustStore = new Pair<>(pathToJks, password);
+        return this;
+    }
+
+    /**
      * Clean Custom user Request data to avoid using old data in new requests
      */
     public void clear() {
@@ -112,6 +126,7 @@ public class RequestData extends DataClass<RequestData> {
         multiPartSpecifications.clear();
         proxySpecification = null;
         authenticationScheme = null;
+        trustStore = null;
     }
 
     /**

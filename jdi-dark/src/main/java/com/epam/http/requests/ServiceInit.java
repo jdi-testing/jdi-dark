@@ -161,6 +161,8 @@ public class ServiceInit {
             method.formParams.add(c.getAnnotation(FormParameter.class));
         if (c.isAnnotationPresent(FormParameters.class))
             method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
+        if (c.isAnnotationPresent(TrustStore.class))
+            method.setTrustStore(c.getAnnotation(TrustStore.class));
         /* Case for method annotations*/
         if (field.isAnnotationPresent(QueryParameter.class))
             method.queryParams.add(field.getAnnotation(QueryParameter.class));
@@ -174,6 +176,8 @@ public class ServiceInit {
             method.multipart.add(field.getAnnotation(MultiPart.class));
         if (field.isAnnotationPresent(Proxy.class))
             method.setProxy(field.getAnnotation(Proxy.class));
+        if (field.isAnnotationPresent(TrustStore.class))
+            method.setTrustStore(field.getAnnotation(TrustStore.class));
         return method;
     }
 

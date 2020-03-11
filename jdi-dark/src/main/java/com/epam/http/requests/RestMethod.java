@@ -1,13 +1,14 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.Proxy;
+import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.requests.updaters.*;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
-import com.epam.jdi.tools.func.JAction2;
+import com.epam.jdi.tools.func.JFunc2;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
@@ -15,6 +16,7 @@ import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
+import com.epam.jdi.tools.pairs.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -46,7 +48,7 @@ public class RestMethod {
 
     private RequestSpecification spec = given();
     private String url = null;
-    public String path = null;
+    private String path = null;
     private ObjectMapper objectMapper = null;
 
     public RequestData getData() {
@@ -141,7 +143,6 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
-
     public void setup(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
         this.type = type;
         this.path = path;
@@ -194,6 +195,16 @@ public class RestMethod {
         data.contentType = ct.toString();
     }
 
+    //    /**
+//     * Set trustStore parameters to the request.
+//     *
+//     * @param trustStore trustStore
+//     */
+
+    public void setTrustStore(TrustStore trustStore) {
+        data.trustStore = new Pair(trustStore.pathToJks(), trustStore.password());
+    }
+
     /**
      * Set proxy parameters to the request.
      *
@@ -203,15 +214,15 @@ public class RestMethod {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
 
-    public static JAction2<RestMethod, List<RequestData>> LOG_REQUEST = RestMethod::logRequest;
+    public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
 
-    public void logRequest(List<RequestData> rds) {
+    public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
             maps.addAll(rd.fields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
-        startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
+        return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
                 format("%s %s%s  %s", type, url != null ? url : "", path != null ? path : "", maps));
     }
 
@@ -229,9 +240,9 @@ public class RestMethod {
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
-        LOG_REQUEST.execute(this, asList(data, userData));
+        String startUuid = LOG_REQUEST.execute(this, asList(data, userData));
         userData.clear();
-        RestResponse response = doRequest(type, runSpec);
+        RestResponse response = doRequest(type, runSpec, startUuid);
         handleResponse(response);
         return response;
     }
@@ -254,8 +265,8 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
-        LOG_REQUEST.execute(this, singletonList(data));
-        return doRequest(type, runSpec);
+        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
+        return doRequest(type, runSpec, startUuid);
     }
 
     /**
@@ -269,8 +280,8 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
-        LOG_REQUEST.execute(this, singletonList(data));
-        return doRequest(type, runSpec);
+        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
+        return doRequest(type, runSpec, startUuid);
     }
 
     /**
@@ -443,12 +454,15 @@ public class RestMethod {
         if (requestData.contentType != null) {
             userData.contentType = requestData.contentType;
         }
-        if (!requestData.multiPartSpecifications.isEmpty()) {
+        if (requestData.multiPartSpecifications.size() > 0) {
             userData.multiPartSpecifications = requestData.multiPartSpecifications;
         }
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
+        userData.trustStore = requestData.trustStore == null
+            ? data.trustStore
+            : requestData.trustStore;
         userData.authenticationScheme = requestData.authenticationScheme == null
                 ? data.authenticationScheme
                 : requestData.authenticationScheme;
@@ -511,6 +525,9 @@ public class RestMethod {
         }
         if (data.proxySpecification != null) {
             spec.proxy(data.proxySpecification);
+        }
+        if (data.trustStore != null) {
+            spec.trustStore(data.trustStore.key, data.trustStore.value);
         }
         if (data.authenticationScheme != null) {
             ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authenticationScheme);

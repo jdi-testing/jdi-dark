@@ -1,7 +1,6 @@
 package com.epam.jdi.httptests;
 
 import com.epam.jdi.httptests.support.WithJetty;
-import static com.epam.http.requests.RequestData.requestTrustStore;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,13 +24,14 @@ public class SslAnnotationAndRequestDataTests extends WithJetty {
 
     @Test
     public void givenTrustStoreUsingRequestDataAllowsToUseSSL() throws Exception {
-        getHello.call(requestTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234"))
+        getHello.call(rd -> {rd.requestTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234");})
                 .isOk().body("hello", equalTo("Hello Scalatra"));
     }
 
     @Test
     public void givenTrustStoreUsingRequestData() {
-        getJsonStore.call(requestTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234")).isOk().assertThat()
+        getJsonStore.call(rd -> {rd.requestTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234");})
+                .isOk().assertThat()
                 .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
                 rootPath("store.book").
                 body("findAll { book -> book.price < 10 }.title", hasItems("Sayings of the Century", "Moby Dick")).

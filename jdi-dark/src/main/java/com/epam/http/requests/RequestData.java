@@ -37,7 +37,8 @@ public class RequestData extends DataClass<RequestData> {
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
     public ProxySpecification proxySpecification = null;
     public AuthenticationScheme authenticationScheme = null;
-    public Pair<String, String> trustStore = new Pair<>(null,null);
+    public Pair<String, String> trustStore = null;
+//            new Pair<>(null,null);
 
     public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
     /**
@@ -103,8 +104,8 @@ public class RequestData extends DataClass<RequestData> {
      * @param pathToJks pathToJks
      * @param password password
      */
-    public static RequestData requestTrustStore(String pathToJks, String password){
-        return new RequestData().set(rd -> rd.trustStore = new Pair<>(pathToJks, password));
+    public void requestTrustStore(String pathToJks, String password){
+        this.trustStore = new Pair<>(pathToJks, password);
     }
 
     /**
@@ -124,7 +125,7 @@ public class RequestData extends DataClass<RequestData> {
         multiPartSpecifications.clear();
         proxySpecification = null;
         authenticationScheme = null;
-        trustStore = new Pair<>(null, null);
+        trustStore = null;
     }
 
     /**

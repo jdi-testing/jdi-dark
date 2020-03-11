@@ -434,7 +434,7 @@ public class RestMethod {
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
-        if (!requestData.trustStore.equals(new Pair<>(null,null))) {
+        if (requestData.trustStore != null) {
             userData.trustStore = requestData.trustStore;
         }
         userData.authenticationScheme = requestData.authenticationScheme == null
@@ -499,7 +499,7 @@ public class RestMethod {
         if (data.proxySpecification != null) {
             spec.proxy(data.proxySpecification);
         }
-        if (!data.trustStore.equals(new Pair<>(null,null))) {
+        if (data.trustStore != null) {
             spec.trustStore(data.trustStore.key, data.trustStore.value);
         }
         if (data.authenticationScheme != null) {

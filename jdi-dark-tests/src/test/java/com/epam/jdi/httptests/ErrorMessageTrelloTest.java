@@ -11,7 +11,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static com.epam.jdi.http.Utils.restResponse;
 
-
 /**
  * This class is using for error handling cases for TrelloAPI
  */

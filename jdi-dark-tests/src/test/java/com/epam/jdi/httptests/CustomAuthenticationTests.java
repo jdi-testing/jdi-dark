@@ -1,17 +1,14 @@
 package com.epam.jdi.httptests;
 
 import com.epam.http.requests.ServiceSettings;
-import com.epam.http.response.RestResponse;
-import org.apache.http.HttpStatus;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.AuthorizationPostman.callPostmanServiceCustomAuth;
 import static com.epam.jdi.httptests.utils.Defaults.defaultOauthScheme;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.testng.AssertJUnit.assertEquals;
-
+import static com.epam.jdi.http.Utils.restResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 /**
  * This test shows the usage of custom
  */
@@ -24,11 +21,11 @@ public class CustomAuthenticationTests {
 
     @Test
     public void authCustomAuthSchemeTest() {
-        RestResponse resp = callPostmanServiceCustomAuth();
-        resp.isOk().assertThat().
-                body("status", equalTo("pass"));
-        assertEquals(resp.status.code, HttpStatus.SC_OK);
+        //assertThat(restResponse.get().getStatus(), equalTo("{\"400\":\"200\""));
+        assertThat(restResponse.get().getStatus(), equalTo("\"200\""));
     }
+
+
 }
 
 

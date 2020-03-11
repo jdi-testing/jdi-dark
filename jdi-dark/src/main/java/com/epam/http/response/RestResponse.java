@@ -35,12 +35,6 @@ public class RestResponse {
     private ResponseStatus status = null;
     private String contentType = "";
 
-    public String getRestResponseBody(){
-        return body;
-    }
-    public void setRestResponseBody(String sBody){
-        this.body = sBody;
-    }
 
     public ResponseStatus getResponseStatus(){
         return status;

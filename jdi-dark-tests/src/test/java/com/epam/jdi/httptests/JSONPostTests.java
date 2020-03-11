@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.http.Utils.restResponse;
 import static com.epam.jdi.httptests.JettyService.headerPost;
 import static com.epam.jdi.httptests.JettyService.notFoundedURIPost;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -103,7 +104,7 @@ public class JSONPostTests extends WithJetty {
         Object[][] queryPramsArray = {{"firstName", "John"}, {"lastName", "Doe"}};
 
         RestResponse response = JettyService.greetPost(queryPramsArray);
-        final JsonPath jsonPath = new JsonPath(response.body);
+        final JsonPath jsonPath = new JsonPath(restResponse.get().getBody());
         assertThat(jsonPath.getString("greeting"), equalTo("Greetings John Doe"));
     }
 

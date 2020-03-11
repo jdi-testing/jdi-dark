@@ -506,7 +506,7 @@ public class RestMethod {
         StopWatch watch = createStarted();
         ResponseStatusType status;
         do {
-            status = call().status.type;
+            status = call().getResponseStatus().type;
         } while (status != OK && watch.getTime() < liveTimeMSec);
         call().isOk();
     }

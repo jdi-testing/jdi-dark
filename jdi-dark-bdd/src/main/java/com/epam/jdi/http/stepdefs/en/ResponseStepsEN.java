@@ -29,12 +29,12 @@ public class ResponseStepsEN {
 
     @Then("^Response status code equals (\\d+)$")
     public void responseStatusCodeEquals(int statusCode){
-        assertEquals(restResponse.get().status.code, statusCode);
+        assertEquals(restResponse.get().getStatus().code, statusCode);
     }
 
     @And("^Response body is empty")
     public void responseBodyIs() {
-        assertEquals(restResponse.get().body, "");
+        assertEquals(restResponse.get().getBody(), "");
     }
 
     @And("^Response status type is ([^\"]*)$")

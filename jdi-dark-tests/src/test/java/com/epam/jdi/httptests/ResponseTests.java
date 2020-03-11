@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 
 import static com.epam.http.requests.RequestDataInfo.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.http.Utils.restResponse;
 import static com.epam.jdi.httptests.JettyService.getJsonStore;
 import static io.restassured.config.JsonConfig.jsonConfig;
 import static io.restassured.path.xml.XmlPath.CompatibilityMode.HTML;
@@ -42,13 +43,12 @@ public class ResponseTests extends WithJetty {
         RestResponse response = JettyService.getHello.call();
         String body = response.getBody();
         assertThat(body, containsString("{\"hello\":\"Hello Scalatra\"}"));
-        assertThat(response.body, containsString("{\"hello\":\"Hello Scalatra\"}"));
+        assertThat(restResponse.get().getBody(), containsString("{\"hello\":\"Hello Scalatra\"}"));
     }
 
     @Test
     public void whenParamsSpecifiedCanReturnBodyAsString() {
-        RestResponse response = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe&"));
-        final String body = response.body;
+        final String body =restResponse.get().getBody();
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +
                 "    </greeting>", body);
@@ -63,7 +63,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void postCanReturnBodyAsString() {
-        final String body = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).body;
+        final String body = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).getBody();
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +
                 "    </greeting>", body);
@@ -71,7 +71,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void putCanReturnBodyAsString() {
-        final String body = JettyService.putCookie.call(rd -> rd.addCookies("username", "John", "token", "1234")).body;
+        final String body = JettyService.putCookie.call(rd -> rd.addCookies("username", "John", "token", "1234")).getBody();
         assertEquals("username, token", body);
     }
 
@@ -80,7 +80,7 @@ public class ResponseTests extends WithJetty {
         final String body = JettyService.deleteGreet.call(rd -> {
             rd.queryParams.add("firstName", "John");
             rd.queryParams.add("lastName", "Doe");
-        }).body;
+        }).getBody();
         assertEquals("{\"greeting\":\"Greetings John Doe\"}", body);
     }
 
@@ -103,9 +103,8 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void responseSupportsGettingStatusCode() {
-        RestResponse response = JettyService.getHello.call();
-        assertThat(response.status.code, equalTo(200));
-        assertThat(response.body, equalTo("{\"hello\":\"Hello Scalatra\"}"));
+        assertThat(restResponse.get().getStatus().code, equalTo(200));
+        assertThat(restResponse.get().getBody(), equalTo("{\"hello\":\"Hello Scalatra\"}"));
     }
 
     @Test

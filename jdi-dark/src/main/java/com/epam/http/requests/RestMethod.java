@@ -143,6 +143,7 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
+
     public void setup(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
         this.type = type;
         this.path = path;
@@ -331,55 +332,30 @@ public class RestMethod {
         return call();
     }
 
+    /**
+     * Send HTTP request with specific named path parameters.
+     *
+     * @param data request data instance with filled namedParams List
+     */
     public void getNamedParamFromPath(RequestData data) {
         if (!data.namedParams.isEmpty()) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
             data.path = pathString;
-            if (!pathString.isEmpty()) {
-                String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
-                catchPathParametersIllegalArguments(pathParams, data.namedParams.toArray(new String[0]), queryString);
-                IntStream.range(0, pathParams.length)
-                        .forEach(i -> userData.pathParams.add(pathParams[i], data.namedParams.get(i)));
-                data.namedParams.subList(0,pathParams.length).clear();
-            }
+
+            String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
+            catchPathParametersIllegalArguments(pathParams, data.namedParams.toArray(new String[0]), queryString);
+            IntStream.range(0, pathParams.length)
+                    .forEach(i -> userData.pathParams.add(pathParams[i], data.namedParams.get(i)));
+            data.namedParams.subList(0, pathParams.length).clear();
+
             if (!queryString.isEmpty()) {
                 String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
+
                 IntStream.range(0, queryParams.length)
                         .forEach(i -> userData.pathParams.add(queryParams[i], data.namedParams.get(i)));
             }
         }
-    }
-
-    /**
-     * Send HTTP request with specific named path parameters.
-     *
-     * @param namedParams path parameters
-     * @return response
-     */
-    public RestResponse callWithNamedParams(String... namedParams) {
-        if (namedParams.length > 0) {
-            String pathString = substringBefore(path, "?");
-            String queryString = substringAfter(path, "?");
-            data.path = pathString;
-            String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
-            catchPathParametersIllegalArguments(pathParams, namedParams, queryString);
-            int index = 0;
-            for (String key : pathParams) {
-                userData.empty = false;
-                userData.pathParams.add(key, namedParams[index]);
-                index++;
-            }
-            if (!queryString.isEmpty()) {
-                String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
-                for (String key : queryParams) {
-                    userData.empty = false;
-                    userData.queryParams.add(key, namedParams[index]);
-                    index++;
-                }
-            }
-        }
-        return call();
     }
 
     /**
@@ -461,8 +437,8 @@ public class RestMethod {
             userData.proxySpecification = requestData.proxySpecification;
         }
         userData.trustStore = requestData.trustStore == null
-            ? data.trustStore
-            : requestData.trustStore;
+                ? data.trustStore
+                : requestData.trustStore;
         userData.authenticationScheme = requestData.authenticationScheme == null
                 ? data.authenticationScheme
                 : requestData.authenticationScheme;

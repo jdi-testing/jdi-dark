@@ -4,16 +4,17 @@ import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static com.epam.http.requests.RequestDataInfo.namedParams;
 import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
-import static com.epam.jdi.http.Utils.restResponse;
 import static com.epam.jdi.httptests.ServiceExample.getInfo;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
@@ -72,18 +73,18 @@ public class ServiceTest {
 
     @Test
     public void statusTest() {
-        RestResponse resp = service.status.callWithNamedParams("503");
-        assertEquals(restResponse.get().getStatus(), 503);
-        assertEquals(restResponse.get().getContentType(), SERVER_ERROR);
-        resp.isEmpty();
+        service.status.call(namedParams().add("503"))
+                .assertThat()
+                .body(is(StringUtils.EMPTY))
+                .statusCode(503);
     }
 
     @Test
     public void statusTestWithQueryInPath() {
-        RestResponse resp = service.statusWithQuery.callWithNamedParams("503", "some");
-        assertEquals(restResponse.get().getStatus(), 503);
-        assertEquals(restResponse.get().getContentType(), SERVER_ERROR);
-        resp.isEmpty();
+        service.statusWithQuery.call(namedParams().addAll("503", "some"))
+                .assertThat()
+                .body(is(StringUtils.EMPTY))
+                .statusCode(503);
     }
 
     @Test

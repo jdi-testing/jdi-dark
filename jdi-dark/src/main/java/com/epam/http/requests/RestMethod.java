@@ -7,7 +7,7 @@ import com.epam.http.requests.updaters.*;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
-import com.epam.jdi.tools.func.JAction2;
+import com.epam.jdi.tools.func.JFunc2;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
@@ -51,6 +51,7 @@ public class RestMethod {
     public RequestData getData() {
         return data;
     }
+
     public HeaderUpdater header = new HeaderUpdater(this::getData);
     public CookieUpdater cookies = new CookieUpdater(this::getData);
     public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
@@ -139,6 +140,7 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
+
     public void setup(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
         this.type = type;
         this.path = path;
@@ -147,6 +149,7 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
+
     public RequestSpecification getInitSpec() {
         return given().spec(spec).spec(getDataSpec(data));
     }
@@ -198,14 +201,16 @@ public class RestMethod {
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
-    public static JAction2<RestMethod, List<RequestData>> LOG_REQUEST = RestMethod::logRequest;
-    public void logRequest(List<RequestData> rds) {
+
+    public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
+
+    public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
             maps.addAll(rd.fields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
-        startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
+        return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
                 format("%s %s%s  %s", type, url != null ? url : "", path != null ? path : "", maps));
     }
 
@@ -223,9 +228,9 @@ public class RestMethod {
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
-        LOG_REQUEST.execute(this, asList(data, userData));
+        String startUuid = LOG_REQUEST.execute(this, asList(data, userData));
         userData.clear();
-        RestResponse response = doRequest(type, runSpec);
+        RestResponse response = doRequest(type, runSpec, startUuid);
         handleResponse(response);
         return response;
     }
@@ -248,8 +253,8 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
-        LOG_REQUEST.execute(this, singletonList(data));
-        return doRequest(type, runSpec);
+        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
+        return doRequest(type, runSpec, startUuid);
     }
 
     /**
@@ -263,8 +268,8 @@ public class RestMethod {
             throw exception("HttpMethodType not specified");
         }
         RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
-        LOG_REQUEST.execute(this, singletonList(data));
-        return doRequest(type, runSpec);
+        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
+        return doRequest(type, runSpec, startUuid);
     }
 
     /**
@@ -275,8 +280,8 @@ public class RestMethod {
      */
     public <T> T callAsData(Class<T> c) {
         return objectMapper == null
-            ? call().getRaResponse().body().as(c)
-            : call().getRaResponse().body().as(c, objectMapper);
+                ? call().getRaResponse().body().as(c)
+                : call().getRaResponse().body().as(c, objectMapper);
     }
 
     /**
@@ -423,10 +428,11 @@ public class RestMethod {
             userData.proxySpecification = requestData.proxySpecification;
         }
         userData.authenticationScheme = requestData.authenticationScheme == null
-            ? data.authenticationScheme
-            : requestData.authenticationScheme;
+                ? data.authenticationScheme
+                : requestData.authenticationScheme;
         return call();
     }
+
     public RestResponse call(JAction1<RequestData> action) {
         RequestData rd = new RequestData();
         action.execute(rd);

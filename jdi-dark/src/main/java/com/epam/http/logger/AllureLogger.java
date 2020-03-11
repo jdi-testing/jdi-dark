@@ -2,6 +2,7 @@ package com.epam.http.logger;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.model.StepResult;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
@@ -12,12 +13,13 @@ import static io.qameta.allure.model.Status.PASSED;
 public class AllureLogger {
     public static boolean writeToAllure = true;
 
-    public static void startStep(String message, String requestData) {
-        if (!writeToAllure) return;
-
+    public static String startStep(String message, String requestData) {
         StepResult step = new StepResult().withName(message).withStatus(PASSED);
-        getLifecycle().startStep(UUID.randomUUID().toString(), step);
+
+        String uuid = UUID.randomUUID().toString();
+        getLifecycle().startStep(uuid, step);
         attachRequest(message, requestData);
+        return uuid;
     }
 
     public static void failStep() {
@@ -27,9 +29,10 @@ public class AllureLogger {
         getLifecycle().stopStep();
     }
 
-    public static void passStep(String responseData) {
-        if (!writeToAllure) return;
+    public static void passStep(String responseData, String uuid) {
+        if (!writeToAllure || StringUtils.isBlank(uuid)) return;
 
+        getLifecycle().updateStep(uuid, s -> s.withStatus(FAILED));
         attachResponse(responseData);
         getLifecycle().stopStep();
     }

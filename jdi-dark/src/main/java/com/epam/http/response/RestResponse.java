@@ -2,6 +2,7 @@ package com.epam.http.response;
 
 import com.epam.http.logger.AllureLogger;
 import com.epam.jdi.tools.func.JAction1;
+import com.epam.jdi.tools.func.JAction2;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.http.Header;
@@ -65,10 +66,12 @@ public class RestResponse {
         status = new ResponseStatus(raResponse);
         contentType = raResponse.contentType();
     }
-    public static JAction1<RestResponse> LOG_RESPONSE = restResponse -> restResponse.logResponse();
-    public void logResponse() {
+
+    public static JAction2<RestResponse, String> LOG_RESPONSE = RestResponse::logResponse;
+
+    public void logResponse(String uuid) {
         logger.info(toString());
-        AllureLogger.passStep(toString());
+        AllureLogger.passStep(toString(), uuid);
     }
 
     public RestResponse set(JAction1<RestResponse> valueFunc) {
@@ -244,6 +247,7 @@ public class RestResponse {
     public ValidatableResponse assertThat() {
         return raResponse.then();
     }
+
     public <T> T asData(Class<T> cl) {
         return getRaResponse().as(cl);
     }

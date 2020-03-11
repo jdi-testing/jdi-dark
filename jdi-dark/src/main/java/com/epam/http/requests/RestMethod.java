@@ -434,9 +434,9 @@ public class RestMethod {
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
-        if (requestData.trustStore != null) {
-            userData.trustStore = requestData.trustStore;
-        }
+        userData.trustStore = requestData.trustStore == null
+            ? data.trustStore
+            : requestData.trustStore;
         userData.authenticationScheme = requestData.authenticationScheme == null
             ? data.authenticationScheme
             : requestData.authenticationScheme;

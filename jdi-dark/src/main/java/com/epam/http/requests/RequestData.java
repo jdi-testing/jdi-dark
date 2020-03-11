@@ -104,8 +104,9 @@ public class RequestData extends DataClass<RequestData> {
      * @param pathToJks pathToJks
      * @param password password
      */
-    public void requestTrustStore(String pathToJks, String password){
+    public RequestData requestTrustStore(String pathToJks, String password){
         this.trustStore = new Pair<>(pathToJks, password);
+        return this;
     }
 
     /**

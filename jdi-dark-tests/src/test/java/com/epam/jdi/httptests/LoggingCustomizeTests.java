@@ -24,7 +24,7 @@ public class LoggingCustomizeTests extends WithJetty {
     public void initService() {
         init(JettyService.class);
         LOG_REQUEST = this::logRequest;
-        LOG_RESPONSE = this::logResponse;
+        LOG_RESPONSE = (response, s) -> logResponse(response);
     }
 
     private String logRequest(RestMethod restMethod, List<RequestData> requestData) {
@@ -37,7 +37,7 @@ public class LoggingCustomizeTests extends WithJetty {
         return message;
     }
 
-    private void logResponse(RestResponse response, String uiid) {
+    private void logResponse(RestResponse response) {
         String message = String.format("Received response with  %s and body: %s", response.getStatus(), response.getBody());
         logger.info(message);
     }

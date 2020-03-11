@@ -1,6 +1,8 @@
 package com.epam.http.requests;
 
 import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.NamedParamsUpdater;
+import com.epam.http.requests.updaters.PathParamsUpdater;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.map.MultiMap;
@@ -32,12 +34,15 @@ public class RequestData extends DataClass<RequestData> {
     public Cookies cookies = new Cookies();
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
+    public List<String> namedParams = new ArrayList<>();
     public MultiMap<String, String> formParams = new MultiMap<>();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
     public ProxySpecification proxySpecification = null;
     public AuthenticationScheme authenticationScheme = null;
 
     public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
+    public NamedParamsUpdater namedParams() { return new NamedParamsUpdater(() -> this); }
+    public PathParamsUpdater pathParams() { return new PathParamsUpdater(() -> this); }
     /**
      * Set content type to request data.
      *

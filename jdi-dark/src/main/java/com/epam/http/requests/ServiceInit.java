@@ -179,7 +179,7 @@ public class ServiceInit {
 
     private static void setupCookie(RestMethod method, Cookie cookie) {
         if (cookie.value().equals("[unassigned]")) {
-            method.cookies.add(cookie.name());
+            method.cookies.addKey(cookie.name());
         } else
             method.cookies.add(cookie);
             if (!cookie.additionalValues()[0].equals("[unassigned]"))

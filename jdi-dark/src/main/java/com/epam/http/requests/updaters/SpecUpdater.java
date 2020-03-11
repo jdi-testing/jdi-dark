@@ -32,7 +32,7 @@ public abstract class SpecUpdater<A extends Annotation, T> {
     public RequestData addAll(A... annotations) {
         return addAll(map(annotations, a -> transform.execute(a)));
     }
-    public RequestData add(String name) {
+    public RequestData addKey(String name) {
         return add(name, "");
     }
     public RequestData add(String name, String... values) {

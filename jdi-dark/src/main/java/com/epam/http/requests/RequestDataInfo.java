@@ -33,6 +33,12 @@ public class RequestDataInfo {
     public static MultipartUpdater multiparts() { return new MultipartUpdater(); }
     public static FormParamsUpdater formParams() { return new FormParamsUpdater(); }
     public static QueryParamsUpdater queryParams() { return new QueryParamsUpdater(); }
+    public static NamedParamsUpdater namedParams() {
+        return new NamedParamsUpdater();
+    }
+    public static PathParamsUpdater pathParams(){
+        return new PathParamsUpdater();
+    }
 
     /**
      * Set request body to request data.

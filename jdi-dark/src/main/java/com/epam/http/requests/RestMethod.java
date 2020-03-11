@@ -20,6 +20,7 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettigns.getDomain;
@@ -45,12 +46,13 @@ public class RestMethod {
 
     private RequestSpecification spec = given();
     private String url = null;
-    private String path = null;
+    public String path = null;
     private ObjectMapper objectMapper = null;
 
     public RequestData getData() {
         return data;
     }
+
     public HeaderUpdater header = new HeaderUpdater(this::getData);
     public CookieUpdater cookies = new CookieUpdater(this::getData);
     public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
@@ -139,6 +141,7 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
+
     public void setup(RestMethodTypes type, String path, String url, RequestSpecification requestSpecification) {
         this.type = type;
         this.path = path;
@@ -147,6 +150,7 @@ public class RestMethod {
         if (requestSpecification == null) return;
         this.spec = spec.spec(requestSpecification);
     }
+
     public RequestSpecification getInitSpec() {
         return given().spec(spec).spec(getDataSpec(data));
     }
@@ -198,7 +202,9 @@ public class RestMethod {
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
+
     public static JAction2<RestMethod, List<RequestData>> LOG_REQUEST = RestMethod::logRequest;
+
     public void logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
@@ -275,8 +281,8 @@ public class RestMethod {
      */
     public <T> T callAsData(Class<T> c) {
         return objectMapper == null
-            ? call().getRaResponse().body().as(c)
-            : call().getRaResponse().body().as(c, objectMapper);
+                ? call().getRaResponse().body().as(c)
+                : call().getRaResponse().body().as(c, objectMapper);
     }
 
     /**
@@ -312,6 +318,26 @@ public class RestMethod {
             }
         }
         return call();
+    }
+
+    public void getNamedParamFromPath(RequestData data) {
+        if (!data.namedParams.isEmpty()) {
+            String pathString = substringBefore(path, "?");
+            String queryString = substringAfter(path, "?");
+            data.path = pathString;
+            if (!pathString.isEmpty()) {
+                String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
+                catchPathParametersIllegalArguments(pathParams, data.namedParams.toArray(new String[0]), queryString);
+                IntStream.range(0, pathParams.length)
+                        .forEach(i -> userData.pathParams.add(pathParams[i], data.namedParams.get(i)));
+                data.namedParams.subList(0,pathParams.length).clear();
+            }
+            if (!queryString.isEmpty()) {
+                String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
+                IntStream.range(0, queryParams.length)
+                        .forEach(i -> userData.pathParams.add(queryParams[i], data.namedParams.get(i)));
+            }
+        }
     }
 
     /**
@@ -350,14 +376,14 @@ public class RestMethod {
      */
     private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
         if (namedParams.length > pathParams.length && queryString.isEmpty()) {
-            String[] redundant_values = copyOfRange(namedParams, pathParams.length, namedParams.length);
+            String[] redundantValues = copyOfRange(namedParams, pathParams.length, namedParams.length);
             throw exception("Invalid number of path parameters. Expected %s , was %s.\nRedundant param values : %s",
-                    pathParams.length, namedParams.length, asList(redundant_values));
+                    pathParams.length, namedParams.length, asList(redundantValues));
         }
         if (namedParams.length < pathParams.length) {
-            String[] missing_params = copyOfRange(pathParams, namedParams.length, pathParams.length);
+            String[] missingParams = copyOfRange(pathParams, namedParams.length, pathParams.length);
             throw exception("Invalid number of path parameters. Expected %s, was %s.\nMissing params : %s",
-                    pathParams.length, namedParams.length, asList(missing_params));
+                    pathParams.length, namedParams.length, asList(missingParams));
         }
     }
 
@@ -391,6 +417,7 @@ public class RestMethod {
      */
     public RestResponse call(RequestData requestData) {
         userData.empty = false;
+        getNamedParamFromPath(requestData);
         if (!requestData.pathParams.isEmpty()) {
             userData.pathParams = requestData.pathParams;
         }
@@ -416,17 +443,18 @@ public class RestMethod {
         if (requestData.contentType != null) {
             userData.contentType = requestData.contentType;
         }
-        if (requestData.multiPartSpecifications.size() > 0) {
+        if (!requestData.multiPartSpecifications.isEmpty()) {
             userData.multiPartSpecifications = requestData.multiPartSpecifications;
         }
         if (requestData.proxySpecification != null) {
             userData.proxySpecification = requestData.proxySpecification;
         }
         userData.authenticationScheme = requestData.authenticationScheme == null
-            ? data.authenticationScheme
-            : requestData.authenticationScheme;
+                ? data.authenticationScheme
+                : requestData.authenticationScheme;
         return call();
     }
+
     public RestResponse call(JAction1<RequestData> action) {
         RequestData rd = new RequestData();
         action.execute(rd);
@@ -473,7 +501,7 @@ public class RestMethod {
         if (!data.cookies.asList().isEmpty()) {
             spec.cookies(data.cookies);
         }
-        if (data.multiPartSpecifications.size() > 0) {
+        if (!data.multiPartSpecifications.isEmpty()) {
             data.multiPartSpecifications.forEach(spec::multiPart);
         }
         if ((data.body != null) && (objectMapper != null)) {

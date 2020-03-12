@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestDataInfo.requestData;
+import static com.epam.http.requests.RequestDataInfo.requestUri;
 import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
@@ -42,24 +43,25 @@ public class ServiceTest {
         resp.assertThat().header("Connection", "keep-alive");
     }
 
-    @Test
-    public void noServiceObjectTest() {
-        RestResponse resp = GET(requestData(
-                rd -> {
-                    rd.uri = "https://httpbin.org/get";
-                    rd.addHeaders(new Object[][]{
-                            {"Name", "Roman"},
-                            {"Id", "TestTest"}
-                    });
-                }
-        ));
-        resp.isOk().header("Connection", "keep-alive");
-        resp.assertBody(new Object[][]{
-                {"url", equalTo("https://httpbin.org/get")},
-                {"headers.Host", equalTo("httpbin.org")},
-                {"headers.Id", equalTo("TestTest")}
-        });
-    }
+//    @Test
+//    public void noServiceObjectTest() {
+//        RestResponse resp = GET(requestData(
+//                rd -> {
+//                    rd.uri = "https://httpbin.org/get";
+//                    rd.addHeaders(new Object[][]{
+//                            {"Name", "Roman"},
+//                            {"Id", "TestTest"}
+//                    });
+//                }
+//        ));
+//
+//        resp.isOk().header("Connection", "keep-alive");
+//        resp.assertBody(new Object[][]{
+//                {"url", equalTo("https://httpbin.org/get")},
+//                {"headers.Host", equalTo("httpbin.org")},
+//                {"headers.Id", equalTo("TestTest")}
+//        });
+//    }
 
     @Test
     public void entityTest() {

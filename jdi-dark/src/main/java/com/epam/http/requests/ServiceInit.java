@@ -223,18 +223,6 @@ public class ServiceInit {
      * @param className className
      * @return normalized URL as string
      */
-    private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
-        if (uri == null)
-            return null;
-        if (uri.contains("://"))
-            return uri;
-        if (domain == null)
-            throw exception(
-                    "Can't instantiate method '%s' for service '%s'. " +
-                            "Domain undefined and method url not contains '://'",
-                    methodName, className);
-        return domain.replaceAll("/*$", "");
-    }
 
     /**
      * Get service domain.

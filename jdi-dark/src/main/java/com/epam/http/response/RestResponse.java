@@ -29,7 +29,6 @@ import static java.lang.String.format;
  */
 public class RestResponse {
     public static final String STRING_EMPTY ="";
-
     private final Response raResponse;
     private final long responseTimeMSec;
     private String body = null;
@@ -41,14 +40,7 @@ public class RestResponse {
         return status;
     }
 
-    public void  setResponseStatus(ResponseStatus status) {
-        this.status = status;
-    }
     public String getContentType() {return this.contentType; }
-    public void setContentType(String sContentType)
-    {
-        this.contentType = sContentType;
-    }
 
     public RestResponse() {
         this.raResponse = null;

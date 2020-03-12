@@ -9,7 +9,6 @@ import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloService.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static com.epam.jdi.http.Utils.restResponse;
 
 /**
  * This class is using for error handling cases for TrelloAPI
@@ -35,7 +34,7 @@ public class ErrorMessageTrelloTest {
                 .call(requestPathParams("board_id", NOT_EXISTS_BOARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
-        assertEquals(restResponse.get().getBody(), "The requested resource was not found.");
+        assertEquals(response.getBody(), "The requested resource was not found.");
         response.isEmpty();
     }
 
@@ -46,7 +45,7 @@ public class ErrorMessageTrelloTest {
                 .call(requestPathParams("board_id", INVALID_BOARD_ID));
         response.hasErrors()
                 .statusCode(ERROR_CODE);
-        assertEquals(restResponse.get().getBody(), "invalid id");
+        assertEquals(response.getBody(), "invalid id");
         response.isEmpty();
     }
 
@@ -61,7 +60,7 @@ public class ErrorMessageTrelloTest {
                 });
         response.hasErrors()
                 .statusCode(ERROR_CODE);
-        assertEquals(restResponse.get().getBody(), "invalid value for text");
+        assertEquals(response.getBody(), "invalid value for text");
         response.isEmpty();
     }
 
@@ -72,7 +71,7 @@ public class ErrorMessageTrelloTest {
                 .call(requestQueryParams("card_id", NOT_EXISTS_CARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
-        assertTrue(restResponse.get().getBody().contains("Cannot DELETE"));
+        assertTrue(response.getBody().contains("Cannot DELETE"));
         response.isEmpty();
     }
 }

@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.http.Utils.restResponse;
 import static com.epam.jdi.httptests.PostmanAuth.authBase;
 import static com.epam.jdi.httptests.PostmanAuth.authBaseForm;
 import static com.epam.jdi.httptests.PostmanAuth.authDigest;
@@ -37,7 +36,7 @@ public class PostmanAuthTests {
         RestResponse resp = authBase.call();
         resp.isOk().assertThat().
                 body("authenticated", equalTo(true));
-        assertEquals(restResponse.get().getStatus().code, HttpStatus.SC_OK);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
 
     @Test
@@ -49,9 +48,8 @@ public class PostmanAuthTests {
         RestResponse resp = authBaseForm.call(resp2);
         resp.isOk().assertThat().
                 body("authenticated", equalTo(true));
-        assertEquals(restResponse.get().getStatus().code, HttpStatus.SC_OK);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
-
     @Test
     public void entityTest() {
         PostmanInfo info = authBase.callAsData(PostmanInfo.class);

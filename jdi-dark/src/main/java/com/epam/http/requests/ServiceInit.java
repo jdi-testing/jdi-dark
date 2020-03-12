@@ -215,21 +215,11 @@ public class ServiceInit {
     }
 
     /**
-     * Get and check URL from request data.
-     *
-     * @param domain     string
-     * @param uri        adres string
-     * @param methodName string
-     * @param className className
-     * @return normalized URL as string
-     */
-
-    /**
      * Get service domain.
      *
      * @param c Service Object class
      * @return service domain string
-     */
+     **/
     private static <T> String getDomain(Class<T> c) {
         if (!c.isAnnotationPresent(ServiceDomain.class))
             return JdiHttpSettigns.getDomain();

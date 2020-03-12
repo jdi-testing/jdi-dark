@@ -173,7 +173,7 @@ public class ServiceInit {
         if (field.isAnnotationPresent(FormParameters.class))
             method.formParams.addAll(field.getAnnotation(FormParameters.class).value());
         if (field.isAnnotationPresent(MultiPart.class))
-            method.multipart.add(field.getAnnotation(MultiPart.class));
+            method.addMultiPartParams(field.getAnnotation(MultiPart.class));
         if (field.isAnnotationPresent(Proxy.class))
             method.setProxy(field.getAnnotation(Proxy.class));
         if (field.isAnnotationPresent(TrustStore.class))

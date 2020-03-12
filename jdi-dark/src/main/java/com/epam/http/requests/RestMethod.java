@@ -1,20 +1,16 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.Proxy;
-import com.epam.http.annotations.TrustStore;
+import com.epam.http.annotations.*;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
-import com.epam.http.requests.updaters.CookieUpdater;
-import com.epam.http.requests.updaters.FormParamsUpdater;
-import com.epam.http.requests.updaters.HeaderUpdater;
-import com.epam.http.requests.updaters.MultipartUpdater;
-import com.epam.http.requests.updaters.QueryParamsUpdater;
+import com.epam.http.requests.updaters.*;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
+import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
@@ -220,6 +216,10 @@ public class RestMethod {
      */
     public void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
+    }
+
+    public void addMultiPartParams(MultiPart multiPartParams) {
+        data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
     }
 
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;

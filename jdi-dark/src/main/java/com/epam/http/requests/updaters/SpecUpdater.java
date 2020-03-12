@@ -4,6 +4,7 @@ import com.epam.http.requests.RequestData;
 import com.epam.jdi.tools.func.JFunc1;
 import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.map.MapArray;
+import io.restassured.internal.MapCreator;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -55,4 +56,8 @@ public abstract class SpecUpdater<A extends Annotation, T> {
         return addAll(asList(array));
     }
 
+    public RequestData addAll(String name, Object value, Object... nameValuePairs) {
+        Map<String, Object> map = MapCreator.createMapFromParams(MapCreator.CollisionStrategy.OVERWRITE, name, value, nameValuePairs);
+        return addAll(map);
+    }
 }

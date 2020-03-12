@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 
+import static com.epam.http.requests.RequestDataInfo.cookies;
 import static com.epam.http.requests.RequestDataInfo.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getJsonStore;
@@ -71,7 +72,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void putCanReturnBodyAsString() {
-        final String body = JettyService.putCookie.call(rd -> rd.addCookies("username", "John", "token", "1234")).getBody();
+        final String body = JettyService.putCookie.call(cookies().addAll("username", "John", "token", "1234")).getBody();
         assertEquals("username, token", body);
     }
 

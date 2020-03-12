@@ -15,8 +15,8 @@ public class MultipartUpdater extends SpecUpdater<com.epam.http.annotations.Mult
             mp -> {
                 RequestData data = dataFunc.execute();
                 data.multiPartSpecifications.addAll(
-                    map(mp, p -> new MultiPartSpecBuilder("")
-                        .controlName(p.key).fileName(p.value).build()));
+                    map(mp, p -> new MultiPartSpecBuilder(p.key)
+                        .controlName(p.value).build()));
                 return data; },
             mp -> new Pair<>(mp.controlName(), mp.fileName()),
             Pair::new

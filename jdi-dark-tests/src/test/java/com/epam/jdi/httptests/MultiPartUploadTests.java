@@ -30,8 +30,8 @@ public class MultiPartUploadTests extends WithJetty {
     public void multiPartUploadingWorksForMultipleStrings() {
         JettyService.postMultipartText.call(multiparts()
             .addAll(map($("Some text", "text"), $("Some other text", "text"))))
-        .assertThat()
-            .statusCode(200)
-            .body(is("Some text,Some other text"));
+                .assertThat()
+                .statusCode(200)
+                .body(is("Some text,Some other text"));
     }
 }

@@ -1,35 +1,15 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
-import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.FormParameter;
-import com.epam.http.annotations.FormParameters;
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.MultiPart;
-import com.epam.http.annotations.POST;
-import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.Proxy;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.ServiceDomain;
-import com.epam.http.annotations.URL;
+import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.builder.MultiPartSpecBuilder;
+import io.restassured.internal.MapCreator;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.epam.http.requests.RequestDataInfo.cookies;
-import static com.epam.http.requests.RequestDataInfo.headers;
-import static com.epam.http.requests.RequestDataInfo.requestBody;
-import static com.epam.http.requests.RequestDataInfo.requestPathParams;
-import static com.epam.http.requests.RequestDataInfo.requestQueryParams;
+import static com.epam.http.requests.RequestDataInfo.*;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
@@ -175,7 +155,8 @@ public class JettyService {
     public static RestMethod cookiePost;
 
     public static RestResponse cookiePost(String name, String value, Object... cookieNameValuePairs) {
-        return cookiePost.call(cookies().addAll(name, value, cookieNameValuePairs));
+        Map<String, Object> cookies = MapCreator.createMapFromParams(MapCreator.CollisionStrategy.OVERWRITE, name, value, cookieNameValuePairs);
+        return cookiePost.call(cookies().addAll(cookies));
     }
 
     @POST("/param-reflect")

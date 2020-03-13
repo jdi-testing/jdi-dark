@@ -4,7 +4,6 @@ import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.internal.MapCreator;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
 import java.util.*;
@@ -154,9 +153,8 @@ public class JettyService {
     @POST("/cookie")
     public static RestMethod cookiePost;
 
-    public static RestResponse cookiePost(String name, String value, Object... cookieNameValuePairs) {
-        Map<String, Object> cookies = MapCreator.createMapFromParams(MapCreator.CollisionStrategy.OVERWRITE, name, value, cookieNameValuePairs);
-        return cookiePost.call(cookies().addAll(cookies));
+    public static RestResponse cookiePost(Map<String, Object> cookiesMap) {
+        return cookiePost.call(cookies().addAll(cookiesMap));
     }
 
     @POST("/param-reflect")

@@ -6,9 +6,7 @@ import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.map.MapArray;
 
 import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.epam.jdi.tools.LinqUtils.map;
 import static java.util.Arrays.asList;
@@ -54,5 +52,4 @@ public abstract class SpecUpdater<A extends Annotation, T> {
     public RequestData addAll(T... array) {
         return addAll(asList(array));
     }
-
 }

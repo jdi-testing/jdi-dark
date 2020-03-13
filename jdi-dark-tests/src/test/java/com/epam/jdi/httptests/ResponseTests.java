@@ -9,7 +9,10 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
+import static com.epam.http.requests.RequestDataInfo.cookies;
 import static com.epam.http.requests.RequestDataInfo.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getJsonStore;
@@ -71,7 +74,10 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void putCanReturnBodyAsString() {
-        final String body = JettyService.putCookie.call(rd -> rd.addCookies("username", "John", "token", "1234")).getBody();
+        Map<String, Object> cookies = new HashMap<>();
+        cookies.put("username", "John");
+        cookies.put("token", "1234");
+        final String body = JettyService.putCookie.call(cookies().addAll(cookies)).getBody();
         assertEquals("username, token", body);
     }
 

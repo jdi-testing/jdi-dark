@@ -7,12 +7,12 @@ import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.epam.http.requests.RequestDataInfo.*;
-import static io.restassured.http.ContentType.*;
+import static io.restassured.http.ContentType.JSON;
+import static io.restassured.http.ContentType.TEXT;
+import static io.restassured.http.ContentType.URLENC;
 
 @ServiceDomain("http://localhost:8080")
 public class JettyService {
@@ -56,7 +56,7 @@ public class JettyService {
     }
 
     public static RestResponse getMultipleCookieSpecifiedUsingMap(Map<String, String> cookieMap, String addCookieName, String addCookieValue) {
-        return JettyService.getCookie.call(cookies().addAll(cookieMap).addCookies(addCookieName, addCookieValue));
+        return JettyService.getCookie.call(cookies().addAll(cookieMap).addCookies().add(addCookieName, addCookieValue));
     }
 
     public static RestResponse getSpecifiedCookiePairs(String namePair1, String valuePair1, String namePair2, String valuePair2) {
@@ -154,8 +154,8 @@ public class JettyService {
     @POST("/cookie")
     public static RestMethod cookiePost;
 
-    public static RestResponse cookiePost(String name, String value, Object... cookieNameValuePairs) {
-        return cookiePost.call(rd -> rd.addCookies(name, value, cookieNameValuePairs));
+    public static RestResponse cookiePost(Map<String, Object> cookiesMap) {
+        return cookiePost.call(cookies().addAll(cookiesMap));
     }
 
     @POST("/param-reflect")

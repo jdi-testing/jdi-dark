@@ -7,6 +7,7 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import static com.epam.http.requests.RequestDataInfo.cookies;
 import static com.epam.http.requests.RequestDataInfo.requestData;
 import static com.epam.http.requests.RequestDataInfo.requestUri;
 import static com.epam.http.requests.RestMethods.GET;
@@ -109,8 +110,7 @@ public class ServiceTest {
 
     @Test
     public void cookiesTest() {
-        RestResponse response = service.getCookies.call(rd ->
-                rd.addCookie("additionalCookie", "test"));
+        RestResponse response = service.getCookies.call(cookies().add("additionalCookie", "test"));
         response.isOk()
                 .body("cookies.additionalCookie", equalTo("test"))
                 .body("cookies.session_id", equalTo("1234"))

@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestDataInfo.requestData;
+import static com.epam.http.requests.RequestDataInfo.requestUri;
 import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.ServiceExample.getInfo;
@@ -45,7 +46,7 @@ public class ServiceTest {
         RestResponse resp = GET(requestData(
                 rd -> {
                     rd.uri = "https://httpbin.org/get";
-                    rd.addHeaders(new Object[][]{
+                    rd.addHeaders().addAll(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}
                     });

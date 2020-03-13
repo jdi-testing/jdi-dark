@@ -425,14 +425,8 @@ public class JettyService {
     @POST("/jsonBodyAcceptHeader")
     public static RestMethod postJsonBodyAcceptHeader;
 
-//    TODO
     public static RestResponse postJsonBodyAcceptHeader(String headerName, String headerValue, String body) {
         return postJsonBodyAcceptHeader.call(requestBody(body).addHeaders().add(headerName, headerValue));
-
-//        return postJsonBodyAcceptHeader.call((rd -> {
-//            rd.addHeader(headerName, headerValue);
-//            rd.body = body;
-//        }));
     }
 
     @GET("/greetJSON")

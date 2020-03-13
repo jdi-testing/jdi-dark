@@ -10,7 +10,7 @@ import com.epam.jdi.dto.TrelloList;
 
 import java.util.List;
 
-import static com.epam.http.requests.RequestDataInfo.requestPathParams;
+import static com.epam.http.requests.RequestDataInfo.pathParams;
 import static io.restassured.http.ContentType.JSON;
 import static java.util.Arrays.asList;
 
@@ -39,7 +39,7 @@ public class TrelloService {
     public static RestMethod getBoardById;
 
     public static Board getBoard(String boardId) {
-        return getBoardById.call(requestPathParams("board_id", boardId)).getRaResponse().as(Board.class);
+        return getBoardById.call(pathParams().add("board_id", boardId)).getRaResponse().as(Board.class);
     }
 
     @ContentType(JSON)
@@ -71,7 +71,7 @@ public class TrelloService {
     public static RestMethod getCardBoard;
 
     public static Board getCardBoard(String cardId) {
-        return getCardBoard.call(requestPathParams("id", cardId)).getRaResponse().as(Board.class);
+        return getCardBoard.call(pathParams().add("id", cardId)).getRaResponse().as(Board.class);
     }
 
     @ContentType(JSON)
@@ -108,6 +108,6 @@ public class TrelloService {
     public static RestMethod getOrganizationBoards;
 
     public static List<Board> getOrganizationBoards(Organization organization) {
-        return asList(getOrganizationBoards.call(requestPathParams("id", organization.id)).getRaResponse().as(Board[].class));
+        return asList(getOrganizationBoards.call(pathParams().add("id", organization.id)).getRaResponse().as(Board[].class));
     }
 }

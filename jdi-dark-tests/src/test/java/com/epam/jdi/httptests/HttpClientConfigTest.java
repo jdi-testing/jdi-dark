@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.http.requests.RequestDataInfo.requestQueryParams;
+import static com.epam.http.requests.RequestDataInfo.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getRedirect;
 import static io.restassured.RestAssured.requestSpecification;
@@ -39,7 +39,7 @@ public class HttpClientConfigTest extends WithJetty {
         httpClientHeaders.add(new BasicHeader("header2", "value2"));
         RestAssured.config = RestAssuredConfig.newConfig().httpClient(HttpClientConfig
                 .httpClientConfig().setParam(DEFAULT_HEADERS, httpClientHeaders));
-        RestResponse response = getRedirect.call(requestQueryParams("url", "multiHeaderReflect"));
+        RestResponse response = getRedirect.call(queryParams().add("url", "multiHeaderReflect"));
         response.isOk();
         response.assertThat().header("header1", equalTo("value1"))
                 .header("header2", equalTo("value2"));

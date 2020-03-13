@@ -2,6 +2,7 @@ package com.epam.jdi.httptests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
+import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.RestAssured;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -10,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.epam.http.requests.RequestDataInfo.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
@@ -97,20 +99,33 @@ public class PathParamTests extends WithJetty {
     @Test
     public void usePathParametersShorterTheTemplateName() {
         Object[][] pathParams = new Object[][]{{"abcde", "John"}, {"value", "Doe"}};
-        RestResponse response = getMatrixPathParamsSetByArray(pathParams);
+        RestResponse response = getMatrix.call(pathParams().addAll(pathParams));
         response.isOk().body("John", equalTo("Doe"));
     }
 
     @Test
     public void usePath() {
+        Object[][] pathParams = new Object[][]{
+                {"firstName", "Last"},
+                {"lastName", "Name"}
+        };
         RestResponse response = getUser
-                .callWithNamedParams("Last", "Name");
+                .call(pathParams().addAll(pathParams));
         response.isOk().body("fullName", equalTo("Last Name"));
     }
 
     @Test
     public void mixingUnnamedPathParametersAndQueryParametersWorks() {
         RestResponse response = getMixedparam.callWithNamedParams("games", "http://myurl.com");
+        response.assertThat().statusCode(404);
+    }
+
+    @Test
+    public void mixingPathParametersAndQueryParametersWorks() {
+        Pair<String, String> pathParams = new Pair<>("channelName", "games");
+        Pair<String, String> queryParams = new Pair<>("url", "http://myurl.com");
+
+        RestResponse response = getMixedParam(pathParams, queryParams);
         response.assertThat().statusCode(404);
     }
 
@@ -182,7 +197,7 @@ public class PathParamTests extends WithJetty {
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
     public void passingLessNamedPathParamsThanGivenThrowsIAE() {
         Object[][] pathParams = new Object[][]{{"firstName", "John"}};
-        getUserPassPathParamsSetByArray(pathParams);
+        getUserPathParamsSetByArray(pathParams);
     }
 
     @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")

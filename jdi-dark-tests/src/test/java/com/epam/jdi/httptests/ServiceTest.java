@@ -42,25 +42,24 @@ public class ServiceTest {
         resp.assertThat().header("Connection", "keep-alive");
     }
 
-//    @Test
-//    public void noServiceObjectTest() {
-//        RestResponse resp = GET(requestData(
-//                rd -> {
-//                    rd.uri = "https://httpbin.org/get";
-//                    rd.addHeaders(new Object[][]{
-//                            {"Name", "Roman"},
-//                            {"Id", "TestTest"}
-//                    });
-//                }
-//        ));
-//
-//        resp.isOk().header("Connection", "keep-alive");
-//        resp.assertBody(new Object[][]{
-//                {"url", equalTo("https://httpbin.org/get")},
-//                {"headers.Host", equalTo("httpbin.org")},
-//                {"headers.Id", equalTo("TestTest")}
-//        });
-//    }
+    @Test
+    public void noServiceObjectTest() {
+        RestResponse resp = GET(requestData(
+                rd -> {
+                    rd.uri = "https://httpbin.org/get";
+                    rd.addHeaders().addAll(new Object[][]{
+                            {"Name", "Roman"},
+                            {"Id", "TestTest"}
+                    });
+                }
+        ));
+        resp.isOk().header("Connection", "keep-alive");
+        resp.assertBody(new Object[][]{
+                {"url", equalTo("https://httpbin.org/get")},
+                {"headers.Host", equalTo("httpbin.org")},
+                {"headers.Id", equalTo("TestTest")}
+        });
+    }
 
     @Test
     public void entityTest() {

@@ -65,4 +65,14 @@ public class RequestDataInfo {
     public static RequestData requestFormParams(String paramName, String paramValue) {
         return requestFormParams(new Object[][]{{paramName, paramValue}});
     }
+
+    /**
+     * Set request body to request data.
+     *
+     * @param uri as String
+     * @return generated request data with provided request body
+     */
+    public static RequestData requestUri(String uri) {
+        return new RequestData().set(rd -> rd.uri = uri);
+    }
 }

@@ -215,33 +215,11 @@ public class ServiceInit {
     }
 
     /**
-     * Get and check URL from request data.
-     *
-     * @param domain     string
-     * @param uri        adres string
-     * @param methodName string
-     * @param className className
-     * @return normalized URL as string
-     */
-    private static String getUrlFromDomain(String domain, String uri, String methodName, String className) {
-        if (uri == null)
-            return null;
-        if (uri.contains("://"))
-            return uri;
-        if (domain == null)
-            throw exception(
-                    "Can't instantiate method '%s' for service '%s'. " +
-                            "Domain undefined and method url not contains '://'",
-                    methodName, className);
-        return domain.replaceAll("/*$", "");
-    }
-
-    /**
      * Get service domain.
      *
      * @param c Service Object class
      * @return service domain string
-     */
+     **/
     private static <T> String getDomain(Class<T> c) {
         if (!c.isAnnotationPresent(ServiceDomain.class))
             return JdiHttpSettigns.getDomain();

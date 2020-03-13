@@ -112,12 +112,12 @@ public class JettyService {
 
     public static RestResponse getWithMultipleHeaders(
             Object[][] headers) {
-        return getMultiHeaderReflect.call(rd -> rd.addHeaders(headers));
+        return getMultiHeaderReflect.call(headers().addAll(headers));
     }
 
     public static RestResponse getWithSingleHeader(
             String name, String value, String... additionalValues) {
-        return getMultiHeaderReflect.call(rd -> rd.addHeader(name, value, additionalValues));
+        return getMultiHeaderReflect.call(headers().add(name, value).addHeaders().add(name, additionalValues));
     }
 
     @DELETE("/cookie")
@@ -427,10 +427,7 @@ public class JettyService {
     public static RestMethod postJsonBodyAcceptHeader;
 
     public static RestResponse postJsonBodyAcceptHeader(String headerName, String headerValue, String body) {
-        return postJsonBodyAcceptHeader.call((rd -> {
-            rd.addHeader(headerName, headerValue);
-            rd.body = body;
-        }));
+        return postJsonBodyAcceptHeader.call(requestBody(body).addHeaders().add(headerName, headerValue));
     }
 
     @GET("/greetJSON")

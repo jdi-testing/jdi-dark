@@ -43,8 +43,8 @@ public class RequestData extends DataClass<RequestData> {
 //            new Pair<>(null,null);
 
     public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
-    public QueryParamsUpdater queryParams() { return new QueryParamsUpdater(() -> this); }
-    public PathParamsUpdater pathParams() { return new PathParamsUpdater(() -> this); }
+    public QueryParamsUpdater addQueryParams() { return new QueryParamsUpdater(() -> this); }
+    public PathParamsUpdater addPathParams() { return new PathParamsUpdater(() -> this); }
     /**
      * Set content type to request data.
      *

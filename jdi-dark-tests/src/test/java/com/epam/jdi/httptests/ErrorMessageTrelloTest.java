@@ -54,7 +54,7 @@ public class ErrorMessageTrelloTest {
         String invalidComment = "";
         RestResponse response = postNewCommentToCard
                 .call(pathParams().add("card_id", CARD_UNIQUE_ID)
-                        .queryParams().add("text", invalidComment));
+                        .addQueryParams().add("text", invalidComment));
         response.hasErrors()
                 .statusCode(ERROR_CODE);
         assertEquals(response.getBody(), "invalid value for text");

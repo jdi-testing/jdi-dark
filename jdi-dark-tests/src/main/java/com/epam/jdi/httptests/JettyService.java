@@ -333,7 +333,7 @@ public class JettyService {
     public static RestMethod getMixedparam;
 
     public static RestResponse getMixedParam(Pair<String, String> pathParams, Pair<String, String> queryParams) {
-        return getMixedparam.call(pathParams().add(pathParams).queryParams().add(queryParams));
+        return getMixedparam.call(pathParams().add(pathParams).addQueryParams().add(queryParams));
     }
 
     @GET("/{path}.json")

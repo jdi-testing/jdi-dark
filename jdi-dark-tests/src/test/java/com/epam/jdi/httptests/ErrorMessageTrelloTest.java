@@ -4,7 +4,8 @@ import com.epam.http.response.RestResponse;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestDataInfo.*;
+import static com.epam.http.requests.RequestDataInfo.pathParams;
+import static com.epam.http.requests.RequestDataInfo.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloService.*;
 import static org.testng.Assert.assertEquals;
@@ -30,8 +31,7 @@ public class ErrorMessageTrelloTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void getBoardByNotExistsId() {
-        RestResponse response = getBoardById
-                .call(requestPathParams("board_id", NOT_EXISTS_BOARD_ID));
+        RestResponse response = getBoardById.call(pathParams().add("board_id", NOT_EXISTS_BOARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
         assertEquals(response.getBody(), "The requested resource was not found.");
@@ -41,8 +41,7 @@ public class ErrorMessageTrelloTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void getBoardByInvalidId() {
-        RestResponse response = getBoardById
-                .call(requestPathParams("board_id", INVALID_BOARD_ID));
+        RestResponse response = getBoardById.call(pathParams().add("board_id", INVALID_BOARD_ID));
         response.hasErrors()
                 .statusCode(ERROR_CODE);
         assertEquals(response.getBody(), "invalid id");
@@ -54,10 +53,8 @@ public class ErrorMessageTrelloTest {
     public void postInvalidCommentToCard() {
         String invalidComment = "";
         RestResponse response = postNewCommentToCard
-                .call(rd -> {
-                    rd.pathParams.add("card_id", CARD_UNIQUE_ID);
-                    rd.queryParams.add("text", invalidComment);
-                });
+                .call(pathParams().add("card_id", CARD_UNIQUE_ID)
+                        .addQueryParams().add("text", invalidComment));
         response.hasErrors()
                 .statusCode(ERROR_CODE);
         assertEquals(response.getBody(), "invalid value for text");
@@ -68,7 +65,7 @@ public class ErrorMessageTrelloTest {
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void deleteNotExistsCardFromBoard() {
         RestResponse response = deleteACardFromBoard
-                .call(requestQueryParams("card_id", NOT_EXISTS_CARD_ID));
+                .call(queryParams().add("card_id", NOT_EXISTS_CARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
         assertTrue(response.getBody().contains("Cannot DELETE"));

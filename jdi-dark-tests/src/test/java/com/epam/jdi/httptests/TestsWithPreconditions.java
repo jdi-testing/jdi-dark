@@ -14,8 +14,8 @@ import java.io.Reader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static com.epam.http.requests.RequestDataInfo.pathParams;
 import static com.epam.http.requests.RequestDataInfo.requestBody;
-import static com.epam.http.requests.RequestDataInfo.requestPathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloService.boardsPost;
 import static java.lang.String.format;
@@ -60,8 +60,7 @@ public class TestsWithPreconditions {
 
     @Test (dataProvider = "dataProviderFromCSV")
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        TrelloService.getBoardById
-                .call(requestPathParams("board_id", boardId))
+        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl",equalTo(expectedShortUrl))
                 .body("url",equalTo(expectedUrl));

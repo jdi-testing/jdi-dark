@@ -1,6 +1,8 @@
 package com.epam.http.requests;
 
 import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.PathParamsUpdater;
+import com.epam.http.requests.updaters.QueryParamsUpdater;
 import com.epam.http.requests.updaters.HeaderUpdater;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.map.MapArray;
@@ -42,9 +44,9 @@ public class RequestData extends DataClass<RequestData> {
 //            new Pair<>(null,null);
 
     public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
-
     public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
-
+    public QueryParamsUpdater addQueryParams() { return new QueryParamsUpdater(() -> this); }
+    public PathParamsUpdater addPathParams() { return new PathParamsUpdater(() -> this); }
     /**
      * Set content type to request data.
      *

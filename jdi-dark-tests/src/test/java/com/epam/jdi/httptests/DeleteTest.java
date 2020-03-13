@@ -51,7 +51,7 @@ public class DeleteTest extends WithJetty {
 
     @Test
     public void bodyHamcrestMatcherWithOutKey() {
-        deleteGreet.call(requestQueryParams(
+        deleteGreet.call(queryParams().addAll(
                 new Object[][]{{FIRST_NAME, FIRST_NAME_VALUE},
                         {LAST_NAME, LAST_NAME_VALUE}
                 })).isOk().assertThat().body(equalTo("{\"greeting\":\"Greetings John Doe\"}"));

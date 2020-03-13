@@ -3,6 +3,7 @@ package com.epam.jdi.httptests;
 import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
@@ -161,7 +162,7 @@ public class JettyService {
     public static RestMethod paramUrlPost;
 
     public static RestResponse paramUrlPostWithKeyValueQueryParam(String formParamKey, String formParamValue) {
-        return paramUrlPost.call(requestQueryParams(formParamKey, formParamValue));
+        return paramUrlPost.call(queryParams().add(formParamKey, formParamValue));
     }
 
     @ContentType(TEXT)
@@ -188,7 +189,7 @@ public class JettyService {
     }
 
     public static RestResponse greetPost(Object[][] queryParams) {
-        return greetPost.call(requestQueryParams(queryParams));
+        return greetPost.call(queryParams().addAll(queryParams));
     }
 
     @POST("/notexist")
@@ -302,15 +303,11 @@ public class JettyService {
     public static RestMethod getUser;
 
     public static RestResponse getUserPathParamsSetByArray(Object[][] array) {
-        return getUser.call(requestPathParams(array));
+        return getUser.call(pathParams().addAll(array));
     }
 
     public static RestResponse getUserPathParamsSetByMap(Map<String, String> params) {
-        return getUser.call(rd -> rd.pathParams.addAll(params));
-    }
-
-    public static void getUserPassPathParamsSetByArray(Object[][] array) {
-        getUser.call(requestPathParams(array));
+        return getUser.call(pathParams().addAll(params));
     }
 
     @GET("/{firstName}/{firstName}")
@@ -318,7 +315,7 @@ public class JettyService {
 
     public static RestResponse getUserSameParametersSetByArray(Object[][] array) {
         return getUserSameParameters
-                .call(requestPathParams(array));
+                .call(pathParams().addAll(array));
     }
 
     @GET("/{firstName}/{middleName}/{lastName}")
@@ -335,18 +332,22 @@ public class JettyService {
     @GET("/{channelName}/item-import/rss/import?source={url}")
     public static RestMethod getMixedparam;
 
+    public static RestResponse getMixedParam(Pair<String, String> pathParams, Pair<String, String> queryParams) {
+        return getMixedparam.call(pathParams().add(pathParams).addQueryParams().add(queryParams));
+    }
+
     @GET("/{path}.json")
     public static RestMethod getParamBeforePath;
 
     public static RestResponse getNamedParamBeforePath(String paramName, String paramValue) {
-        return getParamBeforePath.call(requestPathParams(paramName, paramValue));
+        return getParamBeforePath.call(pathParams().add(paramName, paramValue));
     }
 
     @GET("/something.{format}")
     public static RestMethod getParamAfterPath;
 
     public static RestResponse getNamedParamAfterPath(String paramName, String paramValue) {
-        return getParamAfterPath.call(requestPathParams(paramName, paramValue));
+        return getParamAfterPath.call(pathParams().add(paramName, paramValue));
     }
 
     @GET("/matrix;{abcde}={value}")
@@ -354,7 +355,7 @@ public class JettyService {
 
     public static RestResponse getMatrixPathParamsSetByArray(Object[][] array) {
         return getMatrix
-                .call(requestPathParams(array));
+                .call(pathParams().addAll(array));
     }
 
     @GET("/cookie_with_no_value")

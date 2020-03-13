@@ -33,6 +33,7 @@ public class RequestDataInfo {
     public static MultipartUpdater multiparts() { return new MultipartUpdater(); }
     public static FormParamsUpdater formParams() { return new FormParamsUpdater(); }
     public static QueryParamsUpdater queryParams() { return new QueryParamsUpdater(); }
+    public static PathParamsUpdater pathParams() { return new PathParamsUpdater(); }
 
     /**
      * Set request body to request data.
@@ -42,48 +43,6 @@ public class RequestDataInfo {
      */
     public static RequestData requestBody(Object body) {
         return new RequestData().set(rd -> rd.body = body);
-    }
-
-    /**
-     * Set path parameters required to be inserted in URL.
-     *
-     * @param params path parameters
-     * @return generated request data with provided path parameters
-     */
-    public static RequestData requestPathParams(Object[][] params) {
-        return new RequestData().set(rd -> rd.pathParams = new MultiMap<>(params));
-    }
-
-    /**
-     * Set path parameters required to be inserted in URL.
-     *
-     * @param paramName  path parameter name
-     * @param paramValue path parameter value
-     * @return generated request data with provided path parameters
-     */
-    public static RequestData requestPathParams(String paramName, String paramValue) {
-        return requestPathParams(new Object[][]{{paramName, paramValue}});
-    }
-
-    /**
-     * Set query parameters to request
-     *
-     * @param params query parameters
-     * @return generated request data with provided query parameters
-     */
-    public static RequestData requestQueryParams(Object[][] params) {
-        return new RequestData().set(rd -> rd.queryParams = new MultiMap<>(params));
-    }
-
-    /**
-     * Set query parameters to request
-     *
-     * @param paramName  query parameter name
-     * @param paramValue query parameter value
-     * @return generated request data with provided query parameters
-     */
-    public static RequestData requestQueryParams(String paramName, String paramValue) {
-        return requestQueryParams(new Object[][]{{paramName, paramValue}});
     }
 
     /**

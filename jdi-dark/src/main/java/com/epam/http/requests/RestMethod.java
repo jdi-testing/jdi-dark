@@ -4,19 +4,27 @@ import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
-import com.epam.http.requests.updaters.*;
+import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.FormParamsUpdater;
+import com.epam.http.requests.updaters.HeaderUpdater;
+import com.epam.http.requests.updaters.MultipartUpdater;
+import com.epam.http.requests.updaters.QueryParamsUpdater;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.func.JFunc2;
+import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
-import io.restassured.http.*;
+import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
-import com.epam.jdi.tools.pairs.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -440,8 +448,8 @@ public class RestMethod {
             userData.proxySpecification = requestData.proxySpecification;
         }
         userData.trustStore = requestData.trustStore == null
-            ? data.trustStore
-            : requestData.trustStore;
+                ? data.trustStore
+                : requestData.trustStore;
         userData.authenticationScheme = requestData.authenticationScheme == null
                 ? data.authenticationScheme
                 : requestData.authenticationScheme;
@@ -543,5 +551,13 @@ public class RestMethod {
     public RestMethod resetInitSpec() {
         spec = given();
         return this;
+    }
+
+    public String getType() {
+        return type.toString();
+    }
+
+    public String getUrl() {
+        return url;
     }
 }

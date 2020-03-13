@@ -3,6 +3,7 @@
 <suite name="Http tests" parallel="methods" thread-count="1">
     <test name="Tests">
         <classes>
+            <class name="com.epam.jdi.httptests.LoggingCustomizeTests"/>
             <class name="com.epam.jdi.httptests.AdvancedValidationTest"/>
             <class name="com.epam.jdi.httptests.BodyWithCustomContentTypeTest"/>
             <class name="com.epam.jdi.httptests.CookiesTests"/>

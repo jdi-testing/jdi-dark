@@ -12,7 +12,6 @@ import static com.epam.jdi.httptests.AuthorizationPostman.*;
 import static com.epam.jdi.httptests.utils.Defaults.defaultOauthScheme;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
-import static com.epam.jdi.http.Utils.restResponse;
 
 public class AuthenticationTests {
 
@@ -37,7 +36,8 @@ public class AuthenticationTests {
     public void authBaseTest() {
         RestResponse resp = callPostmanServiceAuthBasic();
         resp.isOk().assertThat().body("authenticated", equalTo(true));
-        assertEquals(restResponse.get().getStatus().code, HttpStatus.SC_OK);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
+
     }
 
     /**
@@ -50,7 +50,8 @@ public class AuthenticationTests {
         BasicAuthScheme basic = new BasicAuthScheme();
         basic.setUserName("wrongName");
         basic.setPassword("wrongPassword");
-        assertEquals(restResponse.get().getStatus().code, HttpStatus.SC_UNAUTHORIZED);
+        RestResponse resp = callPostmanAuthBasic(basic);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_UNAUTHORIZED);
     }
 
     /**
@@ -60,7 +61,7 @@ public class AuthenticationTests {
     public void authDigestTest() {
         RestResponse resp =  callPostmanServiceAuthBasic();
         resp.isOk().assertThat().body("authenticated", equalTo(true));
-        assertEquals(restResponse.get().getStatus().code, HttpStatus.SC_OK);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
 
     /**
@@ -72,7 +73,7 @@ public class AuthenticationTests {
         RestResponse resp = callPostmanCustomAuth(defaultOauthScheme());
         resp.isOk().assertThat().
             body("status", equalTo("pass"));
-        assertEquals(restResponse.get().getStatus().code, HttpStatus.SC_OK);
+        assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
 }
 

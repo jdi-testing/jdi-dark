@@ -12,7 +12,6 @@ import static com.epam.http.requests.RequestDataInfo.requestUri;
 import static com.epam.http.requests.RestMethods.GET;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
-import static com.epam.jdi.http.Utils.restResponse;
 import static com.epam.jdi.httptests.ServiceExample.getInfo;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -75,16 +74,18 @@ public class ServiceTest {
     @Test
     public void statusTest() {
         RestResponse resp = service.status.callWithNamedParams("503");
-        assertEquals(restResponse.get().getStatus(), 503);
-        assertEquals(restResponse.get().getContentType(), SERVER_ERROR);
+        assertEquals(resp.getStatus().code, 503);
+        assertEquals(resp.getContentType(), SERVER_ERROR);
+        assertEquals(resp.getStatus().code, 503);
+        assertEquals(resp.getContentType(), SERVER_ERROR);
         resp.isEmpty();
     }
 
     @Test
     public void statusTestWithQueryInPath() {
         RestResponse resp = service.statusWithQuery.callWithNamedParams("503", "some");
-        assertEquals(restResponse.get().getStatus(), 503);
-        assertEquals(restResponse.get().getContentType(), SERVER_ERROR);
+        assertEquals(resp.getStatus().code, 503);
+        assertEquals(resp.getContentType(), SERVER_ERROR);
         resp.isEmpty();
     }
 

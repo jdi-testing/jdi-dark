@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 
 import static com.epam.http.requests.RequestDataInfo.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.http.Utils.restResponse;
 import static com.epam.jdi.httptests.JettyService.getJsonStore;
 import static io.restassured.config.JsonConfig.jsonConfig;
 import static io.restassured.path.xml.XmlPath.CompatibilityMode.HTML;
@@ -43,12 +42,13 @@ public class ResponseTests extends WithJetty {
         RestResponse response = JettyService.getHello.call();
         String body = response.getBody();
         assertThat(body, containsString("{\"hello\":\"Hello Scalatra\"}"));
-        assertThat(restResponse.get().getBody(), containsString("{\"hello\":\"Hello Scalatra\"}"));
+        assertThat(response.getBody(), containsString("{\"hello\":\"Hello Scalatra\"}"));
     }
 
     @Test
     public void whenParamsSpecifiedCanReturnBodyAsString() {
-        final String body =restResponse.get().getBody();
+        RestResponse response = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe&"));
+        final String body = response.getBody();
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +
                 "    </greeting>", body);
@@ -103,8 +103,9 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void responseSupportsGettingStatusCode() {
-        assertThat(restResponse.get().getStatus().code, equalTo(200));
-        assertThat(restResponse.get().getBody(), equalTo("{\"hello\":\"Hello Scalatra\"}"));
+        RestResponse response = JettyService.getHello.call();
+        assertThat(response.getStatus().code, equalTo(200));
+        assertThat(response.getBody(), equalTo("{\"hello\":\"Hello Scalatra\"}"));
     }
 
     @Test

@@ -28,7 +28,4 @@ public class RestRequest {
         LOG_RESPONSE.execute(resp,startUuid);
         return resp;
     }
-    private static String printRS(RequestSpecification rs) {
-        return rs.toString();
-    }
 }

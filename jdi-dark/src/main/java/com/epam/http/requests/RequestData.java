@@ -1,18 +1,17 @@
 package com.epam.http.requests;
 
 import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.HeaderUpdater;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.map.MultiMap;
-import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.http.ContentType;
-import io.restassured.http.Cookies;
-import io.restassured.http.Header;
-import io.restassured.http.Headers;
+import io.restassured.http.*;
+import io.restassured.internal.MapCreator;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
+import com.epam.jdi.tools.pairs.Pair;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,6 +42,9 @@ public class RequestData extends DataClass<RequestData> {
 //            new Pair<>(null,null);
 
     public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
+
+    public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
+
     /**
      * Set content type to request data.
      *

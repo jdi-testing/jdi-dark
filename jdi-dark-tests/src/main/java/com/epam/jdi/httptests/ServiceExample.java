@@ -16,7 +16,7 @@ public class ServiceExample {
         @Header(name = "Name", value = "Roman"),
         @Header(name = "Id", value = "Test")
     })
-    static RestMethod getInfo;
+    public static RestMethod getInfo;
 
     public static Info getInfo() {
         return getInfo.callAsData(Info.class);
@@ -24,24 +24,26 @@ public class ServiceExample {
 
     @Header(name = "Type", value = "Test")
     @POST("/post")
-    RestMethod postMethod;
+    public RestMethod postMethod;
 
-    @PUT("/put") RestMethod putMethod;
-    @PATCH("/patch") RestMethod patch;
-    @DELETE("/delete") RestMethod delete;
-    @GET("/status/{status}") RestMethod status;
+    public @PUT("/put") RestMethod putMethod;
+    public @PATCH("/patch") RestMethod patch;
+    public @DELETE("/delete") RestMethod delete;
+    public @GET("/status/{status}") RestMethod status;
 
-    @GET("/status/{status}?q={value}") RestMethod statusWithQuery;
-    @PUT("/get?q=1") RestMethod getMethodWithQuery;
+    public @GET("/status/{status}?q={value}") RestMethod statusWithQuery;
+    public @PUT("/get?q=1") RestMethod getMethodWithQuery;
 
     @ContentType(HTML) @GET("/html")
-    RestMethod getHTMLMethod;
+    public RestMethod getHTMLMethod;
 
     @Cookies({
             @Cookie(name = "session_id", value = "1234"),
             @Cookie(name = "hello", value = "world")
     })
-    @GET("/cookies") RestMethod getCookies;
+    @GET("/cookies")
+    public RestMethod getCookies;
 
-    @GET("/basic-auth/user/password") RestMethod getWithAuth;
+    @GET("/basic-auth/user/password")
+    public RestMethod getWithAuth;
 }

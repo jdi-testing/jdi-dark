@@ -25,13 +25,13 @@ public class SslAnnotationAndRequestDataTests extends WithJetty {
 
     @Test
     public void givenTrustStoreUsingRequestDataAllowsToUseSSL() throws Exception {
-        getHello.call(rd -> {rd.requestTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234");})
+        getHello.call(rd -> {rd.setTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234");})
                 .isOk().body("hello", equalTo("Hello Scalatra"));
     }
 
     @Test
     public void overwriteUsingRequestDataTrustStoreGivenWithAnnotation() {
-        getJsonStore.call(rd -> {rd.requestTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234");})
+        getJsonStore.call(rd -> {rd.setTrustStore("src/test/resources/jetty_localhost_client.jks", "test1234");})
                 .isOk().assertThat()
                 .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
                 rootPath("store.book").

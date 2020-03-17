@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests.examples;
 
+import com.epam.http.requests.RestMethods;
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.Info;
@@ -9,9 +10,8 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestDataInfo.cookies;
-import static com.epam.http.requests.RequestDataInfo.requestData;
-import static com.epam.http.requests.RestMethods.GET;
+import static com.epam.http.requests.RequestDataFacrtory.cookies;
+import static com.epam.http.requests.RequestDataFacrtory.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.ServiceExample.getInfo;
 import static io.restassured.RestAssured.given;
@@ -45,8 +45,7 @@ public class ServiceTests {
 
     @Test
     public void noServiceObjectTest() {
-        RestResponse resp = GET(requestData(
-                rd -> {
+        RestResponse resp = RestMethods.GET(requestData(rd -> {
                     rd.uri = "https://httpbin.org/get";
                     rd.addHeaders().addAll(new Object[][]{
                             {"Name", "Roman"},

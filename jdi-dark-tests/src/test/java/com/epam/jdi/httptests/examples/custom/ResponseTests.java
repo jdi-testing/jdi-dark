@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.http.requests.RequestDataInfo.cookies;
-import static com.epam.http.requests.RequestDataInfo.requestBody;
+import static com.epam.http.requests.RequestDataFacrtory.cookies;
+import static com.epam.http.requests.RequestDataFacrtory.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getJsonStore;
 import static io.restassured.config.JsonConfig.jsonConfig;

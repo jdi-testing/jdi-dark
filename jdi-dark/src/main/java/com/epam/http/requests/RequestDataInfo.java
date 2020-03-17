@@ -30,7 +30,6 @@ public class RequestDataInfo {
     }
     public static CookieUpdater cookies() { return new CookieUpdater(); }
     public static HeaderUpdater headers() { return new HeaderUpdater(); }
-    public static MultipartUpdater multiparts() { return new MultipartUpdater(); }
     public static FormParamsUpdater formParams() { return new FormParamsUpdater(); }
     public static QueryParamsUpdater queryParams() { return new QueryParamsUpdater(); }
     public static PathParamsUpdater pathParams() { return new PathParamsUpdater(); }

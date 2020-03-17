@@ -268,23 +268,25 @@ public class RestMethod {
      * or max number of attempts was reached
      *
      * @param runSpec  - request specification
-     * @param response - last result of request retrying
+     * @param firstResponse - first result of request
      */
-    private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse response) {
-        if (reTryData != null) {
-            List<Integer> errorCodes = reTryData.getErrorCodes();
-            if (errorCodes.contains(response.getStatus().code)) {
-                int attempt = 0;
-                while (attempt < reTryData.getNumberOfAttempts()) {
-                    String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
-                    response = doRequest(type, runSpec, startUuidRetry);
-                    attempt++;
-                    if (!errorCodes.contains(response.getStatus().code))
-                        break;
-                }
+    private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
+        if (reTryData == null) return firstResponse;
+
+        RestResponse retryingResponse = null;
+        List<Integer> errorCodes = reTryData.getErrorCodes();
+        if (errorCodes.contains(firstResponse.getStatus().code)) {
+            int attempt = 0;
+            while (attempt < reTryData.getNumberOfAttempts()) {
+                String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
+                retryingResponse = doRequest(type, runSpec, startUuidRetry);
+                attempt++;
+                if (!errorCodes.contains(firstResponse.getStatus().code))
+                    break;
             }
         }
-        return response;
+
+        return retryingResponse;
     }
 
     private void handleResponse(RestResponse restResponse) {
@@ -307,7 +309,7 @@ public class RestMethod {
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
         String startUuid = LOG_REQUEST.execute(this, singletonList(data));
         RestResponse response = doRequest(type, runSpec, startUuid);
-        handleRetrying(runSpec, response);
+        response = handleRetrying(runSpec, response);
         return response;
     }
 
@@ -324,7 +326,7 @@ public class RestMethod {
         RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
         String startUuid = LOG_REQUEST.execute(this, singletonList(data));
         RestResponse response = doRequest(type, runSpec, startUuid);
-        handleRetrying(runSpec, response);
+        response = handleRetrying(runSpec, response);
         return response;
     }
 

@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.http.requests.RequestDataInfo.queryParams;
+import static com.epam.http.requests.RequestDataFacrtory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getRedirect;
 import static io.restassured.RestAssured.requestSpecification;

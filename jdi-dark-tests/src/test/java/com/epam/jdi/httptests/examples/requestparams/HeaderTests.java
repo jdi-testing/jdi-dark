@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static com.epam.http.requests.RequestDataInfo.headers;
+import static com.epam.http.requests.RequestDataFacrtory.headers;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.JettyService.getHello;
 import static com.epam.jdi.httptests.JettyService.getLotto;

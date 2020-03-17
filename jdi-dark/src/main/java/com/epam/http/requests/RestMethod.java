@@ -63,7 +63,6 @@ public class RestMethod {
     public CookieUpdater cookies = new CookieUpdater(this::getData);
     public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
     public FormParamsUpdater formParams = new FormParamsUpdater(this::getData);
-    public MultipartUpdater multipart = new MultipartUpdater(this::getData);
     public RetryData reTryData;
     private RequestData data;
     private RequestData userData = new RequestData();

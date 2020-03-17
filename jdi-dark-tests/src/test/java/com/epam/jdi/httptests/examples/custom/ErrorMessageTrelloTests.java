@@ -5,8 +5,8 @@ import com.epam.jdi.httptests.TrelloService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestDataInfo.pathParams;
-import static com.epam.http.requests.RequestDataInfo.queryParams;
+import static com.epam.http.requests.RequestDataFacrtory.pathParams;
+import static com.epam.http.requests.RequestDataFacrtory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloService.*;
 import static org.testng.Assert.assertEquals;

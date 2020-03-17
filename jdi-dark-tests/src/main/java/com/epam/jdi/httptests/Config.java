@@ -8,7 +8,6 @@ import com.epam.http.requests.RestMethod;
 import static io.restassured.http.ContentType.JSON;
 
 public class Config {
-
     @ContentType(JSON)
     @URL("https://www.gmail.com")
     @GET("/")

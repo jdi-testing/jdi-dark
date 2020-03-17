@@ -4,6 +4,7 @@ import com.epam.http.response.RestResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import static com.epam.http.response.RestResponse.LOG_RESPONSE;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -18,16 +19,13 @@ public class RestRequest {
      * @return                  response
      */
     public static RestResponse doRequest(
-            RestMethodTypes methodType, RequestSpecification spec) {
+            RestMethodTypes methodType, RequestSpecification spec,String startUuid) {
         Response response;
-        long time;
-        time = currentTimeMillis();
+        long time = currentTimeMillis();
         response = methodType.method.apply(spec);
         time = currentTimeMillis() - time;
         RestResponse resp = new RestResponse(response, time);
+        LOG_RESPONSE.execute(resp,startUuid);
         return resp;
-    }
-    private static String printRS(RequestSpecification rs) {
-        return rs.toString();
     }
 }

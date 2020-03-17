@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.epam.jdi</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <artifactId>jdi-dark-tests</artifactId>
-    <name>JDI HTTP Tests</name>
+    <name>JDI Dark Tests</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -67,6 +67,7 @@
             <version>1.1.2</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>

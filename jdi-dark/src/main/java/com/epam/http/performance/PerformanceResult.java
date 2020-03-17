@@ -12,7 +12,7 @@ public class PerformanceResult {
     public long AverageResponseTime = 0;
     public long NumberOfRequests = 0;
     public long NumberOfFails = 0;
-    public boolean NoFails() {
+    public boolean noFails() {
         return NumberOfFails == 0;
     }
 
@@ -24,7 +24,7 @@ public class PerformanceResult {
         AverageResponseTime = (AverageResponseTime * NumberOfRequests + response.responseTime())
                 / (NumberOfRequests + 1);
         NumberOfRequests++;
-        if (response.status.type == CLIENT_ERROR)
+        if (response.getStatus().type == CLIENT_ERROR)
             NumberOfFails++;
 
     }

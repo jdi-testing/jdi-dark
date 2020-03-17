@@ -2,6 +2,7 @@ package com.epam.http.response;
 
 import com.epam.http.logger.AllureLogger;
 import com.epam.jdi.tools.func.JAction1;
+import com.epam.jdi.tools.func.JAction2;
 import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.http.Header;
@@ -27,12 +28,19 @@ import static java.lang.String.format;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestResponse {
-
+    public static final String STRING_EMPTY ="";
     private final Response raResponse;
     private final long responseTimeMSec;
-    public String body = null;
-    public ResponseStatus status = null;
-    public String contentType = "";
+    private String body = null;
+    private ResponseStatus status = null;
+    private String contentType = "";
+
+
+    public ResponseStatus getResponseStatus(){
+        return status;
+    }
+
+    public String getContentType() {return this.contentType; }
 
     public RestResponse() {
         this.raResponse = null;
@@ -49,8 +57,13 @@ public class RestResponse {
         body = raResponse.body().asString();
         status = new ResponseStatus(raResponse);
         contentType = raResponse.contentType();
+    }
+
+    public static JAction2<RestResponse, String> LOG_RESPONSE = RestResponse::logResponse;
+
+    public void logResponse(String uuid) {
         logger.info(toString());
-        AllureLogger.passStep(toString());
+        AllureLogger.passStep(toString(), uuid);
     }
 
     public RestResponse set(JAction1<RestResponse> valueFunc) {
@@ -111,12 +124,9 @@ public class RestResponse {
         return this.status;
     }
 
-    public String getContentType() {
-        return this.contentType;
-    }
 
     public ValidatableResponse isEmpty() {
-        return validate(r -> body.equals(""));
+        return validate(r -> STRING_EMPTY.equals(body));
     }
 
     /**
@@ -230,6 +240,10 @@ public class RestResponse {
         return raResponse.then();
     }
 
+    public <T> T asData(Class<T> cl) {
+        return getRaResponse().as(cl);
+    }
+
     /**
      * Verify the status of response.
      *
@@ -244,7 +258,7 @@ public class RestResponse {
             errors += format("Wrong status type %s. Expected: %s", status.type, rs.type) + LINE_BREAK;
         if (!status.text.equals(rs.text))
             errors += format("Wrong status text %s. Expected: %s", status.text, rs.text);
-        if (!errors.equals(""))
+        if (!STRING_EMPTY.equals(errors))
             throw exception(errors);
         return this;
     }

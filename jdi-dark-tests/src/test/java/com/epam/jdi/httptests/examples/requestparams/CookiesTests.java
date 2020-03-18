@@ -13,26 +13,18 @@ import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class CookiesTests extends WithJetty {
-
+    JettyService jetty;
     @BeforeClass
     public void before() {
-        init(JettyService.class);
+        jetty = init(JettyService.class);
     }
 
     @Test
@@ -57,7 +49,7 @@ public class CookiesTests extends WithJetty {
 
     @Test
     public void canSpecifyMultiValueCookiesPassingSeveralValuesToTheCookieMethod() {
-        RestResponse response = JettyService.getMultiCookieWithOneName("key1", "value1", "value2");
+        RestResponse response = jetty.getMultiCookieWithOneName("key1", "value1", "value2");
         assertThat(response.getBody(), equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"}]"));
     }
 
@@ -104,7 +96,7 @@ public class CookiesTests extends WithJetty {
     public void canPassCookiesAsObjectsArray() {
         Object[][] cookiesArray = new Object[][]{{"key1", "value1"}, {"key2", "value2"}};
 
-        RestResponse response = JettyService.getMultiCookiesArray(cookiesArray);
+        RestResponse response = jetty.getMultiCookiesArray(cookiesArray);
         assertThat(response.getBody(), equalTo("[{\"key1\":\"value1\"},{\"key2\":\"value2\"}]"));
     }
 
@@ -256,7 +248,7 @@ public class CookiesTests extends WithJetty {
         RequestSpecification rs = given().filter(new AllureRestAssured()).cookie("SpecCookie1", "SpecCookieValue1");
         init(JettyService.class, ServiceSettings.builder().requestSpecification(rs).build());
 
-        RestResponse response = JettyService.getMultiCookieSpecified("userCookie1", "userValue1");
+        RestResponse response = jetty.getMultiCookieSpecified("userCookie1", "userValue1");
         assertThat(response.getBody(), equalTo("[{\"SpecCookie1\":\"SpecCookieValue1\"},{\"userCookie1\":\"userValue1\"}]"));
         init(JettyService.class, ServiceSettings.builder().requestSpecification(given().filter(new AllureRestAssured())).build());
     }

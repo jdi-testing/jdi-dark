@@ -244,11 +244,13 @@ public class RestMethod {
         }
         getQueryParamsFromPath();
         RequestSpecification runSpec = getInitSpec();
+        System.out.println("user data cookies---" + userData.cookies.asList());
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
         String startUuid = LOG_REQUEST.execute(this, asList(data, userData));
         userData.clear();
+        System.out.println("after clear data cookies---" + userData.cookies.asList());
         RestResponse response = doRequest(type, runSpec, startUuid);
         handleResponse(response);
         return response;
@@ -414,6 +416,7 @@ public class RestMethod {
      * @return response
      */
     public RestResponse call(RequestData requestData) {
+        userData = new RequestData();
         userData.empty = false;
         if (!requestData.pathParams.isEmpty()) {
             userData.pathParams = requestData.pathParams;
@@ -433,8 +436,11 @@ public class RestMethod {
             userData.headers = new Headers(headerList);
         }
         if (!requestData.cookies.asList().isEmpty()) {
+            System.out.println("1--requestData.cookies " + requestData.cookies);
             List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
+            System.out.println("2--requestData.cookies " + userData.cookies.asList());
             cookieList.addAll(requestData.cookies.asList());
+            System.out.println("3--cookieList " + cookieList);
             userData.cookies = new Cookies(cookieList);
         }
         if (requestData.contentType != null) {
@@ -467,6 +473,7 @@ public class RestMethod {
      * @return request specification
      */
     public RequestSpecification getDataSpec(RequestData data) {
+
         RequestSpecification spec = new RequestSpecBuilder().build();
         if (url != null) {
             spec.baseUri(url);
@@ -499,6 +506,7 @@ public class RestMethod {
             spec.headers(data.headers);
         }
         if (!data.cookies.asList().isEmpty()) {
+            System.out.println("data in spec---" + userData.cookies.asList());
             spec.cookies(data.cookies);
         }
         if (data.multiPartSpecifications.size() > 0) {

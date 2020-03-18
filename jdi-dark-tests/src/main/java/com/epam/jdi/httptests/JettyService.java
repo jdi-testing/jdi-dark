@@ -21,17 +21,20 @@ public class JettyService {
     public static RestMethod getMultiCookie;
 
     @GET("/multiCookieRequest")
-    public static RestMethod getMultiCookieRequest;
+    public RestMethod getMultiCookieRequest;
 
-    public static RestResponse getMultiCookiesArray(Object[][] cookiesArray) {
+    @GET("/multiCookieRequest")
+    public RestMethod getMultiCookieRequest2;
+
+    public RestResponse getMultiCookiesArray(Object[][] cookiesArray) {
         return getMultiCookieRequest.call(cookies().addAll(cookiesArray));
     }
 
-    public static RestResponse getMultiCookieWithOneName(String name, String value1, String value2) {
+    public RestResponse getMultiCookieWithOneName(String name, String value1, String value2) {
         return getMultiCookieRequest.call(cookies().add(name, value1, value2));
     }
 
-    public static RestResponse getMultiCookieSpecified(String name, String value) {
+    public RestResponse getMultiCookieSpecified(String name, String value) {
         return getMultiCookieRequest.call(cookies().add(name, value));
     }
 

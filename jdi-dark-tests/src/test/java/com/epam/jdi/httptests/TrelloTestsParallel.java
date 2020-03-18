@@ -10,13 +10,22 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloService.*;
-import static com.epam.jdi.httptests.utils.TrelloDataGenerator.*;
+import static com.epam.jdi.httptests.TrelloService.addNewCardToBoard;
+import static com.epam.jdi.httptests.TrelloService.createBoard;
+import static com.epam.jdi.httptests.TrelloService.createList;
+import static com.epam.jdi.httptests.TrelloService.createOrganization;
+import static com.epam.jdi.httptests.TrelloService.getBoard;
+import static com.epam.jdi.httptests.TrelloService.getCardBoard;
+import static com.epam.jdi.httptests.TrelloService.getOrganizationBoards;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 import static com.epam.jdi.tools.LinqUtils.map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class TrelloTests {
+public class TrelloTestsParallel {
 
     @BeforeClass
     public void initService() {

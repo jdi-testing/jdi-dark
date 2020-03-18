@@ -44,7 +44,7 @@ public class TestsWithPreconditions {
                 .isOk().body("name", equalTo(boardName));
     }
 
-    @DataProvider(name = "dataProviderFromCSV")
+    @DataProvider(name = "dataProviderFromCSV", parallel = true)
     public static Object[] dataProviderFromCSV() throws IOException {
         Reader in = new FileReader(CSV_DATA_FILE);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT
@@ -58,7 +58,7 @@ public class TestsWithPreconditions {
         return dataList.toArray(new Object[dataList.size()][]);
     }
 
-    @Test (dataProvider = "dataProviderFromCSV")
+    @Test (dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
         TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))

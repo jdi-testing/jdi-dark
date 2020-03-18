@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Http tests" parallel="classes" thread-count="2">
+    <test name="Tests">
+        <classes>
+            <class name="com.epam.jdi.httptests.ParallelTest"/>
+            <class name="com.epam.jdi.httptests.ParallelTest2"/>
+        </classes>
+    </test>
+</suite>

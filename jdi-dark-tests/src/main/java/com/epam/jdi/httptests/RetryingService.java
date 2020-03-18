@@ -18,7 +18,7 @@ public class RetryingService {
     public static RestMethod get503;
 
     @GET(value = "451")
-    @RetryOnFailure(numberOfAttempts = 4, errorCodes = 451)
+    @RetryOnFailure(numberOfAttempts = 6, errorCodes = 451)
     public static RestMethod get451;
 
     @GET(value = "502")

@@ -267,13 +267,13 @@ public class RestMethod {
      * Sends HTTP request until server response status different from indicated
      * or max number of attempts was reached
      *
-     * @param runSpec  - request specification
-     * @param firstResponse - first result of request
+     * @param runSpec       - request specification
+     * @param firstResponse - result of first request
      */
     private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
         if (reTryData == null) return firstResponse;
 
-        RestResponse retryingResponse = null;
+        RestResponse retryingResponse = firstResponse;
         List<Integer> errorCodes = reTryData.getErrorCodes();
         if (errorCodes.contains(firstResponse.getStatus().code)) {
             int attempt = 0;
@@ -281,7 +281,7 @@ public class RestMethod {
                 String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
                 retryingResponse = doRequest(type, runSpec, startUuidRetry);
                 attempt++;
-                if (!errorCodes.contains(firstResponse.getStatus().code))
+                if (!errorCodes.contains(retryingResponse.getStatus().code))
                     break;
             }
         }

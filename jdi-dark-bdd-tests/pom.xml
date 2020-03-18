@@ -102,10 +102,13 @@
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
-                <version>${allure.maven.version}</version>
+                <version>LATEST</version>
                 <configuration>
                     <properties>
                         <allure.results.directory>target/allure-results</allure.results.directory>
+                    </properties>
+                    <properties>
+                        <allure.link.issue.pattern>https://example.org/issue/{}</allure.link.issue.pattern>
                     </properties>
                 </configuration>
             </plugin>

@@ -69,14 +69,6 @@
                         -Dcucumber.options="--plugin io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm"
                     </argLine>
                 </configuration>
-                <!--                <configuration>-->
-                <!--                    <includes>-->
-                <!--                        <include>**/*CucumberTestRunner.java</include>-->
-                <!--                    </includes>-->
-                <!--                    <systemPropertyVariables>-->
-                <!--                        <cucumber.options>&#45;&#45;tags '${includeTags}' &#45;&#45;tags 'not ${excludeTags}'</cucumber.options>-->
-                <!--                    </systemPropertyVariables>-->
-                <!--                </configuration>-->
                 <dependencies>
                     <dependency>
                         <groupId>org.aspectj</groupId>
@@ -110,13 +102,10 @@
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
-                <version>LATEST</version>
+                <version>${allure.maven.version}</version>
                 <configuration>
                     <properties>
                         <allure.results.directory>target/allure-results</allure.results.directory>
-                    </properties>
-                    <properties>
-                        <allure.link.issue.pattern>https://example.org/issue/{}</allure.link.issue.pattern>
                     </properties>
                 </configuration>
             </plugin>

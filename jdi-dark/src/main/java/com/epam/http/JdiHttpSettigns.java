@@ -52,7 +52,7 @@ public class JdiHttpSettigns {
     }
 
     public static synchronized void init() {
-        Properties properties = getProperties("pom.properties");
+        Properties properties = getProperties("src/test/resources/pom.properties");
         getProperties((properties.size() > 0) ? ( (!properties.getProperty("profile").contains("$")) ? properties.getProperty("profile").concat(".properties") : TEST_PROPERTIES_PATH) : TEST_PROPERTIES_PATH);
         fillAction(p -> setDomain(p), "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");

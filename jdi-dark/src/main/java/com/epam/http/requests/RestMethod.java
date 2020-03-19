@@ -8,6 +8,7 @@ import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.func.JFunc2;
+import com.epam.jdi.tools.func.JFunc3;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -62,6 +63,7 @@ public class RestMethod {
     public CookieUpdater cookies = new CookieUpdater(this::getData);
     public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
     public FormParamsUpdater formParams = new FormParamsUpdater(this::getData);
+    public RetryData reTryData;
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
@@ -222,6 +224,7 @@ public class RestMethod {
     }
 
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
+    public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
 
     public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
@@ -231,6 +234,11 @@ public class RestMethod {
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
         return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
                 format("%s %s%s  %s", type, url != null ? url : "", path != null ? path : "", maps));
+    }
+
+    private String logReTryRequest(List<RequestData> requestData, Integer i) {
+        logger.info("================================> RETRY REQUEST ATTEMPT " + (i + 1) + "/" + reTryData.getNumberOfAttempts() + ":");
+        return logRequest(requestData);
     }
 
     /**
@@ -251,7 +259,34 @@ public class RestMethod {
         userData.clear();
         RestResponse response = doRequest(type, runSpec, startUuid);
         handleResponse(response);
+        response = handleRetrying(runSpec, response);
         return response;
+    }
+
+    /**
+     * Sends HTTP request until server response status different from indicated
+     * or max number of attempts was reached
+     *
+     * @param runSpec       - request specification
+     * @param firstResponse - result of first request
+     */
+    private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
+        if (reTryData == null) return firstResponse;
+
+        RestResponse retryingResponse = firstResponse;
+        List<Integer> errorCodes = reTryData.getErrorCodes();
+        if (errorCodes.contains(firstResponse.getStatus().code)) {
+            int attempt = 0;
+            while (attempt < reTryData.getNumberOfAttempts()) {
+                String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
+                retryingResponse = doRequest(type, runSpec, startUuidRetry);
+                attempt++;
+                if (!errorCodes.contains(retryingResponse.getStatus().code))
+                    break;
+            }
+        }
+
+        return retryingResponse;
     }
 
     private void handleResponse(RestResponse restResponse) {
@@ -273,7 +308,9 @@ public class RestMethod {
         }
         RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
         String startUuid = LOG_REQUEST.execute(this, singletonList(data));
-        return doRequest(type, runSpec, startUuid);
+        RestResponse response = doRequest(type, runSpec, startUuid);
+        response = handleRetrying(runSpec, response);
+        return response;
     }
 
     /**
@@ -288,7 +325,9 @@ public class RestMethod {
         }
         RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
         String startUuid = LOG_REQUEST.execute(this, singletonList(data));
-        return doRequest(type, runSpec, startUuid);
+        RestResponse response = doRequest(type, runSpec, startUuid);
+        response = handleRetrying(runSpec, response);
+        return response;
     }
 
     /**

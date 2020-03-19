@@ -32,7 +32,7 @@ public class AllureLogger {
     public static void passStep(String responseData, String uuid) {
         if (!writeToAllure || StringUtils.isBlank(uuid)) return;
 
-        getLifecycle().updateStep(uuid, s -> s.withStatus(FAILED));
+        getLifecycle().updateStep(uuid, s -> s.withStatus(PASSED));
         attachResponse(responseData);
         getLifecycle().stopStep();
     }

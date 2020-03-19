@@ -17,9 +17,8 @@ import static org.testng.AssertJUnit.assertEquals;
 public class AuthenticationTests {
 
 /**
- * In @BeforeClass we can setup our Authentication handler.
- * The handler must implement AuthenticationHandler interface.
- * This handler should be passed to Service Settings to affect the whole service.
+ * In @BeforeClass we can setup our Authentication Scheme.
+ * This scheme should be passed to Service Settings to affect the whole service.
  */
 
     @BeforeClass
@@ -31,7 +30,7 @@ public class AuthenticationTests {
     }
 
     /**
-     * This test represents basic authorization using services setings.
+     * This test represents basic authorization using service settings.
      */
     @Test
     public void authBaseTest() {
@@ -43,7 +42,7 @@ public class AuthenticationTests {
 
     /**
      *  In this test we override service setting using our custom Authentication Scheme.
-     *  Such scheme must implents AuthentificationScheme interface.
+     *  Such scheme must implement AuthenticationScheme interface.
      *  It will basically populate request with required data.
      */
     @Test
@@ -66,7 +65,7 @@ public class AuthenticationTests {
     }
 
     /**
-     * In this test we are overriding service setings to pass custom Authentication Scheme.
+     * In this test we are overriding service settings to pass custom Authentication Scheme.
      */
 
     @Test

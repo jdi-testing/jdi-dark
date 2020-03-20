@@ -149,6 +149,13 @@
                 <artifactId>allure-maven</artifactId>
                 <version>${allure.maven}</version>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.epam.jdi.httptests.support.Server</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
 
         <resources>

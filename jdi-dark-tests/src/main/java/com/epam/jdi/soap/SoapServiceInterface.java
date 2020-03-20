@@ -1,11 +1,11 @@
-package com.epam.jdi.httptests.support;
+package com.epam.jdi.soap;
 
 import javax.jws.WebService;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
 
 @WebService
-public interface Baeldung {
+public interface SoapServiceInterface {
     public String hello(String name);
 
     public String helloStudent(Student student);

@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:tns="http://soap.jdi.epam.com/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        name="SoapServiceImplService"
+        targetNamespace="http://soap.jdi.epam.com/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://soap.jdi.epam.com/" elementFormDefault="unqualified" targetNamespace="http://soap.jdi.epam.com/" version="1.0">
+
+  <xs:element name="getStudents" type="tns:getStudents"/>
+
+  <xs:element name="getStudentsResponse" type="tns:getStudentsResponse"/>
+
+  <xs:element name="hello" type="tns:hello"/>
+
+  <xs:element name="helloResponse" type="tns:helloResponse"/>
+
+  <xs:element name="helloStudent" type="tns:helloStudent"/>
+
+  <xs:element name="helloStudentResponse" type="tns:helloStudentResponse"/>
+
+  <xs:complexType name="hello">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="helloResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getStudents">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="getStudentsResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:StudentMap"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StudentMap">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="entry" type="tns:StudentEntry"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StudentEntry">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id" type="xs:int"/>
+      <xs:element minOccurs="0" name="student" type="tns:Student"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Student">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="helloStudent">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:Student"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="helloStudentResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="hello">
+    <wsdl:part element="tns:hello" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="helloStudentResponse">
+    <wsdl:part element="tns:helloStudentResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getStudents">
+    <wsdl:part element="tns:getStudents" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="helloStudent">
+    <wsdl:part element="tns:helloStudent" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getStudentsResponse">
+    <wsdl:part element="tns:getStudentsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="helloResponse">
+    <wsdl:part element="tns:helloResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SoapServiceInterface">
+    <wsdl:operation name="hello">
+      <wsdl:input message="tns:hello" name="hello">
+    </wsdl:input>
+      <wsdl:output message="tns:helloResponse" name="helloResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStudents">
+      <wsdl:input message="tns:getStudents" name="getStudents">
+    </wsdl:input>
+      <wsdl:output message="tns:getStudentsResponse" name="getStudentsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="helloStudent">
+      <wsdl:input message="tns:helloStudent" name="helloStudent">
+    </wsdl:input>
+      <wsdl:output message="tns:helloStudentResponse" name="helloStudentResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SoapServiceImplServiceSoapBinding" type="tns:SoapServiceInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="hello">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="hello">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="helloResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStudents">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getStudents">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getStudentsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="helloStudent">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="helloStudent">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="helloStudentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapServiceImplService">
+    <wsdl:port binding="tns:SoapServiceImplServiceSoapBinding" name="SoapServiceImplPort">
+      <soap:address location="http://localhost:8080/soap_service"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

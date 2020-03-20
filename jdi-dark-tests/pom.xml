@@ -70,12 +70,12 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>3.1.6</version>
+            <version>3.3.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http-jetty</artifactId>
-            <version>3.1.6</version>
+            <version>3.3.5</version>
         </dependency>
 
     </dependencies>
@@ -153,7 +153,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.epam.jdi.httptests.support.Server</mainClass>
+                    <mainClass>com.epam.jdi.soap.Server</mainClass>
                 </configuration>
             </plugin>
         </plugins>

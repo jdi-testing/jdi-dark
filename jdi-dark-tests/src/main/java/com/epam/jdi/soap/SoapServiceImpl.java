@@ -1,11 +1,11 @@
-package com.epam.jdi.httptests.support;
+package com.epam.jdi.soap;
 
 import javax.jws.WebService;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@WebService(endpointInterface = "com.baeldung.cxf.introduction.Baeldung")
-public class BaeldungImpl implements Baeldung {
+@WebService(endpointInterface = "com.epam.jdi.soap.SoapServiceInterface")
+public class SoapServiceImpl implements SoapServiceInterface {
     private Map<Integer, Student> students
             = new LinkedHashMap<Integer, Student>();
 

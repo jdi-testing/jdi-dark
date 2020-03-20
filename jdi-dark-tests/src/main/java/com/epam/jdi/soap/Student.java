@@ -1,4 +1,4 @@
-package com.epam.jdi.httptests.support;
+package com.epam.jdi.soap;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 

@@ -10,7 +10,7 @@ import com.epam.jdi.dto.TrelloList;
 
 import java.util.List;
 
-import static com.epam.http.requests.RequestDataInfo.pathParams;
+import static com.epam.http.requests.RequestDataFacrtory.pathParams;
 import static io.restassured.http.ContentType.JSON;
 import static java.util.Arrays.asList;
 

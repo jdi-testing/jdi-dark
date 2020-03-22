@@ -1,9 +1,6 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.updaters.CookieUpdater;
-import com.epam.http.requests.updaters.PathParamsUpdater;
-import com.epam.http.requests.updaters.QueryParamsUpdater;
-import com.epam.http.requests.updaters.HeaderUpdater;
+import com.epam.http.requests.updaters.*;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
@@ -13,8 +10,8 @@ import io.restassured.http.*;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
 
-import java.io.File;
 import java.util.ArrayList;
+
 /**
  * Represents all HTTP request data.
  *
@@ -35,74 +32,99 @@ public class RequestData extends DataClass<RequestData> {
     public ProxySpecification proxySpecification = null;
     public AuthenticationScheme authenticationScheme = null;
     public Pair<String, String> trustStore = null;
-    public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
-    public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
-    public QueryParamsUpdater addQueryParams() { return new QueryParamsUpdater(() -> this); }
-    public PathParamsUpdater addPathParams() { return new PathParamsUpdater(() -> this); }
+
+    public CookieUpdater addCookies() {
+        return new CookieUpdater(() -> this);
+    }
+
+    public HeaderUpdater addHeaders() {
+        return new HeaderUpdater(() -> this);
+    }
+
+    public QueryParamsUpdater addQueryParams() {
+        return new QueryParamsUpdater(() -> this);
+    }
+
+    public PathParamsUpdater addPathParams() {
+        return new PathParamsUpdater(() -> this);
+    }
+
+    public FormParamsUpdater addFormParams() {
+        return new FormParamsUpdater(() -> this);
+    }
+
     /**
-     * Set content type to request data.
+     * Set request body to request data.
      *
-     * @param contentType  content type as string
+     * @param body as formatted String
+     * @return generated request data with provided request body
      */
-    public void setContentType(String contentType){
-        this.contentType = contentType;
+    public RequestData requestBody(Object body) {
+        this.body = body;
+        return this;
     }
 
     /**
      * Set content type to request data.
      *
-     * @param contentType  content type as ContentType
+     * @param contentType content type as string
      */
-    public void setContentType(ContentType contentType){
+    public RequestData setContentType(String contentType) {
+        this.contentType = contentType;
+        return this;
+    }
+
+    /**
+     * Set content type to request data.
+     *
+     * @param contentType content type as ContentType
+     */
+    public RequestData setContentType(ContentType contentType) {
         this.contentType = contentType.toString();
+        return this;
     }
 
     /**
      * Set multipart parameters to request data.
      *
-     * @param multiPartSpecBuilder  MultiPartSpecBuilder
+     * @param multiPartSpecBuilder MultiPartSpecBuilder
      */
-    public void setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
-        multiPartSpecifications.add(multiPartSpecBuilder.build());
+    public RequestData setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
+        this.multiPartSpecifications.add(multiPartSpecBuilder.build());
+        return this;
     }
 
     /**
      * Set authentication scheme to request data
      * This allows authentcation for requests
+     *
      * @param authScheme authentication scheme: from restassured or custom
      */
 
-    public void setAuth(AuthenticationScheme authScheme) {
-        authenticationScheme = authScheme;
-    }
-
-    /**
-     * Set multipart parameters to request data.
-     *
-     * @param file  File parameter
-     */
-    public void setMultiPart(File file) {
-        multiPartSpecifications.add(new MultiPartSpecBuilder(file).build());
+    public RequestData setAuth(AuthenticationScheme authScheme) {
+        this.authenticationScheme = authScheme;
+        return this;
     }
 
     /**
      * Set proxy parameters to request data.
      *
      * @param scheme scheme
-     * @param host host
-     * @param port port
+     * @param host   host
+     * @param port   port
      */
-    public void setProxySpecification(String scheme, String host, int port) {
+    public RequestData setProxySpecification(String scheme, String host, int port) {
         this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
+        return this;
     }
 
     /**
      * Set trustStore parameters to request data.
      *
      * @param pathToJks pathToJks
-     * @param password password
+     * @param password  password
      */
-    public RequestData requestTrustStore(String pathToJks, String password){
+    public RequestData setTrustStore(String pathToJks, String password) {
         this.trustStore = new Pair<>(pathToJks, password);
         return this;
     }

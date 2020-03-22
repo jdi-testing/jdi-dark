@@ -14,24 +14,24 @@ public class PostmanAuth {
             @Header(name = "Authorization", value = "Basic cG9zdG1hbjpwYXNzd29yZA==")
     })
 
-    static RestMethod authBase;
+    public static RestMethod authBase;
     @ContentType(JSON)
     @GET("basic-auth")
-    static RestMethod auth2;
+    public static RestMethod auth2;
 
     @ContentType(JSON)
     @GET("basic-auth")
-    static RestMethod authBaseForm;
+    public static RestMethod authBaseForm;
 
     @ContentType(JSON)
     @GET("digest-auth")
-    static RestMethod authDigest;
+    public static RestMethod authDigest;
 
     @ContentType(JSON)
     @GET("auth/hawk")
-    static RestMethod authHawk;
+    public static RestMethod authHawk;
 
     @ContentType(JSON)
     @GET("oauth1")
-    static RestMethod oauth;
+    public static RestMethod oauth;
 }

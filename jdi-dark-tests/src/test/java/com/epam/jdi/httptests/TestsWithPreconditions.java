@@ -29,7 +29,7 @@ public class TestsWithPreconditions {
         init(TrelloService.class);
     }
 
-    @DataProvider(name = "createNewBoards")
+    @DataProvider(name = "createNewBoards", parallel = true)
     public static Object[][] createNewBoards() {
         return new Object[][] {
                 { "Board B1-" + LocalDateTime.now()},
@@ -58,7 +58,7 @@ public class TestsWithPreconditions {
         return dataList.toArray(new Object[dataList.size()][]);
     }
 
-    @Test (dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
+    @Test (dataProvider = "dataProviderFromCSV")
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
         TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))

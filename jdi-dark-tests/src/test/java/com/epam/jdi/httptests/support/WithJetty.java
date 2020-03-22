@@ -10,15 +10,15 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 
 import java.util.Collections;
 
 public abstract class WithJetty {
     private static Server server;
 
-    @BeforeClass
+    @BeforeSuite
     public static void startJettyHttps() throws Exception {
         server = new Server();
 
@@ -78,7 +78,7 @@ public abstract class WithJetty {
         server.start();
     }
 
-    @AfterClass
+    @AfterSuite
     public static void stopJetty() throws Exception {
         server.stop();
         server.join();

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="WINDOWS-1251"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Http tests" parallel="methods" thread-count="5">
+<suite name="Parallel tests with DataProvider" parallel="methods" data-provider-thread-count="3">
     <test name="Tests">
         <classes>
-            <class name="com.epam.jdi.httptests.ParallelTrelloTests1"/>
+            <class name="com.epam.jdi.httptests.TestsWithPreconditions"/>
         </classes>
     </test>
 </suite>

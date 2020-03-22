@@ -23,13 +23,13 @@ import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
-public class ParallelTrelloTestsWithDataProvider {
-    public TrelloServiceNoStatic service;
+public class TestsWithPreconditionsParallel {
+    public TrelloService service;
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
 
     @BeforeClass
     public void initService() {
-        service = init(TrelloServiceNoStatic.class);
+        service = init(TrelloService.class);
     }
 
     @DataProvider(name = "createNewBoards", parallel = true)
@@ -44,18 +44,13 @@ public class ParallelTrelloTestsWithDataProvider {
     @Test(dataProvider = "createNewBoards", threadPoolSize = 3)
     public void createCardInBoard1(Board board) {
         //Crate board
-        System.out.println("Board: " + board.name + ". Thread id is: " + Thread.currentThread().getId());
         Board createdBoard = service.createBoard(board);
-        System.out.println("createdBoard1: " + createdBoard.name + ", " + createdBoard.id);
         Board gotBoard = service.getBoard(createdBoard.id);
         assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
 
         //Create list
         TrelloList tList = generateList(createdBoard);
-        System.out.println("2-createdBoard1: " + createdBoard.name + ", " + createdBoard.id);
-        System.out.println("2-tList1: " + tList.name + ", " + tList.idBoard);
         TrelloList createdList = service.createList(tList);
-        System.out.println("2-createdList1: " + createdList.name + ", " + createdList.idBoard);
 
         //Create Card
         Card card = generateCard(createdBoard, createdList);
@@ -82,12 +77,9 @@ public class ParallelTrelloTestsWithDataProvider {
 
     @Test (dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        System.out.println("RequestData: " + pathParams().add("board_id", boardId));
         service.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl",equalTo(expectedShortUrl))
                 .body("url",equalTo(expectedUrl));
     }
-
-
 }

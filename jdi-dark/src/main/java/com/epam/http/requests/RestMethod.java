@@ -239,7 +239,7 @@ public class RestMethod {
      *
      * @return response
      */
-    public RestResponse call() {
+    public synchronized RestResponse call() {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
@@ -268,7 +268,7 @@ public class RestMethod {
      * @param requestSpecification Rest Assured request specification
      * @return response
      */
-    public RestResponse call(RequestSpecification requestSpecification) {
+    public synchronized RestResponse call(RequestSpecification requestSpecification) {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
@@ -283,7 +283,7 @@ public class RestMethod {
      * @param restAssuredConfig Rest Assured config
      * @return response
      */
-    public RestResponse call(RestAssuredConfig restAssuredConfig) {
+    public synchronized RestResponse call(RestAssuredConfig restAssuredConfig) {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
@@ -328,7 +328,7 @@ public class RestMethod {
      * @param queryParams additional query parameters
      * @return response
      */
-    public RestResponse call(String queryParams) {
+    public synchronized RestResponse call(String queryParams) {
         if (!queryParams.isEmpty()) {
             String[] queryParamsArr = queryParams.split("&");
             for (String queryParam : queryParamsArr) {
@@ -345,7 +345,7 @@ public class RestMethod {
      * @param namedParams path parameters
      * @return response
      */
-    public RestResponse callWithNamedParams(String... namedParams) {
+    public synchronized RestResponse callWithNamedParams(String... namedParams) {
         if (namedParams.length > 0) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
@@ -414,7 +414,8 @@ public class RestMethod {
      * @param requestData requestData
      * @return response
      */
-    public RestResponse call(RequestData requestData) {
+    public synchronized RestResponse call(RequestData requestData) {
+        userData = new RequestData();
         userData.empty = false;
         if (!requestData.pathParams.isEmpty()) {
             userData.pathParams = requestData.pathParams;
@@ -456,7 +457,7 @@ public class RestMethod {
         return call();
     }
 
-    public RestResponse call(JAction1<RequestData> action) {
+    public synchronized RestResponse call(JAction1<RequestData> action) {
         RequestData rd = new RequestData();
         action.execute(rd);
         return call(rd);

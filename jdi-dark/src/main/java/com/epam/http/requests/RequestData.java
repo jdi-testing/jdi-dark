@@ -35,8 +35,6 @@ public class RequestData extends DataClass<RequestData> {
     public ProxySpecification proxySpecification = null;
     public AuthenticationScheme authenticationScheme = null;
     public Pair<String, String> trustStore = null;
-//            new Pair<>(null,null);
-
     public CookieUpdater addCookies() { return new CookieUpdater(() -> this); }
     public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
     public QueryParamsUpdater addQueryParams() { return new QueryParamsUpdater(() -> this); }

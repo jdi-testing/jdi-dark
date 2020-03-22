@@ -37,7 +37,7 @@ public class PathParamTests extends WithJetty {
     }
 
     @Test
-    public synchronized void doesntUrlEncodesPathParamsWhenUrlEncodingIsDisabled() throws Exception {
+    public void doesntUrlEncodesPathParamsWhenUrlEncodingIsDisabled() throws Exception {
         RestAssured.urlEncodingEnabled = false;
         final String encoded = URLEncoder.encode("John:()", "UTF-8");
         try {
@@ -83,7 +83,7 @@ public class PathParamTests extends WithJetty {
     }
 
     @Test
-    public synchronized void doesntUrlEncodePathParamsInMapWhenUrlEncodingIsDisabled() {
+    public void doesntUrlEncodePathParamsInMapWhenUrlEncodingIsDisabled() {
         RestAssured.urlEncodingEnabled = false;
         try {
             final Map<String, String> params = new HashMap<>();

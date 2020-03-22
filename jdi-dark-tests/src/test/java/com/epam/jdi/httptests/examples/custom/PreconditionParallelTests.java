@@ -1,9 +1,9 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.httptests.examples.custom;
 
-import com.epam.http.requests.RequestData;
 import com.epam.jdi.dto.Board;
 import com.epam.jdi.dto.Card;
 import com.epam.jdi.dto.TrelloList;
+import com.epam.jdi.httptests.TrelloService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.testng.annotations.BeforeClass;
@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import static com.epam.http.requests.RequestDataInfo.pathParams;
+
+import static com.epam.http.requests.RequestDataFacrtory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
@@ -23,7 +24,7 @@ import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
-public class TestsWithPreconditionsParallel {
+public class PreconditionParallelTests {
     public TrelloService service;
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
 

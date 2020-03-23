@@ -7,7 +7,7 @@
     <groupId>com.epam.jdi</groupId>
     <artifactId>jdi-dark-bdd-tests</artifactId>
     <name>JDI Dark BDD Tests</name>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <properties>
         <includeTags>@smoke</includeTags>
@@ -19,7 +19,7 @@
         <allure.common.version>2.13.1</allure.common.version>
         <junit.version>4.12</junit.version>
         <surefire.version>2.22.1</surefire.version>
-        <jdi.dark.version>1.0.2</jdi.dark.version>
+        <jdi.dark.bdd.version>1.0.3</jdi.dark.bdd.version>
         <profile.val>test</profile.val>
     </properties>
 
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark-bdd</artifactId>
-            <version>${jdi.dark.version}</version>
+            <version>${jdi.dark.bdd.version}</version>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>

@@ -10,21 +10,21 @@ import java.util.stream.Collectors;
 
 public class RetryData {
 
-    private Integer numberOfAttempts;
+    private Integer numberOfRetryAttempts;
     private List<Integer> errorCodes;
     private Long delay;
     private TimeUnit unit;
 
     public RetryData(RetryOnFailure retryData) {
-        this.numberOfAttempts = retryData.numberOfAttempts();
+        this.numberOfRetryAttempts = retryData.numberOfRetryAttempts();
         this.errorCodes = intArrayToList(retryData);
         this.delay = retryData.delay();
         this.unit = retryData.unit();
     }
 
     public RetryData merge(RetryOnFailure retryData) {
-        this.numberOfAttempts = retryData.numberOfAttempts() == (int) getDefaultValueOf("numberOfAttempts") ?
-                numberOfAttempts  : retryData.numberOfAttempts();
+        this.numberOfRetryAttempts = retryData.numberOfRetryAttempts() == (int) getDefaultValueOf("numberOfAttempts") ?
+                numberOfRetryAttempts : retryData.numberOfRetryAttempts();
         this.errorCodes = retryData.errorCodes() == getDefaultValueOf("errorCodes") ?
                 errorCodes : intArrayToList(retryData);
         this.unit = retryData.unit() == getDefaultValueOf("unit") ? unit : retryData.unit();
@@ -32,8 +32,8 @@ public class RetryData {
         return this;
     }
 
-    public Integer getNumberOfAttempts() {
-        return numberOfAttempts;
+    public Integer getNumberOfRetryAttempts() {
+        return numberOfRetryAttempts;
     }
 
     public List<Integer> getErrorCodes() {

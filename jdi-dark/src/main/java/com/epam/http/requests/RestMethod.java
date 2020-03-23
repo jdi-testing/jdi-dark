@@ -239,7 +239,7 @@ public class RestMethod {
     }
 
     private String logReTryRequest(List<RequestData> requestData, Integer i) {
-        logger.info("================================> RETRY REQUEST ATTEMPT " + (i + 1) + "/" + reTryData.getNumberOfAttempts() + ":");
+        logger.info("================================> RETRY REQUEST ATTEMPT " + (i + 1) + "/" + reTryData.getNumberOfRetryAttempts() + ":");
         return logRequest(requestData);
     }
 
@@ -273,12 +273,12 @@ public class RestMethod {
      * @param firstResponse - result of first request
      */
     private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
-        if (reTryData == null || reTryData.getNumberOfAttempts() <= 0) return firstResponse;
+        if (reTryData == null || reTryData.getNumberOfRetryAttempts() <= 0) return firstResponse;
         List<Integer> errorCodes = reTryData.getErrorCodes();
 
         boolean failure = errorCodes.contains(firstResponse.getStatus().code);
         if (failure) {
-            for (int attempt = 0; attempt < reTryData.getNumberOfAttempts(); attempt++) {
+            for (int attempt = 0; attempt < reTryData.getNumberOfRetryAttempts(); attempt++) {
                 WaitUtils.makeDelayFor(reTryData.getUnit(), reTryData.getDelay());
                 String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
                 RestResponse retryingResponse = doRequest(type, runSpec, startUuidRetry);

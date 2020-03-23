@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 @Target({ElementType.FIELD, ElementType.TYPE})
 public @interface RetryOnFailure {
 
-    int numberOfAttempts() default 3;
+    int numberOfRetryAttempts() default 3;
 
     int[] errorCodes() default {502, 503};
 

@@ -16,11 +16,11 @@ public class RetryingService {
     public static RestMethod get502;
 
     @GET(value = "503")
-    @RetryOnFailure(numberOfAttempts = 2, delay = 1, unit = TimeUnit.SECONDS)
+    @RetryOnFailure(numberOfRetryAttempts = 2, delay = 1, unit = TimeUnit.SECONDS)
     public static RestMethod get503;
 
     @GET(value = "451")
-    @RetryOnFailure(numberOfAttempts = 6, errorCodes = 451, unit = TimeUnit.NANOSECONDS)
+    @RetryOnFailure(numberOfRetryAttempts = 6, errorCodes = 451, unit = TimeUnit.NANOSECONDS)
     public static RestMethod get451;
 
     @GET(value = "502")

@@ -1,9 +1,6 @@
 package com.epam.jdi.httptests;
 
-import com.epam.http.annotations.GET;
-import com.epam.http.annotations.IgnoreRetry;
-import com.epam.http.annotations.RetryOnFailure;
-import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
 
 @RetryOnFailure

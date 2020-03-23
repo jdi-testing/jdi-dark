@@ -9,7 +9,7 @@ import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
 import java.util.*;
 
-import static com.epam.http.requests.RequestDataInfo.*;
+import static com.epam.http.requests.RequestDataFacrtory.*;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
@@ -79,7 +79,7 @@ public class JettyService {
     public static RestMethod postReflect;
 
     public static RestResponse postReflectWithBody(Object body) {
-        return postReflect.call(requestBody(body));
+        return postReflect.call(rd -> rd.body = body);
     }
 
     public static RestResponse postEmptyCookie(String name) {
@@ -145,7 +145,7 @@ public class JettyService {
     public static RestMethod jsonBodyPost;
 
     public static RestResponse jsonBodyPost(String body) {
-        return jsonBodyPost.call(requestBody(body));
+        return jsonBodyPost.call(rd -> rd.body = body);
     }
 
     @POST("/secured/hello")
@@ -170,7 +170,7 @@ public class JettyService {
     public static RestMethod bodyPost;
 
     public static RestResponse bodyPost(Object body) {
-        return postReflect.call(requestBody(body));
+        return postReflect.call(rd -> rd.body = body);
     }
 
     @POST("/greet")
@@ -254,7 +254,7 @@ public class JettyService {
 
     public static RestResponse putNoValueParamWithKeyValueFormParam(
             String formParamKey, String formParamValue) {
-        return putNoValueParam.call(rd -> rd.formParams.add(formParamKey, formParamValue));
+        return putNoValueParam.call(formParams().add(formParamKey, formParamValue));
     }
 
     @POST("/noValueParam")
@@ -262,11 +262,11 @@ public class JettyService {
 
     public static RestResponse postNoValueParamWithKeyValueFormParam(
             String formParamKey, String formParamValue) {
-        return postNoValueParam.call(rd -> rd.formParams.add(formParamKey, formParamValue));
+        return postNoValueParam.call(formParams().add(formParamKey, formParamValue));
     }
 
     public static RestResponse postNoValueParamWithMapOfFormParams(Map<String, String> formParamsMap) {
-        return postNoValueParam.call(rd -> rd.formParams.addAll(formParamsMap));
+        return postNoValueParam.call(formParams().addAll(formParamsMap));
     }
 
     @POST("/noValueParam")
@@ -276,8 +276,8 @@ public class JettyService {
     public static RestMethod postNoValueParamWithPreDefinedFormParam;
 
     public static RestResponse postNoValueParamWithPreDefinedFormParamAndNewKeyValueParam(
-            String addedFormParamKey, String addedFormParamValue) {
-        return postNoValueParamWithPreDefinedFormParam.call((rd -> rd.formParams.add(addedFormParamKey, addedFormParamValue)));
+            String formParamKey, String formParamValue) {
+        return postNoValueParamWithPreDefinedFormParam.call(formParams().add(formParamKey, formParamValue));
     }
 
     @POST("/charEncoding")
@@ -427,7 +427,7 @@ public class JettyService {
     public static RestMethod postJsonBodyAcceptHeader;
 
     public static RestResponse postJsonBodyAcceptHeader(String headerName, String headerValue, String body) {
-        return postJsonBodyAcceptHeader.call(requestBody(body).addHeaders().add(headerName, headerValue));
+        return postJsonBodyAcceptHeader.call(headers().add(headerName, headerValue).requestBody(body));
     }
 
     @GET("/greetJSON")

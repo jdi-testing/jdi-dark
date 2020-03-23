@@ -7,7 +7,7 @@ import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import io.restassured.authentication.AuthenticationScheme;
 
-import static com.epam.http.requests.RequestDataInfo.auth;
+import static com.epam.http.requests.RequestDataFacrtory.auth;
 import static io.restassured.http.ContentType.JSON;
 
 @ServiceDomain("https://postman-echo.com/")

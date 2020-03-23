@@ -180,8 +180,11 @@ public class ServiceInit {
             method.setProxy(field.getAnnotation(Proxy.class));
         if (field.isAnnotationPresent(TrustStore.class))
             method.setTrustStore(field.getAnnotation(TrustStore.class));
-        if (field.isAnnotationPresent(RetryOnFailure.class))
-            method.reTryData = new RetryData(field.getAnnotation(RetryOnFailure.class));
+        if (field.isAnnotationPresent(RetryOnFailure.class)) {
+            RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
+            method.reTryData = (method.reTryData != null) ? method.reTryData.merge(methodRetryData) :
+                    new RetryData(methodRetryData);
+        }
         if (field.isAnnotationPresent(IgnoreRetry.class))
             method.reTryData = null;
         return method;

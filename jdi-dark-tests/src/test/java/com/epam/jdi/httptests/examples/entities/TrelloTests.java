@@ -1,9 +1,6 @@
 package com.epam.jdi.httptests.examples.entities;
 
-import com.epam.jdi.dto.Board;
-import com.epam.jdi.dto.Card;
-import com.epam.jdi.dto.Organization;
-import com.epam.jdi.dto.TrelloList;
+import com.epam.jdi.dto.*;
 import com.epam.jdi.httptests.TrelloService;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -12,7 +9,10 @@ import java.util.List;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.TrelloService.*;
-import static com.epam.jdi.httptests.utils.TrelloDataGenerator.*;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 import static com.epam.jdi.tools.LinqUtils.map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -26,8 +26,7 @@ public class TrelloTests {
 
     @Test
     public void createCardInBoard() {
-        System.out.println("Simple test-method One. Thread id is: " + Thread.currentThread().getId());
-        //Crate board
+        //Create board
         Board board = generateBoard();
         Board createdBoard = createBoard(board);
         Board gotBoard = getBoard(createdBoard.id);

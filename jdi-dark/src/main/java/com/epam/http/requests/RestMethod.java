@@ -1,9 +1,15 @@
 package com.epam.http.requests;
 
-import com.epam.http.annotations.*;
+import com.epam.http.annotations.MultiPart;
+import com.epam.http.annotations.Proxy;
+import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
-import com.epam.http.requests.updaters.*;
+import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.FormParamsUpdater;
+import com.epam.http.requests.updaters.HeaderUpdater;
+import com.epam.http.requests.updaters.QueryParamsUpdater;
+import com.epam.http.requests.util.WaitUtils;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
@@ -14,11 +20,7 @@ import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
-import io.restassured.http.ContentType;
-import io.restassured.http.Cookie;
-import io.restassured.http.Cookies;
-import io.restassured.http.Header;
-import io.restassured.http.Headers;
+import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
@@ -271,23 +273,21 @@ public class RestMethod {
      * @param firstResponse - result of first request
      */
     private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
-        if (reTryData == null) return firstResponse;
-
-        RestResponse retryingResponse = firstResponse;
+        if (reTryData == null || reTryData.getNumberOfAttempts() <= 0) return firstResponse;
         List<Integer> errorCodes = reTryData.getErrorCodes();
-        if (errorCodes.contains(firstResponse.getStatus().code)) {
-            int attempt = 0;
-            while (attempt < reTryData.getNumberOfAttempts()) {
+
+        boolean failure = errorCodes.contains(firstResponse.getStatus().code);
+        if (failure) {
+            for (int attempt = 0; attempt < reTryData.getNumberOfAttempts(); attempt++) {
+                WaitUtils.makeDelayFor(reTryData.getUnit(), reTryData.getDelay());
                 String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
-                retryingResponse = doRequest(type, runSpec, startUuidRetry);
-                attempt++;
-                if (!errorCodes.contains(retryingResponse.getStatus().code))
-                    break;
+                RestResponse retryingResponse = doRequest(type, runSpec, startUuidRetry);
+                if (!errorCodes.contains(retryingResponse.getStatus().code)) return retryingResponse;
             }
         }
-
-        return retryingResponse;
+        return firstResponse;
     }
+
 
     private void handleResponse(RestResponse restResponse) {
         boolean hasError = errorHandler.hasError(restResponse);

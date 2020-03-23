@@ -96,6 +96,7 @@
             </testResource>
         </testResources>
     </build>
+
     <reporting>
         <excludeDefaults>true</excludeDefaults>
         <plugins>

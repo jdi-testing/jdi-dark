@@ -26,6 +26,7 @@ public class TrelloTests {
 
     @Test
     public void createCardInBoard() {
+        System.out.println("Simple test-method One. Thread id is: " + Thread.currentThread().getId());
         //Crate board
         Board board = generateBoard();
         Board createdBoard = createBoard(board);

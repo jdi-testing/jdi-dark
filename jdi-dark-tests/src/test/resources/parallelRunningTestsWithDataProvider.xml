@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="WINDOWS-1251"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Parallel tests with DataProvider" parallel="methods" data-provider-thread-count="3">
+    <test name="Tests">
+        <classes>
+            <class name="com.epam.jdi.httptests.examples.custom.PreconditionTests"/>
+        </classes>
+    </test>
+</suite>

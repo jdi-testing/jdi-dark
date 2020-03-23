@@ -1,10 +1,11 @@
 package com.epam.jdi.httptests.examples.custom;
 
 import com.epam.jdi.dto.Board;
+import com.epam.jdi.dto.Card;
+import com.epam.jdi.dto.TrelloList;
 import com.epam.jdi.httptests.TrelloService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -12,37 +13,53 @@ import org.testng.annotations.Test;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.epam.http.requests.RequestDataFacrtory.pathParams;
-import static com.epam.http.requests.RequestDataFacrtory.requestBody;
-import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloService.boardsPost;
-import static java.lang.String.format;
-import static org.hamcrest.core.IsEqual.equalTo;
 
-public class PreconditionTests {
+import static com.epam.http.requests.RequestDataFacrtory.pathParams;
+import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.testng.Assert.assertEquals;
+
+public class PreconditionParallelTests {
+    public TrelloService service;
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
 
     @BeforeClass
     public void initService() {
-        init(TrelloService.class);
+        service = init(TrelloService.class);
     }
 
     @DataProvider(name = "createNewBoards", parallel = true)
     public static Object[][] createNewBoards() {
         return new Object[][] {
-                { "Board B1-" + LocalDateTime.now()},
-                { "Board B2-" + LocalDateTime.now()},
-                { "Board B3-" + LocalDateTime.now()}
+                {generateBoard()},
+                {generateBoard()},
+                {generateBoard()}
         };
     }
 
-    @Test (dataProvider = "createNewBoards")
-    public void createNewBoardTest(String boardName) {
-        boardsPost.call(requestBody(format("{\"name\": \"%s\"}", boardName)))
-                .isOk().body("name", equalTo(boardName));
+    @Test(dataProvider = "createNewBoards", threadPoolSize = 3)
+    public void createCardInBoard1(Board board) {
+        //Crate board
+        Board createdBoard = service.createBoard(board);
+        Board gotBoard = service.getBoard(createdBoard.id);
+        assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
+
+        //Create list
+        TrelloList tList = generateList(createdBoard);
+        TrelloList createdList = service.createList(tList);
+
+        //Create Card
+        Card card = generateCard(createdBoard, createdList);
+        Card createdCard = service.addNewCardToBoard(card);
+
+        //Check that card was added
+        Board cardBoard = service.getCardBoard(createdCard.id);
+        assertEquals(cardBoard.name, board.name, "Card wasn't added to board");
     }
 
     @DataProvider(name = "dataProviderFromCSV", parallel = true)
@@ -59,19 +76,11 @@ public class PreconditionTests {
         return dataList.toArray(new Object[dataList.size()][]);
     }
 
-    @Test (dataProvider = "dataProviderFromCSV")
+    @Test (dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
+        service.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl",equalTo(expectedShortUrl))
                 .body("url",equalTo(expectedUrl));
-    }
-
-    @Test (dataProvider = "dataProviderFromCSV")
-    public void getBoardTest(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        Board gotBoard = TrelloService.getBoard(boardId);
-        Assert.assertEquals(gotBoard.name, expectedName, "Actual Board Name doesn't correspond expected");
-        Assert.assertEquals(gotBoard.shortUrl, expectedShortUrl, "Actual Board ShortUrl doesn't correspond expected");
-        Assert.assertEquals(gotBoard.url, expectedUrl, "Actual Board URL doesn't correspond expected");
     }
 }

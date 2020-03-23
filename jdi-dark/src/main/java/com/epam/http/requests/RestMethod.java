@@ -6,9 +6,7 @@ import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.requests.updaters.*;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.tools.func.JAction1;
-import com.epam.jdi.tools.func.JFunc2;
-import com.epam.jdi.tools.func.JFunc3;
+import com.epam.jdi.tools.func.*;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -246,7 +244,7 @@ public class RestMethod {
      *
      * @return response
      */
-    public RestResponse call() {
+    public synchronized RestResponse call() {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
@@ -366,7 +364,7 @@ public class RestMethod {
      * @param queryParams additional query parameters
      * @return response
      */
-    public RestResponse call(String queryParams) {
+    public synchronized RestResponse call(String queryParams) {
         if (!queryParams.isEmpty()) {
             String[] queryParamsArr = queryParams.split("&");
             for (String queryParam : queryParamsArr) {
@@ -383,7 +381,7 @@ public class RestMethod {
      * @param namedParams path parameters
      * @return response
      */
-    public RestResponse callWithNamedParams(String... namedParams) {
+    public synchronized RestResponse callWithNamedParams(String... namedParams) {
         if (namedParams.length > 0) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
@@ -452,7 +450,7 @@ public class RestMethod {
      * @param requestData requestData
      * @return response
      */
-    public RestResponse call(RequestData requestData) {
+    public synchronized RestResponse call(RequestData requestData) {
         userData.empty = false;
         if (!requestData.pathParams.isEmpty()) {
             userData.pathParams = requestData.pathParams;

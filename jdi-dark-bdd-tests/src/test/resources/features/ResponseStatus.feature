@@ -1,4 +1,3 @@
-@smoke
 Feature: Response status check
 
   Scenario: Server error status request

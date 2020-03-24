@@ -3,10 +3,7 @@ package com.epam.jdi.httptests;
 import com.epam.http.annotations.*;
 import com.epam.http.requests.DataMethod;
 import com.epam.http.requests.RestMethod;
-import com.epam.jdi.dto.Board;
-import com.epam.jdi.dto.Card;
-import com.epam.jdi.dto.Organization;
-import com.epam.jdi.dto.TrelloList;
+import com.epam.jdi.dto.*;
 
 import java.util.List;
 

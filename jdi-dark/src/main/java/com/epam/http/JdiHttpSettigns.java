@@ -3,13 +3,8 @@ package com.epam.http;
 import com.epam.http.logger.ILogger;
 import com.epam.jdi.tools.PropertyReader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 import static com.epam.http.logger.LogLevels.parseLogLevel;
@@ -60,7 +55,7 @@ public class JdiHttpSettigns {
 
     private static Properties getProperties(String path) {
         logger.info("Properties file is: " + path);
-        File propertyFile = new File(path);
+        File propertyFile = new File(JdiHttpSettigns.class.getClassLoader().getResource(path).getFile());
         Properties properties;
         if (propertyFile.exists()) {
             properties = getCiProperties(path, propertyFile);

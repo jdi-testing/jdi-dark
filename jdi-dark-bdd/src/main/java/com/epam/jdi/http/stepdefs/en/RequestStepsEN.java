@@ -2,16 +2,16 @@ package com.epam.jdi.http.stepdefs.en;
 
 import com.epam.http.requests.RestMethod;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import io.cucumber.java.en.*;
 import io.restassured.http.ContentType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.jdi.http.Utils.*;
+import static com.epam.jdi.http.Utils.getRestMethod;
+import static com.epam.jdi.http.Utils.preparedHeader;
+import static com.epam.jdi.http.Utils.requestContentType;
+import static com.epam.jdi.http.Utils.restResponse;
 import static com.epam.jdi.tools.LinqUtils.first;
 import static io.restassured.http.ContentType.values;
 
@@ -25,11 +25,11 @@ public class RequestStepsEN {
     @When("^I do ([^\"]*) request$")
     public void iCallMethod(String methodName) throws IllegalAccessException, NoSuchFieldException {
         RestMethod restMethod = getRestMethod(methodName);
-//        if (preparedHeader.get() != null) {
-//            for (Map.Entry<String, String> entry : preparedHeader.get().entrySet()) {
-//                restMethod.addHeaders(entry.getKey(), entry.getValue());
-//            }
-//        }
+        if (preparedHeader.get() != null) {
+            for (Map.Entry<String, String> entry : preparedHeader.get().entrySet()) {
+                restMethod.header.add(entry.getKey(), entry.getValue());
+            }
+        }
         if (requestContentType.get() != null)
             restMethod.setContentType(requestContentType.get());
         restResponse.set(restMethod.call());

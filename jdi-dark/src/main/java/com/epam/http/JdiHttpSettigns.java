@@ -10,9 +10,6 @@ import static com.epam.http.logger.LogLevels.parseLogLevel;
 import static com.epam.jdi.tools.PropertyReader.fillAction;
 import static java.util.Arrays.asList;
 
-/**
- * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
- */
 public class JdiHttpSettigns {
     public static String TEST_PROPERTIES_PATH = "test.properties";
     public static ILogger logger = instance("JDI");
@@ -43,17 +40,15 @@ public class JdiHttpSettigns {
         }
     }
 
+    /**
+     * Initialize settings from property file
+     */
     public static synchronized void init() {
-        Properties properties = getProperties("pom.properties");
-        getProperties((properties.size() > 0)
+        Properties properties = PropertyReader.getProperties("pom.properties");
+        PropertyReader.getProperties((properties.size() > 0)
                 ? ( (!properties.getProperty("profile").contains("$")) ? properties.getProperty("profile").concat(".properties") : TEST_PROPERTIES_PATH)
                 : TEST_PROPERTIES_PATH);
         fillAction(p -> setDomain(p), "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
-    }
-
-    private static Properties getProperties(String path) {
-        Properties props = PropertyReader.getProperties(path);
-        return props;
     }
 }

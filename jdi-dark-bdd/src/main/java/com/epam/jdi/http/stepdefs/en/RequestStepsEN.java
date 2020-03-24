@@ -2,10 +2,7 @@ package com.epam.jdi.http.stepdefs.en;
 
 import com.epam.http.requests.RestMethod;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+import io.cucumber.java.en.*;
 import io.restassured.http.ContentType;
 
 import java.util.HashMap;

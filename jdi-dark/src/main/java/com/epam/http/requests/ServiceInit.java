@@ -163,6 +163,8 @@ public class ServiceInit {
             method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
         if (c.isAnnotationPresent(TrustStore.class))
             method.setTrustStore(c.getAnnotation(TrustStore.class));
+        if (c.isAnnotationPresent(RetryOnFailure.class))
+            method.reTryData = new RetryData(c.getAnnotation(RetryOnFailure.class));
         /* Case for method annotations*/
         if (field.isAnnotationPresent(QueryParameter.class))
             method.queryParams.add(field.getAnnotation(QueryParameter.class));
@@ -178,6 +180,13 @@ public class ServiceInit {
             method.setProxy(field.getAnnotation(Proxy.class));
         if (field.isAnnotationPresent(TrustStore.class))
             method.setTrustStore(field.getAnnotation(TrustStore.class));
+        if (field.isAnnotationPresent(RetryOnFailure.class)) {
+            RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
+            method.reTryData = (method.reTryData != null) ? method.reTryData.merge(methodRetryData) :
+                    new RetryData(methodRetryData);
+        }
+        if (field.isAnnotationPresent(IgnoreRetry.class))
+            method.reTryData = null;
         return method;
     }
 

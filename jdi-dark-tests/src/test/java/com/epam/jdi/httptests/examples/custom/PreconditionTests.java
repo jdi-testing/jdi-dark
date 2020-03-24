@@ -30,7 +30,7 @@ public class PreconditionTests {
         init(TrelloService.class);
     }
 
-    @DataProvider(name = "createNewBoards")
+    @DataProvider(name = "createNewBoards", parallel = true)
     public static Object[][] createNewBoards() {
         return new Object[][] {
                 { "Board B1-" + LocalDateTime.now()},
@@ -45,7 +45,7 @@ public class PreconditionTests {
                 .isOk().body("name", equalTo(boardName));
     }
 
-    @DataProvider(name = "dataProviderFromCSV")
+    @DataProvider(name = "dataProviderFromCSV", parallel = true)
     public static Object[] dataProviderFromCSV() throws IOException {
         Reader in = new FileReader(CSV_DATA_FILE);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT

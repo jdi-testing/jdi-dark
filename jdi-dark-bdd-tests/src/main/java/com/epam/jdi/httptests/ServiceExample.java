@@ -15,6 +15,10 @@ public class ServiceExample {
     })
     RestMethod getMethod;
 
+    @ContentType(JSON)
+    @GET("/get")
+    RestMethod get;
+
     @Header(name = "Type", value = "Test")
     @POST("/post")
     RestMethod postMethod;
@@ -25,7 +29,7 @@ public class ServiceExample {
     RestMethod patch;
     @DELETE("/delete")
     RestMethod delete;
-    @GET("/status/%s")
+    @GET("/status/{status}")
     RestMethod status;
 
 }

@@ -3,13 +3,8 @@ package com.epam.http;
 import com.epam.http.logger.ILogger;
 import com.epam.jdi.tools.PropertyReader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 import static com.epam.http.logger.LogLevels.parseLogLevel;
@@ -52,7 +47,7 @@ public class JdiHttpSettigns {
     }
 
     public static synchronized void init() {
-        Properties properties = getProperties("src/test/resources/pom.properties");
+        Properties properties = getProperties("pom.properties");
         getProperties((properties.size() > 0) ? ( (!properties.getProperty("profile").contains("$")) ? properties.getProperty("profile").concat(".properties") : TEST_PROPERTIES_PATH) : TEST_PROPERTIES_PATH);
         fillAction(p -> setDomain(p), "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
@@ -60,7 +55,7 @@ public class JdiHttpSettigns {
 
     private static Properties getProperties(String path) {
         logger.info("Properties file is: " + path);
-        File propertyFile = new File(path);
+        File propertyFile = new File(JdiHttpSettigns.class.getClassLoader().getResource(path).getFile());
         Properties properties;
         if (propertyFile.exists()) {
             properties = getCiProperties(path, propertyFile);

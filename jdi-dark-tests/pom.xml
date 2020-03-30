@@ -16,6 +16,7 @@
         <aspectj.version>1.9.1</aspectj.version>
         <!--suppress UnresolvedMavenProperty -->
         <profile>${env.BUILD_PROFILE}</profile>
+        <suiteXML.file>general.xml</suiteXML.file>
     </properties>
 
     <dependencies>
@@ -119,7 +120,7 @@
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/general.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/${suiteXML.file}</suiteXmlFile>
                     </suiteXmlFiles>
                     <testFailureIgnore>true</testFailureIgnore>
                     <argLine>

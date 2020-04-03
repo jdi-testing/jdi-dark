@@ -9,12 +9,9 @@ import com.epam.jdi.services.JettyService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import io.restassured.internal.mapping.Jackson2Mapper;
 import io.restassured.mapper.ObjectMapper;
-import io.restassured.path.json.mapper.factory.Jackson2ObjectMapperFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.lang.reflect.Type;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,13 +21,10 @@ public class ObjectMappingForServiceTests extends WithJetty {
 
     @BeforeClass
     public void before() {
-        ObjectMapper objectMapper = new Jackson2Mapper(new Jackson2ObjectMapperFactory() {
-            @Override
-            public com.fasterxml.jackson.databind.ObjectMapper create(Type type, String s) {
-                com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                return objectMapper;
-            }
+        ObjectMapper objectMapper = new Jackson2Mapper((type, s) -> {
+            com.fasterxml.jackson.databind.ObjectMapper objectMapper1 = new com.fasterxml.jackson.databind.ObjectMapper();
+            objectMapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            return objectMapper1;
         });
         init(JettyService.class, ServiceSettings.builder().objectMapper(objectMapper).build());
     }

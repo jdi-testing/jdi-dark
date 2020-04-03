@@ -1,7 +1,11 @@
 package com.epam.jdi.httptests.examples.entities;
 
-import com.epam.jdi.httptests.*;
+import com.epam.jdi.dto.Greeting;
+import com.epam.jdi.dto.Hello;
+import com.epam.jdi.dto.Message;
+import com.epam.jdi.dto.Product;
 import com.epam.jdi.httptests.support.WithJetty;
+import com.epam.jdi.services.JettyService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;

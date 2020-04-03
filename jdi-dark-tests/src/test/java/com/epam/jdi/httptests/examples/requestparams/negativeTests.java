@@ -2,12 +2,10 @@ package com.epam.jdi.httptests.examples.requestparams;
 
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.MatcherAssert.assertThat;

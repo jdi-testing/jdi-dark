@@ -1,10 +1,11 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.services;
 
 
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.RestMethod;
+import com.epam.jdi.dto.Product;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,9 @@ public class JettyServiceHttps {
 
     @GET("/hello")
     public static RestMethod getHello;
+
+    @GET("/secured/hello")
+    public static RestMethod getSecuredHello;
 
     @GET("/greet")
     public static RestMethod getGreet;
@@ -30,4 +34,5 @@ public class JettyServiceHttps {
     public static List<Product> getProducts() {
         return Arrays.asList(getProducts.callAsData(Product[].class));
     }
+
 }

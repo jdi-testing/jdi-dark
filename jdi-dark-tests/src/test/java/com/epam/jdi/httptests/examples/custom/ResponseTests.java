@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.custom;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.path.json.config.JsonPathConfig;
@@ -16,7 +16,7 @@ import java.util.Map;
 import static com.epam.http.requests.RequestDataFacrtory.cookies;
 import static com.epam.http.requests.RequestDataFacrtory.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getJsonStore;
+import static com.epam.jdi.services.JettyService.getJsonStore;
 import static io.restassured.config.JsonConfig.jsonConfig;
 import static io.restassured.path.xml.XmlPath.CompatibilityMode.HTML;
 import static org.hamcrest.MatcherAssert.assertThat;

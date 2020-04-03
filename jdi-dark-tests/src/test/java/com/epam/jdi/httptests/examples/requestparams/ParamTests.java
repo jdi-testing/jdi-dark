@@ -1,6 +1,6 @@
 package com.epam.jdi.httptests.examples.requestparams;
 
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.builder.MultiPartSpecBuilder;
 import org.apache.commons.lang3.StringUtils;

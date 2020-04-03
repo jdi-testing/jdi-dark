@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.requestparams;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
@@ -12,10 +12,10 @@ import java.util.List;
 
 import static com.epam.http.requests.RequestDataFacrtory.headers;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getHello;
-import static com.epam.jdi.httptests.JettyService.getLotto;
-import static com.epam.jdi.httptests.JettyService.getMultiHeaderReflect;
-import static com.epam.jdi.httptests.JettyService.getMultiValueHeader;
+import static com.epam.jdi.services.JettyService.getHello;
+import static com.epam.jdi.services.JettyService.getLotto;
+import static com.epam.jdi.services.JettyService.getMultiHeaderReflect;
+import static com.epam.jdi.services.JettyService.getMultiValueHeader;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;

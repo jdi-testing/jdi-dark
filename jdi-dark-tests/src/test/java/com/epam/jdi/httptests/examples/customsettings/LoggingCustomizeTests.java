@@ -4,7 +4,7 @@ import com.epam.http.logger.AllureLogger;
 import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import com.epam.jdi.tools.func.JAction2;
 import com.epam.jdi.tools.func.JFunc2;

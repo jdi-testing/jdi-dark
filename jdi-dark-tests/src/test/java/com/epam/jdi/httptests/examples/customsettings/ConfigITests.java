@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.customsettings;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.JsonConfig;
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.*;
+import static com.epam.jdi.services.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 

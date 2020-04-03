@@ -1,4 +1,4 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.dto;
 
 public class Message {
     private String message;

@@ -2,7 +2,7 @@ package com.epam.jdi.httptests.examples.customsettings;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static com.epam.http.requests.RequestDataFacrtory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getRedirect;
+import static com.epam.jdi.services.JettyService.getRedirect;
 import static io.restassured.RestAssured.requestSpecification;
 import static org.apache.http.client.params.ClientPNames.DEFAULT_HEADERS;
 import static org.hamcrest.Matchers.equalTo;

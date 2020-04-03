@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.customsettings;
 
 import com.epam.http.requests.ServiceSettings;
-import com.epam.jdi.httptests.JettyServiceHttps;
+import com.epam.jdi.services.JettyServiceHttps;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.authentication.CertAuthScheme;
 import io.restassured.authentication.CertificateAuthSettings;
@@ -9,8 +9,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyServiceHttps.getGreet;
-import static com.epam.jdi.httptests.JettyServiceHttps.getHello;
+import static com.epam.jdi.services.JettyServiceHttps.getGreet;
+import static com.epam.jdi.services.JettyServiceHttps.getHello;
 import static org.hamcrest.Matchers.equalTo;
 
 public class SslWithCertificateTests extends WithJetty {

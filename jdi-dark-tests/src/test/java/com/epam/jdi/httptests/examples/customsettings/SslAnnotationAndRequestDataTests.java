@@ -1,14 +1,14 @@
 package com.epam.jdi.httptests.examples.customsettings;
 
-import com.epam.jdi.httptests.JettyServiceHttps;
+import com.epam.jdi.services.JettyServiceHttps;
 import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyServiceHttps.getHello;
-import static com.epam.jdi.httptests.JettyServiceHttps.getJsonStore;
-import static com.epam.jdi.httptests.JettyServiceHttps.getProducts;
+import static com.epam.jdi.services.JettyServiceHttps.getHello;
+import static com.epam.jdi.services.JettyServiceHttps.getJsonStore;
+import static com.epam.jdi.services.JettyServiceHttps.getProducts;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;

@@ -1,8 +1,8 @@
 package com.epam.jdi.httptests.examples.customsettings;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.PostmanAuth;
-import com.epam.jdi.httptests.PostmanInfo;
+import com.epam.jdi.dto.PostmanInfo;
+import com.epam.jdi.services.PostmanAuth;
 import com.wealdtech.hawk.Hawk;
 import com.wealdtech.hawk.HawkCredentials;
 import io.restassured.specification.RequestSpecification;
@@ -18,11 +18,11 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFacrtory.headers;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.PostmanAuth.authBase;
-import static com.epam.jdi.httptests.PostmanAuth.authBaseForm;
-import static com.epam.jdi.httptests.PostmanAuth.authDigest;
-import static com.epam.jdi.httptests.PostmanAuth.authHawk;
-import static com.epam.jdi.httptests.PostmanAuth.oauth;
+import static com.epam.jdi.services.PostmanAuth.authBase;
+import static com.epam.jdi.services.PostmanAuth.authBaseForm;
+import static com.epam.jdi.services.PostmanAuth.authDigest;
+import static com.epam.jdi.services.PostmanAuth.authHawk;
+import static com.epam.jdi.services.PostmanAuth.oauth;
 import static com.wealdtech.hawk.Hawk.calculateMAC;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;

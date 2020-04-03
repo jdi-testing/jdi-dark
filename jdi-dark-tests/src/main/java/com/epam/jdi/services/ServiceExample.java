@@ -1,7 +1,8 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.services;
 
 import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
+import com.epam.jdi.dto.Info;
 
 import static io.restassured.http.ContentType.HTML;
 import static io.restassured.http.ContentType.JSON;

@@ -312,6 +312,23 @@ public class RestMethod {
     }
 
     /**
+     * Send HTTP request As Rest Assured Request Specification.
+     *
+     * @param requestSpecification Rest Assured request specification
+     * @return response
+     */
+    public RestResponse callAsSpec(RequestSpecification requestSpecification) {
+        if (type == null) {
+            throw exception("HttpMethodType not specified");
+        }
+        RequestSpecification runSpec = requestSpecification.spec(getInitSpec());
+        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
+        RestResponse response = doRequest(type, runSpec, startUuid);
+        response = handleRetrying(runSpec, response);
+        return response;
+    }
+
+    /**
      * Send HTTP request with Rest Assured Request Specification with specific config
      *
      * @param restAssuredConfig Rest Assured config

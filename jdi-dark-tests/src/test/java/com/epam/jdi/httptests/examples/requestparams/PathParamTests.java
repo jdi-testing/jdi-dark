@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.requestparams;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.RestAssured;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFacrtory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.*;
+import static com.epam.jdi.services.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 
 public class PathParamTests extends WithJetty {

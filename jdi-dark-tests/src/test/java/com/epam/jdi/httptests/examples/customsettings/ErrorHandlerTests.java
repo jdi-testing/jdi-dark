@@ -5,14 +5,14 @@ import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Organization;
-import com.epam.jdi.httptests.TrelloService;
+import com.epam.jdi.services.TrelloService;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
-import static com.epam.jdi.httptests.TrelloService.createOrganization;
+import static com.epam.jdi.services.TrelloService.createOrganization;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 
 public class ErrorHandlerTests {

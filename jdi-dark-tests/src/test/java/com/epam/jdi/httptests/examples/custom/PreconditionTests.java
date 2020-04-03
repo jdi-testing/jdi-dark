@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.custom;
 
 import com.epam.jdi.dto.Board;
-import com.epam.jdi.httptests.TrelloService;
+import com.epam.jdi.services.TrelloService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.testng.Assert;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import static com.epam.http.requests.RequestDataFacrtory.pathParams;
 import static com.epam.http.requests.RequestDataFacrtory.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloService.boardsPost;
+import static com.epam.jdi.services.TrelloService.boardsPost;
 import static java.lang.String.format;
 import static org.hamcrest.core.IsEqual.equalTo;
 

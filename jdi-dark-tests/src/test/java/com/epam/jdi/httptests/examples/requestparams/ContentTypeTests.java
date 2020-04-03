@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.requestparams;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
@@ -15,16 +15,16 @@ import java.nio.charset.StandardCharsets;
 
 import static com.epam.http.requests.RequestDataFacrtory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.getContentTypeAsBody;
-import static com.epam.jdi.httptests.JettyService.getHeadersWithValues;
-import static com.epam.jdi.httptests.JettyService.getHello;
-import static com.epam.jdi.httptests.JettyService.getReflect;
-import static com.epam.jdi.httptests.JettyService.getReturnContentTypeAsBody;
-import static com.epam.jdi.httptests.JettyService.postContentTypeAsBody;
-import static com.epam.jdi.httptests.JettyService.postReturn204WithContentType;
-import static com.epam.jdi.httptests.JettyService.postReturnContentTypeAsBody;
-import static com.epam.jdi.httptests.JettyService.postTextUriList;
-import static com.epam.jdi.httptests.JettyService.putReflect;
+import static com.epam.jdi.services.JettyService.getContentTypeAsBody;
+import static com.epam.jdi.services.JettyService.getHeadersWithValues;
+import static com.epam.jdi.services.JettyService.getHello;
+import static com.epam.jdi.services.JettyService.getReflect;
+import static com.epam.jdi.services.JettyService.getReturnContentTypeAsBody;
+import static com.epam.jdi.services.JettyService.postContentTypeAsBody;
+import static com.epam.jdi.services.JettyService.postReturn204WithContentType;
+import static com.epam.jdi.services.JettyService.postReturnContentTypeAsBody;
+import static com.epam.jdi.services.JettyService.postTextUriList;
+import static com.epam.jdi.services.JettyService.putReflect;
 import static io.restassured.RestAssured.config;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.remove;

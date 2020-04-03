@@ -2,7 +2,7 @@ package com.epam.jdi.httptests.examples;
 
 import com.epam.http.performance.PerformanceResult;
 import com.epam.http.performance.RestLoad;
-import com.epam.jdi.httptests.ServiceExample;
+import com.epam.jdi.services.ServiceExample;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

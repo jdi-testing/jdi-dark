@@ -1,14 +1,14 @@
 package com.epam.jdi.httptests.examples.entities;
 
 import com.epam.jdi.dto.*;
-import com.epam.jdi.httptests.TrelloService;
+import com.epam.jdi.services.TrelloService;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.TrelloService.*;
+import static com.epam.jdi.services.TrelloService.*;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;

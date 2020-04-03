@@ -1,7 +1,7 @@
 package com.epam.jdi.httptests.examples.custom;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.JettyService.headerPost;
-import static com.epam.jdi.httptests.JettyService.notFoundedURIPost;
+import static com.epam.jdi.services.JettyService.headerPost;
+import static com.epam.jdi.services.JettyService.notFoundedURIPost;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;

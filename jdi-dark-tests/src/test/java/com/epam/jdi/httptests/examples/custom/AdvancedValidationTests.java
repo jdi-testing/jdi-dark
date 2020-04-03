@@ -1,6 +1,6 @@
 package com.epam.jdi.httptests.examples.custom;
 
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;

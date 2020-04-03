@@ -1,6 +1,6 @@
 package com.epam.jdi.httptests.examples.customsettings;
 
-import com.epam.jdi.httptests.DuckDuckGo;
+import com.epam.jdi.services.DuckDuckGo;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 

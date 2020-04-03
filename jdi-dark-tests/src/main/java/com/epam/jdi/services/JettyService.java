@@ -1,8 +1,9 @@
-package com.epam.jdi.httptests;
+package com.epam.jdi.services;
 
 import com.epam.http.annotations.*;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
+import com.epam.jdi.dto.Product;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
@@ -201,6 +202,9 @@ public class JettyService {
 
     @GET("/hello")
     public static RestMethod getHello;
+
+    @GET("/secured/hello")
+    public static RestMethod getSecuredHello;
 
     @QueryParameters({
             @QueryParameter(name = "firstName", value = "John"),
@@ -436,4 +440,5 @@ public class JettyService {
 
     @GET("/greetJSON")
     public static RestMethod getGreenJSON;
+
 }

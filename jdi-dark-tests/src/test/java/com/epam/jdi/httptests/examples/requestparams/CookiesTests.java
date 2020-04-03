@@ -2,7 +2,7 @@ package com.epam.jdi.httptests.examples.requestparams;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.httptests.JettyService;
+import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Cookie;

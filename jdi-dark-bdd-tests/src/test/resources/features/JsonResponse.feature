@@ -2,11 +2,11 @@
 Feature: Json response check
 
   Scenario: Check json response
-    Given I init service
-    And I set JSON request content type
-    When I do getMethod request
-    Then Response status type is OK
-    And Response body has values
+    Given init service example
+    And set request content type to 'JSON'
+    When perform 'getMethod' request
+    Then response status type is OK
+    And response body has values:
       | url          | http://httpbin.org/get |
       | headers.Host | httpbin.org            |
-    And Response header "Connection" is "keep-alive"
+    And response header "Connection" is "keep-alive"

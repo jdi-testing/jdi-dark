@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class Utils {
@@ -16,9 +17,23 @@ public class Utils {
     public static final ThreadLocal<ContentType> requestContentType = new ThreadLocal<>();
     public static final ThreadLocal<HashMap<String, String>> preparedHeader = new ThreadLocal<>();
 
-    public static RestMethod getRestMethod(String restMethodName) throws IllegalAccessException, NoSuchFieldException {
+    protected static RestMethod getRestMethod(String restMethodName) throws IllegalAccessException, NoSuchFieldException {
         Field field = service.get().getClass().getDeclaredField(restMethodName);
         field.setAccessible(true);
         return (RestMethod) field.get(service.get());
     }
+
+    protected RestMethod prepareRestMethod(String methodName) throws NoSuchFieldException, IllegalAccessException {
+        RestMethod restMethod = getRestMethod(methodName);
+        if (preparedHeader.get() != null) {
+            for (Map.Entry<String, String> entry : preparedHeader.get().entrySet()) {
+                restMethod.header.add(entry.getKey(), entry.getValue());
+            }
+        }
+        if (requestContentType.get() != null) {
+            restMethod.setContentType(requestContentType.get());
+        }
+        return restMethod;
+    }
+
 }

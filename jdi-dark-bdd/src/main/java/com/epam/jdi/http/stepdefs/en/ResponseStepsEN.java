@@ -1,88 +1,67 @@
 package com.epam.jdi.http.stepdefs.en;
 
 import com.epam.http.response.ResponseStatusType;
+import com.epam.jdi.http.Utils;
 import com.epam.jdi.tools.map.MapArray;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import org.assertj.core.api.Assertions;
 import org.hamcrest.Matcher;
 
-import static com.epam.jdi.http.Utils.performanceResult;
-import static com.epam.jdi.http.Utils.restResponse;
-import static java.lang.String.format;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.StringContains.containsString;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
-public class ResponseStepsEN {
+public class ResponseStepsEN extends Utils {
 
-    @Then("^Performance results don't have any fails$")
-    public void performanceResultsDonTHaveAnyFails() {
-        assertTrue(performanceResult.get().noFails());
+    @Then("response status code is {int}")
+    public void responseStatusCodeIs(int statusCode) {
+        restResponse.get().assertThat().statusCode(statusCode);
     }
 
-    @And("^I check number of requests$")
-    public void iCheckNumberOfRequests() {
-        System.out.println("There were " + performanceResult.get().NumberOfRequests + " requests.");
+    @And("response body is empty")
+    public void responseBodyIsEmpty() {
+        Assertions.assertThat(restResponse.get().getBody().isEmpty()).isTrue();
     }
 
-    @Then("^Response status code equals (\\d+)$")
-    public void responseStatusCodeEquals(int statusCode){
-        assertEquals(restResponse.get().getStatus().code, statusCode);
+    @And("response status type is {}")
+    public void responseStatusTypeIs(ResponseStatusType type) {
+        Assertions.assertThat(restResponse.get().getStatus().type).isEqualTo(type);
     }
 
-    @And("^Response body is empty")
-    public void responseBodyIs() {
-        assertEquals(restResponse.get().getBody(), "");
-    }
-
-    @And("^Response status type is ([^\"]*)$")
-    public void responseStatusTypeIs(String type) {
-        Boolean typeMatches = false;
-        for (ResponseStatusType responseStatusType : ResponseStatusType.values()) {
-            if(type.equalsIgnoreCase(responseStatusType.name()))
-                typeMatches = true;
-        }
-        assertTrue(typeMatches);
-    }
-
-    @And("^Response \"([^\"]*)\" is \"([^\"]*)\"$")
+    @And("response parameter {string} is {string}")
     public void responseParameterIsValue(String parameter, String value) {
         restResponse.get().assertThat().body(parameter, equalTo(value));
     }
-    @And("^Response \"([^\"]*)\" contains \"([^\"]*)\"$")
+
+    @And("response parameter {string} contains {string}")
     public void responseParameterContainsValue(String parameter, String value) {
         restResponse.get().assertThat().body(parameter, containsString(value));
     }
-    @And("^Response body has values$")
+
+    @And("response body has values:")
     public void responseBodyHasValues(DataTable params) {
         MapArray<String, Matcher<?>> map =
-            new MapArray<>(params.asLists(), p -> p.get(0), p -> equalTo(p.get(1)));
+                new MapArray<>(params.asLists(), p -> p.get(0), p -> equalTo(p.get(1)));
         restResponse.get().assertBody(map);
     }
 
-    @Then("^I check if performance results contain any fails$")
-    public void iCheckIfPerformanceResultsContainAnyFails() {
-        long numberOfFails = performanceResult.get().NumberOfFails;
-        assertEquals(numberOfFails, 0,
-                format("There were %s failures.", numberOfFails));
-    }
-
-    @And("^Average response time is lesser than (\\d+) sec$")
+    @And("average response time is lesser than {} seconds")
     public void averageResponseTime(long seconds) {
         long respTime = performanceResult.get().AverageResponseTime;
-        assertTrue(respTime < seconds*1000,
-                format("Average response time %s msec but expected not more than 2 sec", respTime));
+        Assertions.assertThat(respTime)
+                .describedAs("Average response time is greater than expected.")
+                .isLessThan(seconds * 1000);
     }
 
-    @And("^Response header \"([^\"]*)\" is \"([^\"]*)\"$")
-    public void responseHeaderIs(String parameter, String value) {
-        restResponse.get().assertThat().header(parameter, value);
+    @And("response header {string} is {string}")
+    public void responseHeaderIs(String header, String value) {
+        restResponse.get().assertThat().header(header, value);
     }
 
-    @And("^I print response$")
-    public void iPrintResponse() {
+    @And("print response")
+    public void printResponse() {
         restResponse.get();
     }
+
 }

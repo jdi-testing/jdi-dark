@@ -2,10 +2,10 @@
 Feature: GET and POST check
 
   Scenario Outline: Check response
-    Given I init service
-    When I do <method> request
-    Then Response status type is <responseStatus>
-    And Response body has values
+    Given init service example
+    When perform '<method>' request
+    Then response status type is <responseStatus>
+    And response body has values:
       | url          | <url>       |
       | headers.Host | httpbin.org |
     Examples:
@@ -13,6 +13,6 @@ Feature: GET and POST check
       | getMethod  | OK             | http://httpbin.org/get  |
       | postMethod | OK             | http://httpbin.org/post |
 
-  Scenario: Simple
-    Given I init service
-    When I verify that getMethod method is alive
+  Scenario: Check service method
+    Given init service example
+    And 'getMethod' method is alive

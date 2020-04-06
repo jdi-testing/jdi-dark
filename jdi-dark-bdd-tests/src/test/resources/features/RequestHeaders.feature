@@ -1,3 +1,4 @@
+@smoke
 Feature: Request headers check
 
   Scenario: Pass headers and check response
@@ -8,5 +9,5 @@ Feature: Request headers check
     And perform 'get' request
     And print response
     Then response status type is OK
-    And response header "headers.Name" is "Katarina"
-    And response header "headers.Id" is "1"
+    And response parameter 'headers.Name' is 'Katarina'
+    And response parameter 'headers.Id' is '1'

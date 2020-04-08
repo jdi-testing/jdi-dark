@@ -1,14 +1,14 @@
 package com.epam.jdi.httptests.examples.soap;
 
-import com.epam.jdi.dto.yandex.speller.services.spellservice.*;
 import com.epam.jdi.services.YandexSpeller;
+import com.epam.jdi.soap.net.yandex.speller.services.spellservice.*;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 
-public class TestYandexSpellerSOAP {
+public class YandexSpellerSOAPTests {
 
     @BeforeTest
     public void before() {

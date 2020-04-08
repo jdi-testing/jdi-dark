@@ -1,25 +1,24 @@
-package com.epam.jdi.dto.yandex.speller.services.spellservice;
+package com.epam.jdi.soap.net.yandex.speller.services.spellservice;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ArrayOfSpellResult complex type.
+ * <p>Java class for SpellResult complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ArrayOfSpellResult"&gt;
+ * &lt;complexType name="SpellResult"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="SpellResult" type="{http://speller.yandex.net/services/spellservice}SpellResult" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="error" type="{http://speller.yandex.net/services/spellservice}SpellError" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -29,55 +28,54 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfSpellResult", propOrder = {
-    "spellResult"
+@XmlType(name = "SpellResult", propOrder = {
+    "error"
 })
-public class ArrayOfSpellResult {
+public class SpellResult {
 
-    @XmlElement(name = "SpellResult")
-    protected List<SpellResult> spellResult;
+    protected List<SpellError> error;
 
     /**
-     * Gets the value of the spellResult property.
+     * Gets the value of the error property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the spellResult property.
+     * This is why there is not a <CODE>set</CODE> method for the error property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getSpellResult().add(newItem);
+     *    getError().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link SpellResult }
+     * {@link SpellError }
      * 
      * 
      */
-    public List<SpellResult> getSpellResult() {
-        if (spellResult == null) {
-            spellResult = new ArrayList<SpellResult>();
+    public List<SpellError> getError() {
+        if (error == null) {
+            error = new ArrayList<SpellError>();
         }
-        return this.spellResult;
+        return this.error;
     }
 
-    public ArrayOfSpellResult withSpellResult(SpellResult... values) {
+    public SpellResult withError(SpellError... values) {
         if (values!= null) {
-            for (SpellResult value: values) {
-                getSpellResult().add(value);
+            for (SpellError value: values) {
+                getError().add(value);
             }
         }
         return this;
     }
 
-    public ArrayOfSpellResult withSpellResult(Collection<SpellResult> values) {
+    public SpellResult withError(Collection<SpellError> values) {
         if (values!= null) {
-            getSpellResult().addAll(values);
+            getError().addAll(values);
         }
         return this;
     }

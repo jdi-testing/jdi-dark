@@ -1,4 +1,4 @@
-package com.epam.jdi.dto.yandex.speller.services.spellservice;
+package com.epam.jdi.soap.net.yandex.speller.services.spellservice;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="SpellResult" type="{http://speller.yandex.net/services/spellservice}SpellResult"/&gt;
+ *         &lt;element name="ArrayOfSpellResult" type="{http://speller.yandex.net/services/spellservice}ArrayOfSpellResult"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -28,40 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "spellResult"
+    "arrayOfSpellResult"
 })
-@XmlRootElement(name = "CheckTextResponse")
-public class CheckTextResponse {
+@XmlRootElement(name = "CheckTextsResponse")
+public class CheckTextsResponse {
 
-    @XmlElement(name = "SpellResult", required = true)
-    protected SpellResult spellResult;
+    @XmlElement(name = "ArrayOfSpellResult", required = true)
+    protected ArrayOfSpellResult arrayOfSpellResult;
 
     /**
-     * Gets the value of the spellResult property.
+     * Gets the value of the arrayOfSpellResult property.
      * 
      * @return
      *     possible object is
-     *     {@link SpellResult }
+     *     {@link ArrayOfSpellResult }
      *     
      */
-    public SpellResult getSpellResult() {
-        return spellResult;
+    public ArrayOfSpellResult getArrayOfSpellResult() {
+        return arrayOfSpellResult;
     }
 
     /**
-     * Sets the value of the spellResult property.
+     * Sets the value of the arrayOfSpellResult property.
      * 
      * @param value
      *     allowed object is
-     *     {@link SpellResult }
+     *     {@link ArrayOfSpellResult }
      *     
      */
-    public void setSpellResult(SpellResult value) {
-        this.spellResult = value;
+    public void setArrayOfSpellResult(ArrayOfSpellResult value) {
+        this.arrayOfSpellResult = value;
     }
 
-    public CheckTextResponse withSpellResult(SpellResult value) {
-        setSpellResult(value);
+    public CheckTextsResponse withArrayOfSpellResult(ArrayOfSpellResult value) {
+        setArrayOfSpellResult(value);
         return this;
     }
 

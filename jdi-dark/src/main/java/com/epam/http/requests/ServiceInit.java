@@ -57,7 +57,6 @@ public class ServiceInit {
     }
 
 
-
     /**
      * Initialise the Service Object class.
      *
@@ -72,7 +71,7 @@ public class ServiceInit {
     /**
      * Initialise the Service Object class.
      *
-     * @param c                    class describing Service
+     * @param c               class describing Service
      * @param serviceSettings predefined settings for service
      * @return initialised Service Object
      */
@@ -128,12 +127,13 @@ public class ServiceInit {
     private static <T> Object getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationScheme authenticationScheme) {
         MethodData mtData = getMethodData(field);
         String url = field.isAnnotationPresent(URL.class)
-            ? field.getAnnotation(URL.class).value()
-            : getDomain(c);
+                ? field.getAnnotation(URL.class).value()
+                : getDomain(c);
         String path = mtData.path;
-        RestMethod method = field.getType() == DataMethod.class
-            ? new DataMethod<>(field)
-            : new RestMethod();
+        RestMethod method = field.getType() == SoapMethod.class ? new SoapMethod<>(field) :
+                field.getType() == DataMethod.class
+                        ? new DataMethod<>(field)
+                        : new RestMethod();
         method.setup(mtData.type, path, url, requestSpecification);
         method.setObjectMapper(objectMapper);
         method.setErrorHandler(errorHandler);
@@ -195,8 +195,8 @@ public class ServiceInit {
             method.cookies.add(cookie.name());
         } else
             method.cookies.add(cookie);
-            if (!cookie.additionalValues()[0].equals("[unassigned]"))
-                method.cookies.add(cookie.name(), cookie.additionalValues());
+        if (!cookie.additionalValues()[0].equals("[unassigned]"))
+            method.cookies.add(cookie.name(), cookie.additionalValues());
     }
 
     /**
@@ -234,7 +234,7 @@ public class ServiceInit {
             return JdiHttpSettigns.getDomain();
         Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(c.getAnnotation(ServiceDomain.class).value());
         return m.find()
-            ? JdiHttpSettigns.getDomain(m.group(1))
-            : c.getAnnotation(ServiceDomain.class).value();
+                ? JdiHttpSettigns.getDomain(m.group(1))
+                : c.getAnnotation(ServiceDomain.class).value();
     }
 }

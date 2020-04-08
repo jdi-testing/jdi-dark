@@ -460,7 +460,6 @@ public class RestMethod {
         return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
     }
 
-
     /**
      * Send HTTP request with invoked request data.
      *

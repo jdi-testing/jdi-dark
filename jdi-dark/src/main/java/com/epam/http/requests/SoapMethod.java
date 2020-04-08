@@ -21,18 +21,18 @@ import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.requests.RequestDataFacrtory.headers;
 import static com.epam.jdi.tools.ReflectionUtils.getGenericTypes;
 
-public class SoapMethod<Req, Resp> extends RestMethod {
+public class SoapMethod<T, S> extends RestMethod {
     String name;
-    Class<Req> req;
-    Class<Resp> resp;
+    Class<T> req;
+    Class<S> resp;
 
     public SoapMethod(Field field) {
         this.name = field.getName();
-        this.req = (Class<Req>) getGenericTypes(field)[0];
-        this.resp = (Class<Resp>) getGenericTypes(field)[1];
+        this.req = (Class<T>) getGenericTypes(field)[0];
+        this.resp = (Class<S>) getGenericTypes(field)[1];
     }
 
-    public Resp callSoap(Req object) {
+    public S callSoap(T object) {
         try {
             return getResponse(call(headers().add("SOAPAction", name)
                     .requestBody(createSoapBody(object))).getBody());
@@ -41,7 +41,7 @@ public class SoapMethod<Req, Resp> extends RestMethod {
         }
     }
 
-    private String createSoapBody(Req object) throws JAXBException {
+    private String createSoapBody(T object) throws JAXBException {
         return "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
                 "   <soapenv:Header/>\n" +
                 "   <soapenv:Body>\n" +
@@ -50,7 +50,7 @@ public class SoapMethod<Req, Resp> extends RestMethod {
                 "</soapenv:Envelope>";
     }
 
-    private String getXML(Req object) throws JAXBException {
+    private String getXML(T object) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(req);
         Marshaller marshaller = context.createMarshaller();
         StringWriter stringWriter = new StringWriter();
@@ -59,7 +59,7 @@ public class SoapMethod<Req, Resp> extends RestMethod {
         return stringWriter.toString();
     }
 
-    private Resp getResponse(String body) throws ParserConfigurationException, IOException, SAXException, JAXBException {
+    private S getResponse(String body) throws ParserConfigurationException, IOException, SAXException, JAXBException {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         InputSource src = new InputSource();
         src.setCharacterStream(new StringReader(body));

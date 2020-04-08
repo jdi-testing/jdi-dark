@@ -26,6 +26,7 @@ public class SoapMethod<T, S> extends RestMethod {
     Class<T> req;
     Class<S> resp;
 
+    @SuppressWarnings("unchecked")
     public SoapMethod(Field field) {
         this.name = field.getName();
         this.req = (Class<T>) getGenericTypes(field)[0];

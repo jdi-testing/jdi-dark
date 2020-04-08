@@ -7,6 +7,7 @@ import static com.epam.jdi.tools.ReflectionUtils.getGenericType;
 
 public class DataMethod<T> extends RestMethod {
     Class<T> cl;
+    @SuppressWarnings("unchecked")
     public DataMethod(Field field) {
         this.cl = (Class<T>) getGenericType(field);
     }

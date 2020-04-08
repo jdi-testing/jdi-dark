@@ -1,4 +1,4 @@
-package com.epam.jdi.dto.yandex.speller.services.spellservice;
+package com.epam.jdi.soap.net.yandex.speller.services.spellservice;
 
 import java.util.ArrayList;
 import java.util.Collection;

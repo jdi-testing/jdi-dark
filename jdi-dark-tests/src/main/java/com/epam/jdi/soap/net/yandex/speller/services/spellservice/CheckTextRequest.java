@@ -1,11 +1,9 @@
-package com.epam.jdi.dto.yandex.speller.services.spellservice;
+package com.epam.jdi.soap.net.yandex.speller.services.spellservice;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -20,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="text" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="text" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="lang" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *       &lt;attribute name="options" type="{http://www.w3.org/2001/XMLSchema}int" default="0" /&gt;
@@ -36,10 +34,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "text"
 })
-@XmlRootElement(name = "CheckTextsRequest")
-public class CheckTextsRequest {
+@XmlRootElement(name = "CheckTextRequest")
+public class CheckTextRequest {
 
-    protected List<String> text;
+    @XmlElement(required = true)
+    protected String text;
     @XmlAttribute(name = "lang")
     protected String lang;
     @XmlAttribute(name = "options")
@@ -50,30 +49,25 @@ public class CheckTextsRequest {
     /**
      * Gets the value of the text property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the text property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getText().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
-    public List<String> getText() {
-        if (text == null) {
-            text = new ArrayList<String>();
-        }
-        return this.text;
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * Sets the value of the text property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setText(String value) {
+        this.text = value;
     }
 
     /**
@@ -156,33 +150,22 @@ public class CheckTextsRequest {
         this.format = value;
     }
 
-    public CheckTextsRequest withText(String... values) {
-        if (values!= null) {
-            for (String value: values) {
-                getText().add(value);
-            }
-        }
+    public CheckTextRequest withText(String value) {
+        setText(value);
         return this;
     }
 
-    public CheckTextsRequest withText(Collection<String> values) {
-        if (values!= null) {
-            getText().addAll(values);
-        }
-        return this;
-    }
-
-    public CheckTextsRequest withLang(String value) {
+    public CheckTextRequest withLang(String value) {
         setLang(value);
         return this;
     }
 
-    public CheckTextsRequest withOptions(Integer value) {
+    public CheckTextRequest withOptions(Integer value) {
         setOptions(value);
         return this;
     }
 
-    public CheckTextsRequest withFormat(String value) {
+    public CheckTextRequest withFormat(String value) {
         setFormat(value);
         return this;
     }

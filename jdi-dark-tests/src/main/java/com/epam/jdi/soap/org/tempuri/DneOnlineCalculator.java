@@ -1,29 +1,27 @@
-package com.epam.jdi.services;
+package com.epam.jdi.soap.org.tempuri;
 
 import com.epam.http.annotations.*;
 import com.epam.http.requests.SoapMethod;
-import com.epam.jdi.soap.org.tempuri.*;
 
 @ServiceDomain("http://www.dneonline.com/calculator.asmx")
+@SOAPNamespace("http://tempuri.org/")
 public class DneOnlineCalculator {
 
     @POST("")
     @SOAPAction("http://tempuri.org/Add")
-    @SOAPNamespace("http://tempuri.org/")
     public static SoapMethod<Add, AddResponse> add;
 
     @POST("")
     @SOAPAction("http://tempuri.org/Divide")
-    @SOAPNamespace("http://tempuri.org/")
     public static SoapMethod<Divide, DivideResponse> divide;
 
     @POST("")
     @SOAPAction("http://tempuri.org/Multiply")
-    @SOAPNamespace("http://tempuri.org/")
+    @SOAP12
     public static SoapMethod<Multiply, MultiplyResponse> multiply;
 
     @POST("")
     @SOAPAction("http://tempuri.org/Subtract")
-    @SOAPNamespace("http://tempuri.org/")
+    @SOAP12
     public static SoapMethod<Subtract, SubtractResponse> subtract;
 }

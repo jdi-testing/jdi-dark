@@ -1,20 +1,17 @@
 package com.epam.http.requests;
 
+import com.epam.http.annotations.SOAP12;
 import com.epam.http.annotations.SOAPAction;
 import com.epam.http.annotations.SOAPNamespace;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.util.StreamReaderDelegate;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -24,27 +21,47 @@ import static com.epam.http.requests.RequestDataFacrtory.requestBody;
 import static com.epam.jdi.tools.ReflectionUtils.getGenericTypes;
 
 public class SoapMethod<T, S> extends RestMethod {
+    boolean soap12;
     String envelop, soapHeader, action, namespace;
     Class<T> req;
     Class<S> resp;
 
     @SuppressWarnings("unchecked")
-    public SoapMethod(Field field) {
-        this.envelop = "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">";
+    public SoapMethod(Field field, Class<T> c) {
+        this.soap12 = field.isAnnotationPresent(SOAP12.class) || c.isAnnotationPresent(SOAP12.class);
         this.soapHeader = "   <soap:Header/>";
-        this.action = field.getAnnotation(SOAPAction.class).value();
-        this.namespace = field.isAnnotationPresent(SOAPNamespace.class) ? " xmlns=\"" + field.getAnnotation(SOAPNamespace.class).value() + "\"" : "";
+        this.action = field.isAnnotationPresent(SOAPAction.class) ? field.getAnnotation(SOAPAction.class).value() : field.getName();
+        this.namespace = c.isAnnotationPresent(SOAPNamespace.class) ? " xmlns=\"" + c.getAnnotation(SOAPNamespace.class).value() + "\" \n" :
+                field.isAnnotationPresent(SOAPNamespace.class) ? " xmlns=\"" + field.getAnnotation(SOAPNamespace.class).value() + "\" \n" : "";
+        this.envelop = "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" \n" +
+                this.namespace +
+                (this.soap12 ? "xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\">" :
+                        "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
         this.req = (Class<T>) getGenericTypes(field)[0];
         this.resp = (Class<S>) getGenericTypes(field)[1];
+//        Type type = getGenericTypes(field)[1];
+//        if (type instanceof ParameterizedType) {
+//            ParameterizedType pType = (ParameterizedType)type;
+//            Type[] arr = pType.getActualTypeArguments();
+//            this.resp = (Class<S>) arr[0];
+//        } else {
+//            this.resp = (Class<S>) type;
+//        };
     }
 
     public S callSoap(T object) {
         try {
-            header.addAll(new Object[][]{{"Content-Type", "text/xml;charset=UTF-8"},
-                    {"SOAPAction", action}});
+            if (this.soap12) {
+                header.addAll(new Object[][]{{"Content-Type", "application/soap+xml;charset=UTF-8"},
+                        {"Action", action}});
+            } else {
+                header.addAll(new Object[][]{{"Content-Type", "text/xml;charset=UTF-8"},
+                        {"SOAPAction", action}});
+            }
             return getResponse(call(requestBody(createSoapBody(object))).getBody());
         } catch (Exception ex) {
-            throw exception(ex.getMessage());
+            throw exception(ex.toString());
         }
     }
 
@@ -62,13 +79,16 @@ public class SoapMethod<T, S> extends RestMethod {
     private String createSoapBody(T object) throws JAXBException {
         return this.envelop + "\n" +
                 this.soapHeader + "\n" +
-                "   <soap:Body"+ this.namespace + ">\n" +
+                "   <soap:Body>\n" +
                 "   " + getXML(object) + "\n" +
                 "   </soap:Body>\n" +
                 "</soap:Envelope>";
     }
 
     private String getXML(Object object) throws JAXBException {
+        if (object instanceof String) {
+            return object.toString();
+        }
         JAXBContext context = JAXBContext.newInstance(object.getClass());
         Marshaller marshaller = context.createMarshaller();
         StringWriter stringWriter = new StringWriter();
@@ -77,16 +97,39 @@ public class SoapMethod<T, S> extends RestMethod {
         return stringWriter.toString();
     }
 
-    private S getResponse(String body) throws ParserConfigurationException, IOException, SAXException, JAXBException {
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        InputSource src = new InputSource();
-        src.setCharacterStream(new StringReader(body));
-        Document doc = builder.parse(src);
-        Node node = doc.getElementsByTagName("soap:Body").item(0).getChildNodes().item(0);
-        JAXBContext jc = JAXBContext.newInstance(resp);
-        Unmarshaller u = jc.createUnmarshaller();
-        return u.unmarshal(node, resp).getValue();
-    }
+    @SuppressWarnings("unchecked")
+    private S getResponse(String body) throws JAXBException, XMLStreamException {
+        class XMLReaderWithoutNamespace extends StreamReaderDelegate {
+            public XMLReaderWithoutNamespace(XMLStreamReader reader) {
+                super(reader);
+            }
 
+            @Override
+            public String getAttributeNamespace(int arg0) {
+                return "";
+            }
+
+            @Override
+            public String getNamespaceURI() {
+                return "";
+            }
+        }
+        XMLStreamReader xsr = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(body.replaceAll("\\n", "")));
+        XMLReaderWithoutNamespace xr = new XMLReaderWithoutNamespace(xsr);
+        while (xr.hasNext()) {
+            xr.nextTag();
+            if (resp == String.class) {
+                if (xr.getName().getLocalPart().equals("Body")) {
+                    xr.nextTag();
+                    return (S) xr.getElementText().trim();
+                }
+            } else if (xr.getName().getLocalPart().equals(resp.getSimpleName())) {
+                JAXBContext jc = JAXBContext.newInstance(resp);
+                Unmarshaller u = jc.createUnmarshaller();
+                return u.unmarshal(xr, resp).getValue();
+            }
+        }
+        return null;
+    }
 
 }

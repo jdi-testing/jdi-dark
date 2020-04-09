@@ -130,8 +130,9 @@ public class ServiceInit {
                 ? field.getAnnotation(URL.class).value()
                 : getDomain(c);
         String path = mtData.path;
-        RestMethod method = field.getType() == SoapMethod.class ? new SoapMethod<>(field) :
-                field.getType() == DataMethod.class
+        RestMethod method = field.getType() == SoapMethod.class
+                ? new SoapMethod<>(field, c)
+                : field.getType() == DataMethod.class
                         ? new DataMethod<>(field)
                         : new RestMethod();
         method.setup(mtData.type, path, url, requestSpecification);

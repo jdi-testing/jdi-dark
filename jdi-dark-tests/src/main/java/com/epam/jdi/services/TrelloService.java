@@ -3,6 +3,7 @@ package com.epam.jdi.services;
 import com.epam.http.annotations.*;
 import com.epam.http.requests.DataMethod;
 import com.epam.http.requests.RestMethod;
+import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
 
 import java.util.List;
@@ -106,5 +107,20 @@ public class TrelloService {
 
     public static List<Board> getOrganizationBoards(Organization organization) {
         return asList(getOrganizationBoards.call(pathParams().add("id", organization.id)).getRaResponse().as(Board[].class));
+    }
+
+    @ContentType(JSON)
+    @DELETE("/boards/{board_id}")
+    public static RestMethod deleteBoard;
+    @ContentType(JSON)
+    @DELETE("/organizations/{org_id}")
+    public static RestMethod deleteOrg;
+
+    public static RestResponse deleteBoard(String boardId) {
+        return deleteBoard.call(pathParams().add("board_id", boardId));
+    }
+
+    public static RestResponse deleteOrg(String orgId) {
+        return deleteOrg.call(pathParams().add("org_id", orgId));
     }
 }

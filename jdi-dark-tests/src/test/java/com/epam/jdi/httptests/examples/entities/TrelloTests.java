@@ -2,22 +2,22 @@ package com.epam.jdi.httptests.examples.entities;
 
 import com.epam.jdi.dto.*;
 import com.epam.jdi.services.TrelloService;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.List;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.TrelloService.*;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
+import static com.epam.jdi.services.TrelloService.*;
 import static com.epam.jdi.tools.LinqUtils.map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 public class TrelloTests {
+    private String createdBoardId, createdBoardId2, createdOrgId;
 
     @BeforeClass
     public void initService() {
@@ -29,7 +29,8 @@ public class TrelloTests {
         //Create board
         Board board = generateBoard();
         Board createdBoard = createBoard(board);
-        Board gotBoard = getBoard(createdBoard.id);
+        createdBoardId = createdBoard.id;
+        Board gotBoard = getBoard(createdBoardId);
         assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
 
         //Create list
@@ -47,19 +48,26 @@ public class TrelloTests {
 
     @Test
     public void assignBoardToOrganization() {
-
         //Create organization
         Organization organization = generateOrganization();
         Organization createOrg = createOrganization(organization);
 
-        //Crate board
+        //Create board
         Board board = generateBoard();
-        board.idOrganization = createOrg.id;
-        createBoard(board);
+        createdOrgId = createOrg.id;
+        board.idOrganization = createdOrgId;
+        Board createdBoard = createBoard(board);
+        createdBoardId2 = createdBoard.id;
 
         //Check that organization contains created board
         List<Board> boards = getOrganizationBoards(createOrg);
         assertTrue(map(boards, b -> b.name).contains(board.name), "Board wasn't added to organization");
+    }
 
+    @AfterClass
+    public void clearBoards() {
+        deleteBoard(createdBoardId);
+        deleteBoard(createdBoardId2);
+        deleteOrg(createdOrgId);
     }
 }

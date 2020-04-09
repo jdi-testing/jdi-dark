@@ -1,20 +1,13 @@
 package com.epam.jdi.httptests.examples.custom;
 
-import com.epam.jdi.dto.Board;
-import com.epam.jdi.dto.Card;
-import com.epam.jdi.dto.TrelloList;
+import com.epam.jdi.dto.*;
 import com.epam.jdi.services.TrelloService;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.ArrayList;
-
 
 import static com.epam.http.requests.RequestDataFacrtory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
@@ -25,6 +18,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
 public class PreconditionParallelTests {
+    private ArrayList<String> createdBoardsId = new ArrayList<String>();
     public TrelloService service;
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
 
@@ -44,9 +38,11 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "createNewBoards", threadPoolSize = 3)
     public void createCardInBoard1(Board board) {
-        //Crate board
+        //Create board
         Board createdBoard = service.createBoard(board);
+
         Board gotBoard = service.getBoard(createdBoard.id);
+        createdBoardsId.add(createdBoard.id);
         assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
 
         //Create list
@@ -76,11 +72,16 @@ public class PreconditionParallelTests {
         return dataList.toArray(new Object[dataList.size()][]);
     }
 
-    @Test (dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
+    @Test(dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
         service.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
-                .body("shortUrl",equalTo(expectedShortUrl))
-                .body("url",equalTo(expectedUrl));
+                .body("shortUrl", equalTo(expectedShortUrl))
+                .body("url", equalTo(expectedUrl));
+    }
+
+    @AfterClass
+    public void clearBoards() {
+        createdBoardsId.forEach(TrelloService::deleteBoard);
     }
 }

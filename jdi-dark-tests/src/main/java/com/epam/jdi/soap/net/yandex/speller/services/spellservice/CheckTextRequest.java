@@ -1,18 +1,13 @@
 package com.epam.jdi.soap.net.yandex.speller.services.spellservice;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType&gt;
  *   &lt;complexContent&gt;
@@ -27,12 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "text"
+        "text"
 })
 @XmlRootElement(name = "CheckTextRequest")
 public class CheckTextRequest {
@@ -48,11 +41,9 @@ public class CheckTextRequest {
 
     /**
      * Gets the value of the text property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getText() {
         return text;
@@ -60,11 +51,9 @@ public class CheckTextRequest {
 
     /**
      * Sets the value of the text property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setText(String value) {
         this.text = value;
@@ -72,11 +61,9 @@ public class CheckTextRequest {
 
     /**
      * Gets the value of the lang property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getLang() {
         return lang;
@@ -84,11 +71,9 @@ public class CheckTextRequest {
 
     /**
      * Sets the value of the lang property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setLang(String value) {
         this.lang = value;
@@ -96,15 +81,13 @@ public class CheckTextRequest {
 
     /**
      * Gets the value of the options property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
+     *
+     * @return possible object is
+     * {@link Integer }
      */
     public int getOptions() {
         if (options == null) {
-            return  0;
+            return 0;
         } else {
             return options;
         }
@@ -112,11 +95,9 @@ public class CheckTextRequest {
 
     /**
      * Sets the value of the options property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Integer }
      */
     public void setOptions(Integer value) {
         this.options = value;
@@ -124,11 +105,9 @@ public class CheckTextRequest {
 
     /**
      * Gets the value of the format property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getFormat() {
         if (format == null) {
@@ -140,11 +119,9 @@ public class CheckTextRequest {
 
     /**
      * Sets the value of the format property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setFormat(String value) {
         this.format = value;

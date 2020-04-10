@@ -1,26 +1,19 @@
 package com.epam.jdi.soap.com.herongyang.service;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.*;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlMixed;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType&gt;
  *   &lt;complexContent&gt;
@@ -34,12 +27,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+        "content"
 })
 @XmlRootElement(name = "RegistrationRequest")
 public class RegistrationRequest {
@@ -55,26 +46,24 @@ public class RegistrationRequest {
 
     /**
      * Gets the value of the content property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the content property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getContent().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link JAXBElement }{@code <}{@link String }{@code >}
      * {@link String }
-     * 
-     * 
      */
     public List<Serializable> getContent() {
         if (content == null) {
@@ -85,11 +74,9 @@ public class RegistrationRequest {
 
     /**
      * Gets the value of the date property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLGregorianCalendar }
      */
     public XMLGregorianCalendar getDate() {
         return date;
@@ -97,11 +84,9 @@ public class RegistrationRequest {
 
     /**
      * Sets the value of the date property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLGregorianCalendar }
      */
     public void setDate(XMLGregorianCalendar value) {
         this.date = value;
@@ -109,11 +94,9 @@ public class RegistrationRequest {
 
     /**
      * Gets the value of the event property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getEvent() {
         return event;
@@ -121,19 +104,17 @@ public class RegistrationRequest {
 
     /**
      * Sets the value of the event property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setEvent(String value) {
         this.event = value;
     }
 
     public RegistrationRequest withContent(Serializable... values) {
-        if (values!= null) {
-            for (Serializable value: values) {
+        if (values != null) {
+            for (Serializable value : values) {
                 getContent().add(value);
             }
         }
@@ -141,7 +122,7 @@ public class RegistrationRequest {
     }
 
     public RegistrationRequest withContent(Collection<Serializable> values) {
-        if (values!= null) {
+        if (values != null) {
             getContent().addAll(values);
         }
         return this;

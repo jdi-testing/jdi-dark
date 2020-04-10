@@ -1,20 +1,16 @@
 package com.epam.jdi.soap.net.yandex.speller.services.spellservice;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
  * <p>Java class for SpellError complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="SpellError"&gt;
  *   &lt;complexContent&gt;
@@ -32,13 +28,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpellError", propOrder = {
-    "word",
-    "s"
+        "word",
+        "s"
 })
 public class SpellError {
 
@@ -58,11 +52,9 @@ public class SpellError {
 
     /**
      * Gets the value of the word property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getWord() {
         return word;
@@ -70,11 +62,9 @@ public class SpellError {
 
     /**
      * Sets the value of the word property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setWord(String value) {
         this.word = value;
@@ -82,25 +72,23 @@ public class SpellError {
 
     /**
      * Gets the value of the s property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the s property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getS().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link String }
-     * 
-     * 
      */
     public List<String> getS() {
         if (s == null) {
@@ -111,7 +99,6 @@ public class SpellError {
 
     /**
      * Gets the value of the code property.
-     * 
      */
     public int getCode() {
         return code;
@@ -119,7 +106,6 @@ public class SpellError {
 
     /**
      * Sets the value of the code property.
-     * 
      */
     public void setCode(int value) {
         this.code = value;
@@ -127,7 +113,6 @@ public class SpellError {
 
     /**
      * Gets the value of the pos property.
-     * 
      */
     public int getPos() {
         return pos;
@@ -135,7 +120,6 @@ public class SpellError {
 
     /**
      * Sets the value of the pos property.
-     * 
      */
     public void setPos(int value) {
         this.pos = value;
@@ -143,7 +127,6 @@ public class SpellError {
 
     /**
      * Gets the value of the row property.
-     * 
      */
     public int getRow() {
         return row;
@@ -151,7 +134,6 @@ public class SpellError {
 
     /**
      * Sets the value of the row property.
-     * 
      */
     public void setRow(int value) {
         this.row = value;
@@ -159,7 +141,6 @@ public class SpellError {
 
     /**
      * Gets the value of the col property.
-     * 
      */
     public int getCol() {
         return col;
@@ -167,7 +148,6 @@ public class SpellError {
 
     /**
      * Sets the value of the col property.
-     * 
      */
     public void setCol(int value) {
         this.col = value;
@@ -175,7 +155,6 @@ public class SpellError {
 
     /**
      * Gets the value of the len property.
-     * 
      */
     public int getLen() {
         return len;
@@ -183,7 +162,6 @@ public class SpellError {
 
     /**
      * Sets the value of the len property.
-     * 
      */
     public void setLen(int value) {
         this.len = value;
@@ -195,8 +173,8 @@ public class SpellError {
     }
 
     public SpellError withS(String... values) {
-        if (values!= null) {
-            for (String value: values) {
+        if (values != null) {
+            for (String value : values) {
                 getS().add(value);
             }
         }
@@ -204,7 +182,7 @@ public class SpellError {
     }
 
     public SpellError withS(Collection<String> values) {
-        if (values!= null) {
+        if (values != null) {
             getS().addAll(values);
         }
         return this;

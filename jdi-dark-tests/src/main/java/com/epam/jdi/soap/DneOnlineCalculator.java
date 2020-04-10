@@ -1,7 +1,8 @@
-package com.epam.jdi.soap.org.tempuri;
+package com.epam.jdi.soap;
 
 import com.epam.http.annotations.*;
 import com.epam.http.requests.SoapMethod;
+import com.epam.jdi.soap.org.tempuri.*;
 
 @ServiceDomain("http://www.dneonline.com/calculator.asmx")
 @SOAPNamespace("http://tempuri.org/")

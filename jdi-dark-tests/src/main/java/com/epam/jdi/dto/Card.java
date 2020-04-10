@@ -9,7 +9,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Card extends DataClass<Card> {
     public String id, name, idList, desc, url, idBoard, idShort, idAttachmentCover,
-        shortLink, shortUrl;
+            shortLink, shortUrl;
     public boolean closed, manualCoverAttachment, subscribed;
     public Date due, dateLastActivity;
     public List<String> idMembers, idChecklists, idMembersVoted;

@@ -1,7 +1,11 @@
-package com.epam.jdi.soap.com.herongyang.service;
+package com.epam.jdi.soap;
 
 import com.epam.http.annotations.*;
 import com.epam.http.requests.SoapMethod;
+import com.epam.jdi.soap.com.herongyang.service.RefillOrderRequest;
+import com.epam.jdi.soap.com.herongyang.service.RefillOrderResponse;
+import com.epam.jdi.soap.com.herongyang.service.RegistrationRequest;
+import com.epam.jdi.soap.com.herongyang.service.RegistrationResponse;
 
 @ServiceDomain("http://www.herongyang.com/Service/")
 public class HerongYangService {

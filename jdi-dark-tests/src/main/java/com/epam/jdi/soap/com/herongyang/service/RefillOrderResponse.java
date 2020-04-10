@@ -1,10 +1,6 @@
 package com.epam.jdi.soap.com.herongyang.service;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -31,7 +27,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "RefillOrderResponseType", propOrder = {
     "orderStatus"
 })
-public class RefillOrderResponseType {
+@XmlRootElement(name = "RefillOrderResponse")
+public class RefillOrderResponse {
 
     @XmlElement(name = "OrderStatus", required = true)
     protected OrderStatusType orderStatus;
@@ -86,12 +83,12 @@ public class RefillOrderResponseType {
         this.version = value;
     }
 
-    public RefillOrderResponseType withOrderStatus(OrderStatusType value) {
+    public RefillOrderResponse withOrderStatus(OrderStatusType value) {
         setOrderStatus(value);
         return this;
     }
 
-    public RefillOrderResponseType withVersion(String value) {
+    public RefillOrderResponse withVersion(String value) {
         setVersion(value);
         return this;
     }

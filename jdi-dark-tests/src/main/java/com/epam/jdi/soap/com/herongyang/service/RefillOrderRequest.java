@@ -1,10 +1,6 @@
 package com.epam.jdi.soap.com.herongyang.service;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -33,7 +29,8 @@ import javax.xml.bind.annotation.XmlType;
     "patient",
     "prescription"
 })
-public class RefillOrderRequestType {
+@XmlRootElement(name = "RefillOrderRequest")
+public class RefillOrderRequest {
 
     @XmlElement(name = "Patient", required = true)
     protected PatientType patient;
@@ -114,17 +111,17 @@ public class RefillOrderRequestType {
         this.version = value;
     }
 
-    public RefillOrderRequestType withPatient(PatientType value) {
+    public RefillOrderRequest withPatient(PatientType value) {
         setPatient(value);
         return this;
     }
 
-    public RefillOrderRequestType withPrescription(PrescriptionType value) {
+    public RefillOrderRequest withPrescription(PrescriptionType value) {
         setPrescription(value);
         return this;
     }
 
-    public RefillOrderRequestType withVersion(String value) {
+    public RefillOrderRequest withVersion(String value) {
         setVersion(value);
         return this;
     }

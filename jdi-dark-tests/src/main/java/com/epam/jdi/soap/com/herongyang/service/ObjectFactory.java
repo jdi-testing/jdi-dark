@@ -25,38 +25,7 @@ public class ObjectFactory {
 
     private final static QName _RegistrationRequestGuest_QNAME = new QName("", "Guest");
 
-    /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.herongyang.service
-     * 
-     */
-    public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link RegistrationResponse }
-     * 
-     */
-    public RegistrationResponse createRegistrationResponse() {
-        return new RegistrationResponse();
-    }
-
-    /**
-     * Create an instance of {@link RegistrationRequest }
-     * 
-     */
-    public RegistrationRequest createRegistrationRequest() {
-        return new RegistrationRequest();
-    }
-
-    /**
-     * Create an instance of {@link RegistrationResponse.Confirmation }
-     * 
-     */
-    public RegistrationResponse.Confirmation createRegistrationResponseConfirmation() {
-        return new RegistrationResponse.Confirmation();
-    }
-
-    /**
+     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}
      * 
      * @param value

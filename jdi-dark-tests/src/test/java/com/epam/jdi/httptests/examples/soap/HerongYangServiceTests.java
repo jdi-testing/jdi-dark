@@ -1,9 +1,6 @@
 package com.epam.jdi.httptests.examples.soap;
 
-import com.epam.jdi.soap.com.herongyang.service.HerongYangService;
-import com.epam.jdi.soap.com.herongyang.service.ObjectFactory;
-import com.epam.jdi.soap.com.herongyang.service.RegistrationRequest;
-import com.epam.jdi.soap.com.herongyang.service.RegistrationResponse;
+import com.epam.jdi.soap.com.herongyang.service.*;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -23,15 +20,39 @@ public class HerongYangServiceTests {
     }
 
     @Test
-    public void checkHelloResponse() {
+    public void checkHello() {
         String response = HerongYangService.hello.callSoap("Hello from client.");
         Assertions.assertThat(response).isEqualTo("Hello from server - herongyang.com.");
     }
 
     @Test
-    public void checkRegistrationResponse() throws DatatypeConfigurationException {
+    public void checkRegistration() throws DatatypeConfigurationException {
         ObjectFactory objectFactory = new ObjectFactory();
         RegistrationResponse response = HerongYangService.registration.callSoap(new RegistrationRequest()
+                .withEvent("OpenGame")
+                .withDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("2008-08-08"))
+                .withContent(objectFactory.createRegistrationRequestGuest("Herong Yang"),
+                        objectFactory.createRegistrationRequestGuest("Joe Smith")));
+        Assertions.assertThat(response.getConfirmation().stream().map(RegistrationResponse.Confirmation::getGuest)
+                .collect(Collectors.toList())).isEqualTo(Arrays.asList("Herong Yang", "Joe Smith"));
+    }
+
+    @Test
+    public void checkRefillOrder() throws DatatypeConfigurationException {
+        RefillOrderResponse response = HerongYangService.refillOrder.callSoap(new RefillOrderRequest()
+                .withVersion("1.0")
+        .withPatient(new PatientType().withName("Joe Smith")
+                .withBirthDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("1970-01-01")))
+        .withPrescription(new PrescriptionType().withDoctor("Paul Gates").withDrug("Vitamin D 50000 IU")));
+        Assertions.assertThat(response.getVersion()).isEqualTo("1.0");
+        Assertions.assertThat(response.getOrderStatus().getNumber()).isEqualTo("20070707");
+        Assertions.assertThat(response.getOrderStatus().getStatus()).isEqualTo("Verifying");
+    }
+
+    @Test
+    public void checkRegistration12() throws DatatypeConfigurationException {
+        ObjectFactory objectFactory = new ObjectFactory();
+        RegistrationResponse response = HerongYangService.registration12.callSoap(new RegistrationRequest()
                 .withEvent("OpenGame")
                 .withDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("2008-08-08"))
                 .withContent(objectFactory.createRegistrationRequestGuest("Herong Yang"),
@@ -39,5 +60,17 @@ public class HerongYangServiceTests {
                         objectFactory.createRegistrationRequestGuest("Bill Wang")));
         Assertions.assertThat(response.getConfirmation().stream().map(RegistrationResponse.Confirmation::getGuest)
                 .collect(Collectors.toList())).isEqualTo(Arrays.asList("Herong Yang", "Joe Smith", "Bill Wang"));
+    }
+
+    @Test
+    public void checkRefillOrder12() throws DatatypeConfigurationException {
+        RefillOrderResponse response = HerongYangService.refillOrder12.callSoap(new RefillOrderRequest()
+                .withVersion("1.0")
+                .withPatient(new PatientType().withName("Joe Smith")
+                        .withBirthDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("1970-01-01")))
+                .withPrescription(new PrescriptionType().withDoctor("Paul Gates").withDrug("Vitamin D 50000 IU")));
+        Assertions.assertThat(response.getVersion()).isEqualTo("1.0");
+        Assertions.assertThat(response.getOrderStatus().getNumber()).isEqualTo("20070707");
+        Assertions.assertThat(response.getOrderStatus().getStatus()).isEqualTo("Verifying");
     }
 }

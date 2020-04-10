@@ -1,6 +1,6 @@
 package com.epam.jdi.httptests.examples.soap;
 
-import com.epam.jdi.soap.org.tempuri.DneOnlineCalculator;
+import com.epam.jdi.soap.DneOnlineCalculator;
 import com.epam.jdi.soap.org.tempuri.*;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeTest;

@@ -9,7 +9,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Organization extends DataClass<Organization> {
     public String id, name, displayName, desc, url, website, logoHash;
-    private List<String> idBoards, invitations, powerUps, premiumFeatures, products;;
+    private List<String> idBoards, invitations, powerUps, premiumFeatures, products;
     private boolean invited;
     private List<Membership> memberships;
     private Prefs prefs;

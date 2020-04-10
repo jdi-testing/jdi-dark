@@ -10,7 +10,7 @@ import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Board extends DataClass<Board> {
-    public String id,  name,  desc, idOrganization, url, shortUrl, shortLink;
+    public String id, name, desc, idOrganization, url, shortUrl, shortLink;
     public boolean closed, pinned, invited, subscribed;
     public Map<String, String> labelNames;
     public List<String> invitations, powerUps;
@@ -21,7 +21,7 @@ public class Board extends DataClass<Board> {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Prefs extends DataClass<Prefs> {
-        public String permissionLevel , voting , comments, invitations, cardAging;
+        public String permissionLevel, voting, comments, invitations, cardAging;
         public boolean selfJoin, cardCovers, canBePublic, canBeOrg, canBePrivate, canInvite, calendarFeedEnabled;
     }
 }

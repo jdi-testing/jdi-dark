@@ -1,17 +1,13 @@
 package com.epam.jdi.soap.net.yandex.speller.services.spellservice;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType&gt;
  *   &lt;complexContent&gt;
@@ -23,12 +19,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "arrayOfSpellResult"
+        "arrayOfSpellResult"
 })
 @XmlRootElement(name = "CheckTextsResponse")
 public class CheckTextsResponse {
@@ -38,11 +32,9 @@ public class CheckTextsResponse {
 
     /**
      * Gets the value of the arrayOfSpellResult property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfSpellResult }
-     *     
+     *
+     * @return possible object is
+     * {@link ArrayOfSpellResult }
      */
     public ArrayOfSpellResult getArrayOfSpellResult() {
         return arrayOfSpellResult;
@@ -50,11 +42,9 @@ public class CheckTextsResponse {
 
     /**
      * Sets the value of the arrayOfSpellResult property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfSpellResult }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ArrayOfSpellResult }
      */
     public void setArrayOfSpellResult(ArrayOfSpellResult value) {
         this.arrayOfSpellResult = value;

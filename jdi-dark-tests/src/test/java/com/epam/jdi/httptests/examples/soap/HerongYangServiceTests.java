@@ -1,5 +1,6 @@
 package com.epam.jdi.httptests.examples.soap;
 
+import com.epam.jdi.soap.HerongYangService;
 import com.epam.jdi.soap.com.herongyang.service.*;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeTest;

@@ -5,9 +5,9 @@ import javax.xml.bind.annotation.*;
 
 /**
  * <p>Java class for RefillOrderRequestType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RefillOrderRequestType"&gt;
  *   &lt;complexContent&gt;
@@ -21,13 +21,11 @@ import javax.xml.bind.annotation.*;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RefillOrderRequestType", propOrder = {
-    "patient",
-    "prescription"
+        "patient",
+        "prescription"
 })
 @XmlRootElement(name = "RefillOrderRequest")
 public class RefillOrderRequest {
@@ -41,11 +39,9 @@ public class RefillOrderRequest {
 
     /**
      * Gets the value of the patient property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PatientType }
-     *     
+     *
+     * @return possible object is
+     * {@link PatientType }
      */
     public PatientType getPatient() {
         return patient;
@@ -53,11 +49,9 @@ public class RefillOrderRequest {
 
     /**
      * Sets the value of the patient property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PatientType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link PatientType }
      */
     public void setPatient(PatientType value) {
         this.patient = value;
@@ -65,11 +59,9 @@ public class RefillOrderRequest {
 
     /**
      * Gets the value of the prescription property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PrescriptionType }
-     *     
+     *
+     * @return possible object is
+     * {@link PrescriptionType }
      */
     public PrescriptionType getPrescription() {
         return prescription;
@@ -77,11 +69,9 @@ public class RefillOrderRequest {
 
     /**
      * Sets the value of the prescription property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PrescriptionType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link PrescriptionType }
      */
     public void setPrescription(PrescriptionType value) {
         this.prescription = value;
@@ -89,11 +79,9 @@ public class RefillOrderRequest {
 
     /**
      * Gets the value of the version property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getVersion() {
         return version;
@@ -101,11 +89,9 @@ public class RefillOrderRequest {
 
     /**
      * Sets the value of the version property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setVersion(String value) {
         this.version = value;

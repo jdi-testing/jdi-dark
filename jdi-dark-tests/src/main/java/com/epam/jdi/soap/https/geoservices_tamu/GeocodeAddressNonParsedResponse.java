@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.*;
         "geocodeAddressNonParsedResult"
 })
 @XmlRootElement(name = "GeocodeAddressNonParsedResponse")
-public class GeocodeAddressNonParsedResponse {
+public class GeocodeAddressNonParsedResponse{
 
     @XmlElement(name = "GeocodeAddressNonParsedResult")
     protected WebServiceGeocodeQueryResultSet geocodeAddressNonParsedResult;

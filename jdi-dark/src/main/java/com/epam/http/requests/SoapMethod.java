@@ -8,16 +8,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.soap.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Field;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RequestDataFacrtory.requestBody;
+import static com.epam.http.requests.RequestDataFacrtory.headers;
 import static com.epam.jdi.tools.ReflectionUtils.getGenericTypes;
 
 public class SoapMethod<T, S> extends RestMethod {
@@ -25,6 +25,7 @@ public class SoapMethod<T, S> extends RestMethod {
     String envelop, soapHeader, action, namespace;
     Class<T> req;
     Class<S> resp;
+    Object[][] headers;
 
     @SuppressWarnings("unchecked")
     public SoapMethod(Field field, Class<T> c) {
@@ -40,26 +41,15 @@ public class SoapMethod<T, S> extends RestMethod {
                         "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
         this.req = (Class<T>) getGenericTypes(field)[0];
         this.resp = (Class<S>) getGenericTypes(field)[1];
-//        Type type = getGenericTypes(field)[1];
-//        if (type instanceof ParameterizedType) {
-//            ParameterizedType pType = (ParameterizedType)type;
-//            Type[] arr = pType.getActualTypeArguments();
-//            this.resp = (Class<S>) arr[0];
-//        } else {
-//            this.resp = (Class<S>) type;
-//        };
+        this.headers = this.soap12 ? new Object[][]{{"Content-Type", "application/soap+xml;charset=UTF-8"},
+                {"Action", action}}
+                : new Object[][]{{"Content-Type", "text/xml;charset=UTF-8"},
+                {"SOAPAction", action}};
     }
 
     public S callSoap(T object) {
         try {
-            if (this.soap12) {
-                header.addAll(new Object[][]{{"Content-Type", "application/soap+xml;charset=UTF-8"},
-                        {"Action", action}});
-            } else {
-                header.addAll(new Object[][]{{"Content-Type", "text/xml;charset=UTF-8"},
-                        {"SOAPAction", action}});
-            }
-            return getResponse(call(requestBody(createSoapBody(object))).getBody());
+            return getResponse(call(headers().addAll(headers).requestBody(createSoapBody(object))).getBody());
         } catch (Exception ex) {
             throw exception(ex.toString());
         }
@@ -98,38 +88,40 @@ public class SoapMethod<T, S> extends RestMethod {
     }
 
     @SuppressWarnings("unchecked")
-    private S getResponse(String body) throws JAXBException, XMLStreamException {
+    private S getResponse(String body) throws JAXBException, XMLStreamException, SOAPException, IOException {
         class XMLReaderWithoutNamespace extends StreamReaderDelegate {
             public XMLReaderWithoutNamespace(XMLStreamReader reader) {
                 super(reader);
             }
-
             @Override
             public String getAttributeNamespace(int arg0) {
                 return "";
             }
-
             @Override
             public String getNamespaceURI() {
                 return "";
             }
         }
+        InputStream is = new ByteArrayInputStream(body.getBytes());
+        SOAPMessage request = MessageFactory.newInstance(soap12 ? SOAPConstants.SOAP_1_2_PROTOCOL : SOAPConstants.SOAP_1_1_PROTOCOL).createMessage(null, is);
+        SOAPBody soapBody = request.getSOAPBody();
+        if (soapBody.hasFault()) {
+            throw new SOAPException(soapBody.getFault().getFaultString());
+        }
+        if (resp == String.class) {
+            return (S) soapBody.getTextContent().trim();
+        }
         XMLStreamReader xsr = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(body.replaceAll("\\n", "")));
         XMLReaderWithoutNamespace xr = new XMLReaderWithoutNamespace(xsr);
+        JAXBContext jc = JAXBContext.newInstance(resp);
+        Unmarshaller u = jc.createUnmarshaller();
         while (xr.hasNext()) {
             xr.nextTag();
-            if (resp == String.class) {
-                if (xr.getName().getLocalPart().equals("Body")) {
-                    xr.nextTag();
-                    return (S) xr.getElementText().trim();
-                }
-            } else if (xr.getName().getLocalPart().equals(resp.getSimpleName())) {
-                JAXBContext jc = JAXBContext.newInstance(resp);
-                Unmarshaller u = jc.createUnmarshaller();
-                return u.unmarshal(xr, resp).getValue();
+            if (xr.getName().getLocalPart().equals(resp.getSimpleName())) {
+                break;
             }
         }
-        return null;
+        return u.unmarshal(xr, resp).getValue();
     }
 
 }

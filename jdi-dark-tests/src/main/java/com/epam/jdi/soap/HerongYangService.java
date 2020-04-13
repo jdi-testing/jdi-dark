@@ -32,7 +32,7 @@ public class HerongYangService {
 
     @POST("")
     @SOAP12
-    @URL("http://www.herongyang.com/Service/RefillOrder.php")
+    @URL("http://www.herongyang.com/Service/RefillOrder12.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
     public static SoapMethod<RefillOrderRequest, RefillOrderResponse> refillOrder12;
 

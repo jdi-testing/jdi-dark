@@ -93,10 +93,12 @@ public class SoapMethod<T, S> extends RestMethod {
             public XMLReaderWithoutNamespace(XMLStreamReader reader) {
                 super(reader);
             }
+
             @Override
             public String getAttributeNamespace(int arg0) {
                 return "";
             }
+
             @Override
             public String getNamespaceURI() {
                 return "";

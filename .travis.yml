@@ -34,6 +34,11 @@ jobs:
     script:
       - mvn install -DskipTests -q || travis_terminate 1
       - mvn verify -pl $HTTP_TESTS
+    after_script:
+      - source reports.sh
+      - grubAllureResults
+      - du -d 1 -h ./
+      - ls -la
 
   - stage: reports
     name: Deploy allure reports to netlify
@@ -47,11 +52,7 @@ after_failure:
 - echo "Build was failed"
 after_success:
 - echo "Build was successful"
-after_script:
-- source reports.sh
-- grubAllureResults
-- du -d 1 -h ./
-- ls -la
+
 # extra time during long builds
 install:
 - travis_wait

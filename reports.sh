@@ -105,7 +105,9 @@ function deployAllureResults() {
 
 function downloadAllureResults() {
     urlExistence=false
+
     for url in $(collectRelevantComments "${TRAVIS_BUILD_NUMBER}")
+     echo "[url in download allure] -${url}"
     do
         urlExistence=true
         echo "Found: ${url}"

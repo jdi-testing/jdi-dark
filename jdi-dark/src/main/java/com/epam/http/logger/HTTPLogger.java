@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
+import static com.epam.http.logger.AllureLogger.setAllureRootLogLevel;
 import static com.epam.http.logger.LogLevels.*;
 import static com.epam.jdi.tools.StringUtils.format;
 import static org.apache.logging.log4j.LogManager.getLogger;
@@ -52,6 +53,7 @@ public class HTTPLogger implements ILogger {
         logLevel = new Safe<>(level);
         setRootLevel(getLog4j2Level(level));
         setLevel(name, getLog4j2Level(level));
+        setAllureRootLogLevel(level);
     }
 
     public void logOff() {

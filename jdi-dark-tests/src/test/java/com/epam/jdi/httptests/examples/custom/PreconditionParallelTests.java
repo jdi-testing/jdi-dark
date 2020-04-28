@@ -2,11 +2,11 @@ package com.epam.jdi.httptests.examples.custom;
 
 import com.epam.jdi.dto.*;
 import com.epam.jdi.services.TrelloService;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.*;
 import org.testng.annotations.*;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.ArrayList;
 
 import static com.epam.http.requests.RequestDataFacrtory.pathParams;
@@ -23,8 +23,9 @@ public class PreconditionParallelTests {
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
 
     @BeforeClass
-    public void initService() {
+    public void initService() throws IOException {
         service = init(TrelloService.class);
+        new FileWriter(CSV_DATA_FILE, false).close();
     }
 
     @DataProvider(name = "createNewBoards", parallel = true)
@@ -37,7 +38,7 @@ public class PreconditionParallelTests {
     }
 
     @Test(dataProvider = "createNewBoards", threadPoolSize = 3)
-    public void createCardInBoard1(Board board) {
+    public void createCardInBoard(Board board) throws IOException {
         //Create board
         Board createdBoard = service.createBoard(board);
 
@@ -56,6 +57,8 @@ public class PreconditionParallelTests {
         //Check that card was added
         Board cardBoard = service.getCardBoard(createdCard.id);
         assertEquals(cardBoard.name, board.name, "Card wasn't added to board");
+
+        writeToCSV(cardBoard);
     }
 
     @DataProvider(name = "dataProviderFromCSV", parallel = true)
@@ -63,7 +66,6 @@ public class PreconditionParallelTests {
         Reader in = new FileReader(CSV_DATA_FILE);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT
                 .withHeader("id", "name", "shortUrl", "url")
-                .withFirstRecordAsHeader()
                 .parse(in);
         ArrayList<Object[]> dataList = new ArrayList<>();
         for (CSVRecord record : records) {
@@ -78,6 +80,14 @@ public class PreconditionParallelTests {
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
                 .body("url", equalTo(expectedUrl));
+    }
+
+    private void writeToCSV(Board board) throws IOException {
+        Writer writer = Files.newBufferedWriter(Paths.get(CSV_DATA_FILE), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        CSVPrinter printer = CSVFormat.EXCEL.print(writer);
+        printer.printRecord(board.id, board.name, board.shortUrl, board.url);
+        printer.flush();
+        writer.close();
     }
 
     @AfterClass

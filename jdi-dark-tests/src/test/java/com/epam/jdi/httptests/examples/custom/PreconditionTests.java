@@ -11,7 +11,6 @@ import java.io.*;
 import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.epam.http.requests.RequestDataFacrtory.pathParams;
 import static com.epam.http.requests.RequestDataFacrtory.requestBody;
@@ -24,21 +23,6 @@ public class PreconditionTests {
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
     private ArrayList<String> createdBoardsId = new ArrayList<String>();
 
-    @DataProvider(name = "dataProviderFromCSV", parallel = true)
-    public static Object[] dataProviderFromCSV() throws IOException {
-        Reader in = new FileReader(CSV_DATA_FILE);
-        Iterable<CSVRecord> records = CSVFormat.DEFAULT
-                .withHeader("id", "name", "shortUrl", "url")
-                // .withFirstRecordAsHeader()
-                .parse(in);
-        ArrayList<Object[]> dataList = new ArrayList<>();
-        for (CSVRecord record : records) {
-            dataList.add(new Object[]{record.get(0), record.get(1), record.get(2), record.get(3)});
-        }
-        System.out.println("---- " + Arrays.deepToString(dataList.toArray(new Object[dataList.size()][])));
-        return dataList.toArray(new Object[dataList.size()][]);
-    }
-
     @DataProvider(name = "createNewBoards", parallel = true)
     public static Object[][] createNewBoards() {
         return new Object[][]{
@@ -46,6 +30,19 @@ public class PreconditionTests {
                 {"Board B2-" + LocalDateTime.now()},
                 {"Board B3-" + LocalDateTime.now()}
         };
+    }
+
+    @DataProvider(name = "dataProviderFromCSV", parallel = true)
+    public static Object[] dataProviderFromCSV() throws IOException {
+        Reader in = new FileReader(CSV_DATA_FILE);
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                .withHeader("id", "name", "shortUrl", "url")
+                .parse(in);
+        ArrayList<Object[]> dataList = new ArrayList<>();
+        for (CSVRecord record : records) {
+            dataList.add(new Object[]{record.get(0), record.get(1), record.get(2), record.get(3)});
+        }
+        return dataList.toArray(new Object[dataList.size()][]);
     }
 
     @BeforeClass
@@ -63,14 +60,6 @@ public class PreconditionTests {
     }
 
     @Test(dataProvider = "dataProviderFromCSV")
-    public void createBoardsFromCSV(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
-                .isOk().assertThat().body("name", equalTo(expectedName))
-                .body("shortUrl", equalTo(expectedShortUrl))
-                .body("url", equalTo(expectedUrl));
-    }
-
-    @Test(dataProvider = "dataProviderFromCSV")
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
         TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
@@ -80,7 +69,6 @@ public class PreconditionTests {
 
     @Test(dataProvider = "dataProviderFromCSV")
     public void getBoardTest(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        System.out.println(("---" + boardId));
         Board gotBoard = TrelloService.getBoard(boardId);
         Assert.assertEquals(gotBoard.name, expectedName, "Actual Board Name doesn't correspond expected");
         Assert.assertEquals(gotBoard.shortUrl, expectedShortUrl, "Actual Board ShortUrl doesn't correspond expected");
@@ -96,7 +84,7 @@ public class PreconditionTests {
     }
 
     @AfterClass
-    public void tearDown() throws IOException {
+    public void clearBoards() {
         createdBoardsId.forEach(TrelloService::deleteBoard);
     }
 }

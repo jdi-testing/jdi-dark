@@ -1,6 +1,6 @@
 package com.epam.http.requests;
 
-import com.epam.http.JdiHttpSettigns;
+import com.epam.http.JdiHttpSettings;
 import com.epam.http.annotations.DELETE;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.HEAD;
@@ -40,7 +40,7 @@ import static java.lang.reflect.Modifier.isStatic;
 public class ServiceInit {
 
     public static MapArray<String, JAction> PRE_INIT =
-            new MapArray<>("WebSettings", JdiHttpSettigns::init);
+            new MapArray<>("WebSettings", JdiHttpSettings::init);
     public static boolean initialized = false;
 
     public static void preInit() {
@@ -232,10 +232,10 @@ public class ServiceInit {
      **/
     private static <T> String getDomain(Class<T> c) {
         if (!c.isAnnotationPresent(ServiceDomain.class))
-            return JdiHttpSettigns.getDomain();
+            return JdiHttpSettings.getDomain();
         Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(c.getAnnotation(ServiceDomain.class).value());
         return m.find()
-                ? JdiHttpSettigns.getDomain(m.group(1))
+                ? JdiHttpSettings.getDomain(m.group(1))
                 : c.getAnnotation(ServiceDomain.class).value();
     }
 }

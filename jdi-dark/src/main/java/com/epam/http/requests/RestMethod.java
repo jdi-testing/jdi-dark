@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.JdiHttpSettigns.getDomain;
-import static com.epam.http.JdiHttpSettigns.logger;
+import static com.epam.http.JdiHttpSettings.getDomain;
+import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.logger.AllureLogger.startStep;
 import static com.epam.http.requests.RestRequest.doRequest;
 import static com.epam.http.response.ResponseStatusType.OK;

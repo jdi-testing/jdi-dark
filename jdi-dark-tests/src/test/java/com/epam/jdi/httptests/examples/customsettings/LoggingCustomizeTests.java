@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.epam.http.JdiHttpSettigns.logger;
+import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.logger.AllureLogger.startStep;
 import static com.epam.http.requests.RestMethod.LOG_REQUEST;
 import static com.epam.http.requests.ServiceInit.init;

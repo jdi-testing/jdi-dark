@@ -1,19 +1,17 @@
 package com.epam.jdi.httptests.examples.custom;
 
+import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Board;
 import com.epam.jdi.services.TrelloService;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.*;
 import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.epam.http.requests.RequestDataFacrtory.pathParams;
 import static com.epam.http.requests.RequestDataFacrtory.requestBody;
@@ -24,54 +22,81 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 public class PreconditionTests {
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
-
-    @BeforeClass
-    public void initService() {
-        init(TrelloService.class);
-    }
-
-    @DataProvider(name = "createNewBoards", parallel = true)
-    public static Object[][] createNewBoards() {
-        return new Object[][] {
-                { "Board B1-" + LocalDateTime.now()},
-                { "Board B2-" + LocalDateTime.now()},
-                { "Board B3-" + LocalDateTime.now()}
-        };
-    }
-
-    @Test (dataProvider = "createNewBoards")
-    public void createNewBoardTest(String boardName) {
-        boardsPost.call(requestBody(format("{\"name\": \"%s\"}", boardName)))
-                .isOk().body("name", equalTo(boardName));
-    }
+    private ArrayList<String> createdBoardsId = new ArrayList<String>();
 
     @DataProvider(name = "dataProviderFromCSV", parallel = true)
     public static Object[] dataProviderFromCSV() throws IOException {
         Reader in = new FileReader(CSV_DATA_FILE);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT
                 .withHeader("id", "name", "shortUrl", "url")
-                .withFirstRecordAsHeader()
+                // .withFirstRecordAsHeader()
                 .parse(in);
         ArrayList<Object[]> dataList = new ArrayList<>();
         for (CSVRecord record : records) {
-            dataList.add(new Object[] {record.get(0),record.get(1),record.get(2),record.get(3)});
+            dataList.add(new Object[]{record.get(0), record.get(1), record.get(2), record.get(3)});
         }
+        System.out.println("---- " + Arrays.deepToString(dataList.toArray(new Object[dataList.size()][])));
         return dataList.toArray(new Object[dataList.size()][]);
     }
 
-    @Test (dataProvider = "dataProviderFromCSV")
+    @DataProvider(name = "createNewBoards", parallel = true)
+    public static Object[][] createNewBoards() {
+        return new Object[][]{
+                {"Board B1-" + LocalDateTime.now()},
+                {"Board B2-" + LocalDateTime.now()},
+                {"Board B3-" + LocalDateTime.now()}
+        };
+    }
+
+    @BeforeClass
+    public void initService() throws IOException {
+        init(TrelloService.class);
+        new FileWriter(CSV_DATA_FILE, false).close();
+    }
+
+    @Test(dataProvider = "createNewBoards")
+    public void createNewBoardTest(String boardName) throws IOException {
+        RestResponse response = boardsPost.call(requestBody(format("{\"name\": \"%s\"}", boardName)));
+        response.isOk().body("name", equalTo(boardName));
+        Board board = response.getRaResponse().as(Board.class);
+        writeToCSV(board);
+    }
+
+    @Test(dataProvider = "dataProviderFromCSV")
+    public void createBoardsFromCSV(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
+        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
+                .isOk().assertThat().body("name", equalTo(expectedName))
+                .body("shortUrl", equalTo(expectedShortUrl))
+                .body("url", equalTo(expectedUrl));
+    }
+
+    @Test(dataProvider = "dataProviderFromCSV")
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
         TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
-                .body("shortUrl",equalTo(expectedShortUrl))
-                .body("url",equalTo(expectedUrl));
+                .body("shortUrl", equalTo(expectedShortUrl))
+                .body("url", equalTo(expectedUrl));
     }
 
-    @Test (dataProvider = "dataProviderFromCSV")
+    @Test(dataProvider = "dataProviderFromCSV")
     public void getBoardTest(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
+        System.out.println(("---" + boardId));
         Board gotBoard = TrelloService.getBoard(boardId);
         Assert.assertEquals(gotBoard.name, expectedName, "Actual Board Name doesn't correspond expected");
         Assert.assertEquals(gotBoard.shortUrl, expectedShortUrl, "Actual Board ShortUrl doesn't correspond expected");
         Assert.assertEquals(gotBoard.url, expectedUrl, "Actual Board URL doesn't correspond expected");
+    }
+
+    private void writeToCSV(Board board) throws IOException {
+        Writer writer = Files.newBufferedWriter(Paths.get(CSV_DATA_FILE), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        CSVPrinter printer = CSVFormat.EXCEL.print(writer);
+        printer.printRecord(board.id, board.name, board.shortUrl, board.url);
+        printer.flush();
+        writer.close();
+    }
+
+    @AfterClass
+    public void tearDown() throws IOException {
+        createdBoardsId.forEach(TrelloService::deleteBoard);
     }
 }

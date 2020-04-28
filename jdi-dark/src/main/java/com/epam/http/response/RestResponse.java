@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.JdiHttpSettigns.logger;
+import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 import static com.epam.http.response.ResponseStatusType.OK;
 import static com.epam.jdi.tools.StringUtils.LINE_BREAK;

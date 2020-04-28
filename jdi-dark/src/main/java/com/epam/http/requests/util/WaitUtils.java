@@ -2,7 +2,7 @@ package com.epam.http.requests.util;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.epam.http.JdiHttpSettigns.logger;
+import static com.epam.http.JdiHttpSettings.logger;
 
 public class WaitUtils {
 

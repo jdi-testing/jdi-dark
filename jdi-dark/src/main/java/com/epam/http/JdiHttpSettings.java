@@ -10,7 +10,7 @@ import static com.epam.http.logger.LogLevels.parseLogLevel;
 import static com.epam.jdi.tools.PropertyReader.fillAction;
 import static java.util.Arrays.asList;
 
-public class JdiHttpSettigns {
+public class JdiHttpSettings {
     public static String TEST_PROPERTIES_PATH = "test.properties";
     public static ILogger logger = instance("JDI");
     public static Map<String, String> DOMAIN = new HashMap<>();

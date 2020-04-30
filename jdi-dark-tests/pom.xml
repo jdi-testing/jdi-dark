@@ -14,8 +14,6 @@
         <allure.testng>2.7.0</allure.testng>
         <allure.maven>2.10.0</allure.maven>
         <aspectj.version>1.9.1</aspectj.version>
-        <!--suppress UnresolvedMavenProperty -->
-        <profile>${env.BUILD_PROFILE}</profile>
         <suiteXML.file>general.xml</suiteXML.file>
     </properties>
 
@@ -175,11 +173,13 @@
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
             </resource>
-            <resource>
+        </resources>
+        <testResources>
+            <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
     </build>
 
     <reporting>
@@ -200,4 +200,21 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <profiles>
+        <profile>
+            <id>info</id>
+            <properties>
+                <domain>local=http://localhost:8080, trello=https://api.trello.com/1</domain>
+                <log.level>INFO</log.level>
+            </properties>
+        </profile>
+        <profile>
+            <id>debug</id>
+            <properties>
+                <domain>local=http://localhost:8080, trello=https://api.trello.com/1</domain>
+                <log.level>DEBUG</log.level>
+            </properties>
+        </profile>
+    </profiles>
 </project>

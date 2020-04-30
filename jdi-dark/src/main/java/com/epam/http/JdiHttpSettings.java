@@ -1,14 +1,12 @@
 package com.epam.http;
 
 import com.epam.http.logger.ILogger;
-import com.epam.jdi.tools.PropertyReader;
-
 import java.util.*;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 import static com.epam.http.logger.LogLevels.parseLogLevel;
 import static com.epam.jdi.tools.PropertyReader.fillAction;
-import static java.util.Arrays.asList;
+import static com.epam.jdi.tools.PropertyReader.getProperties;
 
 public class JdiHttpSettings {
     public static String TEST_PROPERTIES_PATH = "test.properties";
@@ -28,7 +26,7 @@ public class JdiHttpSettings {
     }
 
     public static void setDomain(String domain) {
-        List<String> params = asList(domain.trim().split(","));
+        String[] params = domain.trim().split(",");
         if (domain.contains("=")) {
             for(String p : params) {
                 String[] pairs = p.split("=");
@@ -44,11 +42,8 @@ public class JdiHttpSettings {
      * Initialize settings from property file
      */
     public static synchronized void init() {
-        Properties properties = PropertyReader.getProperties("pom.properties");
-        PropertyReader.getProperties((properties.size() > 0)
-                ? ( (!properties.getProperty("profile").contains("$")) ? properties.getProperty("profile").concat(".properties") : TEST_PROPERTIES_PATH)
-                : TEST_PROPERTIES_PATH);
-        fillAction(p -> setDomain(p), "domain");
+        getProperties(TEST_PROPERTIES_PATH);
+        fillAction(JdiHttpSettings::setDomain, "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
     }
 }

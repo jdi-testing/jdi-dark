@@ -230,6 +230,9 @@
     <profiles>
         <profile>
             <id>info</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <domain>local=http://localhost:8080, trello=https://api.trello.com/1</domain>
                 <log.level>INFO</log.level>

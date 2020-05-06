@@ -72,7 +72,7 @@ function grubAllureResults() {
     checkBranchIsOk #there is an exit inside
 
     if [[ "x${TRAVIS_BUILD_STAGE_NAME}" == "xTest" ]] ; then #don't remove x, it's useful
-        for result in $(find jdi-dark*/target/allure-results -maxdepth 2 -type d)
+        for result in $(find /allure-results -path jdi-dark*tests/target -maxdepth 1 -type d)
         do
             echo RESULT: ${result}
             archiveFile=$(archive ${result})

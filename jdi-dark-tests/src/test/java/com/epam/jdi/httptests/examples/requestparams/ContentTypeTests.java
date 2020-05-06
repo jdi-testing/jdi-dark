@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.epam.http.requests.RequestDataFacrtory.queryParams;
+import static com.epam.http.requests.RequestDataFactory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.JettyService.getContentTypeAsBody;
 import static com.epam.jdi.services.JettyService.getHeadersWithValues;

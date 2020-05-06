@@ -10,7 +10,7 @@ import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
 import java.util.*;
 
-import static com.epam.http.requests.RequestDataFacrtory.*;
+import static com.epam.http.requests.RequestDataFactory.*;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;

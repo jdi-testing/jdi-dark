@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.http.requests.RequestDataFacrtory.pathParams;
+import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;

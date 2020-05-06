@@ -12,8 +12,8 @@ import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.epam.http.requests.RequestDataFacrtory.pathParams;
-import static com.epam.http.requests.RequestDataFacrtory.requestBody;
+import static com.epam.http.requests.RequestDataFactory.pathParams;
+import static com.epam.http.requests.RequestDataFactory.requestBody;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.TrelloService.boardsPost;
 import static java.lang.String.format;

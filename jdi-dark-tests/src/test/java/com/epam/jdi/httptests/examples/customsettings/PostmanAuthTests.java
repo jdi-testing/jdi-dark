@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.epam.http.requests.RequestDataFacrtory.headers;
+import static com.epam.http.requests.RequestDataFactory.headers;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.PostmanAuth.authBase;
 import static com.epam.jdi.services.PostmanAuth.authBaseForm;

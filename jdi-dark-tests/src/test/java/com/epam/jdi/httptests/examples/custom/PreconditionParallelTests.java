@@ -9,7 +9,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 
-import static com.epam.http.requests.RequestDataFacrtory.pathParams;
+import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;

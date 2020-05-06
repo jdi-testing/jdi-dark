@@ -46,7 +46,7 @@ public class AuthenticationTests {
      *  It will basically populate request with required data.
      */
     @Test
-    public void authBaseTestOverrideCredetialsWithCustomAuthScheme() {
+    public void authBaseTestOverrideCredentialsWithCustomAuthScheme() {
         BasicAuthScheme basic = new BasicAuthScheme();
         basic.setUserName("wrongName");
         basic.setPassword("wrongPassword");

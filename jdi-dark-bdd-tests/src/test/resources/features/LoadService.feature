@@ -5,4 +5,4 @@ Feature: Performance after load check
     Given init service example
     When load service for 20 seconds with 'getMethod' request
     Then performance result doesn't have any fails
-    And average response time is lesser than 2 seconds
+    And the average response time is less than 2 seconds

@@ -11,10 +11,10 @@ import com.epam.jdi.soap.net.yandex.speller.services.spellservice.CheckTextsResp
 @ServiceDomain("http://speller.yandex.net/services/spellservice")
 public class YandexSpeller {
 
-    @POST("")
+    @POST()
     public static SoapMethod<CheckTextRequest, CheckTextResponse> checkText;
 
-    @POST("")
+    @POST()
     public static SoapMethod<CheckTextsRequest, CheckTextsResponse> checkTexts;
 
 }

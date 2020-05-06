@@ -10,27 +10,27 @@ import com.epam.jdi.soap.com.herongyang.service.RegistrationResponse;
 @ServiceDomain("http://www.herongyang.com/Service/")
 public class HerongYangService {
 
-    @POST("")
+    @POST()
     @URL("http://www.herongyang.com/Service/Hello_SOAP_11.php")
     public static SoapMethod<String, String> hello;
 
-    @POST("")
+    @POST()
     @URL("http://www.herongyang.com/Service/Registration.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
     public static SoapMethod<RegistrationRequest, RegistrationResponse> registration;
 
-    @POST("")
+    @POST()
     @URL("http://www.herongyang.com/Service/RefillOrder.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
     public static SoapMethod<RefillOrderRequest, RefillOrderResponse> refillOrder;
 
-    @POST("")
+    @POST()
     @SOAP12
     @URL("http://www.herongyang.com/Service/Registration12.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
     public static SoapMethod<RegistrationRequest, RegistrationResponse> registration12;
 
-    @POST("")
+    @POST()
     @SOAP12
     @URL("http://www.herongyang.com/Service/RefillOrder12.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")

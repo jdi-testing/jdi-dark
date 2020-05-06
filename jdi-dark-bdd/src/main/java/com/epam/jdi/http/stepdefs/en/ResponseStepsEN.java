@@ -46,7 +46,7 @@ public class ResponseStepsEN extends Utils {
         restResponse.get().assertBody(map);
     }
 
-    @And("average response time is lesser than {} seconds")
+    @And("the average response time is less than {} seconds")
     public void averageResponseTime(long seconds) {
         long respTime = performanceResult.get().AverageResponseTime;
         Assertions.assertThat(respTime)

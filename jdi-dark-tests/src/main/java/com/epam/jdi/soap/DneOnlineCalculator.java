@@ -8,20 +8,20 @@ import com.epam.jdi.soap.org.tempuri.*;
 @SOAPNamespace("http://tempuri.org/")
 public class DneOnlineCalculator {
 
-    @POST("")
+    @POST()
     @SOAPAction("http://tempuri.org/Add")
     public static SoapMethod<Add, AddResponse> add;
 
-    @POST("")
+    @POST()
     @SOAPAction("http://tempuri.org/Divide")
     public static SoapMethod<Divide, DivideResponse> divide;
 
-    @POST("")
+    @POST()
     @SOAPAction("http://tempuri.org/Multiply")
     @SOAP12
     public static SoapMethod<Multiply, MultiplyResponse> multiply;
 
-    @POST("")
+    @POST()
     @SOAPAction("http://tempuri.org/Subtract")
     @SOAP12
     public static SoapMethod<Subtract, SubtractResponse> subtract;

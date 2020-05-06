@@ -14,17 +14,17 @@ import com.epam.jdi.soap.com.dataaccess.webservicesserver.NumberToWordsResponse;
 @SOAPNamespace("http://www.dataaccess.com/webservicesserver/")
 public class NumberConversionService {
 
-    @POST("")
+    @POST()
     public static SoapMethod<NumberToWords, NumberToWordsResponse> numberToWords;
 
-    @POST("")
+    @POST()
     public static SoapMethod<NumberToDollars, NumberToDollarsResponse> numberToDollars;
 
-    @POST("")
+    @POST()
     @SOAP12
     public static SoapMethod<NumberToWords, NumberToWordsResponse> numberToWords12;
 
-    @POST("")
+    @POST()
     @SOAP12
     public static SoapMethod<NumberToDollars, NumberToDollarsResponse> numberToDollars12;
 

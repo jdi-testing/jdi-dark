@@ -9,11 +9,11 @@ import com.epam.jdi.soap.https.geoservices_tamu.GeocodeAddressNonParsedResponse;
 @SOAPNamespace("https://geoservices.tamu.edu/")
 public class GeoServices {
 
-    @POST("")
+    @POST()
     @SOAPAction("https://geoservices.tamu.edu/GeocodeAddressNonParsed")
     public static SoapMethod<GeocodeAddressNonParsed, GeocodeAddressNonParsedResponse> geocodeAddressNonParsed;
 
-    @POST("")
+    @POST()
     @SOAP12
     public static SoapMethod<GeocodeAddressNonParsed, GeocodeAddressNonParsedResponse> geocodeAddressNonParsed12;
 

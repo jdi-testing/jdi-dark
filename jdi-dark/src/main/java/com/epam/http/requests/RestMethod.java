@@ -22,6 +22,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
+import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
@@ -203,14 +204,14 @@ public class RestMethod {
         data.contentType = ct.toString();
     }
 
-    //    /**
-//     * Set trustStore parameters to the request.
-//     *
-//     * @param trustStore trustStore
-//     */
+    /**
+    * Set trustStore parameters to the request.
+    *
+    * @param trustStore trustStore
+    */
 
-    public void setTrustStore(TrustStore trustStore) {
-        data.trustStore = new Pair(trustStore.pathToJks(), trustStore.password());
+    void setTrustStore(TrustStore trustStore) {
+        data.trustStore = new Pair<>(trustStore.pathToJks(), trustStore.password());
     }
 
     /**
@@ -218,11 +219,11 @@ public class RestMethod {
      *
      * @param proxyParams proxyParams
      */
-    public void setProxy(Proxy proxyParams) {
+    void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
 
-    public void addMultiPartParams(MultiPart multiPartParams) {
+    void addMultiPartParams(MultiPart multiPartParams) {
         String path = multiPartParams.filePath();
         MultiPartSpecBuilder mpSpecBuilder = new MultiPartSpecBuilder(path.isEmpty() ? "" :
                 new File(path.contains(":") ? path : System.getProperty("user.dir")
@@ -625,4 +626,9 @@ public class RestMethod {
     public String getUrl() {
         return url;
     }
+
+    public MultiPartSpecificationImpl getMultiPartSpec() {
+        return (MultiPartSpecificationImpl) data.multiPartSpecifications.get(0);
+    }
+
 }

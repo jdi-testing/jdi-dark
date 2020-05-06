@@ -6,7 +6,6 @@ import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Product;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 
 import java.util.*;
 
@@ -334,10 +333,10 @@ public class JettyService {
     }
 
     @GET("/{channelName}/item-import/rss/import?source={url}")
-    public static RestMethod getMixedparam;
+    public static RestMethod getMixedParam;
 
     public static RestResponse getMixedParam(Pair<String, String> pathParams, Pair<String, String> queryParams) {
-        return getMixedparam.call(pathParams().add(pathParams).addQueryParams().add(queryParams));
+        return getMixedParam.call(pathParams().add(pathParams).addQueryParams().add(queryParams));
     }
 
     @GET("/{path}.json")
@@ -379,17 +378,17 @@ public class JettyService {
 
     @POST("/multipart/file")
     @MultiPart(controlName = "file", fileName = "myFile")
-    public static RestMethod postMultipartFile;
+    public static RestMethod postMultiPartFile;
 
-    public static RestResponse postMultipartFile(byte[] file) {
-        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
-        return postMultipartFile.call();
+    public static RestResponse postMultiPartFile(byte[] file) {
+        postMultiPartFile.getMultiPartSpec().setContent(file);
+        return postMultiPartFile.call();
     }
 
-    public static RestResponse postMultipartFile(byte[] file, String fileName) {
-        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setContent(file);
-        ((MultiPartSpecificationImpl) postMultipartFile.getData().multiPartSpecifications.get(0)).setFileName(fileName);
-        return postMultipartFile.call();
+    public static RestResponse postMultiPartFile(byte[] file, String fileName) {
+        postMultiPartFile.getMultiPartSpec().setContent(file);
+        postMultiPartFile.getMultiPartSpec().setFileName(fileName);
+        return postMultiPartFile.call();
     }
 
     @POST("/multipart/file")
@@ -397,17 +396,17 @@ public class JettyService {
     public static RestMethod postMultipartFileCar;
 
     @POST("/multipart/text")
-    public static RestMethod postMultipartText;
+    public static RestMethod postMultiPartText;
 
     @GET("/textHTML")
     public static RestMethod getTextHtml;
 
     @POST("multipart/multiple")
-    public static RestMethod postMultipartMultiple;
+    public static RestMethod postMultiPartMultiple;
 
-    public static RestResponse postMultipartMultipleWithFormParamsAndMultiPartBuilders(Map<String, String> formParamsMap,
-                                                                                       MultiPartSpecBuilder... multiPartSpecBuilders) {
-        return postMultipartMultiple.call(rd -> {
+    public static RestResponse postMultiPartMultipleWithFormParamsAndMPBuilders(Map<String, String> formParamsMap,
+                                                                                MultiPartSpecBuilder... multiPartSpecBuilders) {
+        return postMultiPartMultiple.call(rd -> {
             rd.formParams.addAll(formParamsMap);
             Arrays.stream(multiPartSpecBuilders).forEach(rd::setMultiPart);
         });

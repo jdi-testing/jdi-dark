@@ -182,7 +182,7 @@ public class ParamTests extends WithJetty {
         formParamsMap.put("formParam1", StringUtils.EMPTY);
         formParamsMap.put("formParam2", "formParamValue");
 
-        JettyService.postMultipartMultipleWithFormParamsAndMultiPartBuilders(formParamsMap,
+        JettyService.postMultiPartMultipleWithFormParamsAndMPBuilders(formParamsMap,
                 new MultiPartSpecBuilder("juX").controlName("file"),
                 new MultiPartSpecBuilder("body").controlName("string"))
                 .assertThat()

@@ -85,7 +85,7 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
-     * Set multipart parameters to request data.
+     * Add multipart spec to request data.
      *
      * @param multiPartSpecBuilder MultiPartSpecBuilder
      */
@@ -96,7 +96,7 @@ public class RequestData extends DataClass<RequestData> {
 
     /**
      * Set authentication scheme to request data
-     * This allows authentcation for requests
+     * This allows authentication for requests
      *
      * @param authScheme authentication scheme: from restassured or custom
      */

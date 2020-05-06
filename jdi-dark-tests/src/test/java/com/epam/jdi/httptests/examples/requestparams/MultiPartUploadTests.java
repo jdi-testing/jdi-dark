@@ -18,29 +18,30 @@ public class MultiPartUploadTests extends WithJetty {
     }
 
     @Test
-    public void multiPartUploadingWorksForByteArrays() throws Exception {
+    public void multiPartByteArrays() throws Exception {
         final byte[] bytes = IOUtils.toByteArray(getClass().getResourceAsStream("/car-records.xsd"));
-        JettyService.postMultipartFile(bytes).assertThat()
+        JettyService.postMultiPartFile.withMultiPartContent(bytes).call().assertThat()
+                .statusCode(200)
+                .body(is(new String(bytes)));
+    }
+
+
+    @Test
+    public void multiPartFilePredefined() throws Exception {
+        final byte[] bytes = IOUtils.toByteArray(getClass().getResourceAsStream("/car-records.xsd"));
+        JettyService.postMultipartFileCar.call().assertThat()
                 .statusCode(200)
                 .body(is(new String(bytes)));
     }
 
     @Test
-    public void multiPartUploadingWorksForMultipleStrings() {
-        JettyService.postMultipartText.call(rd -> {
+    public void multiPartMultipleStrings() {
+        JettyService.postMultiPartText.call(rd -> {
             rd.setMultiPart(new MultiPartSpecBuilder("Some text").controlName("text"));
             rd.setMultiPart(new MultiPartSpecBuilder("Some other text").controlName("text"));
         }).assertThat()
                 .statusCode(200)
                 .body(is("Some text,Some other text"));
-    }
-
-    @Test
-    public void multiPartFileUploadingPredefined() throws Exception {
-        final byte[] bytes = IOUtils.toByteArray(getClass().getResourceAsStream("/car-records.xsd"));
-        JettyService.postMultipartFileCar.call().assertThat()
-                .statusCode(200)
-                .body(is(new String(bytes)));
     }
 
 }

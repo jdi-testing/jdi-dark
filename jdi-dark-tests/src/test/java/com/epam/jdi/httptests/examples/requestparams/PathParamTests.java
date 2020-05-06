@@ -117,7 +117,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void mixingUnnamedPathParametersAndQueryParametersWorks() {
-        RestResponse response = getMixedparam.callWithNamedParams("games", "http://myurl.com");
+        RestResponse response = getMixedParam.callWithNamedParams("games", "http://myurl.com");
         response.assertThat().statusCode(404);
     }
 

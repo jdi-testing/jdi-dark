@@ -22,7 +22,9 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
+import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
+import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -203,14 +205,14 @@ public class RestMethod {
         data.contentType = ct.toString();
     }
 
-    //    /**
-//     * Set trustStore parameters to the request.
-//     *
-//     * @param trustStore trustStore
-//     */
+    /**
+    * Set trustStore parameters to the request.
+    *
+    * @param trustStore trustStore
+    */
 
-    public void setTrustStore(TrustStore trustStore) {
-        data.trustStore = new Pair(trustStore.pathToJks(), trustStore.password());
+    void setTrustStore(TrustStore trustStore) {
+        data.trustStore = new Pair<>(trustStore.pathToJks(), trustStore.password());
     }
 
     /**
@@ -218,11 +220,11 @@ public class RestMethod {
      *
      * @param proxyParams proxyParams
      */
-    public void setProxy(Proxy proxyParams) {
+    void setProxy(Proxy proxyParams) {
         data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
     }
 
-    public void addMultiPartParams(MultiPart multiPartParams) {
+    void addMultiPartParams(MultiPart multiPartParams) {
         String path = multiPartParams.filePath();
         MultiPartSpecBuilder mpSpecBuilder = new MultiPartSpecBuilder(path.isEmpty() ? "" :
                 new File(path.contains(":") ? path : System.getProperty("user.dir")
@@ -242,7 +244,8 @@ public class RestMethod {
     public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
-            maps.addAll(rd.fields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+            maps.addAll(rd.fields().filter((k, v) -> !k.equals("multiPartSpecifications") && !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+            rd.multiPartSpecifications.forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
         return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
@@ -624,5 +627,19 @@ public class RestMethod {
 
     public String getUrl() {
         return url;
+    }
+
+    public MultiPartSpecificationImpl getMultiPartSpec() {
+        return (MultiPartSpecificationImpl) data.multiPartSpecifications.get(0);
+    }
+
+    public RestMethod withMultiPartContent(Object multiPartContent) {
+        getMultiPartSpec().setContent(multiPartContent);
+        return this;
+    }
+
+    public RestMethod withMultiPartSpec(MultiPartSpecification multiPartSpec) {
+        data.multiPartSpecifications.set(0,  multiPartSpec);
+        return this;
     }
 }

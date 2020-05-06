@@ -118,9 +118,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
-                    <systemPropertyVariables>
-                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
-                    </systemPropertyVariables>
+<!--                    <systemPropertyVariables>-->
+<!--                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>-->
+<!--                    </systemPropertyVariables>-->
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/${suiteXML.file}</suiteXmlFile>
                     </suiteXmlFiles>
@@ -153,7 +153,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/allure-results</outputDirectory>
+                            <outputDirectory>allure-results</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/test/resources/</directory>
@@ -190,9 +190,9 @@
                 <artifactId>allure-maven</artifactId>
                 <version>LATEST</version>
                 <configuration>
-                    <properties>
-                        <allure.results.directory>target/allure-results</allure.results.directory>
-                    </properties>
+<!--                    <properties>-->
+<!--                        <allure.results.directory>target/allure-results</allure.results.directory>-->
+<!--                    </properties>-->
                     <properties>
                         <allure.link.issue.pattern>https://example.org/issue/{}</allure.link.issue.pattern>
                     </properties>

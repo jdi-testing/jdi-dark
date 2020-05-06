@@ -16,7 +16,6 @@
         <aspectj.version>1.9.1</aspectj.version>
         <suiteXML.file>general.xml</suiteXML.file>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.wealdtech.hawk</groupId>
@@ -71,6 +70,33 @@
             <artifactId>assertj-core</artifactId>
             <version>3.15.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <version>2.2.4.RELEASE</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>1.13.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>1.13.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>1.13.1</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -15,7 +15,7 @@ import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static io.restassured.http.ContentType.URLENC;
 
-@ServiceDomain("http://localhost:8080")
+@ServiceDomain("${local}")
 public class JettyService {
 
     @GET("/multiCookie")

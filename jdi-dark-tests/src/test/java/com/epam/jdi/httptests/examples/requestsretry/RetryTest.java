@@ -2,12 +2,15 @@ package com.epam.jdi.httptests.examples.requestsretry;
 
 import com.epam.jdi.services.RetryingService;
 import com.epam.jdi.httptests.support.WithRetryService;
+import org.sonatype.aether.ConfigurationProperties;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 
+
 public class RetryTest extends WithRetryService {
+
 
     @BeforeClass
     public void serviceInit() {

@@ -1,12 +1,14 @@
 package com.epam.http;
 
 import com.epam.http.logger.ILogger;
+import com.epam.jdi.tools.PropertyReader;
+
 import java.util.*;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 import static com.epam.http.logger.LogLevels.parseLogLevel;
 import static com.epam.jdi.tools.PropertyReader.fillAction;
-import static com.epam.jdi.tools.PropertyReader.getProperties;
+import static java.util.Arrays.asList;
 
 public class JdiHttpSettings {
     public static String TEST_PROPERTIES_PATH = "test.properties";
@@ -26,7 +28,7 @@ public class JdiHttpSettings {
     }
 
     public static void setDomain(String domain) {
-        String[] params = domain.trim().split(",");
+        List<String> params = asList(domain.trim().split(","));
         if (domain.contains("=")) {
             for(String p : params) {
                 String[] pairs = p.split("=");
@@ -42,8 +44,13 @@ public class JdiHttpSettings {
      * Initialize settings from property file
      */
     public static synchronized void init() {
-        getProperties(TEST_PROPERTIES_PATH);
-        fillAction(JdiHttpSettings::setDomain, "domain");
+        Properties properties = PropertyReader.getProperties("pom.properties");
+        System.out.println("---"+properties.getProperty("profile"));
+        PropertyReader.getProperties((properties.size() > 0)
+                ? ( (!properties.getProperty("profile").contains("$")) ? properties.getProperty("profile").concat(".properties") : TEST_PROPERTIES_PATH)
+                : TEST_PROPERTIES_PATH);
+        System.out.println("!---"+properties.getProperty("profile").concat(".properties") );
+        fillAction(p -> setDomain(p), "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
     }
 }

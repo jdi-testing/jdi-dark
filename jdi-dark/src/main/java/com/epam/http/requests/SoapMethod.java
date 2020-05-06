@@ -17,7 +17,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RequestDataFacrtory.headers;
+import static com.epam.http.requests.RequestDataFactory.headers;
 import static com.epam.jdi.tools.ReflectionUtils.getGenericTypes;
 
 public class SoapMethod<T, S> extends RestMethod {

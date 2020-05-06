@@ -8,7 +8,7 @@ import com.epam.jdi.dto.*;
 
 import java.util.List;
 
-import static com.epam.http.requests.RequestDataFacrtory.pathParams;
+import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static io.restassured.http.ContentType.JSON;
 import static java.util.Arrays.asList;
 

@@ -10,8 +10,8 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestDataFacrtory.cookies;
-import static com.epam.http.requests.RequestDataFacrtory.requestData;
+import static com.epam.http.requests.RequestDataFactory.cookies;
+import static com.epam.http.requests.RequestDataFactory.requestData;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.ServiceExample.getInfo;
 import static io.restassured.RestAssured.given;

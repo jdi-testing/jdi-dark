@@ -5,8 +5,8 @@ import com.epam.jdi.services.TrelloService;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.RequestDataFacrtory.pathParams;
-import static com.epam.http.requests.RequestDataFacrtory.queryParams;
+import static com.epam.http.requests.RequestDataFactory.pathParams;
+import static com.epam.http.requests.RequestDataFactory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.TrelloService.*;
 import static org.testng.Assert.assertEquals;
@@ -18,9 +18,9 @@ import static org.testng.Assert.assertTrue;
 public class ErrorMessageTrelloTests {
 
     public static final String INVALID_BOARD_ID = "456";
-    public static final String NOT_EXISTS_BOARD_ID = "5a27e3b62fef5d3a74dca59a";
+    public static final String NON_EXISTENT_BOARD_ID = "5a27e3b62fef5d3a74dca59a";
     public static final String CARD_UNIQUE_ID = "5a27e722e2f04f3ab6924931";
-    public static final String NOT_EXISTS_CARD_ID = "5a27e722e2f04f3ab6924991";
+    public static final String NON_EXISTENT_CARD_ID = "5a27e722e2f04f3ab6924991";
     public static final int NOT_FOUND_CODE = 404;
     public static final int ERROR_CODE = 400;
 
@@ -32,7 +32,7 @@ public class ErrorMessageTrelloTests {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void getBoardByNotExistsId() {
-        RestResponse response = getBoardById.call(pathParams().add("board_id", NOT_EXISTS_BOARD_ID));
+        RestResponse response = getBoardById.call(pathParams().add("board_id", NON_EXISTENT_BOARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
         assertEquals(response.getBody(), "The requested resource was not found.");
@@ -66,7 +66,7 @@ public class ErrorMessageTrelloTests {
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void deleteNotExistsCardFromBoard() {
         RestResponse response = deleteACardFromBoard
-                .call(queryParams().add("card_id", NOT_EXISTS_CARD_ID));
+                .call(queryParams().add("card_id", NON_EXISTENT_CARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
         assertTrue(response.getBody().contains("Cannot DELETE"));

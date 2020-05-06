@@ -10,7 +10,7 @@ import io.restassured.builder.MultiPartSpecBuilder;
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
-public class RequestDataFacrtory {
+public class RequestDataFactory {
 
     //Collections
     public static CookieUpdater cookies() { return new CookieUpdater(); }

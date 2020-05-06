@@ -6,7 +6,7 @@
     },
     {
       "name": "log.level",
-      "description": "Whether to enable storage of audit events.",
+      "description": "Setting project logging level",
       "values": [
         "INFO ",
         "DEBUG",

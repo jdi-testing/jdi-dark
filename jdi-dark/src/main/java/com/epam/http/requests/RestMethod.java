@@ -1,6 +1,7 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.MultiPart;
+import com.epam.http.annotations.MultiPartFile;
 import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
@@ -25,6 +26,7 @@ import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,6 +223,12 @@ public class RestMethod {
 
     public void addMultiPartParams(MultiPart multiPartParams) {
         data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
+    }
+
+    public void addMultiPartFile(MultiPartFile multiPartParams) {
+        String path = multiPartParams.filePath().trim();
+        data.multiPartSpecifications.add(new MultiPartSpecBuilder(new File(path.contains(":") ? path : System.getProperty("user.dir")
+                .concat(path.startsWith("/") ? "" : "/").concat(path))).build());
     }
 
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;

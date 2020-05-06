@@ -392,6 +392,10 @@ public class JettyService {
         return postMultipartFile.call();
     }
 
+    @POST("/multipart/file")
+    @MultiPartFile(filePath = "/src/test/resources/car-records.xsd")
+    public static RestMethod postMultipartFileCar;
+
     @POST("/multipart/text")
     public static RestMethod postMultipartText;
 

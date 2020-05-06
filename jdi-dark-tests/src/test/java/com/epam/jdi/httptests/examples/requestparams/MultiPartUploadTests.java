@@ -34,4 +34,13 @@ public class MultiPartUploadTests extends WithJetty {
                 .statusCode(200)
                 .body(is("Some text,Some other text"));
     }
+
+    @Test
+    public void multiPartFileUploadingPredefined() throws Exception {
+        final byte[] bytes = IOUtils.toByteArray(getClass().getResourceAsStream("/car-records.xsd"));
+        JettyService.postMultipartFileCar.call().assertThat()
+                .statusCode(200)
+                .body(is(new String(bytes)));
+    }
+
 }

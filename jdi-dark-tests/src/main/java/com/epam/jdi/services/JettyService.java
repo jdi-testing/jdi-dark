@@ -393,7 +393,7 @@ public class JettyService {
     }
 
     @POST("/multipart/file")
-    @MultiPartFile(filePath = "/src/test/resources/car-records.xsd")
+    @MultiPart(filePath = "/src/test/resources/car-records.xsd")
     public static RestMethod postMultipartFileCar;
 
     @POST("/multipart/text")

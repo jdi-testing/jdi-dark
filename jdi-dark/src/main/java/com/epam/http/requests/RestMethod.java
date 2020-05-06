@@ -1,7 +1,6 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.MultiPart;
-import com.epam.http.annotations.MultiPartFile;
 import com.epam.http.annotations.Proxy;
 import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
@@ -222,13 +221,17 @@ public class RestMethod {
     }
 
     public void addMultiPartParams(MultiPart multiPartParams) {
-        data.multiPartSpecifications.add(new MultiPartSpecBuilder("").controlName(multiPartParams.controlName()).fileName(multiPartParams.fileName()).build());
-    }
-
-    public void addMultiPartFile(MultiPartFile multiPartParams) {
-        String path = multiPartParams.filePath().trim();
-        data.multiPartSpecifications.add(new MultiPartSpecBuilder(new File(path.contains(":") ? path : System.getProperty("user.dir")
-                .concat(path.startsWith("/") ? "" : "/").concat(path))).build());
+        String path = multiPartParams.filePath();
+        MultiPartSpecBuilder mpSpecBuilder = new MultiPartSpecBuilder(path.isEmpty() ? "" :
+                new File(path.contains(":") ? path : System.getProperty("user.dir")
+                .concat(path.startsWith("/") ? "" : "/").concat(path)));
+        if (!multiPartParams.controlName().isEmpty())
+            mpSpecBuilder.controlName(multiPartParams.controlName());
+        if (!multiPartParams.fileName().isEmpty())
+            mpSpecBuilder.fileName(multiPartParams.fileName());
+        if (!multiPartParams.mimeType().isEmpty())
+            mpSpecBuilder.mimeType(multiPartParams.mimeType());
+        data.multiPartSpecifications.add(mpSpecBuilder.build());
     }
 
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;

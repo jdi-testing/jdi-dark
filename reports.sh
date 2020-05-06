@@ -155,6 +155,6 @@ function deployToNetlify() {
 function exitWithError() {
     echo "${URL_NOT_FOUND_ERROR_MESSAGE}"
     sleep 3
-    exit 1
+    exit 0
 }
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`

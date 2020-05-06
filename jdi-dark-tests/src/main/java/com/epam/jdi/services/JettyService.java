@@ -380,11 +380,6 @@ public class JettyService {
     @MultiPart(controlName = "file", fileName = "myFile")
     public static RestMethod postMultiPartFile;
 
-    public static RestResponse postMultiPartFile(byte[] file) {
-        postMultiPartFile.getMultiPartSpec().setContent(file);
-        return postMultiPartFile.call();
-    }
-
     public static RestResponse postMultiPartFile(byte[] file, String fileName) {
         postMultiPartFile.getMultiPartSpec().setContent(file);
         postMultiPartFile.getMultiPartSpec().setFileName(fileName);

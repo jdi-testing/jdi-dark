@@ -24,6 +24,7 @@ import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
+import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -243,7 +244,8 @@ public class RestMethod {
     public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
-            maps.addAll(rd.fields().filter((k, v) -> !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+            maps.addAll(rd.fields().filter((k, v) -> !k.equals("multiPartSpecifications") && !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+            rd.multiPartSpecifications.forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
         return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
@@ -631,4 +633,13 @@ public class RestMethod {
         return (MultiPartSpecificationImpl) data.multiPartSpecifications.get(0);
     }
 
+    public RestMethod withMultiPartContent(Object multiPartContent) {
+        getMultiPartSpec().setContent(multiPartContent);
+        return this;
+    }
+
+    public RestMethod withMultiPartSpec(MultiPartSpecification multiPartSpec) {
+        data.multiPartSpecifications.set(0,  multiPartSpec);
+        return this;
+    }
 }

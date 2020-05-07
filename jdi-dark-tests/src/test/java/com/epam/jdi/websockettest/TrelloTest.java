@@ -30,7 +30,7 @@ public class TrelloTest {
     }
 
     @Test
-    private void checkMessages() throws IOException, InterruptedException, DeploymentException, URISyntaxException {
+    public void checkMessages() throws IOException, InterruptedException, DeploymentException, URISyntaxException {
         RestResponse restResponse = membersMeGet.call();
         token = restResponse.getRaResponse().jsonPath().getString("id");
 

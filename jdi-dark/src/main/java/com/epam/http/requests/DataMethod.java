@@ -11,7 +11,7 @@ public class DataMethod<T> extends RestMethod {
     public DataMethod(Field field) {
         this.cl = (Class<T>) getGenericType(field);
     }
-    public T callObject(T object) {
+    public T callObject(Object object) {
         try {
             return call(rd -> rd.body = object).asData(cl);
         } catch (Exception ex) {

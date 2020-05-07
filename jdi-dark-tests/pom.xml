@@ -29,6 +29,11 @@
             <version>1.0.3</version>
         </dependency>
         <dependency>
+            <groupId>com.epam.jdi</groupId>
+            <artifactId>jdi-dark-ws</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.0.0</version>
@@ -36,7 +41,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.10.4</version>
+            <version>2.11.0</version>
         </dependency>
         <!--Allure config in parent-->
         <dependency>

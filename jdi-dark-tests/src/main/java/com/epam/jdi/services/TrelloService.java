@@ -52,6 +52,9 @@ public class TrelloService {
     @GET("/members")
     public static RestMethod membersGet;
 
+    @GET("/members/me")
+    public static RestMethod membersMeGet;
+
     @ContentType(JSON)
     @DELETE("/cards")
     public static RestMethod deleteACardFromBoard;

@@ -18,13 +18,12 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
 public class PreconditionParallelTests {
-    private ArrayList<String> createdBoardsId = new ArrayList<String>();
-    public TrelloService service;
+    private ArrayList<String> createdBoardsId = new ArrayList<>();
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
 
     @BeforeClass
     public void initService() throws IOException {
-        service = init(TrelloService.class);
+        init(TrelloService.class);
         new FileWriter(CSV_DATA_FILE, false).close();
     }
 
@@ -40,22 +39,22 @@ public class PreconditionParallelTests {
     @Test(dataProvider = "createNewBoards", threadPoolSize = 3)
     public void createCardInBoard(Board board) throws IOException {
         //Create board
-        Board createdBoard = service.createBoard(board);
+        Board createdBoard = TrelloService.createBoard(board);
 
-        Board gotBoard = service.getBoard(createdBoard.id);
+        Board gotBoard = TrelloService.getBoard(createdBoard.id);
         createdBoardsId.add(createdBoard.id);
         assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
 
         //Create list
         TrelloList tList = generateList(createdBoard);
-        TrelloList createdList = service.createList(tList);
+        TrelloList createdList = TrelloService.createList(tList);
 
         //Create Card
         Card card = generateCard(createdBoard, createdList);
-        Card createdCard = service.addNewCardToBoard(card);
+        Card createdCard = TrelloService.addNewCardToBoard(card);
 
         //Check that card was added
-        Board cardBoard = service.getCardBoard(createdCard.id);
+        Board cardBoard = TrelloService.getCardBoard(createdCard.id);
         assertEquals(cardBoard.name, board.name, "Card wasn't added to board");
 
         writeToCSV(cardBoard);
@@ -76,7 +75,7 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        service.getBoardById.call(pathParams().add("board_id", boardId))
+        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
                 .body("url", equalTo(expectedUrl));

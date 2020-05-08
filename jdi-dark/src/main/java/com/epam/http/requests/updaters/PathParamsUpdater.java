@@ -1,11 +1,12 @@
 package com.epam.http.requests.updaters;
 
 import com.epam.http.ExceptionHandler;
+import com.epam.http.annotations.Method;
 import com.epam.http.requests.RequestData;
 import com.epam.jdi.tools.func.JFunc;
 import com.epam.jdi.tools.pairs.Pair;
 
-public class PathParamsUpdater extends SpecUpdater<com.epam.http.annotations.Method, Pair<String, String>> {
+public class PathParamsUpdater extends SpecUpdater<Method, Pair<String, String>> {
 
     public PathParamsUpdater() {
         this(RequestData::new);

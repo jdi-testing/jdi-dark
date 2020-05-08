@@ -13,10 +13,8 @@ import static io.restassured.http.ContentType.JSON;
 @ServiceDomain("https://httpbin.org/")
 public class ServiceExample {
     @ContentType(JSON) @GET("/get")
-    @Headers({
-        @Header(name = "Name", value = "Roman"),
-        @Header(name = "Id", value = "Test")
-    })
+    @Header(name = "Name", value = "Roman")
+    @Header(name = "Id", value = "Test")
     public static RestMethod getInfo;
 
     public static Info getInfo() {
@@ -38,10 +36,8 @@ public class ServiceExample {
     @ContentType(HTML) @GET("/html")
     public RestMethod getHTMLMethod;
 
-    @Cookies({
-            @Cookie(name = "session_id", value = "1234"),
-            @Cookie(name = "hello", value = "world")
-    })
+    @Cookie(name = "session_id", value = "1234")
+    @Cookie(name = "hello", value = "world")
     @GET("/cookies")
     public RestMethod getCookies;
 

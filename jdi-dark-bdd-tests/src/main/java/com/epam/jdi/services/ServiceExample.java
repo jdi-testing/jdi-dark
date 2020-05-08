@@ -9,10 +9,8 @@ import static io.restassured.http.ContentType.JSON;
 public class ServiceExample {
     @ContentType(JSON)
     @GET("/get")
-    @Headers({
-            @Header(name = "Name", value = "Roman"),
-            @Header(name = "Id", value = "Test")
-    })
+    @Header(name = "Name", value = "Roman")
+    @Header(name = "Id", value = "Test")
     RestMethod getMethod;
 
     @ContentType(JSON)

@@ -1,6 +1,5 @@
 package com.epam.http.requests.updaters;
 
-
 import com.epam.http.requests.RequestData;
 import com.epam.jdi.tools.func.JFunc;
 import io.restassured.http.Cookie;

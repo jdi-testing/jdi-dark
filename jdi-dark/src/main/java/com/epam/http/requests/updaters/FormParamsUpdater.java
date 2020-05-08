@@ -1,11 +1,11 @@
 package com.epam.http.requests.updaters;
 
-
+import com.epam.http.annotations.FormParameter;
 import com.epam.http.requests.RequestData;
 import com.epam.jdi.tools.func.JFunc;
 import com.epam.jdi.tools.pairs.Pair;
 
-public class FormParamsUpdater extends SpecUpdater<com.epam.http.annotations.FormParameter, Pair<String, String>> {
+public class FormParamsUpdater extends SpecUpdater<FormParameter, Pair<String, String>> {
     public FormParamsUpdater() { this(RequestData::new); }
     public FormParamsUpdater(JFunc<RequestData> dataFunc) {
         super(

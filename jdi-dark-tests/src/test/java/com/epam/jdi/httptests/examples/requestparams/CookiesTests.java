@@ -248,7 +248,7 @@ public class CookiesTests extends WithJetty {
     @Test
     public void supportsMultipleCookiesWithDifferentAnnotation() {
         RestResponse response = JettyService.getMultiCookieWithManyCookies.call();
-        assertThat(response.getBody(), equalTo("[{\"key4\":\"value4\"},{\"key1\":\"value1\"},{\"key1\":\"value2\"},{\"key2\":\"\"},{\"key3\":\"value3\"}]"));
+        assertThat(response.getBody(), equalTo("[{\"key1\":\"value1\"},{\"key1\":\"value2\"},{\"key2\":\"\"},{\"key3\":\"value3\"},{\"key4\":\"value4\"}]"));
     }
 
     @Test

@@ -64,8 +64,8 @@ public class JettyService {
     }
 
     @GET("/cookie")
-    @Cookies({@Cookie(name = "username", value = "John"),
-            @Cookie(name = "token", value = "1234")})
+    @Cookie(name = "username", value = "John")
+    @Cookie(name = "token", value = "1234")
     public static RestMethod getCookieWithCookies;
 
     public static RestResponse getCookieWithNameValuePair(String name, String value) {
@@ -205,10 +205,8 @@ public class JettyService {
     @GET("/secured/hello")
     public static RestMethod getSecuredHello;
 
-    @QueryParameters({
-            @QueryParameter(name = "firstName", value = "John"),
-            @QueryParameter(name = "lastName", value = "Doe")
-    })
+    @QueryParameter(name = "firstName", value = "John")
+    @QueryParameter(name = "lastName", value = "Doe")
     @GET("/greetXML")
     public static RestMethod getGreetXml;
 
@@ -273,9 +271,7 @@ public class JettyService {
     }
 
     @POST("/noValueParam")
-    @FormParameters(
-            @FormParameter(name = "some1", value = "one")
-    )
+    @FormParameter(name = "some1", value = "one")
     public static RestMethod postNoValueParamWithPreDefinedFormParam;
 
     public static RestResponse postNoValueParamWithPreDefinedFormParamAndNewKeyValueParam(
@@ -370,9 +366,9 @@ public class JettyService {
     public static RestMethod getMultiCookieWithCookies;
 
     @GET("/multiCookieRequest")
-    @Cookies({@Cookie(name = "key1", value = "value1", additionalValues = "value2"),
-            @Cookie(name = "key2"),
-            @Cookie(name = "key3", value = "value3")})
+    @Cookie(name = "key1", value = "value1", additionalValues = "value2")
+    @Cookie(name = "key2")
+    @Cookie(name = "key3", value = "value3")
     @Cookie(name = "key4", value = "value4")
     public static RestMethod getMultiCookieWithManyCookies;
 

@@ -28,13 +28,11 @@ import static java.lang.String.format;
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
 public class RestResponse {
-    public static final String STRING_EMPTY ="";
     private final Response raResponse;
     private final long responseTimeMSec;
     private String body = null;
     private ResponseStatus status = null;
     private String contentType = "";
-
 
     public ResponseStatus getResponseStatus(){
         return status;
@@ -48,12 +46,8 @@ public class RestResponse {
     }
 
     public RestResponse(Response raResponse) {
-        this(raResponse, 0);
-    }
-
-    public RestResponse(Response raResponse, long time) {
         this.raResponse = raResponse;
-        responseTimeMSec = time;
+        responseTimeMSec = raResponse.getTime();
         body = raResponse.body().asString();
         status = new ResponseStatus(raResponse);
         contentType = raResponse.contentType();
@@ -126,7 +120,7 @@ public class RestResponse {
 
 
     public ValidatableResponse isEmpty() {
-        return validate(r -> STRING_EMPTY.equals(body));
+        return validate(r -> body.isEmpty());
     }
 
     /**
@@ -258,7 +252,7 @@ public class RestResponse {
             errors += format("Wrong status type %s. Expected: %s", status.type, rs.type) + LINE_BREAK;
         if (!status.text.equals(rs.text))
             errors += format("Wrong status text %s. Expected: %s", status.text, rs.text);
-        if (!STRING_EMPTY.equals(errors))
+        if (!errors.isEmpty())
             throw exception(errors);
         return this;
     }

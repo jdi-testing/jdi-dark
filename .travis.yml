@@ -1,60 +1,54 @@
 language: java
+jdk:
+- openjdk8
 before_install:
-    - sudo apt-get -y install jq
-    - java -Xmx32m -version
-before_script:
-    - ls -lah
-addons:
-    apt:
-        packages:
-        - openjdk-8-jdk
+- sudo apt-get -y install jq
+
 env:
-    global:
-        - HTTP_TESTS="com.epam.jdi:jdi-dark-tests"
-        - BDD_TESTS="com.epam.jdi:jdi-dark-bdd-tests"
-        - JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
-        - PATH="$JAVA_HOME/bin:$PATH"
+  global:
+  - HTTP_TESTS="com.epam.jdi:jdi-dark-tests"
+  - BDD_TESTS="com.epam.jdi:jdi-dark-bdd-tests"
 
 stages:
-    - prepare
-    - compile
-    - test
-    - reports
+- prepare
+- compile
+- test
+- reports
 
 jobs:
   include:
-    - stage: prepare
-      name: Welcome to jdi
-      script:
-        - echo ------------------- WELCOME TO JDI DARK ----------------------
-        - mvn --version #it is helpful
+  - stage: prepare
+    name: Welcome to jdi
+    script:
+    - echo ------------------- WELCOME TO JDI DARK ----------------------
+    - mvn --version #it is helpful
 
-    - stage: compile
-      name: Compile jdi code
-      script:
-        - mvn install -DskipTests -q || travis_terminate 1
-        - mvn versions:use-latest-releases
+  - stage: compile
+    name: Compile jdi code
+    script:
+    - mvn install -DskipTests -q || travis_terminate 1
+    - mvn versions:use-latest-releases
 
-    - stage: test
-      name: Run tests - http
-      script:
-        - mvn install -DskipTests -q || travis_terminate 1
-        - mvn verify -pl $HTTP_TESTS
+  - stage: test
+    name: Run tests - http
+    script:
+      - mvn install -DskipTests -q || travis_terminate 1
+      - mvn verify -pl $HTTP_TESTS
 
-    - stage: test
-      name: Run tests - bdd
-      script:
-        - mvn install -DskipTests -q || travis_terminate 1
-        - mvn verify -pl $BDD_TESTS
+  - stage: test
+    name: Run tests - bdd
+    script:
+      - mvn install -DskipTests -q || travis_terminate 1
+      - mvn verify -pl $BDD_TESTS
 
-    - stage: reports
-      name: Deploy allure reports to netlify
-      script:
-        - npm install -g allure-commandline
-        - npm install -g netlify-cli
-        - allure --version
-        - source reports.sh
-        - deployAllureResults
+  - stage: reports
+    name: Deploy allure reports to netlify
+    script:
+    - npm install -g allure-commandline
+    - npm install -g netlify-cli
+    - allure --version
+    - source reports.sh
+    - deployAllureResults
 after_failure:
   - echo "Build was failed"
 after_success:

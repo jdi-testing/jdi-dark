@@ -12,6 +12,8 @@ env:
     global:
         - HTTP_TESTS="com.epam.jdi:jdi-dark-tests"
         - BDD_TESTS="com.epam.jdi:jdi-dark-bdd-tests"
+        - JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+        - PATH="$JAVA_HOME/bin:$PATH"
 
 stages:
     - prepare

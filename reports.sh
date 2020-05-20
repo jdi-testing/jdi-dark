@@ -74,7 +74,7 @@ function grubAllureResults() {
     checkBranchIsOk #there is an exit inside
 
     if [[ "x${TRAVIS_BUILD_STAGE_NAME}" == "xTest" ]] ; then #don't remove x, it's useful
-        for result in $(find jdi-dark*tests/allure-results -maxdepth 1 -type d)
+        for result in $(find jdi-dark*tests/target/allure-report -maxdepth 1 -type d)
         do
             echo RESULT: ${result}
             archiveFile=$(archive ${result})
@@ -136,8 +136,8 @@ function generateAllureReports() {
     for report in $(ls -d1 jdi-dark*/)
     do
         allureDirExistence=true
-        allureDir="${report}/allure-results"
-        echo "First report=${report}"
+        allureDir="${report}/target/allure-report"
+        echo "Name of the report is: ${report}"
         if [[ -d "$allureDir" ]] ; then
             echo "Results found for ${report}"
             reportDirList="${reportDirList} ${allureDir}"

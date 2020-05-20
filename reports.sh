@@ -113,6 +113,7 @@ function downloadAllureResults() {
         urlExistence=true
         echo "Found: ${url}"
         fileName="$(echo "${url}"| awk -F/ '{print $5}')"
+        echo "filename=${fileName}"
         curl ${url} --output ${fileName}
     done
     if [[ "x${urlExistence}" == "xfalse" ]] ; then
@@ -137,8 +138,7 @@ function generateAllureReports() {
     do
         allureDirExistence=true
         allureDir="${report}/target/allure-report"
-        echo "Name of the report is: ${report}"
-        if [[ -d "$allureDir" ]] ; then
+        if [[ -d "${allureDir}" ]] ; then
             echo "Results found for ${report}"
             reportDirList="${reportDirList} ${allureDir}"
         else

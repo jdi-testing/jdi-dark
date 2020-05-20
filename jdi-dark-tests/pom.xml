@@ -11,7 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <allure.testng>2.13.1</allure.testng>
+        <allure.testng>2.7.0</allure.testng>
         <allure.maven>2.10.0</allure.maven>
         <aspectj.version>1.9.1</aspectj.version>
         <suiteXML.file>general.xml</suiteXML.file>

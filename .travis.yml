@@ -1,19 +1,23 @@
 language: java
-jdk:
-  - openjdk8
 before_install:
-  - sudo apt-get -y install jq
-
+    - sudo apt-get -y install jq
+    - java -Xmx32m -version
+before_script:
+    - ls -lah
+addons:
+    apt:
+        packages:
+        - openjdk-8-jdk
 env:
-  global:
-  - HTTP_TESTS="com.epam.jdi:jdi-dark-tests"
-  - BDD_TESTS="com.epam.jdi:jdi-dark-bdd-tests"
+    global:
+        - HTTP_TESTS="com.epam.jdi:jdi-dark-tests"
+        - BDD_TESTS="com.epam.jdi:jdi-dark-bdd-tests"
 
 stages:
-  - prepare
-  - compile
-  - test
-  - reports
+    - prepare
+    - compile
+    - test
+    - reports
 
 jobs:
   include:

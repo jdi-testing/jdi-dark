@@ -56,6 +56,7 @@ function aboutNetlify() {
 }
 
 function checkBranchIsOk() {
+    echo "Check branch is ok"
     if [[ "x${TRAVIS_PULL_REQUEST}" == "xfalse" ]] ; then
         echo "${BRANCH_ERROR_MESSAGE}"
         sleep 3
@@ -104,6 +105,7 @@ function deployAllureResults() {
 }
 
 function downloadAllureResults() {
+    echo "Download Allure results"
     urlExistence=false
     for url in $(collectRelevantComments "${TRAVIS_BUILD_NUMBER}")
     do
@@ -118,6 +120,7 @@ function downloadAllureResults() {
 }
 
 function extractAllureResults() {
+    echo "Extract Allure results"
     for archiveFile in $(ls -1 *.tar.gz)
     do
         extractArchive ${archiveFile}
@@ -125,6 +128,7 @@ function extractAllureResults() {
 }
 
 function generateAllureReports() {
+    echo "Generate Allure reports"
     reportDirList="";
     allureDirExistence=false
     for report in $(ls -d1 jdi-dark*/)

@@ -11,6 +11,7 @@ URL_NOT_FOUND_ERROR_MESSAGE="NONE OF THE ALLURE REPORTS WERE FOUND"
 
 ####################             UTILS
 function collectRelevantComments(){
+    echo "collectRelevantComments function"
     matchPattern="$1"
     fileName="comments"
     since="$(date -u --date="5 hours ago" +"%Y-%m-%dT%H:%M:%SZ")" #on mac os x use '-v -5H' instead of '--date="5 hours ago"'
@@ -115,6 +116,7 @@ function downloadAllureResults() {
         curl ${url} --output ${fileName}
     done
     if [[ "x${urlExistence}" == "xfalse" ]] ; then
+        echo "Exit from downloadAllureResults function since urlExistence=${urlExistence}"
         exitWithError
     fi
 }

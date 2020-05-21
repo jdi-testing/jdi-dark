@@ -11,7 +11,6 @@ URL_NOT_FOUND_ERROR_MESSAGE="NONE OF THE ALLURE REPORTS WERE FOUND"
 
 ####################             UTILS
 function collectRelevantComments(){
-    echo "collectRelevantComments function"
     matchPattern="$1"
     fileName="comments"
     since="$(date -u --date="5 hours ago" +"%Y-%m-%dT%H:%M:%SZ")" #on mac os x use '-v -5H' instead of '--date="5 hours ago"'
@@ -57,7 +56,6 @@ function aboutNetlify() {
 }
 
 function checkBranchIsOk() {
-    echo "Check branch is ok. TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}"
     if [[ "x${TRAVIS_PULL_REQUEST}" == "xfalse" ]] ; then
         echo "${BRANCH_ERROR_MESSAGE}"
         sleep 3
@@ -69,7 +67,6 @@ function checkBranchIsOk() {
 
 #########################               PART 1: send allure results into web to collect it later
 function grubAllureResults() {
-    echo "grubAllureResults"
     echo "Stage was: ${TRAVIS_BUILD_STAGE_NAME}"
     checkBranchIsOk #there is an exit inside
 
@@ -106,24 +103,20 @@ function deployAllureResults() {
 }
 
 function downloadAllureResults() {
-    echo "Download Allure results"
     urlExistence=false
     for url in $(collectRelevantComments "${TRAVIS_BUILD_NUMBER}")
     do
         urlExistence=true
         echo "Found: ${url}"
         fileName="$(echo "${url}"| awk -F/ '{print $5}')"
-        echo "filename=${fileName}"
         curl ${url} --output ${fileName}
     done
     if [[ "x${urlExistence}" == "xfalse" ]] ; then
-        echo "Exit from downloadAllureResults function since urlExistence=${urlExistence}"
         exitWithError
     fi
 }
 
 function extractAllureResults() {
-    echo "Extract Allure results"
     for archiveFile in $(ls -1 *.tar.gz)
     do
         extractArchive ${archiveFile}
@@ -131,13 +124,12 @@ function extractAllureResults() {
 }
 
 function generateAllureReports() {
-    echo "Generate Allure reports"
     reportDirList="";
     allureDirExistence=false
     for report in $(ls -d1 jdi-dark*/)
     do
         allureDirExistence=true
-        allureDir="${report}allure-results"
+        allureDir="${report}target/allure-results"
         if [[ -d "${allureDir}" ]] ; then
             echo "Results found for ${report}"
             reportDirList="${reportDirList} ${allureDir}"

@@ -224,5 +224,12 @@
                 <log.level>DEBUG</log.level>
             </properties>
         </profile>
+        <profile>
+            <id>trace</id>
+            <properties>
+                <domain>local=http://localhost:8080, trello=https://api.trello.com/1</domain>
+                <log.level>TRACE</log.level>
+            </properties>
+        </profile>
     </profiles>
 </project>

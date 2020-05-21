@@ -58,6 +58,7 @@ function aboutNetlify() {
 
 function checkBranchIsOk() {
     echo "Check branch is ok. TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}"
+    ls -R
     if [[ "x${TRAVIS_PULL_REQUEST}" == "xfalse" ]] ; then
         echo "${BRANCH_ERROR_MESSAGE}"
         sleep 3
@@ -138,7 +139,7 @@ function generateAllureReports() {
     do
         allureDirExistence=true
         allureDir="${report}target/allure-results"
-        if [[ -d "${allureDir}" ]] ; then
+        if [[ -d "$allureDir" ]] ; then
             echo "Results found for ${report}"
             reportDirList="${reportDirList} ${allureDir}"
         else

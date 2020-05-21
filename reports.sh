@@ -129,7 +129,7 @@ function generateAllureReports() {
     for report in $(ls -d1 jdi-dark*/)
     do
         allureDirExistence=true
-        allureDir="${report}target/allure-results"
+        allureDir="${report}allure-results"
         if [[ -d "${allureDir}" ]] ; then
             echo "Results found for ${report}"
             reportDirList="${reportDirList} ${allureDir}"

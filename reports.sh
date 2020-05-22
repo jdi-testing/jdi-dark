@@ -71,7 +71,7 @@ function grubAllureResults() {
     echo "Stage was: ${TRAVIS_BUILD_STAGE_NAME}"
     checkBranchIsOk #there is an exit inside
 
-    if [[ "x${TRAVIS_BUILD_STAGE_NAME}" == "xTest" ]] ; then #don't remove x, it's useful
+    if [[ "x${TRAVIS_BUILD_STAGE_NAME}" == "xtest" ]] ; then #don't remove x, it's useful
         for result in $(find jdi-dark*tests/target/allure-results -maxdepth 1 -type d)
         do
             echo RESULT: ${result}
@@ -155,6 +155,6 @@ function deployToNetlify() {
 function exitWithError() {
     echo "${URL_NOT_FOUND_ERROR_MESSAGE}"
     sleep 3
-    exit 0
+    exit 1
 }
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`

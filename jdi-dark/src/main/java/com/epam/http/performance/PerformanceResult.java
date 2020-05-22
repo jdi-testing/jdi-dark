@@ -1,31 +1,32 @@
 package com.epam.http.performance;
 
-import com.epam.http.response.RestResponse;
+import lombok.Data;
 
-import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
+import java.util.List;
 
-/**
- * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
- */
+@Data
 public class PerformanceResult {
 
-    public long AverageResponseTime = 0;
-    public long NumberOfRequests = 0;
-    public long NumberOfFails = 0;
+    public long averageResponseTime = 0;
+    public long numberOfRequests = 0;
+    public long numberOfFails = 0;
+    public long numberOfClientFails = 0;
+    public long numberOfServerFails = 0;
     public boolean noFails() {
-        return NumberOfFails == 0;
+        return numberOfFails == 0;
     }
 
     /**
      * Construct the results of performance tests.
-     * @param response          response
+     * @param results         List of ThreadResult
      */
-    public void addResult(RestResponse response) {
-        AverageResponseTime = (AverageResponseTime * NumberOfRequests + response.responseTime())
-                / (NumberOfRequests + 1);
-        NumberOfRequests++;
-        if (response.getStatus().type == CLIENT_ERROR)
-            NumberOfFails++;
-
+    public void aggregateResult(List<ThreadResult> results) {
+        results.forEach(res -> {
+            numberOfRequests += res.getNumberOfRequests();
+            numberOfClientFails += res.getNumberOfClientFails();
+            numberOfServerFails += res.getNumberOfServerFails();
+            numberOfFails = numberOfClientFails + numberOfServerFails;
+            averageResponseTime = averageResponseTime * numberOfRequests + res.getAverageResponseTime() / numberOfRequests;
+        });
     }
 }

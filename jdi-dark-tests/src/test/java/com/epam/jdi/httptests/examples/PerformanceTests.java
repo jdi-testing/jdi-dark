@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 
-
 class PerformanceTests {
 
     @Test
@@ -17,11 +16,11 @@ class PerformanceTests {
         ServiceExample.getInfo.isAlive();
     }
     @Test
-    public void printTest() {
+    public void printTest() throws InterruptedException {
         init(ServiceExample.class);
-        PerformanceResult pr = RestLoad.loadService(5, ServiceExample.getInfo);
-        Assert.assertTrue(pr.noFails(), "Number of fails: " + pr.NumberOfFails);
-        System.out.println("Average time: " + pr.AverageResponseTime + "ms");
-        System.out.println("Requests amount: " + pr.NumberOfRequests);
+        PerformanceResult pr = RestLoad.loadService(10, ServiceExample.getInfo);
+        Assert.assertTrue(pr.noFails(), "Number of fails: " + pr.getNumberOfFails());
+        System.out.println("Average time: " + pr.getAverageResponseTime() + "ms");
+        System.out.println("Requests amount: " + pr.getNumberOfRequests());
     }
 }

@@ -23,7 +23,7 @@ public class PreconditionTests {
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
     private ArrayList<String> createdBoardsId = new ArrayList<String>();
 
-    @DataProvider(name = "createNewBoards", parallel = true)
+    @DataProvider(name = "createNewBoards")
     public static Object[][] createNewBoards() {
         return new Object[][]{
                 {"Board B1-" + LocalDateTime.now()},
@@ -32,7 +32,7 @@ public class PreconditionTests {
         };
     }
 
-    @DataProvider(name = "dataProviderFromCSV", parallel = true)
+    @DataProvider(name = "dataProviderFromCSV")
     public static Object[] dataProviderFromCSV() throws IOException {
         Reader in = new FileReader(CSV_DATA_FILE);
         Iterable<CSVRecord> records = CSVFormat.DEFAULT

@@ -4,14 +4,14 @@ import com.epam.http.requests.RestMethod;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.epam.http.JdiHttpSettings.logger;
 import static java.lang.System.currentTimeMillis;
 
 public class RestLoad {
 
-    static class RunnableLoadService implements Callable, Cloneable{
+    static class RunnableLoadService implements Callable<ThreadResult>, Cloneable{
         long liveTimeInSec;
         Map<RestMethod, Integer> weightRequests;
         RestMethod[] restMethods;
@@ -45,11 +45,13 @@ public class RestLoad {
 
         @Override
         public ThreadResult call() {
+            logger.info(Thread.currentThread().getName()+" started.");
             ThreadResult result = new ThreadResult();
             long start = currentTimeMillis();
             do {
                 result.addResult(getRestMethod().call());
             } while (currentTimeMillis() - start < liveTimeInSec * 1000);
+            logger.info(Thread.currentThread().getName()+" finished.");
             return result;
         }
     }
@@ -65,9 +67,7 @@ public class RestLoad {
         ExecutorService executor = Executors.newFixedThreadPool(concurrentThreads);
         Collection<Callable<ThreadResult>> tasks = new ArrayList<>();
         List<ThreadResult> threadResults = new ArrayList<>();
-        IntStream.rangeClosed(1, concurrentThreads).forEach(e -> {
-            tasks.add(runnableLoadService.clone());
-        });
+        IntStream.rangeClosed(1, concurrentThreads).forEach(e -> tasks.add(runnableLoadService.clone()));
         List<Future<ThreadResult>> results = executor.invokeAll(tasks);
         PerformanceResult pr = new PerformanceResult();
         executor.shutdown();

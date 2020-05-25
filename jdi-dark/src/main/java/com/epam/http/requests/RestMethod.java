@@ -262,7 +262,7 @@ public class RestMethod {
      *
      * @return response
      */
-    public synchronized RestResponse call() {
+    public RestResponse call() {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
@@ -397,7 +397,7 @@ public class RestMethod {
      * @param queryParams additional query parameters
      * @return response
      */
-    public synchronized RestResponse call(String queryParams) {
+    public RestResponse call(String queryParams) {
         if (!queryParams.isEmpty()) {
             String[] queryParamsArr = queryParams.split("&");
             for (String queryParam : queryParamsArr) {
@@ -414,7 +414,7 @@ public class RestMethod {
      * @param namedParams path parameters
      * @return response
      */
-    public synchronized RestResponse callWithNamedParams(String... namedParams) {
+    public RestResponse callWithNamedParams(String... namedParams) {
         if (namedParams.length > 0) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
@@ -482,7 +482,7 @@ public class RestMethod {
      * @param requestData requestData
      * @return response
      */
-    public synchronized RestResponse call(RequestData requestData) {
+    public RestResponse call(RequestData requestData) {
         userData.empty = false;
         if (!requestData.pathParams.isEmpty()) {
             userData.pathParams = requestData.pathParams;

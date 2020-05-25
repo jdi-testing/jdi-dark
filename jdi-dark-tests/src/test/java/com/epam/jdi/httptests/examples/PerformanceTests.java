@@ -33,7 +33,7 @@ public class PerformanceTests {
 
     @Test
     public void concurrentTest() throws InterruptedException, ExecutionException {
-        PerformanceResult pr = RestLoad.loadService(10, 10, ServiceExample.getInfo);
+        PerformanceResult pr = RestLoad.loadService(5, 10, ServiceExample.getInfo);
         Assert.assertTrue(pr.noFails(), "Number of fails: " + pr.getNumberOfFails());
         System.out.println("Average time: " + pr.getAverageResponseTime() + "ms");
         System.out.println("Requests amount: " + pr.getNumberOfRequests());

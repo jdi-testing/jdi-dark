@@ -2,13 +2,8 @@ package com.epam.http.performance;
 
 import com.epam.http.requests.RestMethod;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,11 +11,10 @@ import static java.lang.System.currentTimeMillis;
 
 public class RestLoad {
 
-    static class RunnableLoadService implements Runnable {
+    static class RunnableLoadService implements Callable, Cloneable{
         long liveTimeInSec;
         Map<RestMethod, Integer> weightRequests;
         RestMethod[] restMethods;
-        ThreadResult result = new ThreadResult();
 
         RunnableLoadService(long liveTimeInSec, RestMethod... restMethods) {
             this.liveTimeInSec = liveTimeInSec;
@@ -32,42 +26,55 @@ public class RestLoad {
             this.weightRequests = weightRequests;
         }
 
+        @Override
+        public RunnableLoadService clone() {
+            try {
+                return (RunnableLoadService) super.clone();
+            } catch (CloneNotSupportedException e) {
+                return null;
+            }
+        }
+
         RestMethod getRestMethod() {
             Random rnd = new Random();
-            if (!weightRequests.isEmpty()) {
+            if (weightRequests != null) {
                 return getRequest(weightRequests, Math.round(rnd.nextFloat() * getLength(weightRequests)));
             }
             return restMethods[rnd.nextInt(restMethods.length)];
         }
 
         @Override
-        public void run() {
+        public ThreadResult call() {
+            ThreadResult result = new ThreadResult();
             long start = currentTimeMillis();
             do {
                 result.addResult(getRestMethod().call());
-            } while (currentTimeMillis() - start < liveTimeInSec*1000);
+            } while (currentTimeMillis() - start < liveTimeInSec * 1000);
+            return result;
         }
     }
 
     /**
      * Send HTTP requests and measure the time.
      *
-     * @param concurrentThreads number of concurrent threads
-     * @param liveTimeInSec time limits requests should succeed
-     * @param runnableLoadService    RunnableLoadService
+     * @param concurrentThreads   number of concurrent threads
+     * @param runnableLoadService RunnableLoadService
      * @return results of loading the service
      */
-    private static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, RunnableLoadService runnableLoadService) throws InterruptedException {
+    private static PerformanceResult loadService(int concurrentThreads, RunnableLoadService runnableLoadService) throws InterruptedException, ExecutionException {
         ExecutorService executor = Executors.newFixedThreadPool(concurrentThreads);
-        List<RunnableLoadService> loadServices = new ArrayList<>();
+        Collection<Callable<ThreadResult>> tasks = new ArrayList<>();
+        List<ThreadResult> threadResults = new ArrayList<>();
         IntStream.rangeClosed(1, concurrentThreads).forEach(e -> {
-            loadServices.add(runnableLoadService);
+            tasks.add(runnableLoadService.clone());
         });
-        loadServices.forEach(executor::execute);
-        executor.shutdown();
-        executor.awaitTermination(liveTimeInSec, TimeUnit.SECONDS);
+        List<Future<ThreadResult>> results = executor.invokeAll(tasks);
         PerformanceResult pr = new PerformanceResult();
-        pr.aggregateResult(loadServices.stream().map(ls -> ls.result).collect(Collectors.toList()));
+        executor.shutdown();
+        for(Future<ThreadResult> result : results){
+            threadResults.add(result.get());
+        }
+        pr.aggregateResult(threadResults);
         return pr;
     }
 
@@ -75,23 +82,23 @@ public class RestLoad {
      * Send HTTP requests and measure the time.
      *
      * @param concurrentThreads number of concurrent threads
-     * @param liveTimeInSec time limits requests should succeed
-     * @param requests    requests
+     * @param liveTimeInSec     time limits requests should succeed
+     * @param requests          requests
      * @return results of loading the service
      */
-    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, RestMethod... requests) throws InterruptedException {
-        return loadService(concurrentThreads, liveTimeInSec, new RunnableLoadService(liveTimeInSec, requests));
+    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, RestMethod... requests) throws InterruptedException, ExecutionException {
+        return loadService(concurrentThreads, new RunnableLoadService(liveTimeInSec, requests));
     }
 
-    public static PerformanceResult loadService(long liveTimeInSec, RestMethod... requests) throws InterruptedException {
+    public static PerformanceResult loadService(long liveTimeInSec, RestMethod... requests) throws InterruptedException, ExecutionException {
         return loadService(1, liveTimeInSec, requests);
     }
 
-    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException {
-        return loadService(concurrentThreads, liveTimeInSec, new RunnableLoadService(liveTimeInSec, weightRequests));
+    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException, ExecutionException {
+        return loadService(concurrentThreads, new RunnableLoadService(liveTimeInSec, weightRequests));
     }
 
-    public static PerformanceResult loadService(long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException {
+    public static PerformanceResult loadService(long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException, ExecutionException {
         return loadService(1, liveTimeInSec, weightRequests);
     }
 

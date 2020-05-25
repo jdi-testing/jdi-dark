@@ -12,21 +12,24 @@ public class PerformanceResult {
     public long numberOfFails = 0;
     public long numberOfClientFails = 0;
     public long numberOfServerFails = 0;
+
     public boolean noFails() {
         return numberOfFails == 0;
     }
 
     /**
      * Construct the results of performance tests.
-     * @param results         List of ThreadResult
+     *
+     * @param results List of ThreadResult
      */
     public void aggregateResult(List<ThreadResult> results) {
         results.forEach(res -> {
+            averageResponseTime = (averageResponseTime * numberOfRequests + res.getAverageResponseTime())
+                    / (numberOfRequests + 1);
             numberOfRequests += res.getNumberOfRequests();
             numberOfClientFails += res.getNumberOfClientFails();
             numberOfServerFails += res.getNumberOfServerFails();
             numberOfFails = numberOfClientFails + numberOfServerFails;
-            averageResponseTime = averageResponseTime * numberOfRequests + res.getAverageResponseTime() / numberOfRequests;
         });
     }
 }

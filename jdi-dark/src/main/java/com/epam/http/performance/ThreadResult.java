@@ -9,6 +9,8 @@ import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
 @Data
 public class ThreadResult {
 
+    public long minResponseTime = 0;
+    public long maxResponseTime = 0;
     public long averageResponseTime = 0;
     public long numberOfRequests = 0;
     public long numberOfClientFails = 0;
@@ -19,6 +21,9 @@ public class ThreadResult {
      * @param response          response
      */
     public void addResult(RestResponse response) {
+        long responseTime = response.responseTime();
+        minResponseTime = minResponseTime == 0 ? responseTime : Math.min(minResponseTime, responseTime);
+        maxResponseTime = Math.max(maxResponseTime, responseTime);
         averageResponseTime = (averageResponseTime * numberOfRequests + response.responseTime())
                 / (numberOfRequests + 1);
         numberOfRequests++;

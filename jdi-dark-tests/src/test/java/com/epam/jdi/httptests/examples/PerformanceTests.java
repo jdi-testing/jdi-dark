@@ -3,7 +3,7 @@ package com.epam.jdi.httptests.examples;
 import com.epam.http.performance.PerformanceResult;
 import com.epam.http.performance.RestLoad;
 import com.epam.jdi.services.ServiceExample;
-import org.testng.Assert;
+import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -26,16 +26,14 @@ public class PerformanceTests {
     @Test
     public void printTest() throws InterruptedException, ExecutionException {
         PerformanceResult pr = RestLoad.loadService(10, ServiceExample.getInfo);
-        Assert.assertTrue(pr.noFails(), "Number of fails: " + pr.getNumberOfFails());
-        System.out.println("Average time: " + pr.getAverageResponseTime() + "ms");
-        System.out.println("Requests amount: " + pr.getNumberOfRequests());
+        Assertions.assertThat(pr.noFails()).describedAs("Fails found").isTrue();
     }
 
     @Test
     public void concurrentTest() throws InterruptedException, ExecutionException {
         PerformanceResult pr = RestLoad.loadService(5, 10, ServiceExample.getInfo);
-        Assert.assertTrue(pr.noFails(), "Number of fails: " + pr.getNumberOfFails());
-        System.out.println("Average time: " + pr.getAverageResponseTime() + "ms");
-        System.out.println("Requests amount: " + pr.getNumberOfRequests());
+        Assertions.assertThat(pr.getNumberOfFails()).describedAs("Fails found").isEqualTo(0);
+        Assertions.assertThat(pr.getAverageResponseTime()).describedAs("Wrong average response time").isGreaterThan(1);
+        Assertions.assertThat(pr.getMaxResponseTime()).describedAs("Wrong maximum response time").isGreaterThan(3);
     }
 }

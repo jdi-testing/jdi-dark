@@ -12,9 +12,9 @@ import static java.lang.System.currentTimeMillis;
 public class RestLoad {
 
     static class RunnableLoadService implements Callable<ThreadResult>, Cloneable{
-        long liveTimeInSec;
-        Map<RestMethod, Integer> weightRequests;
-        RestMethod[] restMethods;
+        private final long liveTimeInSec;
+        private Map<RestMethod, Integer> weightRequests;
+        private RestMethod[] restMethods;
 
         RunnableLoadService(long liveTimeInSec, RestMethod... restMethods) {
             this.liveTimeInSec = liveTimeInSec;

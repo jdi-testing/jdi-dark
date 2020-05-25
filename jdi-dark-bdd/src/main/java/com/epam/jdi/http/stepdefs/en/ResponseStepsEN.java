@@ -48,7 +48,7 @@ public class ResponseStepsEN extends Utils {
 
     @And("the average response time is less than {} seconds")
     public void averageResponseTime(long seconds) {
-        long respTime = performanceResult.get().AverageResponseTime;
+        long respTime = performanceResult.get().getAverageResponseTime();
         Assertions.assertThat(respTime)
                 .describedAs("Average response time is greater than expected.")
                 .isLessThan(seconds * 1000);

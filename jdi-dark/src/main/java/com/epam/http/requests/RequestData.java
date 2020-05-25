@@ -10,7 +10,6 @@ import io.restassured.http.*;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 public class RequestData extends DataClass<RequestData> {

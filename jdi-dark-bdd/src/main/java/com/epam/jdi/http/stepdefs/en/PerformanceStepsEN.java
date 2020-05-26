@@ -15,13 +15,15 @@ import static java.lang.String.format;
 public class PerformanceStepsEN extends Utils {
 
     @When("load service for {int} seconds with {string} request")
-    public void loadServiceForSecWithGetRequests(int seconds, String methodName) throws IllegalAccessException, NoSuchFieldException, ExecutionException, InterruptedException {
+    public void loadServiceForSecWithGetRequests(int seconds, String methodName) throws IllegalAccessException,
+            NoSuchFieldException, ExecutionException, InterruptedException {
         RestMethod restMethod = getRestMethod(methodName);
         performanceResult.set(loadService(seconds, restMethod));
     }
 
     @When("load service by {int} concurrent threads for {int} seconds with {string} request")
-    public void loadServiceForSecWithGetRequests(int concurrentThreads, int seconds, String methodName) throws IllegalAccessException, NoSuchFieldException, ExecutionException, InterruptedException {
+    public void loadServiceForSecWithGetRequests(int concurrentThreads, int seconds, String methodName) throws
+            IllegalAccessException, ExecutionException, InterruptedException, NoSuchFieldException {
         RestMethod restMethod = getRestMethod(methodName);
         performanceResult.set(loadService(concurrentThreads, seconds, restMethod));
     }

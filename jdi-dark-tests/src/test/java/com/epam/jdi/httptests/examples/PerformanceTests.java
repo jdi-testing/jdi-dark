@@ -14,7 +14,7 @@ import static com.epam.http.requests.ServiceInit.init;
 public class PerformanceTests {
 
     @BeforeClass
-    public void before(){
+    public void before() {
         init(ServiceExample.class);
     }
 
@@ -33,7 +33,7 @@ public class PerformanceTests {
     public void concurrentTest() throws InterruptedException, ExecutionException {
         PerformanceResult pr = RestLoad.loadService(5, 10, ServiceExample.getInfo);
         Assertions.assertThat(pr.getNumberOfFails()).describedAs("Fails found").isEqualTo(0);
-        Assertions.assertThat(pr.getAverageResponseTime()).describedAs("Wrong average response time").isGreaterThan(1);
-        Assertions.assertThat(pr.getMaxResponseTime()).describedAs("Wrong maximum response time").isGreaterThan(3);
+        Assertions.assertThat(pr.getAverageResponseTime()).describedAs("The average response time is greater than expected.").isLessThan(1000);
+        Assertions.assertThat(pr.getMaxResponseTime()).describedAs("The maximum response time is greater than expected.").isLessThan(3000);
     }
 }

@@ -47,11 +47,7 @@ public class RequestData extends DataClass<RequestData> {
         return new CookieUpdater(() -> this);
     }
 
-    public HeaderUpdater addHeaders() {
-        return new HeaderUpdater(() -> {
-            return this;
-        });
-    }
+    public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
 
     public QueryParamsUpdater addQueryParams() {
         return new QueryParamsUpdater(() -> this);

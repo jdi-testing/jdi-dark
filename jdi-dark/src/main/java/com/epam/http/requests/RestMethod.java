@@ -433,7 +433,7 @@ public class RestMethod {
                 index++;
             }
             if (!queryString.isEmpty()) {
-                return call(substPathParams(queryString, Arrays.copyOfRange(pathParams, index, pathParams.length)));
+                return call(substPathParams(queryString, copyOfRange(pathParams, index, pathParams.length)));
             }
         }
         return call();
@@ -441,10 +441,11 @@ public class RestMethod {
 
     private static String substPathParams(String path, Object[] pathParams) {
         String[] namedParams = StringUtils.substringsBetween(path, "{", "}");
+        String substPath = path;
         for (int i = 0; i < namedParams.length; i++) {
-            path = path.replace("{" + namedParams[i] + "}", pathParams[i].toString());
+            substPath = substPath.replace("{" + namedParams[i] + "}", pathParams[i].toString());
         }
-        return path;
+        return substPath;
     }
 
     /**

@@ -7,6 +7,7 @@ import com.epam.jdi.tools.map.MapArray;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+import io.restassured.mapper.ObjectMapper;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matcher;
@@ -236,6 +237,10 @@ public class RestResponse {
 
     public <T> T asData(Class<T> cl) {
         return getRaResponse().as(cl);
+    }
+
+    public <T> T asData(Class<T> cl, ObjectMapper objectMapper) {
+        return getRaResponse().as(cl, objectMapper);
     }
 
     /**

@@ -27,7 +27,7 @@ public class TrelloService {
     public static DataMethod<Board> boardsPost;
 
     public static Board createBoard(Board board) {
-        return boardsPost.callObject(board);
+        return boardsPost.callAsData(board);
     }
 
     @ContentType(JSON)

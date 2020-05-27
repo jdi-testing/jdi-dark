@@ -5,7 +5,6 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 import static com.epam.http.response.RestResponse.LOG_RESPONSE;
-import static java.lang.System.currentTimeMillis;
 
 /**
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>

@@ -31,6 +31,7 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -206,10 +207,10 @@ public class RestMethod {
     }
 
     /**
-    * Set trustStore parameters to the request.
-    *
-    * @param trustStore trustStore
-    */
+     * Set trustStore parameters to the request.
+     *
+     * @param trustStore trustStore
+     */
 
     void setTrustStore(TrustStore trustStore) {
         data.trustStore = new Pair<>(trustStore.pathToJks(), trustStore.password());
@@ -411,47 +412,50 @@ public class RestMethod {
     /**
      * Send HTTP request with specific named path parameters.
      *
-     * @param namedParams path parameters
+     * @param pathParams path parameters
      * @return response
      */
-    public RestResponse callWithNamedParams(String... namedParams) {
-        if (namedParams.length > 0) {
+    public RestResponse callPathParams(Object... pathParams) {
+        if (pathParams.length > 0) {
+            String[] namedParams = StringUtils.substringsBetween(path, "{", "}");
+            catchPathParametersIllegalArguments(namedParams, pathParams);
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
-            data.path = pathString;
-            String[] pathParams = StringUtils.substringsBetween(pathString, "{", "}");
-            catchPathParametersIllegalArguments(pathParams, namedParams, queryString);
+            userData.path = pathString;
             int index = 0;
-            for (String key : pathParams) {
+            for (String key : StringUtils.substringsBetween(pathString, "{", "}")) {
                 userData.empty = false;
-                userData.pathParams.add(key, namedParams[index]);
+                userData.pathParams.add(key, pathParams[index].toString());
                 index++;
             }
             if (!queryString.isEmpty()) {
-                String[] queryParams = StringUtils.substringsBetween(queryString, "{", "}");
-                for (String key : queryParams) {
-                    userData.empty = false;
-                    userData.queryParams.add(key, namedParams[index]);
-                    index++;
-                }
+                return call(substPathParams(queryString, Arrays.copyOfRange(pathParams, index, pathParams.length)));
             }
         }
         return call();
     }
 
+    private static String substPathParams(String path, Object[] pathParams) {
+        String[] namedParams = StringUtils.substringsBetween(path, "{", "}");
+        for (int i = 0; i < namedParams.length; i++) {
+            path = path.replace("{" + namedParams[i] + "}", pathParams[i].toString());
+        }
+        return path;
+    }
+
     /**
      * Catch errors when wrong count path parameters were specified.
      */
-    private static void catchPathParametersIllegalArguments(String[] pathParams, String[] namedParams, String queryString) {
-        if (namedParams.length > pathParams.length && queryString.isEmpty()) {
-            String[] redundant_values = copyOfRange(namedParams, pathParams.length, namedParams.length);
+    private static void catchPathParametersIllegalArguments(String[] namedPathParams, Object[] pathParams) {
+        if (pathParams.length > namedPathParams.length) {
+            Object[] redundant_values = copyOfRange(pathParams, namedPathParams.length, pathParams.length);
             throw exception("Invalid number of path parameters. Expected %s , was %s.\nRedundant param values : %s",
-                    pathParams.length, namedParams.length, asList(redundant_values));
+                    namedPathParams.length, pathParams.length, asList(redundant_values));
         }
-        if (namedParams.length < pathParams.length) {
-            String[] missing_params = copyOfRange(pathParams, namedParams.length, pathParams.length);
+        if (pathParams.length < namedPathParams.length) {
+            String[] missing_params = copyOfRange(namedPathParams, pathParams.length, namedPathParams.length);
             throw exception("Invalid number of path parameters. Expected %s, was %s.\nMissing params : %s",
-                    pathParams.length, namedParams.length, asList(missing_params));
+                    namedPathParams.length, pathParams.length, asList(missing_params));
         }
     }
 
@@ -639,7 +643,7 @@ public class RestMethod {
     }
 
     public RestMethod withMultiPartSpec(MultiPartSpecification multiPartSpec) {
-        data.multiPartSpecifications.set(0,  multiPartSpec);
+        data.multiPartSpecifications.set(0, multiPartSpec);
         return this;
     }
 }

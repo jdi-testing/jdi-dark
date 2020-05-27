@@ -1,10 +1,6 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.updaters.CookieUpdater;
-import com.epam.http.requests.updaters.FormParamsUpdater;
-import com.epam.http.requests.updaters.HeaderUpdater;
-import com.epam.http.requests.updaters.PathParamsUpdater;
-import com.epam.http.requests.updaters.QueryParamsUpdater;
+import com.epam.http.requests.updaters.*;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;

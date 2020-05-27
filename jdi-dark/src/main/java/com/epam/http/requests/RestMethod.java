@@ -15,6 +15,7 @@ import com.epam.http.response.RestResponse;
 import com.epam.jdi.tools.func.JAction1;
 import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.func.JFunc3;
+import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
@@ -245,7 +246,10 @@ public class RestMethod {
     public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
-            maps.addAll(rd.fields().filter((k, v) -> !k.equals("multiPartSpecifications") && !k.equals("empty") && v != null && !v.toString().equals("[]") && !v.toString().isEmpty()).map((k, v) -> "\n" + k + ": " + v));
+            maps.addAll(rd.fields().filter((k, v) -> !k.equals("multiPartSpecifications") && !k.equals("empty") &&
+                    v != null && !v.toString().equals("[]") && !v.toString().isEmpty())
+                    .map((k, v) -> "\n" + k + ": " +
+                            (v instanceof MultiMap ? ((MultiMap) v).map((km, vm) -> km + "=" + vm ) : v)));
             rd.multiPartSpecifications.forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
         }
         logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));

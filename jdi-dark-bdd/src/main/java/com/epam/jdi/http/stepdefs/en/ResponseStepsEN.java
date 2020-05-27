@@ -50,7 +50,15 @@ public class ResponseStepsEN extends Utils {
     public void averageResponseTime(long seconds) {
         long respTime = performanceResult.get().getAverageResponseTime();
         Assertions.assertThat(respTime)
-                .describedAs("Average response time is greater than expected.")
+                .describedAs("The average response time is greater than expected.")
+                .isLessThan(seconds * 1000);
+    }
+
+    @And("the maximum response time is less than {} seconds")
+    public void maxResponseTime(long seconds) {
+        long respTime = performanceResult.get().getMaxResponseTime();
+        Assertions.assertThat(respTime)
+                .describedAs("The maximum response time is greater than expected.")
                 .isLessThan(seconds * 1000);
     }
 

@@ -1,7 +1,9 @@
 package com.epam.http;
 
 import com.epam.http.logger.ILogger;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 import static com.epam.http.logger.LogLevels.parseLogLevel;

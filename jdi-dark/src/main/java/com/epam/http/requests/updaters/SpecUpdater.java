@@ -6,7 +6,9 @@ import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.map.MapArray;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static com.epam.jdi.tools.LinqUtils.map;
 import static java.util.Arrays.asList;

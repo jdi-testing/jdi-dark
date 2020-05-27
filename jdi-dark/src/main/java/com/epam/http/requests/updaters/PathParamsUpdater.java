@@ -4,6 +4,7 @@ import com.epam.http.ExceptionHandler;
 import com.epam.http.requests.RequestData;
 import com.epam.jdi.tools.func.JFunc;
 import com.epam.jdi.tools.pairs.Pair;
+
 import java.lang.annotation.Annotation;
 
 public class PathParamsUpdater extends SpecUpdater<Annotation, Pair<String, String>> {

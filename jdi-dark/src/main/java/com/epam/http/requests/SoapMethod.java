@@ -31,19 +31,20 @@ public class SoapMethod<T, S> extends RestMethod {
     public SoapMethod(Field field, Class<T> c) {
         this.soap12 = field.isAnnotationPresent(SOAP12.class) || c.isAnnotationPresent(SOAP12.class);
         this.soapHeader = "   <soap:Header/>";
-        this.action = field.isAnnotationPresent(SOAPAction.class) ? field.getAnnotation(SOAPAction.class).value() : field.getName();
-        this.namespace = c.isAnnotationPresent(SOAPNamespace.class) ? " xmlns=\"" + c.getAnnotation(SOAPNamespace.class).value() + "\" \n" :
-                field.isAnnotationPresent(SOAPNamespace.class) ? " xmlns=\"" + field.getAnnotation(SOAPNamespace.class).value() + "\" \n" : "";
+        this.action = field.isAnnotationPresent(SOAPAction.class) ? field.getAnnotation(SOAPAction.class).value() :
+                field.getName();
+        this.namespace = c.isAnnotationPresent(SOAPNamespace.class) ? " xmlns=\"" +
+                c.getAnnotation(SOAPNamespace.class).value() + "\" \n" :
+                field.isAnnotationPresent(SOAPNamespace.class) ? " xmlns=\"" +
+                        field.getAnnotation(SOAPNamespace.class).value() + "\" \n" : "";
         this.envelop = "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
                 "xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" \n" +
-                this.namespace +
-                (this.soap12 ? "xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\">" :
-                        "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+                this.namespace + (this.soap12 ? "xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\">" :
+                "xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
         this.req = (Class<T>) getGenericTypes(field)[0];
         this.resp = (Class<S>) getGenericTypes(field)[1];
         this.headers = this.soap12 ? new Object[][]{{"Content-Type", "application/soap+xml;charset=UTF-8"},
-                {"Action", action}}
-                : new Object[][]{{"Content-Type", "text/xml;charset=UTF-8"},
+                {"Action", action}} : new Object[][]{{"Content-Type", "text/xml;charset=UTF-8"},
                 {"SOAPAction", action}};
     }
 
@@ -105,7 +106,8 @@ public class SoapMethod<T, S> extends RestMethod {
             }
         }
         InputStream is = new ByteArrayInputStream(body.getBytes());
-        SOAPMessage request = MessageFactory.newInstance(soap12 ? SOAPConstants.SOAP_1_2_PROTOCOL : SOAPConstants.SOAP_1_1_PROTOCOL).createMessage(null, is);
+        SOAPMessage request = MessageFactory.newInstance(soap12 ? SOAPConstants.SOAP_1_2_PROTOCOL :
+                SOAPConstants.SOAP_1_1_PROTOCOL).createMessage(null, is);
         SOAPBody soapBody = request.getSOAPBody();
         if (soapBody.hasFault()) {
             throw new SOAPException(soapBody.getFault().getFaultString());
@@ -113,7 +115,8 @@ public class SoapMethod<T, S> extends RestMethod {
         if (resp == String.class) {
             return (S) soapBody.getTextContent().trim();
         }
-        XMLStreamReader xsr = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(body.replaceAll("\\n", "")));
+        XMLStreamReader xsr = XMLInputFactory.newFactory()
+                .createXMLStreamReader(new StringReader(body.replaceAll("\\n", "")));
         XMLReaderWithoutNamespace xr = new XMLReaderWithoutNamespace(xsr);
         JAXBContext jc = JAXBContext.newInstance(resp);
         Unmarshaller u = jc.createUnmarshaller();

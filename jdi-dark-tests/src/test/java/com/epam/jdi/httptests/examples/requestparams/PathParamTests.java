@@ -67,7 +67,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void unnamedPathParametersCanBeAppendedBeforeSubPath() {
-        RestResponse response = getParamBeforePath.callWithNamedParams("something");
+        RestResponse response = getParamBeforePath.callPathParams("something");
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -79,7 +79,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void unnamedPathParametersCanBeAppendedAfterSubPath() {
-        RestResponse response = getParamAfterPath.callWithNamedParams("json");
+        RestResponse response = getParamAfterPath.callPathParams("json");
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -117,7 +117,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void mixingUnnamedPathParametersAndQueryParametersWorks() {
-        RestResponse response = getMixedParam.callWithNamedParams("games", "http://myurl.com");
+        RestResponse response = getMixedParam.callPathParams("games", "http://myurl.com");
         response.assertThat().statusCode(404);
     }
 
@@ -164,7 +164,7 @@ public class PathParamTests extends WithJetty {
     @Test
     public void
     canSpecifySpacePathParamsWithoutKey() {
-        RestResponse response = getUser.callWithNamedParams("John", " ");
+        RestResponse response = getUser.callPathParams("John", " ");
         response.isOk().body("firstName", equalTo("John")).body("lastName", equalTo(" "));
     }
 
@@ -178,7 +178,7 @@ public class PathParamTests extends WithJetty {
     @Test
     public void
     canSpecifyEmptyPathWithoutKey() {
-        RestResponse response = getUser.callWithNamedParams("John", "");
+        RestResponse response = getUser.callPathParams("John", "");
         response.assertThat().statusCode(404);
     }
 
@@ -203,6 +203,6 @@ public class PathParamTests extends WithJetty {
 
     @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Invalid number of path parameters. Expected 2, was 1.*")
     public void passingLessPathParamsThanGivenThrowsIAE() {
-        getUser.callWithNamedParams("john");
+        getUser.callPathParams("john");
     }
 }

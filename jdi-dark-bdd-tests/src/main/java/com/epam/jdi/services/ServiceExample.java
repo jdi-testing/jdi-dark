@@ -5,7 +5,7 @@ import com.epam.http.requests.RestMethod;
 
 import static io.restassured.http.ContentType.JSON;
 
-@ServiceDomain("http://httpbin.org/")
+@ServiceDomain("http://httpbin.org")
 public class ServiceExample {
     @ContentType(JSON)
     @GET("/get")

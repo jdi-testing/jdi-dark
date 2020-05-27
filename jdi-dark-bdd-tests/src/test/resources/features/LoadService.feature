@@ -1,4 +1,4 @@
-@skip
+@smoke
 Feature: Performance after load check
 
   Scenario: Load service

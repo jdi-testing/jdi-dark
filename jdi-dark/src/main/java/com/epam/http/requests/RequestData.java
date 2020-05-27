@@ -6,7 +6,9 @@ import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
-import io.restassured.http.*;
+import io.restassured.http.ContentType;
+import io.restassured.http.Cookies;
+import io.restassured.http.Headers;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
 import lombok.Data;
@@ -41,9 +43,7 @@ public class RequestData extends DataClass<RequestData> {
         return new CookieUpdater(() -> this);
     }
 
-    public HeaderUpdater addHeaders() {
-        return new HeaderUpdater(() -> this);
-    }
+    public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
 
     public QueryParamsUpdater addQueryParams() {
         return new QueryParamsUpdater(() -> this);

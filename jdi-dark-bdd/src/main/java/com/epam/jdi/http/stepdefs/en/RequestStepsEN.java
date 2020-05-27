@@ -48,7 +48,7 @@ public class RequestStepsEN extends Utils {
     @And("perform {string} request with named path parameters {string}")
     public void performRequestWithNamedParams(String methodName, String params) throws IllegalAccessException, NoSuchFieldException {
         RestMethod restMethod = prepareRestMethod(methodName);
-        restResponse.set(restMethod.callWithNamedParams(params.split(",")));
+        restResponse.set(restMethod.callPathParams(params.split(",")));
     }
 
     @And("perform {string} request with query parameters {string}")

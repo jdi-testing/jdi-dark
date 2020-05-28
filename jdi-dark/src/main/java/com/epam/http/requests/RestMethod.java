@@ -383,6 +383,16 @@ public class RestMethod {
                 : call().getRaResponse().body().as(c, objectMapper);
     }
 
+    private void getQueryParams(String queryString) {
+        if (!queryString.isEmpty()) {
+            String[] queryParams = queryString.split("&");
+            for (String queryParam : queryParams) {
+                userData.empty = false;
+                userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
+            }
+        }
+    }
+
     /**
      * Moved all query params from path to request data query params.
      */
@@ -391,13 +401,7 @@ public class RestMethod {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
             userData.path = pathString;
-            if (!queryString.isEmpty()) {
-                String[] queryParams = queryString.split("&");
-                for (String queryParam : queryParams) {
-                    userData.empty = false;
-                    userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
-                }
-            }
+            getQueryParams(queryString);
         }
     }
 
@@ -408,13 +412,7 @@ public class RestMethod {
      * @return response
      */
     public RestResponse call(String queryParams) {
-        if (!queryParams.isEmpty()) {
-            String[] queryParamsArr = queryParams.split("&");
-            for (String queryParam : queryParamsArr) {
-                userData.empty = false;
-                userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
-            }
-        }
+        getQueryParams(queryParams);
         return call();
     }
 

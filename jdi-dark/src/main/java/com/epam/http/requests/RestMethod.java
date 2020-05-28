@@ -241,6 +241,13 @@ public class RestMethod {
 
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
     public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
+    private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
+    private final static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST_DEFAULT = LOG_RETRY_REQUEST;
+
+    public static void resetLogRequest(){
+        LOG_REQUEST = LOG_REQUEST_DEFAULT;
+        LOG_RETRY_REQUEST = LOG_RETRY_REQUEST_DEFAULT;
+    }
 
     public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();

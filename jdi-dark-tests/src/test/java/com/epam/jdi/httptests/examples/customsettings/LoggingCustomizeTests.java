@@ -6,8 +6,6 @@ import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.func.JAction2;
-import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.map.MultiMap;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -20,19 +18,17 @@ import java.util.Map;
 import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.logger.AllureLogger.startStep;
 import static com.epam.http.requests.RestMethod.LOG_REQUEST;
+import static com.epam.http.requests.RestMethod.resetLogRequest;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.RestResponse.LOG_RESPONSE;
+import static com.epam.http.response.RestResponse.resetLogResponse;
 import static org.hamcrest.Matchers.equalTo;
 
 public class LoggingCustomizeTests extends WithJetty {
-    private static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_TEMP;
-    private static JAction2<RestResponse, String> LOG_RESPONSE_TEMP;
 
     @BeforeClass
     public void initService() {
         init(JettyService.class);
-        LOG_REQUEST_TEMP = LOG_REQUEST;
-        LOG_RESPONSE_TEMP = LOG_RESPONSE;
         LOG_REQUEST = this::logRequest;
         LOG_RESPONSE = this::logResponse;
     }
@@ -70,7 +66,7 @@ public class LoggingCustomizeTests extends WithJetty {
 
     @AfterClass
     public void clearLogger() {
-        LOG_REQUEST = LOG_REQUEST_TEMP;
-        LOG_RESPONSE = LOG_RESPONSE_TEMP;
+        resetLogRequest();
+        resetLogResponse();
     }
 }

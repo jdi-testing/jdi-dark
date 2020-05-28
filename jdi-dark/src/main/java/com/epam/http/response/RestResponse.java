@@ -55,6 +55,11 @@ public class RestResponse {
     }
 
     public static JAction2<RestResponse, String> LOG_RESPONSE = RestResponse::logResponse;
+    private final static JAction2<RestResponse, String> LOG_RESPONSE_DEFAULT = LOG_RESPONSE;
+
+    public static void resetLogResponse(){
+        LOG_RESPONSE = LOG_RESPONSE_DEFAULT;
+    }
 
     public void logResponse(String uuid) {
         logger.info(toString());

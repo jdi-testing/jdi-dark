@@ -4,10 +4,10 @@
 Powerful framework for services testing
 
 ## Documentation
-Can be found [here](https://jdi-docs.github.io/jdi-dark)<br/>
+Can be found [here](https://jdi-docs.github.io/jdi-dark)
 For fast start you can go through [tutorial](https://jdi-docs.github.io/jdi-dark/#tutorial)
 
 ## Running test examples
-Before first running test examples execute next maven commands:  
+Before first running test examples execute the following maven commands:  
 **mvn clean**    
 **mvn compile**

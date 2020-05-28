@@ -34,6 +34,8 @@ public class RestResponse {
     private String body = null;
     private ResponseStatus status = null;
     private String contentType = "";
+    public static JAction2<RestResponse, String> LOG_RESPONSE = RestResponse::logResponse;
+    private final static JAction2<RestResponse, String> LOG_RESPONSE_DEFAULT = LOG_RESPONSE;
 
     public ResponseStatus getResponseStatus(){
         return status;
@@ -54,7 +56,9 @@ public class RestResponse {
         contentType = raResponse.contentType();
     }
 
-    public static JAction2<RestResponse, String> LOG_RESPONSE = RestResponse::logResponse;
+    public static void resetLogResponse(){
+        LOG_RESPONSE = LOG_RESPONSE_DEFAULT;
+    }
 
     public void logResponse(String uuid) {
         logger.info(toString());

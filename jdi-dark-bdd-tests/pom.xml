@@ -13,7 +13,7 @@
         <includeTags>@smoke</includeTags>
         <excludeTags>@skip</excludeTags>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aspectj.version>1.9.1</aspectj.version>
+        <aspectj.version>1.9.5</aspectj.version>
         <allure.maven.version>2.10.0</allure.maven.version>
         <allure.cucumber.jvm.version>2.13.1</allure.cucumber.jvm.version>
         <allure.common.version>2.13.1</allure.common.version>

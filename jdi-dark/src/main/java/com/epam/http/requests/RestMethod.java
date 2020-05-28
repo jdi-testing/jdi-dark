@@ -387,12 +387,12 @@ public class RestMethod {
      * Moved all query params from path to request data query params.
      */
     private void getQueryParamsFromPath() {
-        if (data.path != null && data.path.contains("?")) {
+        if (path != null && path.contains("?")) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
-            data.path = pathString;
+            userData.path = pathString;
             if (!queryString.isEmpty()) {
-                String[] queryParams = path.split(",");
+                String[] queryParams = queryString.split("&");
                 for (String queryParam : queryParams) {
                     userData.empty = false;
                     userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));

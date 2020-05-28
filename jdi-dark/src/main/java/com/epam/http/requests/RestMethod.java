@@ -73,6 +73,10 @@ public class RestMethod {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
+    public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
+    public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
+    private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
+    private final static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST_DEFAULT = LOG_RETRY_REQUEST;
 
     private ErrorHandler errorHandler = new DefaultErrorHandler();
 
@@ -238,11 +242,6 @@ public class RestMethod {
             mpSpecBuilder.mimeType(multiPartParams.mimeType());
         data.multiPartSpecifications.add(mpSpecBuilder.build());
     }
-
-    public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
-    public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
-    private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
-    private final static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST_DEFAULT = LOG_RETRY_REQUEST;
 
     public static void resetLogRequest(){
         LOG_REQUEST = LOG_REQUEST_DEFAULT;

@@ -12,6 +12,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matcher;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -240,6 +241,13 @@ public class RestResponse {
     }
 
     public <T> T asData(Class<T> cl) {
+        return getRaResponse().as(cl);
+    }
+
+    public <T> T asData(Class<T> cl, boolean asList) {
+        if (asList) {
+            return (T) Arrays.asList((T[]) getRaResponse().as(cl));
+        }
         return getRaResponse().as(cl);
     }
 

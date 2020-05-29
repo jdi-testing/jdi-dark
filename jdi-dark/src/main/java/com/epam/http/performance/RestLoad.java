@@ -63,7 +63,7 @@ public class RestLoad {
      * @param runnableLoadService RunnableLoadService
      * @return results of loading the service
      */
-    private static PerformanceResult loadService(int concurrentThreads, RunnableLoadService runnableLoadService) throws InterruptedException, ExecutionException {
+    private static PerformanceResult loadService(int concurrentThreads, RunnableLoadService runnableLoadService) throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(concurrentThreads);
         Collection<Callable<ThreadResult>> tasks = new ArrayList<>();
         List<ThreadResult> threadResults = new ArrayList<>();
@@ -72,7 +72,11 @@ public class RestLoad {
         PerformanceResult pr = new PerformanceResult();
         executor.shutdown();
         for(Future<ThreadResult> result : results){
-            threadResults.add(result.get());
+            try {
+                threadResults.add(result.get());
+            } catch (ExecutionException e) {
+                logger.error(e.getMessage());
+            }
         }
         pr.aggregateResult(threadResults);
         return pr;
@@ -86,19 +90,19 @@ public class RestLoad {
      * @param requests          requests
      * @return results of loading the service
      */
-    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, RestMethod... requests) throws InterruptedException, ExecutionException {
+    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, RestMethod... requests) throws InterruptedException {
         return loadService(concurrentThreads, new RunnableLoadService(liveTimeInSec, requests));
     }
 
-    public static PerformanceResult loadService(long liveTimeInSec, RestMethod... requests) throws InterruptedException, ExecutionException {
+    public static PerformanceResult loadService(long liveTimeInSec, RestMethod... requests) throws InterruptedException {
         return loadService(1, liveTimeInSec, requests);
     }
 
-    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException, ExecutionException {
+    public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException {
         return loadService(concurrentThreads, new RunnableLoadService(liveTimeInSec, weightRequests));
     }
 
-    public static PerformanceResult loadService(long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException, ExecutionException {
+    public static PerformanceResult loadService(long liveTimeInSec, Map<RestMethod, Integer> weightRequests) throws InterruptedException {
         return loadService(1, liveTimeInSec, weightRequests);
     }
 

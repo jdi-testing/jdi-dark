@@ -24,16 +24,16 @@ public class PerformanceTests {
     }
 
     @Test
-    public void printTest() throws InterruptedException, ExecutionException {
-        PerformanceResult pr = RestLoad.loadService(10, ServiceExample.getInfo);
+    public void printTest() throws InterruptedException {
+        PerformanceResult pr = RestLoad.loadService(5, ServiceExample.getInfo);
         Assertions.assertThat(pr.noFails()).describedAs("Fails found").isTrue();
     }
 
     @Test
-    public void concurrentTest() throws InterruptedException, ExecutionException {
-        PerformanceResult pr = RestLoad.loadService(5, 10, ServiceExample.getInfo);
+    public void concurrentTest() throws InterruptedException {
+        PerformanceResult pr = RestLoad.loadService(3, 5, ServiceExample.getInfo);
         Assertions.assertThat(pr.getNumberOfFails()).describedAs("Fails found").isEqualTo(0);
-        Assertions.assertThat(pr.getAverageResponseTime()).describedAs("The average response time is greater than expected.").isLessThan(1000);
+        Assertions.assertThat(pr.getAverageResponseTime()).describedAs("The average response time is greater than expected.").isLessThan(2000);
         Assertions.assertThat(pr.getMaxResponseTime()).describedAs("The maximum response time is greater than expected.").isLessThan(3000);
     }
 }

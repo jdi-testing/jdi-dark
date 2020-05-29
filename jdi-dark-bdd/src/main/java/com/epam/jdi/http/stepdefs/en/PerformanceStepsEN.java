@@ -7,8 +7,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.assertj.core.api.Assertions;
 
-import java.util.concurrent.ExecutionException;
-
 import static com.epam.http.performance.RestLoad.loadService;
 import static java.lang.String.format;
 
@@ -16,14 +14,14 @@ public class PerformanceStepsEN extends Utils {
 
     @When("load service for {int} seconds with {string} request")
     public void loadServiceForSecWithGetRequests(int seconds, String methodName) throws IllegalAccessException,
-            NoSuchFieldException, ExecutionException, InterruptedException {
+            NoSuchFieldException, InterruptedException {
         RestMethod restMethod = getRestMethod(methodName);
         performanceResult.set(loadService(seconds, restMethod));
     }
 
     @When("load service by {int} concurrent threads for {int} seconds with {string} request")
     public void loadServiceForSecWithGetRequests(int concurrentThreads, int seconds, String methodName) throws
-            IllegalAccessException, ExecutionException, InterruptedException, NoSuchFieldException {
+            IllegalAccessException, InterruptedException, NoSuchFieldException {
         RestMethod restMethod = getRestMethod(methodName);
         performanceResult.set(loadService(concurrentThreads, seconds, restMethod));
     }

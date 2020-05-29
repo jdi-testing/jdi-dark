@@ -1,6 +1,7 @@
 package com.epam.jdi.services;
 
 import com.epam.http.annotations.*;
+import com.epam.http.requests.DataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Product;
@@ -223,6 +224,9 @@ public class JettyService {
         return Arrays.asList(getProducts.callAsData(Product[].class));
     }
 
+    @GET("/products")
+    public static DataMethod<List<Product>> getProductsAsList;
+
     @GET("/jsonStore")
     public static RestMethod getJsonStore;
 
@@ -322,9 +326,14 @@ public class JettyService {
 
     @URL("http://www.google.se")
     @GET("/search?q={query}&hl=en")
+    public static DataMethod<List<String>> searchGoogle2;
+
+    @URL("http://www.google.se")
+    @GET("/search?q={query}&hl=en")
     public static RestMethod searchGoogle;
 
     public static RestResponse searchGoogleSpecificParam(String param) {
+        searchGoogle2.callAsData();
         return searchGoogle.call(param);
     }
 

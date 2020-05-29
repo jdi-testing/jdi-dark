@@ -9,17 +9,22 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public class DataMethod<T> extends RestMethod {
-    Class<T> cl;
-    Boolean asList = false;
+    private Class<T> cl;
+    private final Boolean asList;
 
     @SuppressWarnings("unchecked")
-    public DataMethod(Field field) throws ClassNotFoundException {
+    public DataMethod(Field field) {
         Type type = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
         if (type instanceof Class) {
+            asList = false;
             this.cl = (Class<T>) type;
         } else {
             asList = true;
-            this.cl = (Class<T>) Class.forName("[L" + ((ParameterizedType) type).getActualTypeArguments()[0].getTypeName() + ";");
+            try {
+                this.cl = (Class<T>) Class.forName("[L" + ((ParameterizedType) type).getActualTypeArguments()[0].getTypeName() + ";");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -326,14 +326,9 @@ public class JettyService {
 
     @URL("http://www.google.se")
     @GET("/search?q={query}&hl=en")
-    public static DataMethod<List<String>> searchGoogle2;
-
-    @URL("http://www.google.se")
-    @GET("/search?q={query}&hl=en")
     public static RestMethod searchGoogle;
 
     public static RestResponse searchGoogleSpecificParam(String param) {
-        searchGoogle2.callAsData();
         return searchGoogle.call(param);
     }
 

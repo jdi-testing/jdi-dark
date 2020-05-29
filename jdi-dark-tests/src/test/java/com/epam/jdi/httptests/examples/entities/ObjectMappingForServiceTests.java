@@ -13,7 +13,11 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.services.JettyService.getProducts;
+import static com.epam.jdi.services.JettyService.getProductsAsList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -37,8 +41,14 @@ public class ObjectMappingForServiceTests extends WithJetty {
 
     @Test
     public void mapResponseToObjectJson() {
-        Product[] products = JettyService.getProducts.callAsData(Product[].class);
+        Product[] products = getProducts.callAsData(Product[].class);
         Assert.assertEquals(products.length, 2, "Number of products is incorrect");
+    }
+
+    @Test
+    public void mapResponseToObjectUsingDataMethod() {
+        List<Product> products = getProductsAsList.callAsData();
+        Assert.assertEquals(products.get(1).name, "A blue mouse", "Name of product is incorrect");
     }
 
     @Test

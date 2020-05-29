@@ -1,6 +1,7 @@
 package com.epam.jdi.services;
 
 import com.epam.http.annotations.*;
+import com.epam.http.requests.DataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Product;
@@ -222,6 +223,9 @@ public class JettyService {
     public static List<Product> getProducts() {
         return Arrays.asList(getProducts.callAsData(Product[].class));
     }
+
+    @GET("/products")
+    public static DataMethod<List<Product>> getProductsAsList;
 
     @GET("/jsonStore")
     public static RestMethod getJsonStore;

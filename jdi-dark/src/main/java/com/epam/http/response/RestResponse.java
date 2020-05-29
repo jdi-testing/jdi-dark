@@ -13,6 +13,7 @@ import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matcher;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -244,11 +245,15 @@ public class RestResponse {
         return getRaResponse().as(cl);
     }
 
-    public <T> T asData(Class<T> cl, boolean asList) {
-        if (asList) {
-            return (T) Arrays.asList((T[]) getRaResponse().as(cl));
+    public <T> T asData(Class<T> cl, String responseType) {
+        switch (responseType) {
+            case "List":
+                return (T) Arrays.asList((T[]) getRaResponse().as(cl));
+            case "Map":
+                return (T) getRaResponse().jsonPath().getMap("$", String.class, HashMap.class);
+            default:
+                return getRaResponse().as(cl);
         }
-        return getRaResponse().as(cl);
     }
 
     public <T> T asData(Class<T> cl, ObjectMapper objectMapper) {

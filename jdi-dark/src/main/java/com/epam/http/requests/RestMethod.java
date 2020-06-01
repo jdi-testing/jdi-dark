@@ -34,7 +34,6 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettings.getDomain;
@@ -64,14 +63,6 @@ public class RestMethod {
     private String uri = null;
     private ObjectMapper objectMapper = null;
 
-    public RequestData getData() {
-        return data;
-    }
-
-    public RequestData getUserData() {
-        return userData;
-    }
-
     public HeaderUpdater header = new HeaderUpdater(this::getData);
     public CookieUpdater cookies = new CookieUpdater(this::getData);
     public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
@@ -84,15 +75,14 @@ public class RestMethod {
     public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
     private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
     private final static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST_DEFAULT = LOG_RETRY_REQUEST;
-
-    private ErrorHandler errorHandler = new DefaultErrorHandler();
-
-    private final BiFunction<String, MultiMap<String, String>, String> insertPathParams = (s, mm) -> {
+    private final static JFunc2<String, MultiMap<String, String>, String> insertPathParams = (s, mm) -> {
         for (Pair<String, String> pathParam : mm) {
             s = s.replace("{" + pathParam.key + "}", pathParam.value);
         }
         return s;
     };
+
+    private ErrorHandler errorHandler = new DefaultErrorHandler();
 
     public RestMethod() {
     }
@@ -435,6 +425,14 @@ public class RestMethod {
         }
     }
 
+    public RequestData getData() {
+        return data;
+    }
+
+    public RequestData getUserData() {
+        return userData;
+    }
+
     /**
      * Insert path params to uri.
      */
@@ -442,16 +440,16 @@ public class RestMethod {
         if (uri.contains("{")) {
             userData.path = path;
         }
-        uri = insertPathParams.apply(uri, getUserData().getPathParams());
-        uri = insertPathParams.apply(uri, getData().getPathParams());
+        uri = insertPathParams.execute(uri, getUserData().getPathParams());
+        uri = insertPathParams.execute(uri, getData().getPathParams());
     }
 
     /**
      * Insert query params to uri.
      */
     private String insertQueryParams(String uri) {
-        uri = insertPathParams.apply(uri, getUserData().getQueryParams());
-        uri = insertPathParams.apply(uri, getData().getQueryParams());
+        uri = insertPathParams.execute(uri, getUserData().getQueryParams());
+        uri = insertPathParams.execute(uri, getData().getQueryParams());
         return uri;
     }
 

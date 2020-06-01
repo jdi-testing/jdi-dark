@@ -448,9 +448,9 @@ public class RestMethod {
      * Insert query params to uri.
      */
     private String insertQueryParams(String uri) {
-        uri = insertPathParams.execute(uri, getUserData().getQueryParams());
-        uri = insertPathParams.execute(uri, getData().getQueryParams());
-        return uri;
+        String mod = insertPathParams.execute(uri, getUserData().getQueryParams());
+        mod = insertPathParams.execute(mod, getData().getQueryParams());
+        return mod;
     }
 
     /**

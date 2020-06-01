@@ -87,6 +87,13 @@ public class RestMethod {
 
     private ErrorHandler errorHandler = new DefaultErrorHandler();
 
+    private final BiFunction<String, MultiMap<String, String>, String> insertPathParams = (s, mm) -> {
+        for (Pair<String, String> pathParam : mm) {
+            s = s.replace("{" + pathParam.key + "}", pathParam.value);
+        }
+        return s;
+    };
+
     public RestMethod() {
     }
 
@@ -279,7 +286,8 @@ public class RestMethod {
     }
 
     private String logReTryRequest(List<RequestData> requestData, Integer i) {
-        logger.info("================================> RETRY REQUEST ATTEMPT " + (i + 1) + "/" + reTryData.getNumberOfRetryAttempts() + ":");
+        logger.info("================================> RETRY REQUEST ATTEMPT " + (i + 1) + "/" +
+                reTryData.getNumberOfRetryAttempts() + ":");
         return logRequest(requestData);
     }
 
@@ -427,15 +435,8 @@ public class RestMethod {
         }
     }
 
-    private final BiFunction<String, MultiMap<String, String>, String> insertPathParams = (s, mm) -> {
-        for (Pair<String, String> pathParam : mm) {
-            s = s.replace("{" + pathParam.key + "}", pathParam.value);
-        }
-        return s;
-    };
-
     /**
-     * Insert path params to path.
+     * Insert path params to uri.
      */
     private void insertPathParams() {
         if (uri.contains("{")) {
@@ -446,12 +447,12 @@ public class RestMethod {
     }
 
     /**
-     * Insert query params to path.
+     * Insert query params to uri.
      */
-    private String insertQueryParams(String path) {
-        path = insertPathParams.apply(path, getUserData().getQueryParams());
-        path = insertPathParams.apply(path, getData().getQueryParams());
-        return path;
+    private String insertQueryParams(String uri) {
+        uri = insertPathParams.apply(uri, getUserData().getQueryParams());
+        uri = insertPathParams.apply(uri, getData().getQueryParams());
+        return uri;
     }
 
     /**

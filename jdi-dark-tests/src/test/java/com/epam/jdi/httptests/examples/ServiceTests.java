@@ -28,7 +28,6 @@ public class ServiceTests {
 
     @BeforeClass
     public void before() {
-        requestSpecification = given().filter(new AllureRestAssured());
         requestSpecification.auth().basic("user", "password");
         service = init(ServiceExample.class, ServiceSettings.builder().requestSpecification(requestSpecification).build());
     }

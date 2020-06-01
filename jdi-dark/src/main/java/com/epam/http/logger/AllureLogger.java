@@ -20,6 +20,7 @@ public class AllureLogger {
     }
 
     public static String startStep(String message, String requestData) {
+        if (!writeToAllure) return "";
         StepResult step = new StepResult().setName(message).setStatus(PASSED);
 
         String uuid = UUID.randomUUID().toString();

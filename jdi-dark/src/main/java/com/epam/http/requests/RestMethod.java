@@ -21,6 +21,7 @@ import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
+import io.restassured.filter.Filter;
 import io.restassured.http.*;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
@@ -33,6 +34,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettings.getDomain;
@@ -59,10 +61,15 @@ public class RestMethod {
     private RequestSpecification spec = given();
     private String url = null;
     private String path = null;
+    private String uri = null;
     private ObjectMapper objectMapper = null;
 
     public RequestData getData() {
         return data;
+    }
+
+    public RequestData getUserData() {
+        return userData;
     }
 
     public HeaderUpdater header = new HeaderUpdater(this::getData);
@@ -251,13 +258,22 @@ public class RestMethod {
     public String logRequest(List<RequestData> rds) {
         ArrayList<String> maps = new ArrayList<>();
         for (RequestData rd : rds) {
-            maps.addAll(rd.fields().filter((k, v) -> !k.equals("multiPartSpecifications") && !k.equals("empty") &&
+            maps.addAll(rd.fields().filter((k, v) -> !k.equals("multiPartSpecifications") &&
+                    !k.equals("headers") &&
+                    !k.equals("cookies") &&
+                    !k.equals("empty") &&
                     v != null && !v.toString().equals("[]") && !v.toString().isEmpty())
                     .map((k, v) -> "\n" + k + ": " +
                             (v instanceof MultiMap ? ((MultiMap) v).map((km, vm) -> km + "=" + vm ) : v)));
+            if (rd.headers.exist()) {
+                maps.add("\nheaders: " + rd.headers.asList().toString());
+            }
+            if (rd.cookies.exist()) {
+                maps.add("\ncookies: " + rd.cookies.asList().toString());
+            }
             rd.multiPartSpecifications.forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
         }
-        logger.info(format("Do %s request: %s%s %s", type, url != null ? url : "", path != null ? path : "", maps));
+        logger.info(format("Do %s request: %s %s", type, uri != null ? uri : "", maps));
         return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
                 format("%s %s%s  %s", type, url != null ? url : "", path != null ? path : "", maps));
     }
@@ -276,7 +292,9 @@ public class RestMethod {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
+        uri = url + path;
         getQueryParamsFromPath();
+        insertPathParams();
         RequestSpecification runSpec = getInitSpec();
         if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
@@ -387,8 +405,11 @@ public class RestMethod {
         if (!queryString.isEmpty()) {
             String[] queryParams = queryString.split("&");
             for (String queryParam : queryParams) {
-                userData.empty = false;
-                userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
+                String key = substringBefore(queryParam, "=");
+                if (!userData.getQueryParams().has(key)) {
+                    userData.empty = false;
+                    userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
+                }
             }
         }
     }
@@ -401,8 +422,36 @@ public class RestMethod {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
             userData.path = pathString;
-            getQueryParams(queryString);
+            uri = url + pathString;
+            getQueryParams(insertQueryParams(queryString));
         }
+    }
+
+    private final BiFunction<String, MultiMap<String, String>, String> insertPathParams = (s, mm) -> {
+        for (Pair<String, String> pathParam : mm) {
+            s = s.replace("{" + pathParam.key + "}", pathParam.value);
+        }
+        return s;
+    };
+
+    /**
+     * Insert path params to path.
+     */
+    private void insertPathParams() {
+        if (uri.contains("{")) {
+            userData.path = path;
+        }
+        uri = insertPathParams.apply(uri, getUserData().getPathParams());
+        uri = insertPathParams.apply(uri, getData().getPathParams());
+    }
+
+    /**
+     * Insert query params to path.
+     */
+    private String insertQueryParams(String path) {
+        path = insertPathParams.apply(path, getUserData().getQueryParams());
+        path = insertPathParams.apply(path, getData().getQueryParams());
+        return path;
     }
 
     /**
@@ -654,4 +703,20 @@ public class RestMethod {
         data.multiPartSpecifications.set(0, multiPartSpec);
         return this;
     }
+
+    public RestMethod withData(RequestData requestData) {
+        userData = requestData;
+        return this;
+    }
+
+    public RestMethod withFilter(Filter filter) {
+        userData.filters.add(filter);
+        return this;
+    }
+
+    public RestMethod withAuth(AuthenticationScheme authenticationScheme) {
+        userData.setAuthenticationScheme(authenticationScheme);
+        return this;
+    }
+
 }

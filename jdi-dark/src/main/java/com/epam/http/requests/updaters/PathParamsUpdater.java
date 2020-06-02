@@ -15,7 +15,7 @@ public class PathParamsUpdater extends SpecUpdater<Annotation, Pair<String, Stri
     public PathParamsUpdater(JFunc<RequestData> dataFunc) {
         super(pathParams -> {
             RequestData rd = dataFunc.execute();
-            rd.pathParams.addAll(pathParams);
+            rd.getPathParams().addAll(pathParams);
             return rd;
         }, m -> {
             throw ExceptionHandler.exception("Not supported way to set Path params");

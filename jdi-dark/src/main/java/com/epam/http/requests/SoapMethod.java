@@ -58,7 +58,7 @@ public class SoapMethod<T, S> extends RestMethod {
 
     public S callSoap(T object) {
         try {
-            return getResponse(call(headers().addAll(headers).requestBody(createSoapBody(object))).getBody());
+            return getResponse(call(headers().addAll(headers).setBody(createSoapBody(object))).getBody());
         } catch (Exception ex) {
             throw exception(ex.toString());
         }

@@ -1,7 +1,7 @@
 package com.epam.jdi.services;
 
 import com.epam.http.annotations.*;
-import com.epam.http.requests.RestMethodData;
+import com.epam.http.requests.RestDataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
@@ -10,7 +10,6 @@ import java.util.List;
 
 import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static io.restassured.http.ContentType.JSON;
-import static java.util.Arrays.asList;
 
 @ServiceDomain("${trello}")
 @QueryParameter(name = "key", value = "3445103a21ddca2619eaceb0e833d0db")
@@ -24,7 +23,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST(BOARDS)
-    public static RestMethodData<Board> boardsPost;
+    public static RestDataMethod<Board> boardsPost;
 
     public static Board createBoard(Board board) {
         return boardsPost.postAsData(board);

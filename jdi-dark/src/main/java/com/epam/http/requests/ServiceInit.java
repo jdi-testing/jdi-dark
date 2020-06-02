@@ -174,8 +174,8 @@ public class ServiceInit {
         String path = mtData.path;
         RestMethod method = field.getType() == SoapMethod.class
                 ? new SoapMethod<>(field, c)
-                : field.getType() == RestMethodData.class
-                ? new RestMethodData<>(field)
+                : field.getType() == RestDataMethod.class
+                ? new RestDataMethod<>(field)
                 : new RestMethod();
         method.setup(mtData.type, path, url, requestSpecification);
         method.setObjectMapper(objectMapper);

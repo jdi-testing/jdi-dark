@@ -14,7 +14,7 @@ public class QueryParamsUpdater extends SpecUpdater<QueryParameter, Pair<String,
         super(
                 qpList -> {
                     RequestData data = dataFunc.execute();
-                    data.queryParams.addAll(qpList);
+                    data.getQueryParams().addAll(qpList);
                     return data;
                 },
                 qp -> new Pair<>(qp.name(), qp.value()),

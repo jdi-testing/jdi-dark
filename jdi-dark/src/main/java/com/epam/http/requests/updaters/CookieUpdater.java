@@ -17,9 +17,9 @@ public class CookieUpdater extends SpecUpdater<com.epam.http.annotations.Cookie,
         super(
                 cookies -> {
                     RequestData data = dataFunc.execute();
-                    List<Cookie> headerList = new ArrayList<>(data.cookies.asList());
+                    List<Cookie> headerList = new ArrayList<>(data.getCookies().asList());
                     headerList.addAll(cookies);
-                    data.cookies = new Cookies(headerList);
+                    data.setCookies(new Cookies(headerList));
                     return data;
                 },
                 c -> new Cookie.Builder(c.name(), c.value()).build(),

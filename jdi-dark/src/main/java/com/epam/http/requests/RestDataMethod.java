@@ -9,12 +9,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class RestMethodData<T> extends RestMethod {
+public class RestDataMethod<T> extends RestMethod {
     private Class<T> cl;
     private final String responseType;
 
     @SuppressWarnings("unchecked")
-    public RestMethodData(Field field) {
+    public RestDataMethod(Field field) {
         Type type = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
         if (type instanceof Class) {
             responseType = "Object";
@@ -47,18 +47,6 @@ public class RestMethodData<T> extends RestMethod {
 
     public T callAsData(RestAssuredConfig restAssuredConfig) {
         return call(restAssuredConfig).asData(cl, responseType);
-    }
-
-    public T callAsData(String queryParams) {
-        return call(queryParams).asData(cl, responseType);
-    }
-
-    public T callPathParamsAsData(Object... pathParams) {
-        return callPathParams(pathParams).asData(cl, responseType);
-    }
-
-    public T callAsData(RequestData requestData) {
-        return call(requestData).asData(cl, responseType);
     }
 
     public T callAsData(JAction1<RequestData> action) {

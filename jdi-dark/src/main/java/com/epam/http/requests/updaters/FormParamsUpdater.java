@@ -14,7 +14,7 @@ public class FormParamsUpdater extends SpecUpdater<FormParameter, Pair<String, S
         super(
                 fp -> {
                     RequestData data = dataFunc.execute();
-                    data.formParams.addAll(fp);
+                    data.getFormParams().addAll(fp);
                     return data;
                 },
                 c -> new Pair<>(c.name(), c.value()),

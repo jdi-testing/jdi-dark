@@ -1,8 +1,15 @@
 language: java
 jdk:
-- openjdk8
+  - openjdk8
 before_install:
-- sudo apt-get -y install jq
+  - sudo apt-get -y install jq
+  - java -Xmx32m -version
+before_script:
+  - ls -lah
+addons:
+  apt:
+    packages:
+      - openjdk-8-jdk
 
 env:
   global:
@@ -26,20 +33,20 @@ jobs:
   - stage: compile
     name: Compile jdi code
     script:
-    - mvn install -DskipTests -q || travis_terminate 1
-    - mvn versions:use-latest-releases
+    - mvn install -DskipTests
 
-  - stage: test
-    name: Run tests - http
-    script:
-      - mvn install -DskipTests -q || travis_terminate 1
-      - mvn verify -pl $HTTP_TESTS
 
   - stage: test
     name: Run tests - bdd
     script:
-      - mvn install -DskipTests -q || travis_terminate 1
+      - mvn -ntp install -DskipTests
       - mvn verify -pl $BDD_TESTS
+
+  - stage: test
+    name: Run tests - http
+    script:
+      - mvn -ntp install -DskipTests
+      - mvn verify -pl $HTTP_TESTS
 
   - stage: reports
     name: Deploy allure reports to netlify

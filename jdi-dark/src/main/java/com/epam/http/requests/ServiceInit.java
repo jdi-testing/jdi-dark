@@ -1,14 +1,29 @@
 package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettings;
+import com.epam.http.annotations.ContentType;
+import com.epam.http.annotations.Cookie;
+import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.DELETE;
+import com.epam.http.annotations.FormParameter;
+import com.epam.http.annotations.FormParameters;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.HEAD;
+import com.epam.http.annotations.Header;
+import com.epam.http.annotations.Headers;
+import com.epam.http.annotations.IgnoreRetry;
+import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.OPTIONS;
 import com.epam.http.annotations.PATCH;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.*;
+import com.epam.http.annotations.Proxy;
+import com.epam.http.annotations.QueryParameter;
+import com.epam.http.annotations.QueryParameters;
+import com.epam.http.annotations.RetryOnFailure;
+import com.epam.http.annotations.ServiceDomain;
+import com.epam.http.annotations.TrustStore;
+import com.epam.http.annotations.URL;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
@@ -23,7 +38,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.epam.http.ExceptionHandler.exception;
-import static com.epam.http.requests.RestMethodTypes.*;
+import static com.epam.http.requests.RestMethodTypes.DELETE;
+import static com.epam.http.requests.RestMethodTypes.GET;
+import static com.epam.http.requests.RestMethodTypes.HEAD;
+import static com.epam.http.requests.RestMethodTypes.OPTIONS;
+import static com.epam.http.requests.RestMethodTypes.PATCH;
+import static com.epam.http.requests.RestMethodTypes.POST;
+import static com.epam.http.requests.RestMethodTypes.PUT;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static com.epam.jdi.tools.ReflectionUtils.isClass;
 import static java.lang.reflect.Modifier.isStatic;
@@ -97,7 +118,7 @@ public class ServiceInit {
     /**
      * Initialise the Service Object class.
      *
-     * @param c               class describing Service
+     * @param c                    class describing Service
      * @param requestSpecification predefined request specification
      * @return initialised Service Object
      */
@@ -108,7 +129,7 @@ public class ServiceInit {
     /**
      * Initialise the Service Object class.
      *
-     * @param c               class describing Service
+     * @param c                    class describing Service
      * @param authenticationScheme predefined authenticationScheme
      * @return initialised Service Object
      */
@@ -153,15 +174,15 @@ public class ServiceInit {
         String path = mtData.path;
         RestMethod method = field.getType() == SoapMethod.class
                 ? new SoapMethod<>(field, c)
-                : field.getType() == DataMethod.class
-                        ? new DataMethod<>(field)
-                        : new RestMethod();
+                : field.getType() == RestMethodData.class
+                ? new RestMethodData<>(field)
+                : new RestMethod();
         method.setup(mtData.type, path, url, requestSpecification);
         method.setObjectMapper(objectMapper);
         method.setErrorHandler(errorHandler);
-        method.setAuthenticationScheme(authenticationScheme);
+        method.getData().setAuthScheme(authenticationScheme);
         if (field.isAnnotationPresent(ContentType.class))
-            method.setContentType(field.getAnnotation(ContentType.class).value());
+            method.getData().addContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
             method.header.add(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
@@ -184,9 +205,9 @@ public class ServiceInit {
         if (c.isAnnotationPresent(FormParameters.class))
             method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
         if (c.isAnnotationPresent(TrustStore.class))
-            method.setTrustStore(c.getAnnotation(TrustStore.class));
+            method.getData().addTrustStore(c.getAnnotation(TrustStore.class));
         if (c.isAnnotationPresent(RetryOnFailure.class))
-            method.reTryData = new RetryData(c.getAnnotation(RetryOnFailure.class));
+            method.setReTryData(new RetryData(c.getAnnotation(RetryOnFailure.class)));
         /* Case for method annotations*/
         if (field.isAnnotationPresent(QueryParameter.class))
             method.queryParams.add(field.getAnnotation(QueryParameter.class));
@@ -199,13 +220,13 @@ public class ServiceInit {
         if (field.isAnnotationPresent(MultiPart.class))
             method.addMultiPartParams(field.getAnnotation(MultiPart.class));
         if (field.isAnnotationPresent(Proxy.class))
-            method.setProxy(field.getAnnotation(Proxy.class));
+            method.getData().addProxy(field.getAnnotation(Proxy.class));
         if (field.isAnnotationPresent(TrustStore.class))
-            method.setTrustStore(field.getAnnotation(TrustStore.class));
+            method.getData().addTrustStore(field.getAnnotation(TrustStore.class));
         if (field.isAnnotationPresent(RetryOnFailure.class)) {
             RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
-            method.reTryData = (method.reTryData != null) ? method.reTryData.merge(methodRetryData) :
-                    new RetryData(methodRetryData);
+            method.setReTryData(method.reTryData != null ? method.reTryData.merge(methodRetryData) :
+                    new RetryData(methodRetryData));
         }
         if (field.isAnnotationPresent(IgnoreRetry.class))
             method.reTryData = null;

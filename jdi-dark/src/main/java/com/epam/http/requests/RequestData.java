@@ -1,6 +1,12 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.updaters.*;
+import com.epam.http.annotations.Proxy;
+import com.epam.http.annotations.TrustStore;
+import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.FormParamsUpdater;
+import com.epam.http.requests.updaters.HeaderUpdater;
+import com.epam.http.requests.updaters.PathParamsUpdater;
+import com.epam.http.requests.updaters.QueryParamsUpdater;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
@@ -25,68 +31,49 @@ import java.util.ArrayList;
 @Data
 @Accessors(chain = true)
 public class RequestData extends DataClass<RequestData> {
-    public boolean empty = true;
-    public String uri = null;
-    public String path = null;
-    public Object body = null;
-    public String contentType = null;
-    public Headers headers = new Headers();
-    public Cookies cookies = new Cookies();
-    public MultiMap<String, String> pathParams = new MultiMap<>();
-    public MultiMap<String, String> queryParams = new MultiMap<>();
-    public MultiMap<String, String> formParams = new MultiMap<>();
-    public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
-    public ArrayList<Filter> filters = new ArrayList<>();
-    public ProxySpecification proxySpecification = null;
-    public AuthenticationScheme authenticationScheme = null;
-    public Pair<String, String> trustStore = null;
+    private boolean empty = true;
+    private String uri = null;
+    private String path = null;
+    private Object body = null;
+    private String contentType = null;
+    private Headers headers = new Headers();
+    private Cookies cookies = new Cookies();
+    private MultiMap<String, String> pathParams = new MultiMap<>();
+    private MultiMap<String, String> queryParams = new MultiMap<>();
+    private MultiMap<String, String> formParams = new MultiMap<>();
+    private ArrayList<MultiPartSpecification> multiPartSpec = new ArrayList<>();
+    private ArrayList<Filter> filters = new ArrayList<>();
+    private ProxySpecification proxySpec = null;
+    private AuthenticationScheme authScheme = null;
+    private Pair<String, String> trustStore = null;
 
-    public CookieUpdater addCookies() {
+    public CookieUpdater cookiesUpdater() {
         return new CookieUpdater(() -> this);
     }
 
-    public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
+    public HeaderUpdater headerUpdater() {
+        return new HeaderUpdater(() -> this);
+    }
 
-    public QueryParamsUpdater addQueryParams() {
+    public QueryParamsUpdater queryParamsUpdater() {
         return new QueryParamsUpdater(() -> this);
     }
 
-    public PathParamsUpdater addPathParams() {
+    public PathParamsUpdater pathParamsUpdater() {
         return new PathParamsUpdater(() -> this);
     }
 
-    public FormParamsUpdater addFormParams() {
+    public FormParamsUpdater formParamsUpdater() {
         return new FormParamsUpdater(() -> this);
     }
 
     /**
-     * Set request body to request data.
+     * Set Content-Type to HTTP request.
      *
-     * @param body as formatted String
-     * @return generated request data with provided request body
+     * @param ct Rest Assured Content-Type
      */
-    public RequestData requestBody(Object body) {
-        this.body = body;
-        return this;
-    }
-
-    /**
-     * Set content type to request data.
-     *
-     * @param contentType content type as string
-     */
-    public RequestData setContentType(String contentType) {
-        this.contentType = contentType;
-        return this;
-    }
-
-    /**
-     * Set content type to request data.
-     *
-     * @param contentType content type as ContentType
-     */
-    public RequestData setContentType(ContentType contentType) {
-        this.contentType = contentType.toString();
+    public RequestData addContentType(ContentType ct) {
+        this.setContentType(ct.toString());
         return this;
     }
 
@@ -95,20 +82,8 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param multiPartSpecBuilder MultiPartSpecBuilder
      */
-    public RequestData setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
-        this.multiPartSpecifications.add(multiPartSpecBuilder.build());
-        return this;
-    }
-
-    /**
-     * Set authentication scheme to request data
-     * This allows authentication for requests
-     *
-     * @param authScheme authentication scheme: from restassured or custom
-     */
-
-    public RequestData setAuth(AuthenticationScheme authScheme) {
-        this.authenticationScheme = authScheme;
+    public RequestData addMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
+        this.multiPartSpec.add(multiPartSpecBuilder.build());
         return this;
     }
 
@@ -119,19 +94,28 @@ public class RequestData extends DataClass<RequestData> {
      * @param host   host
      * @param port   port
      */
-    public RequestData setProxySpecification(String scheme, String host, int port) {
-        this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
+    public RequestData addProxySpec(String scheme, String host, int port) {
+        this.setProxySpec(ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme));
         return this;
     }
 
     /**
-     * Set trustStore parameters to request data.
+     * Set proxy parameters to the request.
      *
-     * @param pathToJks pathToJks
-     * @param password  password
+     * @param proxyParams proxyParams
      */
-    public RequestData setTrustStore(String pathToJks, String password) {
-        this.trustStore = new Pair<>(pathToJks, password);
+    public RequestData addProxySpec(Proxy proxyParams) {
+        addProxySpec(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
+        return this;
+    }
+
+    /**
+     * Set trustStore parameters to the request.
+     *
+     * @param trustStore trustStore
+     */
+    public RequestData addTrustStore(TrustStore trustStore) {
+        this.setTrustStore(new Pair<>(trustStore.pathToJks(), trustStore.password()));
         return this;
     }
 
@@ -149,9 +133,9 @@ public class RequestData extends DataClass<RequestData> {
         uri = null;
         contentType = null;
         empty = true;
-        multiPartSpecifications.clear();
-        proxySpecification = null;
-        authenticationScheme = null;
+        multiPartSpec.clear();
+        proxySpec = null;
+        authScheme = null;
         trustStore = null;
     }
 }

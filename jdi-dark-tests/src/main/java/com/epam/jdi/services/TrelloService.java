@@ -1,7 +1,7 @@
 package com.epam.jdi.services;
 
 import com.epam.http.annotations.*;
-import com.epam.http.requests.DataMethod;
+import com.epam.http.requests.RestMethodData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
@@ -24,7 +24,7 @@ public class TrelloService {
 
     @ContentType(JSON)
     @POST(BOARDS)
-    public static DataMethod<Board> boardsPost;
+    public static RestMethodData<Board> boardsPost;
 
     public static Board createBoard(Board board) {
         return boardsPost.postAsData(board);

@@ -14,12 +14,17 @@ public enum ResponseStatusType {
     OK(2), REDIRECT(3), CLIENT_ERROR(4), SERVER_ERROR(5);
 
     public int firstNumber;
+
     public static List<ResponseStatusType> allValues() {
         return getAllEnumValues(ResponseStatusType.class);
     }
-    ResponseStatusType(int num) { firstNumber = num; }
+
+    ResponseStatusType(int num) {
+        firstNumber = num;
+    }
+
     public static ResponseStatusType getStatusTypeFromCode(int code) {
-        int firstNum = code/100;
+        int firstNum = code / 100;
         return first(allValues(), type -> type.firstNumber == firstNum);
     }
 }

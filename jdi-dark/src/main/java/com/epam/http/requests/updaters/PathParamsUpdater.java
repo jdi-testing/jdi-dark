@@ -11,6 +11,7 @@ public class PathParamsUpdater extends SpecUpdater<Annotation, Pair<String, Stri
     public PathParamsUpdater() {
         this(RequestData::new);
     }
+
     public PathParamsUpdater(JFunc<RequestData> dataFunc) {
         super(pathParams -> {
             RequestData rd = dataFunc.execute();

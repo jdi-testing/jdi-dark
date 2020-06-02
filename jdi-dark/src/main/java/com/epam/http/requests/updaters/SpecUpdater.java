@@ -18,23 +18,29 @@ public abstract class SpecUpdater<A extends Annotation, T> {
     JFunc1<Collection<T>, RequestData> store;
     JFunc1<A, T> transform;
     JFunc2<String, String, T> transformNameValue;
+
     public SpecUpdater(JFunc1<Collection<T>, RequestData> store, JFunc1<A, T> transform, JFunc2<String, String, T> transformNameValue) {
         this.store = store;
         this.transform = transform;
         this.transformNameValue = transformNameValue;
     }
+
     public RequestData add(A annotation) {
         return add(transform.execute(annotation));
     }
+
     public RequestData add(T types) {
         return addAll(singletonList(types));
     }
+
     public RequestData addAll(A... annotations) {
         return addAll(map(annotations, a -> transform.execute(a)));
     }
+
     public RequestData add(String name) {
         return add(name, "");
     }
+
     public RequestData add(String name, String... values) {
         List<T> list = map(values, value -> transformNameValue.execute(name, value));
         return addAll(list);
@@ -43,14 +49,17 @@ public abstract class SpecUpdater<A extends Annotation, T> {
     public RequestData addAll(Collection<T> list) {
         return store.execute(list);
     }
+
     public RequestData addAll(Object[][] array2D) {
         List<T> list = map(array2D, pair -> transformNameValue.execute(pair[0].toString(), pair[1].toString()));
         return addAll(list);
     }
+
     public RequestData addAll(Map map) {
         List<T> list = new MapArray<>(map).map((key, value) -> transformNameValue.execute(key.toString(), value.toString()));
         return addAll(list);
     }
+
     public RequestData addAll(T... array) {
         return addAll(asList(array));
     }

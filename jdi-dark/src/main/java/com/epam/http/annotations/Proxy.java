@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface Proxy {
     String host();
+
     int port();
+
     String scheme();
 }

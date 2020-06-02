@@ -1,7 +1,7 @@
 package com.epam.jdi.services;
 
 import com.epam.http.annotations.*;
-import com.epam.http.requests.DataMethod;
+import com.epam.http.requests.RestMethodData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Product;
@@ -57,7 +57,7 @@ public class JettyService {
     }
 
     public static RestResponse getMultipleCookieSpecifiedUsingMap(Map<String, String> cookieMap, String addCookieName, String addCookieValue) {
-        return JettyService.getCookie.call(cookies().addAll(cookieMap).addCookies().add(addCookieName, addCookieValue));
+        return JettyService.getCookie.call(cookies().addAll(cookieMap).cookiesUpdater().add(addCookieName, addCookieValue));
     }
 
     public static RestResponse getSpecifiedCookiePairs(String namePair1, String valuePair1, String namePair2, String valuePair2) {
@@ -118,7 +118,7 @@ public class JettyService {
 
     public static RestResponse getWithSingleHeader(
             String name, String value, String... additionalValues) {
-        return getMultiHeaderReflect.call(headers().add(name, value).addHeaders().add(name, additionalValues));
+        return getMultiHeaderReflect.call(headers().add(name, value).headerUpdater().add(name, additionalValues));
     }
 
     @DELETE("/cookie")
@@ -225,10 +225,10 @@ public class JettyService {
     }
 
     @GET("/products")
-    public static DataMethod<List<Product>> getProductsAsList;
+    public static RestMethodData<List<Product>> getProductsAsList;
 
     @GET("/products")
-    public static DataMethod<Product[]> getProductsAsArray;
+    public static RestMethodData<Product[]> getProductsAsArray;
 
     @GET("/jsonStore")
     public static RestMethod getJsonStore;
@@ -339,7 +339,7 @@ public class JettyService {
     public static RestMethod getMixedParam;
 
     public static RestResponse getMixedParam(Pair<String, String> pathParams, Pair<String, String> queryParams) {
-        return getMixedParam.call(pathParams().add(pathParams).addQueryParams().add(queryParams));
+        return getMixedParam.call(pathParams().add(pathParams).queryParamsUpdater().add(queryParams));
     }
 
     @GET("/{path}.json")

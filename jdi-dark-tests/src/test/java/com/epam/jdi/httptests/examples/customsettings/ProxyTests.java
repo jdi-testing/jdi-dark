@@ -41,7 +41,7 @@ public class ProxyTests extends WithJetty {
         params.put("firstName", "John");
         params.put("lastName", "Doe");
         JettyService.getGreenJSON.call(rd -> {
-            rd.setProxySpecification("http", "localhost", 8888);
+            rd.setProxySpec("http", "localhost", 8888);
             rd.queryParams.addAll(params);
         }).isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).

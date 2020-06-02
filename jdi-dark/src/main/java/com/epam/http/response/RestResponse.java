@@ -39,11 +39,13 @@ public class RestResponse {
     public static JAction2<RestResponse, String> LOG_RESPONSE = RestResponse::logResponse;
     private final static JAction2<RestResponse, String> LOG_RESPONSE_DEFAULT = LOG_RESPONSE;
 
-    public ResponseStatus getResponseStatus(){
+    public ResponseStatus getResponseStatus() {
         return status;
     }
 
-    public String getContentType() {return this.contentType; }
+    public String getContentType() {
+        return this.contentType;
+    }
 
     public RestResponse() {
         this.raResponse = null;
@@ -58,7 +60,7 @@ public class RestResponse {
         contentType = raResponse.contentType();
     }
 
-    public static void resetLogResponse(){
+    public static void resetLogResponse() {
         LOG_RESPONSE = LOG_RESPONSE_DEFAULT;
     }
 

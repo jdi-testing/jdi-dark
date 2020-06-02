@@ -18,7 +18,8 @@ public class ThreadResult {
 
     /**
      * Construct the results of performance tests.
-     * @param response          response
+     *
+     * @param response response
      */
     public void addResult(RestResponse response) {
         long responseTime = response.responseTime();

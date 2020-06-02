@@ -32,21 +32,21 @@ import java.util.ArrayList;
 @Data
 @Accessors(chain = true)
 public class RequestData extends DataClass<RequestData> {
-    private boolean empty = true;
-    private String uri = null;
-    private String path = null;
-    private Object body = null;
-    private String contentType = null;
-    private Headers headers = new Headers();
-    private Cookies cookies = new Cookies();
-    private MultiMap<String, String> pathParams = new MultiMap<>();
-    private MultiMap<String, String> queryParams = new MultiMap<>();
-    private MultiMap<String, String> formParams = new MultiMap<>();
-    private ArrayList<MultiPartSpecification> multiPartSpec = new ArrayList<>();
-    private ArrayList<Filter> filters = new ArrayList<>();
-    private ProxySpecification proxySpec = null;
-    private AuthenticationScheme authScheme = null;
-    private Pair<String, String> trustStore = null;
+    public boolean empty = true;
+    public String uri = null;
+    public String path = null;
+    public Object body = null;
+    public String contentType = null;
+    public Headers headers = new Headers();
+    public Cookies cookies = new Cookies();
+    public MultiMap<String, String> pathParams = new MultiMap<>();
+    public MultiMap<String, String> queryParams = new MultiMap<>();
+    public MultiMap<String, String> formParams = new MultiMap<>();
+    public ArrayList<MultiPartSpecification> multiPartSpec = new ArrayList<>();
+    public ArrayList<Filter> filters = new ArrayList<>();
+    public ProxySpecification proxySpec = null;
+    public AuthenticationScheme authScheme = null;
+    public Pair<String, String> trustStore = null;
 
     public CookieUpdater cookiesUpdater() {
         return new CookieUpdater(() -> this);

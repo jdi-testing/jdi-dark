@@ -36,7 +36,7 @@ public class LoggingCustomizeTests extends WithJetty {
     private String logRequest(RestMethod restMethod, List<RequestData> requestData) {
         MultiMap<String, String> queryparams = new MultiMap<>();
         for (RequestData rd : requestData) {
-            queryparams.addAll(rd.queryParams);
+            queryparams.addAll(rd.getQueryParams());
         }
         String message = String.format("Do %s %s", restMethod.getType(), restMethod.getUrl());
         logger.info(message);

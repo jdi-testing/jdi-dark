@@ -22,7 +22,7 @@ public class AuthorizationPostman {
     }
 
     public static RestResponse callPostmanAuthBasic(AuthenticationScheme authenticationScheme) {
-        return postmanAuthBasic.setData(auth(authenticationScheme)).call();
+        return postmanAuthBasic.data(auth(authenticationScheme)).call();
     }
 
     @ContentType(JSON)
@@ -34,7 +34,7 @@ public class AuthorizationPostman {
     }
 
     public static RestResponse callPostmanCustomAuth(AuthenticationScheme authenticationScheme) {
-        return postmanAuthBasic.setData(auth(authenticationScheme)).call();
+        return postmanAuthBasic.data(auth(authenticationScheme)).call();
     }
 
     @ContentType(JSON)
@@ -42,6 +42,6 @@ public class AuthorizationPostman {
     public static RestMethod postmanAuthDigest;
 
     public static RestResponse callPostmanDigestAuth(AuthenticationScheme authenticationScheme) {
-        return postmanAuthBasic.setData(auth(authenticationScheme)).call();
+        return postmanAuthBasic.data(auth(authenticationScheme)).call();
     }
 }

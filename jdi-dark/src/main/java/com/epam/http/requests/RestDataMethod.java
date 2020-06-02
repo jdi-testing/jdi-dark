@@ -1,7 +1,5 @@
 package com.epam.http.requests;
 
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -17,7 +15,8 @@ public class RestDataMethod<T> extends RestMethod {
             responseType = "Object";
             this.cl = (Class<T>) type;
         } else {
-            responseType = ((ParameterizedTypeImpl) type).getRawType().getSimpleName();
+            String responseTypeName = ((ParameterizedType) type).getRawType().getTypeName();
+            responseType = responseTypeName.substring(responseTypeName.lastIndexOf(".") + 1);
             try {
                 this.cl = (Class<T>) Class.forName("[L" + ((ParameterizedType) type).getActualTypeArguments()[0].getTypeName() + ";");
             } catch (ClassNotFoundException e) {
@@ -33,6 +32,5 @@ public class RestDataMethod<T> extends RestMethod {
     public T callAsData() {
         return call().asData(cl, responseType);
     }
-
 
 }

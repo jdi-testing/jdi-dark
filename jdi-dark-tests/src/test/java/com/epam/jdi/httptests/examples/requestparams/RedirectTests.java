@@ -23,7 +23,7 @@ public class RedirectTests extends WithJetty {
     @Test
     public void followRedirect() {
         RequestSpecification rs = given().redirects().follow(true).param("url", "/hello");
-        RestResponse resp = getRedirect.callAsSpec(rs);
+        RestResponse resp = getRedirect.call(rs);
         resp.assertThat().statusCode(HttpStatus.SC_OK);
         resp.assertThat().body("hello", equalTo("Hello Scalatra"));
     }
@@ -31,7 +31,7 @@ public class RedirectTests extends WithJetty {
     @Test
     public void doesNotFollowRedirect() {
         RequestSpecification rs = given().redirects().follow(false).param("url", "/hello");
-        RestResponse resp = getRedirect.callAsSpec(rs);
+        RestResponse resp = getRedirect.call(rs);
         resp.assertThat().statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
         resp.assertThat().header("Location", "http://localhost:8080/hello");
     }

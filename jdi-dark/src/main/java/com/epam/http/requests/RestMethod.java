@@ -59,7 +59,7 @@ public class RestMethod {
     private String url = null;
     private String path = null;
     private String uri = null;
-    private ObjectMapper objectMapper = null;
+    public ObjectMapper objectMapper = null;
 
     public HeaderUpdater header = new HeaderUpdater(this::getData);
     public CookieUpdater cookies = new CookieUpdater(this::getData);
@@ -69,7 +69,7 @@ public class RestMethod {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
-    private ErrorHandler errorHandler = new DefaultErrorHandler();
+    public ErrorHandler errorHandler = new DefaultErrorHandler();
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
     public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
     private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
@@ -81,8 +81,7 @@ public class RestMethod {
         return s;
     };
 
-    public RestMethod() {
-    }
+    public RestMethod() {}
 
     public RestMethod(JAction1<RequestSpecification> specFunc, RestMethodTypes type) {
         specFunc.execute(spec);
@@ -177,15 +176,21 @@ public class RestMethod {
     public RequestData getUserData() {
         return userData;
     }
-
     public RequestSpecification getSpec() {
         return spec;
     }
-
+    public String getUrl() {
+        return url;
+    }
+    public String getPath() {
+        return path;
+    }
+    public RestMethodTypes getType() {
+        return type;
+    }
     public RequestSpecification getInitSpec() {
         return getSpec().spec(getDataSpec(data));
     }
-
     public RequestSpecification getDataSpec() {
         return getDataSpec(data);
     }
@@ -273,7 +278,7 @@ public class RestMethod {
     /**
      * Send HTTP request As Rest Assured Request Specification.
      *
-     * @param requestSpecification Rest Assured request specification
+     * @param requestData requestData
      * @return response
      */
     public RestResponse call(RequestData requestData) {
@@ -312,6 +317,27 @@ public class RestMethod {
         return objectMapper == null
                 ? call().getRaResponse().body().as(c)
                 : call().getRaResponse().body().as(c, objectMapper);
+    }
+
+    /**
+     * Send HTTP request with body.
+     *
+     * @param body request body
+     * @return response
+     */
+    public RestResponse post(Object body) {
+        return body(body).call();
+    }
+
+    /**
+     * Send HTTP request with body and parse result to object
+     *
+     * @param body request body
+     * @param c    type of response body
+     * @return response body as object
+     */
+    public <T> T post(Object body, Class<T> c) {
+        return body(body).callAsData(c);
     }
 
     private void getQueryParams(String queryString) {
@@ -590,10 +616,6 @@ public class RestMethod {
             status = call().getResponseStatus().type;
         } while (status != OK && watch.getTime() < liveTimeMSec);
         call().isOk();
-    }
-
-    public String getType() {
-        return type.toString();
     }
 
     public RestMethod multipart(Object multiPartContent) {

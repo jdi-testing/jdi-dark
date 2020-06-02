@@ -178,8 +178,8 @@ public class ServiceInit {
                 ? new RestDataMethod<>(field)
                 : new RestMethod();
         method.setup(mtData.type, path, url, requestSpecification);
-        method.setObjectMapper(objectMapper);
-        method.setErrorHandler(errorHandler);
+        method.objectMapper = objectMapper;
+        method.errorHandler = errorHandler;
         method.getData().setAuthScheme(authenticationScheme);
         if (field.isAnnotationPresent(ContentType.class))
             method.getData().setContentType(field.getAnnotation(ContentType.class).value());
@@ -207,7 +207,7 @@ public class ServiceInit {
         if (c.isAnnotationPresent(TrustStore.class))
             method.getData().setTrustStore(c.getAnnotation(TrustStore.class));
         if (c.isAnnotationPresent(RetryOnFailure.class))
-            method.setReTryData(new RetryData(c.getAnnotation(RetryOnFailure.class)));
+            method.reTryData = new RetryData(c.getAnnotation(RetryOnFailure.class));
         /* Case for method annotations*/
         if (field.isAnnotationPresent(QueryParameter.class))
             method.queryParams.add(field.getAnnotation(QueryParameter.class));
@@ -220,13 +220,13 @@ public class ServiceInit {
         if (field.isAnnotationPresent(MultiPart.class))
             method.addMultiPartParams(field.getAnnotation(MultiPart.class));
         if (field.isAnnotationPresent(Proxy.class))
-            method.getData().addProxy(field.getAnnotation(Proxy.class));
+            method.getData().setProxySpec(field.getAnnotation(Proxy.class));
         if (field.isAnnotationPresent(TrustStore.class))
             method.getData().setTrustStore(field.getAnnotation(TrustStore.class));
         if (field.isAnnotationPresent(RetryOnFailure.class)) {
             RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
-            method.setReTryData(method.reTryData != null ? method.reTryData.merge(methodRetryData) :
-                    new RetryData(methodRetryData));
+            method.reTryData = (method.reTryData != null) ? method.reTryData.merge(methodRetryData) :
+                    new RetryData(methodRetryData);
         }
         if (field.isAnnotationPresent(IgnoreRetry.class))
             method.reTryData = null;

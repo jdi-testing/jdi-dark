@@ -5,6 +5,7 @@ import com.epam.http.requests.RestDataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
+import static java.util.Arrays.asList;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class TrelloService {
     public static RestMethod addNewCardToBoard;
 
     public static Card addNewCardToBoard(Card card) {
-        return addNewCardToBoard.post(card, Card.class);
+        return addNewCardToBoard.body(card).callAsData(Card.class);
     }
 
     @ContentType(JSON)
@@ -81,7 +82,7 @@ public class TrelloService {
     public static RestMethod createList;
 
     public static TrelloList createList(TrelloList list) {
-        return createList.post(list, TrelloList.class);
+        return createList.body(list).callAsData(TrelloList.class);
     }
 
     @ContentType(JSON)

@@ -31,7 +31,7 @@ public class Utils {
             }
         }
         if (requestContentType.get() != null) {
-            restMethod.setContentType(requestContentType.get());
+            restMethod.getData().setContentType(requestContentType.get());
         }
         return restMethod;
     }

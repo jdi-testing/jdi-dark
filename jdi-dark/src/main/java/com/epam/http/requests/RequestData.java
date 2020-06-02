@@ -6,6 +6,7 @@ import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
+import io.restassured.filter.Filter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookies;
 import io.restassured.http.Headers;
@@ -35,6 +36,7 @@ public class RequestData extends DataClass<RequestData> {
     public MultiMap<String, String> queryParams = new MultiMap<>();
     public MultiMap<String, String> formParams = new MultiMap<>();
     public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
+    public ArrayList<Filter> filters = new ArrayList<>();
     public ProxySpecification proxySpecification = null;
     public AuthenticationScheme authenticationScheme = null;
     public Pair<String, String> trustStore = null;

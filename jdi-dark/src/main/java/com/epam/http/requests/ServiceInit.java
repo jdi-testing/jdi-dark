@@ -94,6 +94,27 @@ public class ServiceInit {
         return getService(c);
     }
 
+    /**
+     * Initialise the Service Object class.
+     *
+     * @param c               class describing Service
+     * @param requestSpecification predefined request specification
+     * @return initialised Service Object
+     */
+    public static <T> T init(Class<T> c, RequestSpecification requestSpecification) {
+        return init(c, ServiceSettings.builder().requestSpecification(requestSpecification).build());
+    }
+
+    /**
+     * Initialise the Service Object class.
+     *
+     * @param c               class describing Service
+     * @param authenticationScheme predefined authenticationScheme
+     * @return initialised Service Object
+     */
+    public static <T> T init(Class<T> c, AuthenticationScheme authenticationScheme) {
+        return init(c, ServiceSettings.builder().authenticationScheme(authenticationScheme).build());
+    }
 
     private static Object service;
 

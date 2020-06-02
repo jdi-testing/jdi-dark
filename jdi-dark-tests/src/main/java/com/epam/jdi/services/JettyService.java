@@ -227,6 +227,9 @@ public class JettyService {
     @GET("/products")
     public static DataMethod<List<Product>> getProductsAsList;
 
+    @GET("/products")
+    public static DataMethod<Product[]> getProductsAsArray;
+
     @GET("/jsonStore")
     public static RestMethod getJsonStore;
 

@@ -61,7 +61,7 @@ public class RestMethod {
     private String url = null;
     private String path = null;
     private String uri = null;
-    public ObjectMapper objectMapper = null;
+    private ObjectMapper objectMapper = null;
 
     public HeaderUpdater header = new HeaderUpdater(this::getData);
     public CookieUpdater cookies = new CookieUpdater(this::getData);
@@ -71,7 +71,7 @@ public class RestMethod {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
-    public ErrorHandler errorHandler = new DefaultErrorHandler();
+    private ErrorHandler errorHandler = new DefaultErrorHandler();
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
     public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
     private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
@@ -190,7 +190,7 @@ public class RestMethod {
         return type;
     }
     public RequestSpecification getInitSpec() {
-        return getSpec().spec(getDataSpec(data));
+        return given().spec(spec).spec(getDataSpec(data));
     }
     public RequestSpecification getDataSpec() {
         return getDataSpec(data);
@@ -277,7 +277,7 @@ public class RestMethod {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        uri = url + path;
+        uri = (url != null) ? url + path : data.uri;
         getQueryParamsFromPath();
         insertPathParams();
         runSpec = (runSpec != null) ? runSpec : getInitSpec();
@@ -300,7 +300,7 @@ public class RestMethod {
     }
 
     /**
-     * Send HTTP request As Rest Assured Request Specification.
+     * Send HTTP request with request data.
      *
      * @param requestData requestData
      * @return response
@@ -310,12 +310,23 @@ public class RestMethod {
     }
 
     /**
-     * Send HTTP request As Rest Assured Request Specification.
+     * Send HTTP request with Rest Assured Request Specification.
      *
      * @param requestSpecification Rest Assured request specification
      * @return response
      */
     public RestResponse call(RequestSpecification requestSpecification) {
+        runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
+        return call();
+    }
+
+    /**
+     * Send HTTP request based on Rest Assured Request Specification.
+     *
+     * @param requestSpecification Rest Assured request specification
+     * @return response
+     */
+    public RestResponse callBasedOnSpec(RequestSpecification requestSpecification) {
         runSpec = requestSpecification.spec(getInitSpec());
         return call();
     }
@@ -444,10 +455,13 @@ public class RestMethod {
             String queryString = substringAfter(path, "?");
             userData.setPath(pathString);
             int index = 0;
-            for (String key : StringUtils.substringsBetween(pathString, "{", "}")) {
-                userData.setEmpty(false);
-                userData.pathParamsUpdater().add(key, pathParams[index].toString());
-                index++;
+            String[] namedPathParams = StringUtils.substringsBetween(pathString, "{", "}");
+            if (namedPathParams != null) {
+                for (String key : StringUtils.substringsBetween(pathString, "{", "}")) {
+                    userData.setEmpty(false);
+                    userData.pathParamsUpdater().add(key, pathParams[index].toString());
+                    index++;
+                }
             }
             if (!queryString.isEmpty()) {
                 return queryParams(substPathParams(queryString, copyOfRange(pathParams, index, pathParams.length)));

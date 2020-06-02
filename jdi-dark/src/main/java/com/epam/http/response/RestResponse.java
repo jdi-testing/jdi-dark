@@ -247,6 +247,10 @@ public class RestResponse {
         return getRaResponse().as(cl);
     }
 
+    public <T> T asData(Class<T> cl, ObjectMapper objectMapper) {
+        return getRaResponse().as(cl, objectMapper);
+    }
+
     public <T> T asData(Class<T> cl, String responseType) {
         switch (responseType) {
             case "List":
@@ -256,10 +260,6 @@ public class RestResponse {
             default:
                 return getRaResponse().as(cl);
         }
-    }
-
-    public <T> T asData(Class<T> cl, ObjectMapper objectMapper) {
-        return getRaResponse().as(cl, objectMapper);
     }
 
     /**

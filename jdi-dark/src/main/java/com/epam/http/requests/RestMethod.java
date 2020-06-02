@@ -55,6 +55,8 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
 public class RestMethod {
 
     RequestSpecification runSpec;
+    protected String responseType;
+    protected Class<?> dataType;
     private RequestSpecification spec = given();
     private String url = null;
     private String path = null;
@@ -172,7 +174,6 @@ public class RestMethod {
     public RequestData getData() {
         return data;
     }
-
     public RequestData getUserData() {
         return userData;
     }
@@ -193,6 +194,29 @@ public class RestMethod {
     }
     public RequestSpecification getDataSpec() {
         return getDataSpec(data);
+    }
+
+    /**
+     * Set ObjectMapper for HTTP request
+     *
+     * @param objectMapper object mapper which will be used for body serialization/deserialization
+     */
+    public RestMethod setObjectMapper(ObjectMapper objectMapper) {
+        if (objectMapper == null) return this;
+        this.objectMapper = objectMapper;
+        return this;
+    }
+
+    /**
+     * Set custome error handler
+     *
+     * @param errorHandler error Handler
+     * @return RestMethod
+     */
+    public RestMethod setErrorHandler(ErrorHandler errorHandler) {
+        if (errorHandler == null) return this;
+        this.errorHandler = errorHandler;
+        return this;
     }
 
 
@@ -310,13 +334,17 @@ public class RestMethod {
     /**
      * Send HTTP request and map response to Java object.
      *
-     * @param c class to make mapping response body to object
+     * @param cl class to make mapping response body to object
      * @return Java object
      */
-    public <T> T callAsData(Class<T> c) {
+    public <T> T callAsData(Class<T> cl) {
         return objectMapper == null
-                ? call().getRaResponse().body().as(c)
-                : call().getRaResponse().body().as(c, objectMapper);
+                ? call().asData(cl)
+                : call().asData(cl, objectMapper);
+    }
+
+    public <T> T callAsData() {
+        return (T) call().asData(dataType, responseType);
     }
 
     /**
@@ -333,11 +361,15 @@ public class RestMethod {
      * Send HTTP request with body and parse result to object
      *
      * @param body request body
-     * @param c    type of response body
+     * @param cl    type of response body
      * @return response body as object
      */
-    public <T> T post(Object body, Class<T> c) {
-        return body(body).callAsData(c);
+    public <T> T post(Object body, Class<T> cl) {
+        return body(body).callAsData(cl);
+    }
+
+    public <T> T postAsData(Object object) {
+        return (T) body(object).call().asData(dataType, responseType);
     }
 
     private void getQueryParams(String queryString) {

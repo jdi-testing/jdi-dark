@@ -178,8 +178,8 @@ public class ServiceInit {
                 ? new RestDataMethod<>(field)
                 : new RestMethod();
         method.setup(mtData.type, path, url, requestSpecification);
-        method.objectMapper = objectMapper;
-        method.errorHandler = errorHandler;
+        method.setObjectMapper(objectMapper);
+        method.setErrorHandler(errorHandler);
         method.getData().setAuthScheme(authenticationScheme);
         if (field.isAnnotationPresent(ContentType.class))
             method.getData().setContentType(field.getAnnotation(ContentType.class).value());

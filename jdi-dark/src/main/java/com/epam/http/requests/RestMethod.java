@@ -54,7 +54,7 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  */
 public class RestMethod {
 
-    RequestSpecification runSpec;
+    private RequestSpecification callSpec;
     protected String responseType;
     protected Class<?> dataType;
     private RequestSpecification spec = given();
@@ -280,7 +280,7 @@ public class RestMethod {
         uri = (url != null) ? url + path : data.uri;
         getQueryParamsFromPath();
         insertPathParams();
-        runSpec = (runSpec != null) ? runSpec : getInitSpec();
+        RequestSpecification runSpec = (callSpec != null) ? callSpec : getInitSpec();
         if (!userData.isEmpty()) {
             runSpec.spec(getDataSpec(userData));
         }
@@ -289,7 +289,7 @@ public class RestMethod {
         RestResponse response = doRequest(type, runSpec, startUuid);
         handleResponse(response);
         response = handleRetrying(runSpec, response);
-        runSpec = null;
+        callSpec = null;
         return response;
     }
 
@@ -316,7 +316,7 @@ public class RestMethod {
      * @return response
      */
     public RestResponse call(RequestSpecification requestSpecification) {
-        runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
+        callSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
         return call();
     }
 
@@ -327,7 +327,7 @@ public class RestMethod {
      * @return response
      */
     public RestResponse callBasedOnSpec(RequestSpecification requestSpecification) {
-        runSpec = requestSpecification.spec(getInitSpec());
+        callSpec = requestSpecification.spec(getInitSpec());
         return call();
     }
 
@@ -338,7 +338,7 @@ public class RestMethod {
      * @return response
      */
     public RestResponse call(RestAssuredConfig restAssuredConfig) {
-        runSpec = getInitSpec().config(restAssuredConfig);
+        callSpec = getInitSpec().config(restAssuredConfig);
         return call();
     }
 

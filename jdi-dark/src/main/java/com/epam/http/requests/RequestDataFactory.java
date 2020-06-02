@@ -6,6 +6,7 @@ import com.epam.http.requests.updaters.HeaderUpdater;
 import com.epam.http.requests.updaters.PathParamsUpdater;
 import com.epam.http.requests.updaters.QueryParamsUpdater;
 import com.epam.jdi.tools.func.JAction1;
+import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 
@@ -39,7 +40,7 @@ public class RequestDataFactory {
 
     //single entities
     public static RequestData requestBody(Object body) {
-        return new RequestData().requestBody(body);
+        return new RequestData().setBody(body);
     }
 
     public static RequestData multipart(MultiPartSpecBuilder multiPartSpecBuilder) {
@@ -47,11 +48,11 @@ public class RequestDataFactory {
     }
 
     public static RequestData auth(AuthenticationScheme authScheme) {
-        return new RequestData().setAuth(authScheme);
+        return new RequestData().setAuthScheme(authScheme);
     }
 
     public static RequestData trustStore(String pathToJks, String password) {
-        return new RequestData().setTrustStore(pathToJks, password);
+        return new RequestData().setTrustStore(new Pair<>(pathToJks, password));
     }
 
     //general

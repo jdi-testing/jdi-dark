@@ -26,8 +26,6 @@ import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
-import lombok.Data;
-import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -45,7 +43,6 @@ import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOfRange;
-import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
@@ -55,10 +52,9 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
-@Data
-@Accessors(chain = true)
 public class RestMethod {
 
+    RequestSpecification runSpec;
     private RequestSpecification spec = given();
     private String url = null;
     private String path = null;
@@ -172,6 +168,20 @@ public class RestMethod {
         this.spec = spec.spec(requestSpecification);
     }
 
+    public RestMethod restMethod() { return this; };
+
+    public RequestData getData() {
+        return data;
+    }
+
+    public RequestData getUserData() {
+        return userData;
+    }
+
+    public RequestSpecification getSpec() {
+        return spec;
+    }
+
     public RequestSpecification getInitSpec() {
         return getSpec().spec(getDataSpec(data));
     }
@@ -241,7 +251,7 @@ public class RestMethod {
         uri = url + path;
         getQueryParamsFromPath();
         insertPathParams();
-        RequestSpecification runSpec = getInitSpec();
+        runSpec = (runSpec != null) ? runSpec : getInitSpec();
         if (!userData.isEmpty()) {
             runSpec.spec(getDataSpec(userData));
         }
@@ -250,16 +260,15 @@ public class RestMethod {
         RestResponse response = doRequest(type, runSpec, startUuid);
         handleResponse(response);
         response = handleRetrying(runSpec, response);
+        runSpec = null;
         return response;
     }
 
     public RestResponse call(JAction1<RequestData> action) {
         RequestData rd = new RequestData();
         action.execute(rd);
-        setData(rd);
-        return call();
+        return call(rd);
     }
-
 
     /**
      * Send HTTP request As Rest Assured Request Specification.
@@ -267,15 +276,19 @@ public class RestMethod {
      * @param requestSpecification Rest Assured request specification
      * @return response
      */
-    public RestResponse callAsSpec(RequestSpecification requestSpecification) {
-        if (type == null) {
-            throw exception("HttpMethodType not specified");
-        }
-        RequestSpecification runSpec = requestSpecification.spec(getInitSpec());
-        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
-        RestResponse response = doRequest(type, runSpec, startUuid);
-        response = handleRetrying(runSpec, response);
-        return response;
+    public RestResponse call(RequestData requestData) {
+        return data(requestData).call();
+    }
+
+    /**
+     * Send HTTP request As Rest Assured Request Specification.
+     *
+     * @param requestSpecification Rest Assured request specification
+     * @return response
+     */
+    public RestResponse call(RequestSpecification requestSpecification) {
+        runSpec = requestSpecification.spec(getInitSpec());
+        return call();
     }
 
     /**
@@ -285,14 +298,8 @@ public class RestMethod {
      * @return response
      */
     public RestResponse call(RestAssuredConfig restAssuredConfig) {
-        if (type == null) {
-            throw exception("HttpMethodType not specified");
-        }
-        RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
-        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
-        RestResponse response = doRequest(type, runSpec, startUuid);
-        response = handleRetrying(runSpec, response);
-        return response;
+        runSpec = getInitSpec().config(restAssuredConfig);
+        return call();
     }
 
     /**

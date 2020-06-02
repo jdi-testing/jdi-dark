@@ -46,7 +46,7 @@ public class ConfigITests extends WithJetty {
             .config(RestAssuredConfig.newConfig()
                     .encoderConfig(EncoderConfig.encoderConfig()
                             .defaultContentCharset("US-ASCII")));
-        postReflect.setContentType(ContentType.TEXT);
+        postReflect.getData().setContentType(ContentType.TEXT);
         RestResponse resp = postReflect.call(rs.body(body));
         resp.isOk().assertThat()
             .header("Content-Type", is("text/plain; charset=US-ASCII"))

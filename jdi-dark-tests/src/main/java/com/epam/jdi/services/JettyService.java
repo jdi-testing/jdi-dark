@@ -80,7 +80,7 @@ public class JettyService {
     public static RestMethod postReflect;
 
     public static RestResponse postReflectWithBody(Object body) {
-        return postReflect.call(rd -> rd.body = body);
+        return postReflect.call(rd -> rd.setBody(body));
     }
 
     public static RestResponse postEmptyCookie(String name) {
@@ -128,7 +128,7 @@ public class JettyService {
     public static RestMethod getGreet;
 
     public static RestResponse getGreetWithMapOfQueryParams(Map<String, String> queryParamsMap) {
-        return getGreet.call(rd -> rd.queryParams.addAll(queryParamsMap));
+        return getGreet.call(rd -> rd.getQueryParams().addAll(queryParamsMap));
     }
 
     @DELETE("/greet")
@@ -146,7 +146,7 @@ public class JettyService {
     public static RestMethod jsonBodyPost;
 
     public static RestResponse jsonBodyPost(String body) {
-        return jsonBodyPost.call(rd -> rd.body = body);
+        return jsonBodyPost.call(rd -> rd.setBody(body));
     }
 
     @POST("/secured/hello")
@@ -171,7 +171,7 @@ public class JettyService {
     public static RestMethod bodyPost;
 
     public static RestResponse bodyPost(Object body) {
-        return postReflect.call(rd -> rd.body = body);
+        return postReflect.call(rd -> rd.setBody(body));
     }
 
     @POST("/greet")
@@ -181,12 +181,12 @@ public class JettyService {
             String contentType, Map<String, String> formParamsMap) {
         return greetPost.call(rd -> {
             rd.setContentType(contentType);
-            rd.formParams.addAll(formParamsMap);
+            rd.getFormParams().addAll(formParamsMap);
         });
     }
 
     public static RestResponse greetPostWithStringOfQueryParams(String queryParams) {
-        return greetPost.call(queryParams);
+        return greetPost.queryParams(queryParams).call();
     }
 
     public static RestResponse greetPost(Object[][] queryParams) {
@@ -250,11 +250,11 @@ public class JettyService {
     public static RestMethod getNoValueParam;
 
     public static RestResponse getNoValueParamWithKeyValueQueryParam(String paramName, String paramValue) {
-        return getNoValueParam.call(rd -> rd.queryParams.add(paramName, paramValue));
+        return getNoValueParam.call(rd -> rd.getQueryParams().add(paramName, paramValue));
     }
 
     public static RestResponse getNoValueParamWithStringQueryParams(String queryParam) {
-        return getNoValueParam.call(queryParam);
+        return getNoValueParam.queryParams(queryParam).call();
     }
 
     @PUT("/noValueParam")
@@ -292,8 +292,8 @@ public class JettyService {
     public static RestResponse postCharEncodingWithContentTypeAndKeyValueFormParam(
             String contentType, String formParamKey, String formParamValue) {
         return postCharEncoding.call(rd -> {
-            rd.contentType = contentType;
-            rd.formParams.add(formParamKey, formParamValue);
+            rd.setContentType(contentType);
+            rd.getFormParams().add(formParamKey, formParamValue);
         });
     }
 
@@ -332,7 +332,7 @@ public class JettyService {
     public static RestMethod searchGoogle;
 
     public static RestResponse searchGoogleSpecificParam(String param) {
-        return searchGoogle.call(param);
+        return searchGoogle.pathParams(param).call();
     }
 
     @GET("/{channelName}/item-import/rss/import?source={url}")
@@ -384,8 +384,8 @@ public class JettyService {
     public static RestMethod postMultiPartFile;
 
     public static RestResponse postMultiPartFile(byte[] file, String fileName) {
-        postMultiPartFile.getMultiPartSpec().setContent(file);
-        postMultiPartFile.getMultiPartSpec().setFileName(fileName);
+        postMultiPartFile.multipart(file);
+        postMultiPartFile.multipart(fileName);
         return postMultiPartFile.call();
     }
 
@@ -405,7 +405,7 @@ public class JettyService {
     public static RestResponse postMultiPartMultipleWithFormParamsAndMPBuilders(Map<String, String> formParamsMap,
                                                                                 MultiPartSpecBuilder... multiPartSpecBuilders) {
         return postMultiPartMultiple.call(rd -> {
-            rd.formParams.addAll(formParamsMap);
+            rd.getFormParams().addAll(formParamsMap);
             Arrays.stream(multiPartSpecBuilders).forEach(rd::setMultiPart);
         });
     }
@@ -432,7 +432,7 @@ public class JettyService {
     public static RestMethod postJsonBodyAcceptHeader;
 
     public static RestResponse postJsonBodyAcceptHeader(String headerName, String headerValue, String body) {
-        return postJsonBodyAcceptHeader.call(headers().add(headerName, headerValue).requestBody(body));
+        return postJsonBodyAcceptHeader.call(headers().add(headerName, headerValue).setBody(body));
     }
 
     @GET("/greetJSON")

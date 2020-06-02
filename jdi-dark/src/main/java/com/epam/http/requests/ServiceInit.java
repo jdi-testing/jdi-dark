@@ -182,7 +182,7 @@ public class ServiceInit {
         method.setErrorHandler(errorHandler);
         method.getData().setAuthScheme(authenticationScheme);
         if (field.isAnnotationPresent(ContentType.class))
-            method.getData().addContentType(field.getAnnotation(ContentType.class).value());
+            method.getData().setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
             method.header.add(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
@@ -205,7 +205,7 @@ public class ServiceInit {
         if (c.isAnnotationPresent(FormParameters.class))
             method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
         if (c.isAnnotationPresent(TrustStore.class))
-            method.getData().addTrustStore(c.getAnnotation(TrustStore.class));
+            method.getData().setTrustStore(c.getAnnotation(TrustStore.class));
         if (c.isAnnotationPresent(RetryOnFailure.class))
             method.setReTryData(new RetryData(c.getAnnotation(RetryOnFailure.class)));
         /* Case for method annotations*/
@@ -222,7 +222,7 @@ public class ServiceInit {
         if (field.isAnnotationPresent(Proxy.class))
             method.getData().addProxy(field.getAnnotation(Proxy.class));
         if (field.isAnnotationPresent(TrustStore.class))
-            method.getData().addTrustStore(field.getAnnotation(TrustStore.class));
+            method.getData().setTrustStore(field.getAnnotation(TrustStore.class));
         if (field.isAnnotationPresent(RetryOnFailure.class)) {
             RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
             method.setReTryData(method.reTryData != null ? method.reTryData.merge(methodRetryData) :

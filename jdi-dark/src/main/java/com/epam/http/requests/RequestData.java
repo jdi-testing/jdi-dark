@@ -20,6 +20,7 @@ import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 import java.util.ArrayList;
 
@@ -50,19 +51,15 @@ public class RequestData extends DataClass<RequestData> {
     public CookieUpdater cookiesUpdater() {
         return new CookieUpdater(() -> this);
     }
-
     public HeaderUpdater headerUpdater() {
         return new HeaderUpdater(() -> this);
     }
-
     public QueryParamsUpdater queryParamsUpdater() {
         return new QueryParamsUpdater(() -> this);
     }
-
     public PathParamsUpdater pathParamsUpdater() {
         return new PathParamsUpdater(() -> this);
     }
-
     public FormParamsUpdater formParamsUpdater() {
         return new FormParamsUpdater(() -> this);
     }
@@ -72,8 +69,9 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param ct Rest Assured Content-Type
      */
-    public RequestData addContentType(ContentType ct) {
-        this.setContentType(ct.toString());
+    @Tolerate
+    public RequestData setContentType(ContentType ct) {
+        setContentType(ct.toString());
         return this;
     }
 
@@ -82,7 +80,8 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param multiPartSpecBuilder MultiPartSpecBuilder
      */
-    public RequestData addMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
+    @Tolerate
+    public RequestData setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
         this.multiPartSpec.add(multiPartSpecBuilder.build());
         return this;
     }
@@ -94,8 +93,9 @@ public class RequestData extends DataClass<RequestData> {
      * @param host   host
      * @param port   port
      */
-    public RequestData addProxySpec(String scheme, String host, int port) {
-        this.setProxySpec(ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme));
+    @Tolerate
+    public RequestData setProxySpec(String scheme, String host, int port) {
+        setProxySpec(ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme));
         return this;
     }
 
@@ -104,8 +104,21 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param proxyParams proxyParams
      */
-    public RequestData addProxySpec(Proxy proxyParams) {
-        addProxySpec(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
+    @Tolerate
+    public RequestData setProxySpec(Proxy proxyParams) {
+        setProxySpec(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
+        return this;
+    }
+
+    /**
+     * Set trustStore parameters to request data.
+     *
+     * @param pathToJks pathToJks
+     * @param password  password
+     */
+    @Tolerate
+    public RequestData setTrustStore(String pathToJks, String password) {
+        setTrustStore(new Pair<>(pathToJks, password));
         return this;
     }
 
@@ -114,8 +127,9 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param trustStore trustStore
      */
-    public RequestData addTrustStore(TrustStore trustStore) {
-        this.setTrustStore(new Pair<>(trustStore.pathToJks(), trustStore.password()));
+    @Tolerate
+    public RequestData setTrustStore(TrustStore trustStore) {
+        setTrustStore(new Pair<>(trustStore.pathToJks(), trustStore.password()));
         return this;
     }
 

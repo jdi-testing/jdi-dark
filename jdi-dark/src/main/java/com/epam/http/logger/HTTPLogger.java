@@ -151,7 +151,7 @@ public class HTTPLogger implements ILogger {
     }
 
     public void toLog(String msg, LogLevels level) {
-        if (logLevel.get().equalOrLessThan(level))
+        if (logLevel.get().equalOrLessThan(level)) {
             switch (level) {
                 case ERROR:
                     error(msg);
@@ -170,5 +170,6 @@ public class HTTPLogger implements ILogger {
                 default:
                     throw new RuntimeException("Unknown log level: " + level);
             }
+        }
     }
 }

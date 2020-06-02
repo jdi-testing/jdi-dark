@@ -546,10 +546,12 @@ public class RestMethod {
         if (requestData.getProxySpec() != null) {
             userData.setProxySpec(requestData.getProxySpec());
         }
-        userData.setTrustStore(requestData.getTrustStore() == null ? data.getTrustStore()
-                : requestData.getTrustStore());
-        userData.setAuthScheme(requestData.getAuthScheme() == null ? data.getAuthScheme()
-                : requestData.getAuthScheme());
+        if (requestData.getTrustStore() == null) {
+            userData.setTrustStore(requestData.getTrustStore());
+        }
+        if (requestData.getAuthScheme() == null) {
+            userData.setAuthScheme(requestData.getAuthScheme());
+        }
         return this;
     }
 

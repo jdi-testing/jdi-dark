@@ -60,7 +60,7 @@ public class ContentTypeTests extends WithJetty {
     public void
     contentTypeIsSentToTheServerWhenUsingAGetRequest() {
         getContentTypeAsBody.call(rd -> {
-            rd.queryParamsUpdater().add("foo", "bar");
+            rd.queryParams.add("foo", "bar");
             rd.setContentType(ContentType.XML.withCharset("utf-8"));
         }).assertThat().body(equalTo(ContentType.XML.withCharset("utf-8")));
     }
@@ -69,7 +69,7 @@ public class ContentTypeTests extends WithJetty {
     public void noContentTypeIsSentByDefaultWhenUsingGetRequest() {
         RestResponse response = getContentTypeAsBody
                 .call(rd ->
-                        rd.queryParamsUpdater().add("foo", "bar"));
+                        rd.queryParams.add("foo", "bar"));
         response.assertThat().body(equalTo("null"));
     }
 
@@ -78,8 +78,8 @@ public class ContentTypeTests extends WithJetty {
         RestResponse response = getReturnContentTypeAsBody
                 .call(rd -> {
                     rd.setContentType(ContentType.JSON.toString());
-                    rd.queryParamsUpdater().add("firstName", "John");
-                    rd.queryParamsUpdater().add("lastName", "Doe");
+                    rd.queryParams.add("firstName", "John");
+                    rd.queryParams.add("lastName", "Doe");
                 });
         response.isOk().assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
     }
@@ -126,7 +126,7 @@ public class ContentTypeTests extends WithJetty {
     public void contentTypeIsApplicationXWwwFormUrlencodedWithDefaultCharsetWhenNoContentTypeIsSpecifiedForPostRequests() {
         RestResponse response = postContentTypeAsBody
                 .call(rd ->
-                        rd.queryParamsUpdater().add("foo", "bar"));
+                        rd.queryParams.add("foo", "bar"));
         response.assertThat().body(equalTo(ContentType.URLENC.withCharset(config().getEncoderConfig().defaultContentCharset())));
     }
 
@@ -134,14 +134,14 @@ public class ContentTypeTests extends WithJetty {
     public void contentTypeValidationIsCaseInsensitive() {
         // Since we provide no content-type (null) Scalatra will return a default content-type which is the
         // same as specified in config().getEncoderConfig().defaultContentCharset() but with charset as lower case.
-        getReflect.call(rd -> rd.queryParamsUpdater().add("foo", "bar"))
+        getReflect.call(rd -> rd.queryParams.add("foo", "bar"))
                 .assertThat().contentType(toJetty9(ContentType.TEXT.withCharset(config().getEncoderConfig().defaultContentCharset())));
     }
 
     @Test
     public void headerWithContentTypeEnumWorks() {
         postReturnContentTypeAsBody
-                .call(rd -> rd.setHeaders(new Headers(new Header("Content-Type", ContentType.JSON.toString()))))
+                .call(rd -> rd.headers = new Headers(new Header("Content-Type", ContentType.JSON.toString())))
                 .assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
     }
 

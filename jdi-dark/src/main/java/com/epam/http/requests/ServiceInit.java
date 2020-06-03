@@ -180,9 +180,9 @@ public class ServiceInit {
         method.setup(mtData.type, path, url, requestSpecification);
         method.setObjectMapper(objectMapper);
         method.setErrorHandler(errorHandler);
-        method.getData().setAuthScheme(authenticationScheme);
+        method.data.setAuthScheme(authenticationScheme);
         if (field.isAnnotationPresent(ContentType.class))
-            method.getData().setContentType(field.getAnnotation(ContentType.class).value());
+            method.data.setContentType(field.getAnnotation(ContentType.class).value());
         if (field.isAnnotationPresent(Header.class))
             method.header.add(field.getAnnotation(Header.class));
         if (field.isAnnotationPresent(Headers.class))
@@ -205,7 +205,7 @@ public class ServiceInit {
         if (c.isAnnotationPresent(FormParameters.class))
             method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
         if (c.isAnnotationPresent(TrustStore.class))
-            method.getData().setTrustStore(c.getAnnotation(TrustStore.class));
+            method.data.setTrustStore(c.getAnnotation(TrustStore.class));
         if (c.isAnnotationPresent(RetryOnFailure.class))
             method.reTryData = new RetryData(c.getAnnotation(RetryOnFailure.class));
         /* Case for method annotations*/
@@ -220,9 +220,9 @@ public class ServiceInit {
         if (field.isAnnotationPresent(MultiPart.class))
             method.addMultiPartParams(field.getAnnotation(MultiPart.class));
         if (field.isAnnotationPresent(Proxy.class))
-            method.getData().setProxySpec(field.getAnnotation(Proxy.class));
+            method.data.setProxySpec(field.getAnnotation(Proxy.class));
         if (field.isAnnotationPresent(TrustStore.class))
-            method.getData().setTrustStore(field.getAnnotation(TrustStore.class));
+            method.data.setTrustStore(field.getAnnotation(TrustStore.class));
         if (field.isAnnotationPresent(RetryOnFailure.class)) {
             RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
             method.reTryData = (method.reTryData != null) ? method.reTryData.merge(methodRetryData) :

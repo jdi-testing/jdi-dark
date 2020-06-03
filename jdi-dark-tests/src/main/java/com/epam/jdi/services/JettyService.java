@@ -128,7 +128,7 @@ public class JettyService {
     public static RestMethod getGreet;
 
     public static RestResponse getGreetWithMapOfQueryParams(Map<String, String> queryParamsMap) {
-        return getGreet.call(rd -> rd.getQueryParams().addAll(queryParamsMap));
+        return getGreet.call(rd -> rd.queryParams.addAll(queryParamsMap));
     }
 
     @DELETE("/greet")
@@ -181,7 +181,7 @@ public class JettyService {
             String contentType, Map<String, String> formParamsMap) {
         return greetPost.call(rd -> {
             rd.setContentType(contentType);
-            rd.getFormParams().addAll(formParamsMap);
+            rd.formParams.addAll(formParamsMap);
         });
     }
 
@@ -250,7 +250,7 @@ public class JettyService {
     public static RestMethod getNoValueParam;
 
     public static RestResponse getNoValueParamWithKeyValueQueryParam(String paramName, String paramValue) {
-        return getNoValueParam.call(rd -> rd.getQueryParams().add(paramName, paramValue));
+        return getNoValueParam.call(rd -> rd.queryParams.add(paramName, paramValue));
     }
 
     public static RestResponse getNoValueParamWithStringQueryParams(String queryParam) {
@@ -293,7 +293,7 @@ public class JettyService {
             String contentType, String formParamKey, String formParamValue) {
         return postCharEncoding.call(rd -> {
             rd.setContentType(contentType);
-            rd.getFormParams().add(formParamKey, formParamValue);
+            rd.formParams.add(formParamKey, formParamValue);
         });
     }
 
@@ -405,7 +405,7 @@ public class JettyService {
     public static RestResponse postMultiPartMultipleWithFormParamsAndMPBuilders(Map<String, String> formParamsMap,
                                                                                 MultiPartSpecBuilder... multiPartSpecBuilders) {
         return postMultiPartMultiple.call(rd -> {
-            rd.getFormParams().addAll(formParamsMap);
+            rd.formParams.addAll(formParamsMap);
             Arrays.stream(multiPartSpecBuilders).forEach(rd::setMultiPart);
         });
     }

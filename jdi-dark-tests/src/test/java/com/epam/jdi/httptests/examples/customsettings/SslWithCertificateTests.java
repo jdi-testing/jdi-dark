@@ -32,8 +32,8 @@ public class SslWithCertificateTests extends WithJetty {
     @Test
     public void whenLastParamInGetRequestEndsWithEqualItsTreatedAsANoValueParam() {
         getGreet.call(d -> {
-            d.queryParamsUpdater().add("firstName", "John");
-            d.queryParamsUpdater().add("lastName", "");
+            d.queryParams.add("firstName", "John");
+            d.queryParams.add("lastName", "");
         }).isOk().assertThat().body("greeting", equalTo("Greetings John "));
     }
 }

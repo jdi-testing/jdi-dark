@@ -18,9 +18,6 @@ import io.restassured.http.Cookies;
 import io.restassured.http.Headers;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import lombok.experimental.Tolerate;
 
 import java.util.ArrayList;
 
@@ -29,8 +26,6 @@ import java.util.ArrayList;
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */
-@Data
-@Accessors(chain = true)
 public class RequestData extends DataClass<RequestData> {
     public boolean empty = true;
     public String uri = null;
@@ -65,13 +60,33 @@ public class RequestData extends DataClass<RequestData> {
     }
 
     /**
-     * Set Content-Type to HTTP request.
+     * Set request body to request data.
      *
-     * @param ct Rest Assured Content-Type
+     * @param body as formatted String
+     * @return generated request data with provided request body
      */
-    @Tolerate
-    public RequestData setContentType(ContentType ct) {
-        setContentType(ct.toString());
+    public RequestData setBody(Object body) {
+        this.body = body;
+        return this;
+    }
+
+    /**
+     * Set content type to request data.
+     *
+     * @param contentType content type as string
+     */
+    public RequestData setContentType(String contentType) {
+        this.contentType = contentType;
+        return this;
+    }
+
+    /**
+     * Set content type to request data.
+     *
+     * @param contentType Rest Assured Content-Type
+     */
+    public RequestData setContentType(ContentType contentType) {
+        this.contentType = contentType.toString();
         return this;
     }
 
@@ -80,9 +95,20 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param multiPartSpecBuilder MultiPartSpecBuilder
      */
-    @Tolerate
     public RequestData setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
         this.multiPartSpec.add(multiPartSpecBuilder.build());
+        return this;
+    }
+
+    /**
+     * Set authentication scheme to request data
+     * This allows authentication for requests
+     *
+     * @param authScheme authentication scheme: from restassured or custom
+     */
+
+    public RequestData setAuthScheme(AuthenticationScheme authScheme) {
+        this.authScheme = authScheme;
         return this;
     }
 
@@ -93,9 +119,8 @@ public class RequestData extends DataClass<RequestData> {
      * @param host   host
      * @param port   port
      */
-    @Tolerate
     public RequestData setProxySpec(String scheme, String host, int port) {
-        setProxySpec(ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme));
+        proxySpec = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
         return this;
     }
 
@@ -104,7 +129,6 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param proxyParams proxyParams
      */
-    @Tolerate
     public RequestData setProxySpec(Proxy proxyParams) {
         setProxySpec(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
         return this;
@@ -116,9 +140,8 @@ public class RequestData extends DataClass<RequestData> {
      * @param pathToJks pathToJks
      * @param password  password
      */
-    @Tolerate
     public RequestData setTrustStore(String pathToJks, String password) {
-        setTrustStore(new Pair<>(pathToJks, password));
+        trustStore = new Pair<>(pathToJks, password);
         return this;
     }
 
@@ -127,9 +150,8 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param trustStore trustStore
      */
-    @Tolerate
     public RequestData setTrustStore(TrustStore trustStore) {
-        setTrustStore(new Pair<>(trustStore.pathToJks(), trustStore.password()));
+        setTrustStore(trustStore.pathToJks(), trustStore.password());
         return this;
     }
 

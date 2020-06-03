@@ -1,7 +1,6 @@
 package com.epam.jdi.soap;
 
 import com.epam.http.annotations.POST;
-import com.epam.http.annotations.SOAP12;
 import com.epam.http.annotations.ServiceDomain;
 import com.epam.http.requests.SoapMethod;
 import com.epam.jdi.soap.net.yandex.speller.services.spellservice.CheckTextRequest;

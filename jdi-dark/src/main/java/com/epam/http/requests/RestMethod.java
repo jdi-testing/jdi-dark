@@ -83,7 +83,8 @@ public class RestMethod {
         return s;
     };
 
-    public RestMethod() {}
+    public RestMethod() {
+    }
 
     public RestMethod(JAction1<RequestSpecification> specFunc, RestMethodTypes type) {
         specFunc.execute(spec);
@@ -115,6 +116,7 @@ public class RestMethod {
      * Constructor for forming HTTP request.
      *
      * @param type of HTTP request
+     * @param url  of HTTP request
      * @param path to send HTTP request to
      */
     public RestMethod(RestMethodTypes type, String url, String path) {
@@ -125,6 +127,7 @@ public class RestMethod {
      * Constructor for forming HTTP request.
      *
      * @param type of HTTP request
+     * @param url  of HTTP request
      * @param data of request
      */
     public RestMethod(RestMethodTypes type, String url, String path, RequestData data) {
@@ -151,6 +154,7 @@ public class RestMethod {
      * Constructor for forming HTTP request with given Rest Assured Request Specification.
      *
      * @param type                 of HTTP request
+     * @param path                 of request
      * @param url                  of request
      * @param requestSpecification Rest Assured request specification
      */
@@ -169,14 +173,18 @@ public class RestMethod {
         this.spec = spec.spec(requestSpecification);
     }
 
-    public RestMethod restMethod() { return this; };
+    public RestMethod restMethod() {
+        return this;
+    }
 
     public RequestData getData() {
         return data;
     }
+
     public RequestSpecification getInitSpec() {
         return given().spec(spec).spec(getDataSpec(data));
     }
+
     public RequestSpecification getDataSpec() {
         return getDataSpec(data);
     }
@@ -185,6 +193,7 @@ public class RestMethod {
      * Set ObjectMapper for HTTP request
      *
      * @param objectMapper object mapper which will be used for body serialization/deserialization
+     * @return RestMethod Rest method
      */
     public RestMethod setObjectMapper(ObjectMapper objectMapper) {
         if (objectMapper == null) return this;
@@ -330,7 +339,8 @@ public class RestMethod {
     /**
      * Send HTTP request and map response to Java object.
      *
-     * @param cl class to make mapping response body to object
+     * @param cl  class to make mapping response body to object
+     * @param <T> type
      * @return Java object
      */
     public <T> T callAsData(Class<T> cl) {
@@ -357,7 +367,8 @@ public class RestMethod {
      * Send HTTP request with body and parse result to object
      *
      * @param body request body
-     * @param cl    type of response body
+     * @param cl   type of response body
+     * @param <T>  type
      * @return response body as object
      */
     public <T> T post(Object body, Class<T> cl) {
@@ -419,7 +430,7 @@ public class RestMethod {
      * Send HTTP request with specific query parameters.
      *
      * @param queryParams additional query parameters
-     * @return response
+     * @return RestMethod Rest method
      */
     public RestMethod queryParams(String queryParams) {
         getQueryParams(queryParams);
@@ -430,7 +441,7 @@ public class RestMethod {
      * Send HTTP request with specific named path parameters.
      *
      * @param pathParams path parameters
-     * @return response
+     * @return RestMethod Rest method
      */
     public RestMethod pathParams(Object... pathParams) {
         if (pathParams.length > 0) {
@@ -484,7 +495,7 @@ public class RestMethod {
      * Send HTTP request with body.
      *
      * @param body request body
-     * @return response
+     * @return RestMethod Rest method
      */
     public RestMethod body(Object body) {
         data.body = body;
@@ -501,7 +512,7 @@ public class RestMethod {
      * Send HTTP request with invoked request data.
      *
      * @param requestData requestData
-     * @return response
+     * @return RestMethod Rest method
      */
     public RestMethod data(RequestData requestData) {
         userData.empty = false;
@@ -536,10 +547,10 @@ public class RestMethod {
         if (requestData.proxySpec != null) {
             userData.proxySpec = requestData.proxySpec;
         }
-        if (requestData.trustStore == null) {
+        if (requestData.trustStore != null) {
             userData.trustStore = requestData.trustStore;
         }
-        if (requestData.authScheme == null) {
+        if (requestData.authScheme != null) {
             userData.authScheme = requestData.authScheme;
         }
         return this;
@@ -548,6 +559,7 @@ public class RestMethod {
     /**
      * Get request specification to be able to log it.
      *
+     * @param data RequestData
      * @return request specification
      */
     public RequestSpecification getDataSpec(RequestData data) {
@@ -564,7 +576,7 @@ public class RestMethod {
         if (data.uri != null) {
             spec.baseUri(data.uri);
         }
-        if (data.path!= null) {
+        if (data.path != null) {
             spec.basePath(data.path);
         }
         if (data.pathParams.any()) {
@@ -611,6 +623,7 @@ public class RestMethod {
      *
      * @param runSpec       - request specification
      * @param firstResponse - result of first request
+     * @return RestResponse response
      */
     private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
         if (reTryData == null || reTryData.getNumberOfRetryAttempts() <= 0) return firstResponse;

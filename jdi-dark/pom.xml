@@ -6,9 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.epam.jdi</groupId>
-    <version>1.1.0</version>
     <artifactId>jdi-dark</artifactId>
+    <version>1.1.1</version>
     <name>JDI Dark</name>
+    <description>Test automation framework for web service testing powered by REST Assured.</description>
+    <url>http://jdi.epam.com/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

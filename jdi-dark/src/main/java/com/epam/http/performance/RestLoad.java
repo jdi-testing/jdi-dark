@@ -97,6 +97,7 @@ public class RestLoad {
      * @param liveTimeInSec     time limits requests should succeed
      * @param requests          requests
      * @return results of loading the service
+     * @throws InterruptedException Interrupted Exception
      */
     public static PerformanceResult loadService(int concurrentThreads, long liveTimeInSec, RestMethod... requests) throws InterruptedException {
         return loadService(concurrentThreads, new RunnableLoadService(liveTimeInSec, requests));

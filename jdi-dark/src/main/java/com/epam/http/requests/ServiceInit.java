@@ -81,7 +81,8 @@ public class ServiceInit {
     /**
      * Initialise the Service Object class.
      *
-     * @param c class describing Service
+     * @param c   class describing Service
+     * @param <T> type
      * @return initialised Service Object
      */
     public static <T> T init(Class<T> c) {
@@ -93,6 +94,7 @@ public class ServiceInit {
      * Initialise the Service Object class.
      *
      * @param c               class describing Service
+     * @param <T>             type
      * @param serviceSettings predefined settings for service
      * @return initialised Service Object
      */
@@ -119,6 +121,7 @@ public class ServiceInit {
      * Initialise the Service Object class.
      *
      * @param c                    class describing Service
+     * @param <T>                  type
      * @param requestSpecification predefined request specification
      * @return initialised Service Object
      */
@@ -130,6 +133,7 @@ public class ServiceInit {
      * Initialise the Service Object class.
      *
      * @param c                    class describing Service
+     * @param <T>                  type
      * @param authenticationScheme predefined authenticationScheme
      * @return initialised Service Object
      */

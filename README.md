@@ -19,14 +19,14 @@ Increase test [performance examples](https://github.com/jdi-testing/jdi-dark/blo
 JDI Dark – is the test Framework for services testing that makes your tests fast and sustainable and provides obvious and predictable test run result
 
 ## Highlights
- -Obvious Service Object Model that helps to reduce test development effort and increase its speed
- -REST and SOAP web service design support
- -Extended capabilities of REST Assured framework with all its features kept
- -Simple interface for sending requests and response analysis
- -Automated service objects generation both for REST and SOAP
- -Support of the BDD approach
- -Retrying of failed tests with specified number of attempts
- -Detailed logging of requests and responses in JSON format which can be used in your reports
+-Obvious Service Object Model that helps to reduce test development effort and increase its speed <br/>
+-REST and SOAP web service design support <br/>
+-Extended capabilities of REST Assured framework with all its features kept <br/>
+-Simple interface for sending requests and response analysis <br/>
+-Automated service objects generation both for REST and SOAP <br/>
+-Support of the BDD approach <br/>
+-Retrying of failed tests with specified number of attempts <br/>
+-Detailed logging of requests and responses in JSON format which can be used in your reports
 
 ## Our plans
 ### Ultimate Goal

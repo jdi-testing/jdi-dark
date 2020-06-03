@@ -498,7 +498,7 @@ public class RestMethod {
      * @return RestMethod Rest method
      */
     public RestMethod body(Object body) {
-        data.body = body;
+        userData.body = body;
         return this;
     }
 

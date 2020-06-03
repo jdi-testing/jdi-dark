@@ -39,7 +39,7 @@ public class RequestDataFactory {
     }
 
     //single entities
-    public static RequestData requestBody(Object body) {
+    public static RequestData body(Object body) {
         return new RequestData().setBody(body);
     }
 

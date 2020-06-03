@@ -47,6 +47,5 @@ public class JdiHttpSettings {
         getProperties(TEST_PROPERTIES_PATH);
         fillAction(JdiHttpSettings::setDomain, "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
-        fillAction(p -> AllureLogger.writeToAllure = Boolean.parseBoolean(p), "allure.logger");
     }
 }

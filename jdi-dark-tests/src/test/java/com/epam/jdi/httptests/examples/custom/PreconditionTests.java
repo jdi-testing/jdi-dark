@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static com.epam.http.requests.RequestDataFactory.pathParams;
-import static com.epam.http.requests.RequestDataFactory.requestBody;
+import static com.epam.http.requests.RequestDataFactory.body;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.TrelloService.boardsPost;
 import static java.lang.String.format;
@@ -53,7 +53,7 @@ public class PreconditionTests {
 
     @Test(dataProvider = "createNewBoards")
     public void createNewBoardTest(String boardName) throws IOException {
-        RestResponse response = boardsPost.call(requestBody(format("{\"name\": \"%s\"}", boardName)));
+        RestResponse response = boardsPost.call(body(format("{\"name\": \"%s\"}", boardName)));
         response.isOk().body("name", equalTo(boardName));
         Board board = response.getRaResponse().as(Board.class);
         writeToCSV(board);

@@ -14,10 +14,6 @@
         "ERROR",
         "OFF"
       ]
-    },
-    {
-      "name": "allure.logger",
-      "description": "Wright to allure logger. Default = true"
     }
   ]
 }

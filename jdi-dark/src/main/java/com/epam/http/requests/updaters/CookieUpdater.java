@@ -9,18 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CookieUpdater extends SpecUpdater<com.epam.http.annotations.Cookie, Cookie> {
-    public CookieUpdater() { this(RequestData::new); }
+    public CookieUpdater() {
+        this(RequestData::new);
+    }
+
     public CookieUpdater(JFunc<RequestData> dataFunc) {
         super(
-            cookies -> {
-                RequestData data = dataFunc.execute();
-                List<Cookie> headerList = new ArrayList<>(data.cookies.asList());
-                headerList.addAll(cookies);
-                data.cookies = new Cookies(headerList);
-                return data;
-            },
-            c -> new Cookie.Builder(c.name(), c.value()).build(),
-            (name, value) -> new Cookie.Builder(name, value).build()
+                cookies -> {
+                    RequestData data = dataFunc.execute();
+                    List<Cookie> headerList = new ArrayList<>(data.getCookies().asList());
+                    headerList.addAll(cookies);
+                    data.setCookies(new Cookies(headerList));
+                    return data;
+                },
+                c -> new Cookie.Builder(c.name(), c.value()).build(),
+                (name, value) -> new Cookie.Builder(name, value).build()
         );
     }
 }

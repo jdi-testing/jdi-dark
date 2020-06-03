@@ -2,8 +2,16 @@ package com.epam.http.performance;
 
 import com.epam.http.requests.RestMethod;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import static com.epam.http.JdiHttpSettings.logger;
@@ -11,7 +19,7 @@ import static java.lang.System.currentTimeMillis;
 
 public class RestLoad {
 
-    static class RunnableLoadService implements Callable<ThreadResult>, Cloneable{
+    static class RunnableLoadService implements Callable<ThreadResult>, Cloneable {
         private final long liveTimeInSec;
         private Map<RestMethod, Integer> weightRequests;
         private RestMethod[] restMethods;
@@ -45,13 +53,13 @@ public class RestLoad {
 
         @Override
         public ThreadResult call() {
-            logger.info(Thread.currentThread().getName()+" started.");
+            logger.info(Thread.currentThread().getName() + " started.");
             ThreadResult result = new ThreadResult();
             long start = currentTimeMillis();
             do {
                 result.addResult(getRestMethod().call());
             } while (currentTimeMillis() - start < liveTimeInSec * 1000);
-            logger.info(Thread.currentThread().getName()+" finished.");
+            logger.info(Thread.currentThread().getName() + " finished.");
             return result;
         }
     }
@@ -71,7 +79,7 @@ public class RestLoad {
         List<Future<ThreadResult>> results = executor.invokeAll(tasks);
         PerformanceResult pr = new PerformanceResult();
         executor.shutdown();
-        for(Future<ThreadResult> result : results){
+        for (Future<ThreadResult> result : results) {
             try {
                 threadResults.add(result.get());
             } catch (ExecutionException e) {

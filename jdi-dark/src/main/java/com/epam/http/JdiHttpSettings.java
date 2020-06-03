@@ -18,25 +18,24 @@ public class JdiHttpSettings {
 
     public static String getDomain() {
         return !DOMAIN.isEmpty()
-            ? DOMAIN.get("domain")
-            : "No Domain Found. Use test.properties or WebSettings.DOMAIN";
+                ? DOMAIN.get("domain")
+                : "No Domain Found. Use test.properties or WebSettings.DOMAIN";
     }
 
     public static String getDomain(String domainId) {
         return !DOMAIN.isEmpty()
-            ? DOMAIN.getOrDefault(domainId, "No Domain Found. Use test.properties.")
-            : "No Domain Found. Use test.properties.";
+                ? DOMAIN.getOrDefault(domainId, "No Domain Found. Use test.properties.")
+                : "No Domain Found. Use test.properties.";
     }
 
     public static void setDomain(String domain) {
         String[] params = domain.trim().split(",");
         if (domain.contains("=")) {
-            for(String p : params) {
+            for (String p : params) {
                 String[] pairs = p.split("=");
                 DOMAIN.put(pairs[0].trim(), pairs[1]);
             }
-        }
-        else {
+        } else {
             DOMAIN.put("domain", domain);
         }
     }

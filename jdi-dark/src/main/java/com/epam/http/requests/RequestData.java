@@ -1,6 +1,12 @@
 package com.epam.http.requests;
 
-import com.epam.http.requests.updaters.*;
+import com.epam.http.annotations.Proxy;
+import com.epam.http.annotations.TrustStore;
+import com.epam.http.requests.updaters.CookieUpdater;
+import com.epam.http.requests.updaters.FormParamsUpdater;
+import com.epam.http.requests.updaters.HeaderUpdater;
+import com.epam.http.requests.updaters.PathParamsUpdater;
+import com.epam.http.requests.updaters.QueryParamsUpdater;
 import com.epam.jdi.tools.DataClass;
 import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
@@ -14,6 +20,7 @@ import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.ProxySpecification;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 import java.util.ArrayList;
 
@@ -35,58 +42,36 @@ public class RequestData extends DataClass<RequestData> {
     public MultiMap<String, String> pathParams = new MultiMap<>();
     public MultiMap<String, String> queryParams = new MultiMap<>();
     public MultiMap<String, String> formParams = new MultiMap<>();
-    public ArrayList<MultiPartSpecification> multiPartSpecifications = new ArrayList<>();
+    public ArrayList<MultiPartSpecification> multiPartSpec = new ArrayList<>();
     public ArrayList<Filter> filters = new ArrayList<>();
-    public ProxySpecification proxySpecification = null;
-    public AuthenticationScheme authenticationScheme = null;
+    public ProxySpecification proxySpec = null;
+    public AuthenticationScheme authScheme = null;
     public Pair<String, String> trustStore = null;
 
-    public CookieUpdater addCookies() {
+    public CookieUpdater cookiesUpdater() {
         return new CookieUpdater(() -> this);
     }
-
-    public HeaderUpdater addHeaders() { return new HeaderUpdater(() -> this); }
-
-    public QueryParamsUpdater addQueryParams() {
+    public HeaderUpdater headerUpdater() {
+        return new HeaderUpdater(() -> this);
+    }
+    public QueryParamsUpdater queryParamsUpdater() {
         return new QueryParamsUpdater(() -> this);
     }
-
-    public PathParamsUpdater addPathParams() {
+    public PathParamsUpdater pathParamsUpdater() {
         return new PathParamsUpdater(() -> this);
     }
-
-    public FormParamsUpdater addFormParams() {
+    public FormParamsUpdater formParamsUpdater() {
         return new FormParamsUpdater(() -> this);
     }
 
     /**
-     * Set request body to request data.
+     * Set Content-Type to HTTP request.
      *
-     * @param body as formatted String
-     * @return generated request data with provided request body
+     * @param ct Rest Assured Content-Type
      */
-    public RequestData requestBody(Object body) {
-        this.body = body;
-        return this;
-    }
-
-    /**
-     * Set content type to request data.
-     *
-     * @param contentType content type as string
-     */
-    public RequestData setContentType(String contentType) {
-        this.contentType = contentType;
-        return this;
-    }
-
-    /**
-     * Set content type to request data.
-     *
-     * @param contentType content type as ContentType
-     */
-    public RequestData setContentType(ContentType contentType) {
-        this.contentType = contentType.toString();
+    @Tolerate
+    public RequestData setContentType(ContentType ct) {
+        setContentType(ct.toString());
         return this;
     }
 
@@ -95,20 +80,9 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param multiPartSpecBuilder MultiPartSpecBuilder
      */
+    @Tolerate
     public RequestData setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
-        this.multiPartSpecifications.add(multiPartSpecBuilder.build());
-        return this;
-    }
-
-    /**
-     * Set authentication scheme to request data
-     * This allows authentication for requests
-     *
-     * @param authScheme authentication scheme: from restassured or custom
-     */
-
-    public RequestData setAuth(AuthenticationScheme authScheme) {
-        this.authenticationScheme = authScheme;
+        this.multiPartSpec.add(multiPartSpecBuilder.build());
         return this;
     }
 
@@ -119,8 +93,20 @@ public class RequestData extends DataClass<RequestData> {
      * @param host   host
      * @param port   port
      */
-    public RequestData setProxySpecification(String scheme, String host, int port) {
-        this.proxySpecification = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
+    @Tolerate
+    public RequestData setProxySpec(String scheme, String host, int port) {
+        setProxySpec(ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme));
+        return this;
+    }
+
+    /**
+     * Set proxy parameters to the request.
+     *
+     * @param proxyParams proxyParams
+     */
+    @Tolerate
+    public RequestData setProxySpec(Proxy proxyParams) {
+        setProxySpec(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
         return this;
     }
 
@@ -130,8 +116,20 @@ public class RequestData extends DataClass<RequestData> {
      * @param pathToJks pathToJks
      * @param password  password
      */
+    @Tolerate
     public RequestData setTrustStore(String pathToJks, String password) {
-        this.trustStore = new Pair<>(pathToJks, password);
+        setTrustStore(new Pair<>(pathToJks, password));
+        return this;
+    }
+
+    /**
+     * Set trustStore parameters to the request.
+     *
+     * @param trustStore trustStore
+     */
+    @Tolerate
+    public RequestData setTrustStore(TrustStore trustStore) {
+        setTrustStore(new Pair<>(trustStore.pathToJks(), trustStore.password()));
         return this;
     }
 
@@ -149,9 +147,9 @@ public class RequestData extends DataClass<RequestData> {
         uri = null;
         contentType = null;
         empty = true;
-        multiPartSpecifications.clear();
-        proxySpecification = null;
-        authenticationScheme = null;
+        multiPartSpec.clear();
+        proxySpec = null;
+        authScheme = null;
         trustStore = null;
     }
 }

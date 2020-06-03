@@ -41,8 +41,8 @@ public class ProxyTests extends WithJetty {
         params.put("firstName", "John");
         params.put("lastName", "Doe");
         JettyService.getGreenJSON.call(rd -> {
-            rd.setProxySpecification("http", "localhost", 8888);
-            rd.queryParams.addAll(params);
+            rd.setProxySpec("http", "localhost", 8888);
+            rd.queryParamsUpdater().addAll(params);
         }).isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
                 body("greeting.lastName", equalTo("Doe"));
@@ -53,7 +53,7 @@ public class ProxyTests extends WithJetty {
         final Map<String, String> params = new HashMap<>();
         params.put("firstName", "John");
         params.put("lastName", "Doe");
-        JettyService.getGreenJSONWithProxyParams.call(rd -> rd.queryParams.addAll(params))
+        JettyService.getGreenJSONWithProxyParams.call(rd -> rd.queryParamsUpdater().addAll(params))
                 .isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
                 body("greeting.lastName", equalTo("Doe"));
@@ -65,8 +65,8 @@ public class ProxyTests extends WithJetty {
         params.put("firstName", "John");
         params.put("lastName", "Doe");
         JettyService.getGreenJSON.call(rd -> {
-            rd.queryParams.addAll(params);
-            rd.proxySpecification = ProxySpecification.host("localhost");
+            rd.queryParamsUpdater().addAll(params);
+            rd.setProxySpec(ProxySpecification.host("localhost"));
         }).isOk().assertThat().
                 body("greeting.firstName", equalTo("John")).
                 body("greeting.lastName", equalTo("Doe"));

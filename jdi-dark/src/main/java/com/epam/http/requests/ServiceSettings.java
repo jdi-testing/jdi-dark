@@ -31,7 +31,9 @@ public class ServiceSettings {
         return errorHandler;
     }
 
-    public AuthenticationScheme getAuthenticationScheme() { return authenticationScheme; }
+    public AuthenticationScheme getAuthenticationScheme() {
+        return authenticationScheme;
+    }
 
     public static Builder builder() {
         return new ServiceSettings.Builder();

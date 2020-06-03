@@ -12,7 +12,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface MultiPart {
     String fileName() default "";
+
     String controlName() default "";
+
     String filePath() default "";
+
     String mimeType() default "";
 }

@@ -1,8 +1,6 @@
 package com.epam.http.requests;
 
 import com.epam.http.annotations.MultiPart;
-import com.epam.http.annotations.Proxy;
-import com.epam.http.annotations.TrustStore;
 import com.epam.http.requests.errorhandler.DefaultErrorHandler;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.http.requests.updaters.CookieUpdater;
@@ -17,16 +15,16 @@ import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.func.JFunc3;
 import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
-import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
-import io.restassured.filter.Filter;
-import io.restassured.http.*;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.internal.RequestSpecificationImpl;
 import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
-import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -45,7 +43,6 @@ import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.copyOfRange;
-import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.substringAfter;
 import static org.apache.commons.lang3.StringUtils.substringBefore;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
@@ -57,6 +54,9 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
  */
 public class RestMethod {
 
+    private RequestSpecification callSpec;
+    protected String responseType;
+    protected Class<?> dataType;
     private RequestSpecification spec = given();
     private String url = null;
     private String path = null;
@@ -71,6 +71,7 @@ public class RestMethod {
     private RequestData data;
     private RequestData userData = new RequestData();
     private RestMethodTypes type;
+    private ErrorHandler errorHandler = new DefaultErrorHandler();
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
     public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
     private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
@@ -82,10 +83,7 @@ public class RestMethod {
         return s;
     };
 
-    private ErrorHandler errorHandler = new DefaultErrorHandler();
-
-    public RestMethod() {
-    }
+    public RestMethod() {}
 
     public RestMethod(JAction1<RequestSpecification> specFunc, RestMethodTypes type) {
         specFunc.execute(spec);
@@ -171,10 +169,29 @@ public class RestMethod {
         this.spec = spec.spec(requestSpecification);
     }
 
+    public RestMethod restMethod() { return this; };
+
+    public RequestData getData() {
+        return data;
+    }
+    public RequestData getUserData() {
+        return userData;
+    }
+    public RequestSpecification getSpec() {
+        return spec;
+    }
+    public String getUrl() {
+        return url;
+    }
+    public String getPath() {
+        return path;
+    }
+    public RestMethodTypes getType() {
+        return type;
+    }
     public RequestSpecification getInitSpec() {
         return given().spec(spec).spec(getDataSpec(data));
     }
-
     public RequestSpecification getDataSpec() {
         return getDataSpec(data);
     }
@@ -184,54 +201,24 @@ public class RestMethod {
      *
      * @param objectMapper object mapper which will be used for body serialization/deserialization
      */
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        if (objectMapper == null) return;
+    public RestMethod setObjectMapper(ObjectMapper objectMapper) {
+        if (objectMapper == null) return this;
         this.objectMapper = objectMapper;
+        return this;
     }
 
     /**
      * Set custome error handler
      *
      * @param errorHandler error Handler
+     * @return RestMethod
      */
-    public void setErrorHandler(ErrorHandler errorHandler) {
-        if (errorHandler == null) return;
+    public RestMethod setErrorHandler(ErrorHandler errorHandler) {
+        if (errorHandler == null) return this;
         this.errorHandler = errorHandler;
+        return this;
     }
 
-    public void setAuthenticationScheme(AuthenticationScheme authenticationScheme) {
-        if (authenticationScheme == null) return;
-        data.authenticationScheme = authenticationScheme;
-    }
-
-    /**
-     * Set Content-Type to HTTP request.
-     *
-     * @param ct Rest Assured Content-Type
-     */
-    public void setContentType(ContentType ct) {
-        if (ct == null) return;
-        data.contentType = ct.toString();
-    }
-
-    /**
-     * Set trustStore parameters to the request.
-     *
-     * @param trustStore trustStore
-     */
-
-    void setTrustStore(TrustStore trustStore) {
-        data.trustStore = new Pair<>(trustStore.pathToJks(), trustStore.password());
-    }
-
-    /**
-     * Set proxy parameters to the request.
-     *
-     * @param proxyParams proxyParams
-     */
-    void setProxy(Proxy proxyParams) {
-        data.setProxySpecification(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
-    }
 
     void addMultiPartParams(MultiPart multiPartParams) {
         String path = multiPartParams.filePath();
@@ -244,10 +231,10 @@ public class RestMethod {
             mpSpecBuilder.fileName(multiPartParams.fileName());
         if (!multiPartParams.mimeType().isEmpty())
             mpSpecBuilder.mimeType(multiPartParams.mimeType());
-        data.multiPartSpecifications.add(mpSpecBuilder.build());
+        getData().getMultiPartSpec().add(mpSpecBuilder.build());
     }
 
-    public static void resetLogRequest(){
+    public static void resetLogRequest() {
         LOG_REQUEST = LOG_REQUEST_DEFAULT;
         LOG_RETRY_REQUEST = LOG_RETRY_REQUEST_DEFAULT;
     }
@@ -261,14 +248,14 @@ public class RestMethod {
                     !k.equals("empty") &&
                     v != null && !v.toString().equals("[]") && !v.toString().isEmpty())
                     .map((k, v) -> "\n" + k + ": " +
-                            (v instanceof MultiMap ? ((MultiMap) v).map((km, vm) -> km + "=" + vm ) : v)));
-            if (rd.headers.exist()) {
-                maps.add("\nheaders: " + rd.headers.asList().toString());
+                            (v instanceof MultiMap ? ((MultiMap) v).map((km, vm) -> km + "=" + vm) : v)));
+            if (rd.getHeaders().exist()) {
+                maps.add("\nheaders: " + rd.getHeaders().asList().toString());
             }
-            if (rd.cookies.exist()) {
-                maps.add("\ncookies: " + rd.cookies.asList().toString());
+            if (rd.getCookies().exist()) {
+                maps.add("\ncookies: " + rd.getCookies().asList().toString());
             }
-            rd.multiPartSpecifications.forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
+            rd.getMultiPartSpec().forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
         }
         logger.info(format("Do %s request: %s %s", type, uri != null ? uri : "", maps));
         return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
@@ -290,11 +277,11 @@ public class RestMethod {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
-        uri = url + path;
+        uri = (url != null) ? url + path : data.uri;
         getQueryParamsFromPath();
         insertPathParams();
-        RequestSpecification runSpec = getInitSpec();
-        if (!userData.empty) {
+        RequestSpecification runSpec = (callSpec != null) ? callSpec : getInitSpec();
+        if (!userData.isEmpty()) {
             runSpec.spec(getDataSpec(userData));
         }
         String startUuid = LOG_REQUEST.execute(this, asList(data, userData));
@@ -302,38 +289,24 @@ public class RestMethod {
         RestResponse response = doRequest(type, runSpec, startUuid);
         handleResponse(response);
         response = handleRetrying(runSpec, response);
+        callSpec = null;
         return response;
     }
 
-    /**
-     * Sends HTTP request until server response status different from indicated
-     * or max number of attempts was reached
-     *
-     * @param runSpec       - request specification
-     * @param firstResponse - result of first request
-     */
-    private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
-        if (reTryData == null || reTryData.getNumberOfRetryAttempts() <= 0) return firstResponse;
-        List<Integer> errorCodes = reTryData.getErrorCodes();
-
-        boolean failure = errorCodes.contains(firstResponse.getStatus().code);
-        if (failure) {
-            for (int attempt = 0; attempt < reTryData.getNumberOfRetryAttempts(); attempt++) {
-                WaitUtils.makeDelayFor(reTryData.getUnit(), reTryData.getDelay());
-                String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
-                RestResponse retryingResponse = doRequest(type, runSpec, startUuidRetry);
-                if (!errorCodes.contains(retryingResponse.getStatus().code)) return retryingResponse;
-            }
-        }
-        return firstResponse;
+    public RestResponse call(JAction1<RequestData> action) {
+        RequestData rd = new RequestData();
+        action.execute(rd);
+        return call(rd);
     }
 
-
-    private void handleResponse(RestResponse restResponse) {
-        boolean hasError = errorHandler.hasError(restResponse);
-        if (hasError) {
-            errorHandler.handleError(restResponse);
-        }
+    /**
+     * Send HTTP request with request data.
+     *
+     * @param requestData requestData
+     * @return response
+     */
+    public RestResponse call(RequestData requestData) {
+        return data(requestData).call();
     }
 
     /**
@@ -343,31 +316,19 @@ public class RestMethod {
      * @return response
      */
     public RestResponse call(RequestSpecification requestSpecification) {
-        if (type == null) {
-            throw exception("HttpMethodType not specified");
-        }
-        RequestSpecification runSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
-        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
-        RestResponse response = doRequest(type, runSpec, startUuid);
-        response = handleRetrying(runSpec, response);
-        return response;
+        callSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
+        return call();
     }
 
     /**
-     * Send HTTP request As Rest Assured Request Specification.
+     * Send HTTP request based on Rest Assured Request Specification.
      *
      * @param requestSpecification Rest Assured request specification
      * @return response
      */
-    public RestResponse callAsSpec(RequestSpecification requestSpecification) {
-        if (type == null) {
-            throw exception("HttpMethodType not specified");
-        }
-        RequestSpecification runSpec = requestSpecification.spec(getInitSpec());
-        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
-        RestResponse response = doRequest(type, runSpec, startUuid);
-        response = handleRetrying(runSpec, response);
-        return response;
+    public RestResponse callBasedOnSpec(RequestSpecification requestSpecification) {
+        callSpec = requestSpecification.spec(getInitSpec());
+        return call();
     }
 
     /**
@@ -377,26 +338,49 @@ public class RestMethod {
      * @return response
      */
     public RestResponse call(RestAssuredConfig restAssuredConfig) {
-        if (type == null) {
-            throw exception("HttpMethodType not specified");
-        }
-        RequestSpecification runSpec = getInitSpec().config(restAssuredConfig);
-        String startUuid = LOG_REQUEST.execute(this, singletonList(data));
-        RestResponse response = doRequest(type, runSpec, startUuid);
-        response = handleRetrying(runSpec, response);
-        return response;
+        callSpec = getInitSpec().config(restAssuredConfig);
+        return call();
     }
 
     /**
      * Send HTTP request and map response to Java object.
      *
-     * @param c class to make mapping response body to object
+     * @param cl class to make mapping response body to object
      * @return Java object
      */
-    public <T> T callAsData(Class<T> c) {
+    public <T> T callAsData(Class<T> cl) {
         return objectMapper == null
-                ? call().getRaResponse().body().as(c)
-                : call().getRaResponse().body().as(c, objectMapper);
+                ? call().asData(cl)
+                : call().asData(cl, objectMapper);
+    }
+
+    public <T> T callAsData() {
+        return (T) call().asData(dataType, responseType);
+    }
+
+    /**
+     * Send HTTP request with body.
+     *
+     * @param body request body
+     * @return response
+     */
+    public RestResponse post(Object body) {
+        return body(body).call();
+    }
+
+    /**
+     * Send HTTP request with body and parse result to object
+     *
+     * @param body request body
+     * @param cl    type of response body
+     * @return response body as object
+     */
+    public <T> T post(Object body, Class<T> cl) {
+        return body(body).callAsData(cl);
+    }
+
+    public <T> T postAsData(Object object) {
+        return (T) body(object).call().asData(dataType, responseType);
     }
 
     private void getQueryParams(String queryString) {
@@ -405,8 +389,8 @@ public class RestMethod {
             for (String queryParam : queryParams) {
                 String key = substringBefore(queryParam, "=");
                 if (!userData.getQueryParams().has(key)) {
-                    userData.empty = false;
-                    userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
+                    userData.setEmpty(false);
+                    userData.getQueryParams().add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
                 }
             }
         }
@@ -419,26 +403,19 @@ public class RestMethod {
         if (path != null && path.contains("?")) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
-            userData.path = pathString;
+            userData.setPath(pathString);
             uri = url + pathString;
             getQueryParams(insertQueryParams(queryString));
         }
     }
 
-    public RequestData getData() {
-        return data;
-    }
-
-    public RequestData getUserData() {
-        return userData;
-    }
 
     /**
      * Insert path params to uri.
      */
     private void insertPathParams() {
         if (uri.contains("{")) {
-            userData.path = path;
+            userData.setPath(path);
         }
         uri = insertPathParams.execute(uri, getUserData().getPathParams());
         uri = insertPathParams.execute(uri, getData().getPathParams());
@@ -459,9 +436,9 @@ public class RestMethod {
      * @param queryParams additional query parameters
      * @return response
      */
-    public RestResponse call(String queryParams) {
+    public RestMethod queryParams(String queryParams) {
         getQueryParams(queryParams);
-        return call();
+        return this;
     }
 
     /**
@@ -470,24 +447,27 @@ public class RestMethod {
      * @param pathParams path parameters
      * @return response
      */
-    public RestResponse callPathParams(Object... pathParams) {
+    public RestMethod pathParams(Object... pathParams) {
         if (pathParams.length > 0) {
             String[] namedParams = StringUtils.substringsBetween(path, "{", "}");
             catchPathParametersIllegalArguments(namedParams, pathParams);
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
-            userData.path = pathString;
+            userData.setPath(pathString);
             int index = 0;
-            for (String key : StringUtils.substringsBetween(pathString, "{", "}")) {
-                userData.empty = false;
-                userData.pathParams.add(key, pathParams[index].toString());
-                index++;
+            String[] namedPathParams = StringUtils.substringsBetween(pathString, "{", "}");
+            if (namedPathParams != null) {
+                for (String key : StringUtils.substringsBetween(pathString, "{", "}")) {
+                    userData.setEmpty(false);
+                    userData.pathParamsUpdater().add(key, pathParams[index].toString());
+                    index++;
+                }
             }
             if (!queryString.isEmpty()) {
-                return call(substPathParams(queryString, copyOfRange(pathParams, index, pathParams.length)));
+                return queryParams(substPathParams(queryString, copyOfRange(pathParams, index, pathParams.length)));
             }
         }
-        return call();
+        return this;
     }
 
     private static String substPathParams(String path, Object[] pathParams) {
@@ -521,20 +501,11 @@ public class RestMethod {
      * @param body request body
      * @return response
      */
-    public RestResponse post(Object body) {
-        return call(new RequestData().set(rd -> rd.body = body));
+    public RestMethod body(Object body) {
+        getData().setBody(body);
+        return this;
     }
 
-    /**
-     * Send HTTP request with body and parse result to object
-     *
-     * @param body request body
-     * @param c    type of response body
-     * @return response body as object
-     */
-    public <T> T post(Object body, Class<T> c) {
-        return call(new RequestData().set(rd -> rd.body = body)).getRaResponse().as(c);
-    }
 
     /**
      * Send HTTP request with invoked request data.
@@ -542,52 +513,46 @@ public class RestMethod {
      * @param requestData requestData
      * @return response
      */
-    public RestResponse call(RequestData requestData) {
-        userData.empty = false;
-        if (!requestData.pathParams.isEmpty()) {
-            userData.pathParams = requestData.pathParams;
+    public RestMethod data(RequestData requestData) {
+        userData.setEmpty(false);
+        if (!requestData.getPathParams().isEmpty()) {
+            userData.setPathParams(requestData.getPathParams());
         }
-        if (!requestData.queryParams.isEmpty()) {
-            userData.queryParams.addAll(requestData.queryParams);
+        if (!requestData.getQueryParams().isEmpty()) {
+            userData.queryParamsUpdater().addAll(requestData.getQueryParams());
         }
-        if (!requestData.formParams.isEmpty()) {
-            userData.formParams.addAll(requestData.formParams);
+        if (!requestData.getFormParams().isEmpty()) {
+            userData.formParamsUpdater().addAll(requestData.getFormParams());
         }
-        if (requestData.body != null) {
-            userData.body = requestData.body;
+        if (requestData.getBody() != null) {
+            userData.setBody(requestData.getBody());
         }
-        if (!requestData.headers.asList().isEmpty()) {
-            List<Header> headerList = new ArrayList<>(userData.headers.asList());
-            headerList.addAll(requestData.headers.asList());
-            userData.headers = new Headers(headerList);
+        if (!requestData.getHeaders().asList().isEmpty()) {
+            List<Header> headerList = new ArrayList<>(userData.getHeaders().asList());
+            headerList.addAll(requestData.getHeaders().asList());
+            userData.setHeaders(new Headers(headerList));
         }
-        if (!requestData.cookies.asList().isEmpty()) {
-            List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
-            cookieList.addAll(requestData.cookies.asList());
-            userData.cookies = new Cookies(cookieList);
+        if (!requestData.getCookies().asList().isEmpty()) {
+            List<Cookie> cookieList = new ArrayList<>(userData.getCookies().asList());
+            cookieList.addAll(requestData.getCookies().asList());
+            userData.setCookies(new Cookies(cookieList));
         }
-        if (requestData.contentType != null) {
-            userData.contentType = requestData.contentType;
+        if (requestData.getContentType() != null) {
+            userData.setContentType(requestData.getContentType());
         }
-        if (requestData.multiPartSpecifications.size() > 0) {
-            userData.multiPartSpecifications = requestData.multiPartSpecifications;
+        if (requestData.getMultiPartSpec().size() > 0) {
+            userData.setMultiPartSpec(requestData.getMultiPartSpec());
         }
-        if (requestData.proxySpecification != null) {
-            userData.proxySpecification = requestData.proxySpecification;
+        if (requestData.getProxySpec() != null) {
+            userData.setProxySpec(requestData.getProxySpec());
         }
-        userData.trustStore = requestData.trustStore == null
-                ? data.trustStore
-                : requestData.trustStore;
-        userData.authenticationScheme = requestData.authenticationScheme == null
-                ? data.authenticationScheme
-                : requestData.authenticationScheme;
-        return call();
-    }
-
-    public RestResponse call(JAction1<RequestData> action) {
-        RequestData rd = new RequestData();
-        action.execute(rd);
-        return call(rd);
+        if (requestData.getTrustStore() == null) {
+            userData.setTrustStore(requestData.getTrustStore());
+        }
+        if (requestData.getAuthScheme() == null) {
+            userData.setAuthScheme(requestData.getAuthScheme());
+        }
+        return this;
     }
 
     /**
@@ -606,48 +571,78 @@ public class RestMethod {
         if (data == null) {
             return spec;
         }
-        if (data.uri != null) {
-            spec.baseUri(data.uri);
+        if (data.getUri() != null) {
+            spec.baseUri(data.getUri());
         }
-        if (data.path != null) {
-            spec.basePath(data.path);
+        if (data.getPath() != null) {
+            spec.basePath(data.getPath());
         }
-        if (data.pathParams.any()) {
-            spec.pathParams(data.pathParams.toMap());
+        if (data.getPathParams().any()) {
+            spec.pathParams(data.getPathParams().toMap());
         }
-        if (data.contentType != null) {
-            spec.contentType(data.contentType);
+        if (data.getContentType() != null) {
+            spec.contentType(data.getContentType());
         }
-        if (data.queryParams.any()) {
-            spec.queryParams(data.queryParams.toMap());
+        if (data.getQueryParams().any()) {
+            spec.queryParams(data.getQueryParams().toMap());
         }
-        if (data.formParams.any()) {
-            spec.formParams(data.formParams.toMap());
+        if (data.getFormParams().any()) {
+            spec.formParams(data.getFormParams().toMap());
         }
-        if (!data.headers.asList().isEmpty()) {
-            spec.headers(data.headers);
+        if (!data.getHeaders().asList().isEmpty()) {
+            spec.headers(data.getHeaders());
         }
-        if (!data.cookies.asList().isEmpty()) {
-            spec.cookies(data.cookies);
+        if (!data.getCookies().asList().isEmpty()) {
+            spec.cookies(data.getCookies());
         }
-        if (data.multiPartSpecifications.size() > 0) {
-            data.multiPartSpecifications.forEach(spec::multiPart);
+        if (data.getMultiPartSpec().size() > 0) {
+            data.getMultiPartSpec().forEach(spec::multiPart);
         }
-        if ((data.body != null) && (objectMapper != null)) {
-            spec.body(data.body, objectMapper);
-        } else if (data.body != null) {
-            spec.body(data.body);
+        if ((data.getBody() != null) && (objectMapper != null)) {
+            spec.body(data.getBody(), objectMapper);
+        } else if (data.getBody() != null) {
+            spec.body(data.getBody());
         }
-        if (data.proxySpecification != null) {
-            spec.proxy(data.proxySpecification);
+        if (data.getProxySpec() != null) {
+            spec.proxy(data.getProxySpec());
         }
-        if (data.trustStore != null) {
-            spec.trustStore(data.trustStore.key, data.trustStore.value);
+        if (data.getTrustStore() != null) {
+            spec.trustStore(data.getTrustStore().key, data.getTrustStore().value);
         }
-        if (data.authenticationScheme != null) {
-            ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authenticationScheme);
+        if (data.getAuthScheme() != null) {
+            ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.getAuthScheme());
         }
         return spec;
+    }
+
+    /**
+     * Sends HTTP request until server response status different from indicated
+     * or max number of attempts was reached
+     *
+     * @param runSpec       - request specification
+     * @param firstResponse - result of first request
+     */
+    private RestResponse handleRetrying(RequestSpecification runSpec, RestResponse firstResponse) {
+        if (reTryData == null || reTryData.getNumberOfRetryAttempts() <= 0) return firstResponse;
+        List<Integer> errorCodes = reTryData.getErrorCodes();
+
+        boolean failure = errorCodes.contains(firstResponse.getStatus().code);
+        if (failure) {
+            for (int attempt = 0; attempt < reTryData.getNumberOfRetryAttempts(); attempt++) {
+                WaitUtils.makeDelayFor(reTryData.getUnit(), reTryData.getDelay());
+                String startUuidRetry = LOG_RETRY_REQUEST.execute(this, asList(data, userData), attempt);
+                RestResponse retryingResponse = doRequest(type, runSpec, startUuidRetry);
+                if (!errorCodes.contains(retryingResponse.getStatus().code)) return retryingResponse;
+            }
+        }
+        return firstResponse;
+    }
+
+    private void handleResponse(RestResponse restResponse) {
+        boolean hasError = errorHandler.hasError(restResponse);
+        if (hasError) {
+            errorHandler.handleError(restResponse);
+        }
     }
 
     /**
@@ -671,50 +666,8 @@ public class RestMethod {
         call().isOk();
     }
 
-    /**
-     * Reset predefined request specification to default state.
-     * <p>
-     * return rest method
-     */
-    public RestMethod resetInitSpec() {
-        spec = given();
-        return this;
-    }
-
-    public String getType() {
-        return type.toString();
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public MultiPartSpecificationImpl getMultiPartSpec() {
-        return (MultiPartSpecificationImpl) data.multiPartSpecifications.get(0);
-    }
-
-    public RestMethod withMultiPartContent(Object multiPartContent) {
-        getMultiPartSpec().setContent(multiPartContent);
-        return this;
-    }
-
-    public RestMethod withMultiPartSpec(MultiPartSpecification multiPartSpec) {
-        data.multiPartSpecifications.set(0, multiPartSpec);
-        return this;
-    }
-
-    public RestMethod withData(RequestData requestData) {
-        userData = requestData;
-        return this;
-    }
-
-    public RestMethod withFilter(Filter filter) {
-        userData.filters.add(filter);
-        return this;
-    }
-
-    public RestMethod withAuth(AuthenticationScheme authenticationScheme) {
-        userData.setAuthenticationScheme(authenticationScheme);
+    public RestMethod multipart(Object multiPartContent) {
+        ((MultiPartSpecificationImpl) getData().getMultiPartSpec().get(0)).setContent(multiPartContent);
         return this;
     }
 

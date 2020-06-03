@@ -6,16 +6,19 @@ import com.epam.jdi.tools.func.JFunc;
 import com.epam.jdi.tools.pairs.Pair;
 
 public class FormParamsUpdater extends SpecUpdater<FormParameter, Pair<String, String>> {
-    public FormParamsUpdater() { this(RequestData::new); }
+    public FormParamsUpdater() {
+        this(RequestData::new);
+    }
+
     public FormParamsUpdater(JFunc<RequestData> dataFunc) {
         super(
-            fp -> {
-                RequestData data = dataFunc.execute();
-                data.formParams.addAll(fp);
-                return data;
-            },
-            c -> new Pair<>(c.name(), c.value()),
-            Pair::new
+                fp -> {
+                    RequestData data = dataFunc.execute();
+                    data.getFormParams().addAll(fp);
+                    return data;
+                },
+                c -> new Pair<>(c.name(), c.value()),
+                Pair::new
         );
     }
 }

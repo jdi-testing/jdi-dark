@@ -12,6 +12,7 @@ import static com.epam.http.requests.RestMethodTypes.GET;
 public class MethodData extends DataClass<MethodData> {
     public String path = "";
     public RestMethodTypes type = GET;
+
     public MethodData(String path, RestMethodTypes type) {
         this.path = path;
         this.type = type;

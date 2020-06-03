@@ -24,7 +24,9 @@ public class XSDValidator {
         try {
             Source source = new StreamSource(new StringReader(inputXml));
             getValidator(new File(schemaLocation)).validate(source);
-        } catch (IOException | SAXException e) { return false; }
+        } catch (IOException | SAXException e) {
+            return false;
+        }
         return true;
     }
 }

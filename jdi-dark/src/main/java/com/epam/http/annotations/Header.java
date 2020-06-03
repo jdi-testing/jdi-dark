@@ -1,6 +1,10 @@
 package com.epam.http.annotations;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Represents an HTTP Header.
@@ -16,5 +20,6 @@ import java.lang.annotation.*;
 @Repeatable(Headers.class)
 public @interface Header {
     String name();
+
     String value();
 }

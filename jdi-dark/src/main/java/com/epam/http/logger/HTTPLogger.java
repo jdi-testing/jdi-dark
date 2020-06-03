@@ -10,7 +10,12 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import static com.epam.http.logger.AllureLogger.setAllureRootLogLevel;
-import static com.epam.http.logger.LogLevels.*;
+import static com.epam.http.logger.LogLevels.DEBUG;
+import static com.epam.http.logger.LogLevels.INFO;
+import static com.epam.http.logger.LogLevels.OFF;
+import static com.epam.http.logger.LogLevels.STEP;
+import static com.epam.http.logger.LogLevels.TRACE;
+import static com.epam.http.logger.LogLevels.getLog4j2Level;
 import static com.epam.jdi.tools.StringUtils.format;
 import static org.apache.logging.log4j.LogManager.getLogger;
 import static org.apache.logging.log4j.core.config.Configurator.setLevel;
@@ -37,11 +42,13 @@ public class HTTPLogger implements ILogger {
     public HTTPLogger() {
         this("JDI");
     }
+
     public HTTPLogger(String name) {
         logger = getLogger(name);
         this.name = name;
         setLogLevel(INFO);
     }
+
     public HTTPLogger(Class clazz) {
         this(clazz.getSimpleName());
     }
@@ -49,6 +56,7 @@ public class HTTPLogger implements ILogger {
     public LogLevels getLogLevel() {
         return logLevel.get();
     }
+
     public void setLogLevel(LogLevels level) {
         logLevel = new Safe<>(level);
         setRootLevel(getLog4j2Level(level));
@@ -58,35 +66,44 @@ public class HTTPLogger implements ILogger {
 
     public void logOff() {
         logLevel.set(OFF);
-        logOffDeepness.update(v->v+1);
+        logOffDeepness.update(v -> v + 1);
     }
+
     public void logOn() {
-        logOffDeepness.update(v->v-1);
+        logOffDeepness.update(v -> v - 1);
         if (logOffDeepness.get() > 0) return;
         if (logOffDeepness.get() == 0)
             logLevel.reset();
         if (logOffDeepness.get() < 0)
             throw new RuntimeException("Log Off Deepness to high. Please check that each logOff has appropriate logOn");
     }
+
     public void dropLogOff() {
         logOffDeepness.set(0);
         logLevel.reset();
     }
+
     public void logOff(JAction action) {
-        logOff(() -> { action.invoke(); return null; });
+        logOff(() -> {
+            action.invoke();
+            return null;
+        });
     }
+
     public <T> T logOff(JFunc<T> func) {
         LogLevels tempLevel = logLevel.get();
         if (logLevel.get() == OFF) {
-            try { return func.invoke();
+            try {
+                return func.invoke();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         }
         logLevel.set(OFF);
         T result;
-        try{ result = func.invoke(); }
-        catch (Exception ex) {
+        try {
+            result = func.invoke();
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
         logLevel.set(tempLevel);
@@ -112,16 +129,19 @@ public class HTTPLogger implements ILogger {
             logger.trace(jdiMarker, getRecord(s, args));
         }
     }
+
     public void debug(String s, Object... args) {
         if (logLevel.get().equalOrLessThan(DEBUG)) {
             logger.debug(jdiMarker, getRecord(s, args));
         }
     }
+
     public void info(String s, Object... args) {
         if (logLevel.get().equalOrLessThan(INFO)) {
             logger.info(jdiMarker, getRecord(s, args));
         }
     }
+
     public void error(String s, Object... args) {
         logger.error(jdiMarker, getRecord(s, args));
     }
@@ -129,15 +149,27 @@ public class HTTPLogger implements ILogger {
     public void toLog(String msg) {
         toLog(msg, logLevel.getDefault());
     }
+
     public void toLog(String msg, LogLevels level) {
-        if (logLevel.get().equalOrLessThan(level))
+        if (logLevel.get().equalOrLessThan(level)) {
             switch (level) {
-                case ERROR: error(msg); break;
-                case STEP: step(msg); break;
-                case INFO: info(msg); break;
-                case DEBUG: debug(msg); break;
-                case OFF: break;
-                default: throw new RuntimeException("Unknown log level: " + level);
+                case ERROR:
+                    error(msg);
+                    break;
+                case STEP:
+                    step(msg);
+                    break;
+                case INFO:
+                    info(msg);
+                    break;
+                case DEBUG:
+                    debug(msg);
+                    break;
+                case OFF:
+                    break;
+                default:
+                    throw new RuntimeException("Unknown log level: " + level);
             }
+        }
     }
 }

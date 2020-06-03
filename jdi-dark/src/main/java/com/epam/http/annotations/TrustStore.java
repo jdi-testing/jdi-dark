@@ -11,11 +11,11 @@ import java.lang.annotation.Target;
  * <pre>
  *     {@code @TrustStore(pathToJks = "test", password = "test") }
  * </pre>
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.FIELD})
 public @interface TrustStore {
-        String pathToJks();
-        String password();
+    String pathToJks();
+
+    String password();
 }

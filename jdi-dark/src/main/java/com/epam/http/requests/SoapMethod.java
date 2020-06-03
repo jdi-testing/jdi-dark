@@ -8,12 +8,20 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.soap.*;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.util.StreamReaderDelegate;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 
 import static com.epam.http.ExceptionHandler.exception;
@@ -50,7 +58,7 @@ public class SoapMethod<T, S> extends RestMethod {
 
     public S callSoap(T object) {
         try {
-            return getResponse(call(headers().addAll(headers).requestBody(createSoapBody(object))).getBody());
+            return getResponse(restMethod().data(headers().addAll(headers).setBody(createSoapBody(object))).call().getBody());
         } catch (Exception ex) {
             throw exception(ex.toString());
         }

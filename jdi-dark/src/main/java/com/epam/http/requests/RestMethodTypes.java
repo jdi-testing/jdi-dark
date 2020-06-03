@@ -21,6 +21,7 @@ public enum RestMethodTypes {
     HEAD(RequestSenderOptions::head);
 
     public Function<RequestSpecification, Response> method;
+
     RestMethodTypes(Function<RequestSpecification, Response> method) {
         this.method = method;
     }

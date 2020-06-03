@@ -46,8 +46,8 @@ public class ServiceTests {
     @Test
     public void noServiceObjectTest() {
         RestResponse resp = RestMethods.GET(requestData(rd -> {
-                    rd.uri = "https://httpbin.org/get";
-                    rd.addHeaders().addAll(new Object[][]{
+                    rd.setUri("https://httpbin.org/get");
+                    rd.headerUpdater().addAll(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}
                     });
@@ -72,14 +72,14 @@ public class ServiceTests {
 
     @Test
     public void statusTest() {
-        RestResponse resp = service.status.callPathParams("503");
+        RestResponse resp = service.status.pathParams("503").call();
         assertEquals(resp.getStatus().code, 503);
         resp.isEmpty();
     }
 
     @Test
     public void statusTestWithQueryInPath() {
-        RestResponse resp = service.statusWithQuery.callPathParams("503", "some");
+        RestResponse resp = service.statusWithQuery.pathParams("503", "some").call();
         assertEquals(resp.getStatus().code, 503);
         resp.isEmpty();
     }

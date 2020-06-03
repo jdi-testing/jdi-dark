@@ -17,9 +17,9 @@ public class HeaderUpdater extends SpecUpdater<com.epam.http.annotations.Header,
         super(
                 headers -> {
                     RequestData data = dataFunc.execute();
-                    List<Header> headerList = new ArrayList<>(data.getHeaders().asList());
+                    List<Header> headerList = new ArrayList<>(data.headers.asList());
                     headerList.addAll(headers);
-                    data.setHeaders(new Headers(headerList));
+                    data.headers = new Headers(headerList);
                     return data;
                 },
                 h -> new Header(h.name(), h.value()),

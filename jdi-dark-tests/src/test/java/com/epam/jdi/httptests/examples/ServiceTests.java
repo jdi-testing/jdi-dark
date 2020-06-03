@@ -46,7 +46,7 @@ public class ServiceTests {
     @Test
     public void noServiceObjectTest() {
         RestResponse resp = RestMethods.GET(requestData(rd -> {
-                    rd.setUri("https://httpbin.org/get");
+                    rd.uri = "https://httpbin.org/get";
                     rd.headerUpdater().addAll(new Object[][]{
                             {"Name", "Roman"},
                             {"Id", "TestTest"}

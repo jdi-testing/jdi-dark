@@ -58,20 +58,20 @@ public class RestMethod {
     protected String responseType;
     protected Class<?> dataType;
     private RequestSpecification spec = given();
-    private String url = null;
-    private String path = null;
-    private String uri = null;
-    private ObjectMapper objectMapper = null;
+    public String url = null;
+    public String path = null;
+    public String uri = null;
+    public ObjectMapper objectMapper = null;
 
     public HeaderUpdater header = new HeaderUpdater(this::getData);
     public CookieUpdater cookies = new CookieUpdater(this::getData);
     public QueryParamsUpdater queryParams = new QueryParamsUpdater(this::getData);
     public FormParamsUpdater formParams = new FormParamsUpdater(this::getData);
     public RetryData reTryData;
-    private RequestData data;
-    private RequestData userData = new RequestData();
-    private RestMethodTypes type;
-    private ErrorHandler errorHandler = new DefaultErrorHandler();
+    public RequestData data;
+    public RequestData userData = new RequestData();
+    public RestMethodTypes type;
+    public ErrorHandler errorHandler = new DefaultErrorHandler();
     public static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST = RestMethod::logRequest;
     public static JFunc3<RestMethod, List<RequestData>, Integer, String> LOG_RETRY_REQUEST = RestMethod::logReTryRequest;
     private final static JFunc2<RestMethod, List<RequestData>, String> LOG_REQUEST_DEFAULT = LOG_REQUEST;
@@ -174,21 +174,6 @@ public class RestMethod {
     public RequestData getData() {
         return data;
     }
-    public RequestData getUserData() {
-        return userData;
-    }
-    public RequestSpecification getSpec() {
-        return spec;
-    }
-    public String getUrl() {
-        return url;
-    }
-    public String getPath() {
-        return path;
-    }
-    public RestMethodTypes getType() {
-        return type;
-    }
     public RequestSpecification getInitSpec() {
         return given().spec(spec).spec(getDataSpec(data));
     }
@@ -231,7 +216,7 @@ public class RestMethod {
             mpSpecBuilder.fileName(multiPartParams.fileName());
         if (!multiPartParams.mimeType().isEmpty())
             mpSpecBuilder.mimeType(multiPartParams.mimeType());
-        getData().getMultiPartSpec().add(mpSpecBuilder.build());
+        data.multiPartSpec.add(mpSpecBuilder.build());
     }
 
     public static void resetLogRequest() {
@@ -249,13 +234,13 @@ public class RestMethod {
                     v != null && !v.toString().equals("[]") && !v.toString().isEmpty())
                     .map((k, v) -> "\n" + k + ": " +
                             (v instanceof MultiMap ? ((MultiMap) v).map((km, vm) -> km + "=" + vm) : v)));
-            if (rd.getHeaders().exist()) {
-                maps.add("\nheaders: " + rd.getHeaders().asList().toString());
+            if (rd.headers.exist()) {
+                maps.add("\nheaders: " + rd.headers.asList().toString());
             }
-            if (rd.getCookies().exist()) {
-                maps.add("\ncookies: " + rd.getCookies().asList().toString());
+            if (rd.cookies.exist()) {
+                maps.add("\ncookies: " + rd.cookies.asList().toString());
             }
-            rd.getMultiPartSpec().forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
+            rd.multiPartSpec.forEach(mps -> maps.add("\nmultiPartSpecification: " + mps.toString()));
         }
         logger.info(format("Do %s request: %s %s", type, uri != null ? uri : "", maps));
         return startStep(format("%s %s%s", type, url != null ? url : "", path != null ? path : ""),
@@ -281,7 +266,7 @@ public class RestMethod {
         getQueryParamsFromPath();
         insertPathParams();
         RequestSpecification runSpec = (callSpec != null) ? callSpec : getInitSpec();
-        if (!userData.isEmpty()) {
+        if (!userData.empty) {
             runSpec.spec(getDataSpec(userData));
         }
         String startUuid = LOG_REQUEST.execute(this, asList(data, userData));
@@ -388,9 +373,9 @@ public class RestMethod {
             String[] queryParams = queryString.split("&");
             for (String queryParam : queryParams) {
                 String key = substringBefore(queryParam, "=");
-                if (!userData.getQueryParams().has(key)) {
-                    userData.setEmpty(false);
-                    userData.getQueryParams().add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
+                if (!userData.queryParams.has(key)) {
+                    userData.empty = false;
+                    userData.queryParams.add(substringBefore(queryParam, "="), substringAfter(queryParam, "="));
                 }
             }
         }
@@ -403,7 +388,7 @@ public class RestMethod {
         if (path != null && path.contains("?")) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
-            userData.setPath(pathString);
+            userData.path = pathString;
             uri = url + pathString;
             getQueryParams(insertQueryParams(queryString));
         }
@@ -415,18 +400,18 @@ public class RestMethod {
      */
     private void insertPathParams() {
         if (uri.contains("{")) {
-            userData.setPath(path);
+            userData.path = path;
         }
-        uri = insertPathParams.execute(uri, getUserData().getPathParams());
-        uri = insertPathParams.execute(uri, getData().getPathParams());
+        uri = insertPathParams.execute(uri, userData.pathParams);
+        uri = insertPathParams.execute(uri, data.pathParams);
     }
 
     /**
      * Insert query params to uri.
      */
     private String insertQueryParams(String uri) {
-        String mod = insertPathParams.execute(uri, getUserData().getQueryParams());
-        mod = insertPathParams.execute(mod, getData().getQueryParams());
+        String mod = insertPathParams.execute(uri, userData.queryParams);
+        mod = insertPathParams.execute(mod, data.queryParams);
         return mod;
     }
 
@@ -453,12 +438,12 @@ public class RestMethod {
             catchPathParametersIllegalArguments(namedParams, pathParams);
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
-            userData.setPath(pathString);
+            userData.path = pathString;
             int index = 0;
             String[] namedPathParams = StringUtils.substringsBetween(pathString, "{", "}");
             if (namedPathParams != null) {
                 for (String key : StringUtils.substringsBetween(pathString, "{", "}")) {
-                    userData.setEmpty(false);
+                    userData.empty = false;
                     userData.pathParamsUpdater().add(key, pathParams[index].toString());
                     index++;
                 }
@@ -502,7 +487,7 @@ public class RestMethod {
      * @return response
      */
     public RestMethod body(Object body) {
-        getData().setBody(body);
+        data.body = body;
         return this;
     }
 
@@ -519,43 +504,43 @@ public class RestMethod {
      * @return response
      */
     public RestMethod data(RequestData requestData) {
-        userData.setEmpty(false);
-        if (!requestData.getPathParams().isEmpty()) {
-            userData.setPathParams(requestData.getPathParams());
+        userData.empty = false;
+        if (!requestData.pathParams.isEmpty()) {
+            userData.pathParams = requestData.pathParams;
         }
-        if (!requestData.getQueryParams().isEmpty()) {
-            userData.queryParamsUpdater().addAll(requestData.getQueryParams());
+        if (!requestData.queryParams.isEmpty()) {
+            userData.queryParamsUpdater().addAll(requestData.queryParams);
         }
-        if (!requestData.getFormParams().isEmpty()) {
-            userData.formParamsUpdater().addAll(requestData.getFormParams());
+        if (!requestData.formParams.isEmpty()) {
+            userData.formParamsUpdater().addAll(requestData.formParams);
         }
-        if (requestData.getBody() != null) {
-            userData.setBody(requestData.getBody());
+        if (requestData.body != null) {
+            userData.body = requestData.body;
         }
-        if (!requestData.getHeaders().asList().isEmpty()) {
-            List<Header> headerList = new ArrayList<>(userData.getHeaders().asList());
-            headerList.addAll(requestData.getHeaders().asList());
-            userData.setHeaders(new Headers(headerList));
+        if (!requestData.headers.asList().isEmpty()) {
+            List<Header> headerList = new ArrayList<>(userData.headers.asList());
+            headerList.addAll(requestData.headers.asList());
+            userData.headers = new Headers(headerList);
         }
-        if (!requestData.getCookies().asList().isEmpty()) {
-            List<Cookie> cookieList = new ArrayList<>(userData.getCookies().asList());
-            cookieList.addAll(requestData.getCookies().asList());
-            userData.setCookies(new Cookies(cookieList));
+        if (!requestData.cookies.asList().isEmpty()) {
+            List<Cookie> cookieList = new ArrayList<>(userData.cookies.asList());
+            cookieList.addAll(requestData.cookies.asList());
+            userData.cookies = new Cookies(cookieList);
         }
-        if (requestData.getContentType() != null) {
-            userData.setContentType(requestData.getContentType());
+        if (requestData.contentType != null) {
+            userData.contentType = requestData.contentType;
         }
-        if (requestData.getMultiPartSpec().size() > 0) {
-            userData.setMultiPartSpec(requestData.getMultiPartSpec());
+        if (requestData.multiPartSpec.size() > 0) {
+            userData.multiPartSpec = requestData.multiPartSpec;
         }
-        if (requestData.getProxySpec() != null) {
-            userData.setProxySpec(requestData.getProxySpec());
+        if (requestData.proxySpec != null) {
+            userData.proxySpec = requestData.proxySpec;
         }
-        if (requestData.getTrustStore() == null) {
-            userData.setTrustStore(requestData.getTrustStore());
+        if (requestData.trustStore == null) {
+            userData.trustStore = requestData.trustStore;
         }
-        if (requestData.getAuthScheme() == null) {
-            userData.setAuthScheme(requestData.getAuthScheme());
+        if (requestData.authScheme == null) {
+            userData.authScheme = requestData.authScheme;
         }
         return this;
     }
@@ -576,46 +561,46 @@ public class RestMethod {
         if (data == null) {
             return spec;
         }
-        if (data.getUri() != null) {
-            spec.baseUri(data.getUri());
+        if (data.uri != null) {
+            spec.baseUri(data.uri);
         }
-        if (data.getPath() != null) {
-            spec.basePath(data.getPath());
+        if (data.path!= null) {
+            spec.basePath(data.path);
         }
-        if (data.getPathParams().any()) {
-            spec.pathParams(data.getPathParams().toMap());
+        if (data.pathParams.any()) {
+            spec.pathParams(data.pathParams.toMap());
         }
-        if (data.getContentType() != null) {
-            spec.contentType(data.getContentType());
+        if (data.contentType != null) {
+            spec.contentType(data.contentType);
         }
-        if (data.getQueryParams().any()) {
-            spec.queryParams(data.getQueryParams().toMap());
+        if (data.queryParams.any()) {
+            spec.queryParams(data.queryParams.toMap());
         }
-        if (data.getFormParams().any()) {
-            spec.formParams(data.getFormParams().toMap());
+        if (data.formParams.any()) {
+            spec.formParams(data.formParams.toMap());
         }
-        if (!data.getHeaders().asList().isEmpty()) {
-            spec.headers(data.getHeaders());
+        if (!data.headers.asList().isEmpty()) {
+            spec.headers(data.headers);
         }
-        if (!data.getCookies().asList().isEmpty()) {
-            spec.cookies(data.getCookies());
+        if (!data.cookies.asList().isEmpty()) {
+            spec.cookies(data.cookies);
         }
-        if (data.getMultiPartSpec().size() > 0) {
-            data.getMultiPartSpec().forEach(spec::multiPart);
+        if (data.multiPartSpec.size() > 0) {
+            data.multiPartSpec.forEach(spec::multiPart);
         }
-        if ((data.getBody() != null) && (objectMapper != null)) {
-            spec.body(data.getBody(), objectMapper);
-        } else if (data.getBody() != null) {
-            spec.body(data.getBody());
+        if ((data.body != null) && (objectMapper != null)) {
+            spec.body(data.body, objectMapper);
+        } else if (data.body != null) {
+            spec.body(data.body);
         }
-        if (data.getProxySpec() != null) {
-            spec.proxy(data.getProxySpec());
+        if (data.proxySpec != null) {
+            spec.proxy(data.proxySpec);
         }
-        if (data.getTrustStore() != null) {
-            spec.trustStore(data.getTrustStore().key, data.getTrustStore().value);
+        if (data.trustStore != null) {
+            spec.trustStore(data.trustStore.key, data.trustStore.value);
         }
-        if (data.getAuthScheme() != null) {
-            ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.getAuthScheme());
+        if (data.authScheme != null) {
+            ((RequestSpecificationImpl) spec).setAuthenticationScheme(data.authScheme);
         }
         return spec;
     }
@@ -672,7 +657,7 @@ public class RestMethod {
     }
 
     public RestMethod multipart(Object multiPartContent) {
-        ((MultiPartSpecificationImpl) getData().getMultiPartSpec().get(0)).setContent(multiPartContent);
+        ((MultiPartSpecificationImpl) data.multiPartSpec.get(0)).setContent(multiPartContent);
         return this;
     }
 

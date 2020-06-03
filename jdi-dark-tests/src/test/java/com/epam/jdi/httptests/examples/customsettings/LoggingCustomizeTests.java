@@ -36,13 +36,13 @@ public class LoggingCustomizeTests extends WithJetty {
     private String logRequest(RestMethod restMethod, List<RequestData> requestData) {
         MultiMap<String, String> queryparams = new MultiMap<>();
         for (RequestData rd : requestData) {
-            queryparams.addAll(rd.getQueryParams());
+            queryparams.addAll(rd.queryParams);
         }
-        String message = String.format("Do %s %s", restMethod.getType(), restMethod.getUrl());
+        String message = String.format("Do %s %s", restMethod.type, restMethod.url);
         logger.info(message);
         //Change request logging for allure
         startStep(message,
-                String.format("%s %s %s", restMethod.getType(), restMethod.getUrl(), queryparams));
+                String.format("%s %s %s", restMethod.type, restMethod.url, queryparams));
         return message;
     }
 

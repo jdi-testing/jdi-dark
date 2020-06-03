@@ -1,6 +1,5 @@
 package com.epam.http;
 
-import com.epam.http.logger.AllureLogger;
 import com.epam.http.logger.ILogger;
 
 import java.util.HashMap;

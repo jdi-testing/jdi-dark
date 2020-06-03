@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2
+  * fixes RestMethod data method
+
+## 1.1.1 
+  * RestDataMethod class instead of DataMethod.
+  * RestMethod methods have been upgraded
+
 ## 1.1.0 
   * SOAP web service design support.
   * WebSockets support.

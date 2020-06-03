@@ -17,22 +17,6 @@ import static com.epam.http.requests.RestMethodTypes.PUT;
  * Contains methods to be called with different types of data.
  * Arguments to those methods can be:
  * </p>
- * <ul>
- *     <li>Request data</li>
- *     <pre>
- *      <code>
- *          GET(requestData(
- *              rd -> { rd.url = "http://httpbin.org/get";
- *              rd.headers = new MapArray<>(new Object[][] {
- *                  {"test", "test"},
- *                  {"test1", "test1"}
- *              });}
- *          ));
- *     </code>
- *     </pre>
- *     <li>Url</li>
- *     <li>Url, Rest Assured RequestSpecification</li>
- * </ul>
  *
  * @author <a href="mailto:roman.iovlev.jdi@gmail.com">Roman_Iovlev</a>
  */

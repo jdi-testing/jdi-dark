@@ -46,15 +46,19 @@ public class RequestData extends DataClass<RequestData> {
     public CookieUpdater cookieUpdater() {
         return new CookieUpdater(() -> this);
     }
+
     public HeaderUpdater headerUpdater() {
         return new HeaderUpdater(() -> this);
     }
+
     public QueryParamsUpdater queryParamsUpdater() {
         return new QueryParamsUpdater(() -> this);
     }
+
     public PathParamsUpdater pathParamsUpdater() {
         return new PathParamsUpdater(() -> this);
     }
+
     public FormParamsUpdater formParamsUpdater() {
         return new FormParamsUpdater(() -> this);
     }
@@ -74,6 +78,7 @@ public class RequestData extends DataClass<RequestData> {
      * Set content type to request data.
      *
      * @param contentType content type as string
+     * @return generated request data with provided request body
      */
     public RequestData setContentType(String contentType) {
         this.contentType = contentType;
@@ -84,6 +89,7 @@ public class RequestData extends DataClass<RequestData> {
      * Set content type to request data.
      *
      * @param contentType Rest Assured Content-Type
+     * @return generated request data with provided request body
      */
     public RequestData setContentType(ContentType contentType) {
         this.contentType = contentType.toString();
@@ -94,6 +100,7 @@ public class RequestData extends DataClass<RequestData> {
      * Add multipart spec to request data.
      *
      * @param multiPartSpecBuilder MultiPartSpecBuilder
+     * @return generated request data with provided request body
      */
     public RequestData setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
         this.multiPartSpec.add(multiPartSpecBuilder.build());
@@ -105,6 +112,7 @@ public class RequestData extends DataClass<RequestData> {
      * This allows authentication for requests
      *
      * @param authScheme authentication scheme: from restassured or custom
+     * @return generated request data with provided request body
      */
 
     public RequestData setAuthScheme(AuthenticationScheme authScheme) {
@@ -118,6 +126,7 @@ public class RequestData extends DataClass<RequestData> {
      * @param scheme scheme
      * @param host   host
      * @param port   port
+     * @return generated request data with provided request body
      */
     public RequestData setProxySpec(String scheme, String host, int port) {
         proxySpec = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
@@ -128,6 +137,7 @@ public class RequestData extends DataClass<RequestData> {
      * Set proxy parameters to the request.
      *
      * @param proxyParams proxyParams
+     * @return generated request data with provided request body
      */
     public RequestData setProxySpec(Proxy proxyParams) {
         setProxySpec(proxyParams.scheme(), proxyParams.host(), proxyParams.port());
@@ -139,6 +149,7 @@ public class RequestData extends DataClass<RequestData> {
      *
      * @param pathToJks pathToJks
      * @param password  password
+     * @return generated request data with provided request body
      */
     public RequestData setTrustStore(String pathToJks, String password) {
         trustStore = new Pair<>(pathToJks, password);
@@ -149,6 +160,7 @@ public class RequestData extends DataClass<RequestData> {
      * Set trustStore parameters to the request.
      *
      * @param trustStore trustStore
+     * @return generated request data with provided request body
      */
     public RequestData setTrustStore(TrustStore trustStore) {
         setTrustStore(trustStore.pathToJks(), trustStore.password());

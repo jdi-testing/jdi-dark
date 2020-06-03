@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFactory.cookies;
-import static com.epam.http.requests.RequestDataFactory.requestBody;
+import static com.epam.http.requests.RequestDataFactory.body;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.JettyService.getJsonStore;
 import static io.restassured.config.JsonConfig.jsonConfig;
@@ -51,7 +51,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void whenParamsSpecifiedCanReturnBodyAsString() {
-        RestResponse response = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe&"));
+        RestResponse response = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe&"));
         final String body = response.getBody();
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +
@@ -67,7 +67,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void postCanReturnBodyAsString() {
-        final String body = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).getBody();
+        final String body = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getBody();
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +
                 "    </greeting>", body);
@@ -136,7 +136,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void usingXmlPathViewFromTheResponse() {
-        final String firstName = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).getRaResponse().xmlPath().getString("greeting.firstName");
+        final String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getRaResponse().xmlPath().getString("greeting.firstName");
         assertThat(firstName, equalTo("John"));
     }
 
@@ -160,7 +160,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void usingPathWithContentTypeXmlFromTheResponse() {
-        String firstName = JettyService.postGreetXml.call(requestBody("firstName=John&lastName=Doe")).getRaResponse().path("greeting.firstName");
+        String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getRaResponse().path("greeting.firstName");
         assertThat(firstName, equalTo("John"));
     }
 

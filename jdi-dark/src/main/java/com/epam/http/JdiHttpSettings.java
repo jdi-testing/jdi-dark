@@ -1,6 +1,5 @@
 package com.epam.http;
 
-import com.epam.http.logger.AllureLogger;
 import com.epam.http.logger.ILogger;
 
 import java.util.HashMap;
@@ -47,6 +46,5 @@ public class JdiHttpSettings {
         getProperties(TEST_PROPERTIES_PATH);
         fillAction(JdiHttpSettings::setDomain, "domain");
         fillAction(p -> logger.setLogLevel(parseLogLevel(p)), "log.level");
-        fillAction(p -> AllureLogger.writeToAllure = Boolean.parseBoolean(p), "allure.logger");
     }
 }

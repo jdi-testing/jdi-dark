@@ -48,7 +48,7 @@ public class RequestData extends DataClass<RequestData> {
     public AuthenticationScheme authScheme = null;
     public Pair<String, String> trustStore = null;
 
-    public CookieUpdater cookiesUpdater() {
+    public CookieUpdater cookieUpdater() {
         return new CookieUpdater(() -> this);
     }
     public HeaderUpdater headerUpdater() {

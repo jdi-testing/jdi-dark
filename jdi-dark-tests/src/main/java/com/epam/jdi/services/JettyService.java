@@ -57,7 +57,7 @@ public class JettyService {
     }
 
     public static RestResponse getMultipleCookieSpecifiedUsingMap(Map<String, String> cookieMap, String addCookieName, String addCookieValue) {
-        return JettyService.getCookie.call(cookies().addAll(cookieMap).cookiesUpdater().add(addCookieName, addCookieValue));
+        return JettyService.getCookie.call(cookies().addAll(cookieMap).cookieUpdater().add(addCookieName, addCookieValue));
     }
 
     public static RestResponse getSpecifiedCookiePairs(String namePair1, String valuePair1, String namePair2, String valuePair2) {

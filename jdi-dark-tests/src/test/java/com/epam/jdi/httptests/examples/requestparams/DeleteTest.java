@@ -60,7 +60,7 @@ public class DeleteTest extends WithJetty {
 
     @Test
     public void deleteSupportsStringBody() {
-        RestResponse response = deleteBody.call(requestBody(TEST_BODY_VALUE));
+        RestResponse response = deleteBody.call(body(TEST_BODY_VALUE));
         response.assertThat().body(is(TEST_BODY_VALUE));
     }
 }

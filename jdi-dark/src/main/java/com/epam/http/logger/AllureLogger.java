@@ -12,7 +12,7 @@ import static io.qameta.allure.model.Status.FAILED;
 import static io.qameta.allure.model.Status.PASSED;
 
 public class AllureLogger {
-    public static boolean writeToAllure = true;
+    public static boolean writeToAllure = getLifecycle().getCurrentTestCase().isPresent();
 
     public static void setAllureRootLogLevel(LogLevels level) {
         ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);

@@ -506,6 +506,11 @@ public class RestMethod {
         return this;
     }
 
+    public RestMethod data(JAction1<RequestData> action) {
+        RequestData rd = new RequestData();
+        action.execute(rd);
+        return data(rd);
+    }
 
     /**
      * Send HTTP request with invoked request data.

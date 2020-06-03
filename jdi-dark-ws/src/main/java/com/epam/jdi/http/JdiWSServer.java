@@ -91,7 +91,7 @@ public class JdiWSServer extends Endpoint {
                 break;
             }
         }
-        logger.info(String.format("Message matches '%s' not found", regex));
+        logger.info("Message matches '%s' not found", regex);
     }
 
     public void waitNewMessageContainsText(String text, int maxMsgCount, int sec) throws InterruptedException {
@@ -100,7 +100,7 @@ public class JdiWSServer extends Endpoint {
                 break;
             }
         }
-        logger.info(String.format("Message contains text '%s' not found", text));
+        logger.info("Message contains text '%s' not found", text);
     }
 
     public void waitNewMessageContainsKey(String key, int maxMsgCount, int sec) throws InterruptedException {
@@ -109,7 +109,7 @@ public class JdiWSServer extends Endpoint {
                 break;
             }
         }
-        logger.info(String.format("Message with key '%s' not found", key));
+        logger.info("Message with key '%s' not found", key);
     }
 
     public JsonObject getNewMessageAsJsonObject() {

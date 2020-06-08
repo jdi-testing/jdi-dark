@@ -26,7 +26,7 @@ public class AuthenticationTests {
         BasicAuthScheme authScheme = new BasicAuthScheme();
         authScheme.setUserName("postman");
         authScheme.setPassword("password");
-        init(AuthorizationPostman.class, ServiceSettings.builder().authenticationScheme(authScheme).build());
+        init(AuthorizationPostman.class, authScheme);
     }
 
     /**
@@ -37,7 +37,6 @@ public class AuthenticationTests {
         RestResponse resp = callPostmanServiceAuthBasic();
         resp.isOk().assertThat().body("authenticated", equalTo(true));
         assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
-
     }
 
     /**

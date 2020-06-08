@@ -26,7 +26,7 @@ public class PathParamTests extends WithJetty {
     @Test
     public void supportsPassingPathParamsToRequestSpec() {
         Object[][] pathParams = new Object[][]{{"firstName", "John"}, {"lastName", "Doe"}};
-        RestResponse response = getUserPathParamsSetByArray(pathParams);
+        RestResponse response = getUser.call(pathParams().addAll(pathParams));
         response.isOk().body("fullName", equalTo("John Doe"));
     }
 

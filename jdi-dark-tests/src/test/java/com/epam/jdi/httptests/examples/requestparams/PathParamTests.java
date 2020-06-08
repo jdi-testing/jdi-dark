@@ -62,7 +62,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void namedPathParametersCanBeAppendedBeforeSubPath() {
-        RestResponse response = getParamBeforePath.call(pathParams().add("path", "something"));;
+        RestResponse response = getParamBeforePath.call(pathParams().add("path", "something"));
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -133,7 +133,7 @@ public class PathParamTests extends WithJetty {
     @Test
     public void usePathParametersLongerTheTemplateName() {
         Object[][] pathParams = new Object[][]{{"abcde", "JohnJohn"}, {"value", "Doe"}};
-        RestResponse response = getMatrix.call(pathParams().addAll(pathParams));;
+        RestResponse response = getMatrix.call(pathParams().addAll(pathParams));
         response.isOk().body("JohnJohn", equalTo("Doe"));
     }
 

@@ -5,15 +5,14 @@ import com.epam.http.requests.RestDataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Product;
-import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.builder.MultiPartSpecBuilder;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFactory.*;
-import static io.restassured.http.ContentType.JSON;
-import static io.restassured.http.ContentType.TEXT;
-import static io.restassured.http.ContentType.URLENC;
+import static io.restassured.http.ContentType.*;
 
 @ServiceDomain("http://localhost:8080")
 public class JettyService {
@@ -24,37 +23,17 @@ public class JettyService {
     @GET("/multiCookieRequest")
     public static RestMethod getMultiCookieRequest;
 
-    public static RestResponse getMultiCookiesArray(Object[][] cookiesArray) {
-        return getMultiCookieRequest.call(cookies().addAll(cookiesArray));
-    }
-
-    public static RestResponse getMultiCookieWithOneName(String name, String value1, String value2) {
-        return getMultiCookieRequest.call(cookies().add(name, value1, value2));
-    }
-
-    public static RestResponse getMultiCookieSpecified(String name, String value) {
-        return getMultiCookieRequest.call(cookies().add(name, value));
-    }
-
     @GET("/setCookies")
     public static RestMethod setCookies;
 
     @GET("/cookie_with_no_value")
     public static RestMethod getCookieWithNoValue;
 
-    public static RestResponse getCookieWithOnlyName(String name) {
-        return getCookieWithNoValue.call(cookies().add(name));
-    }
-
     @GET("/response_cookie_with_no_value")
     public static RestMethod getResponseCookieWithNoValue;
 
     @GET("/cookie")
     public static RestMethod getCookie;
-
-    public static RestResponse getCookieSpecifiedUsingMap(Map<String, String> cookieMap) {
-        return getCookie.call(cookies().addAll(cookieMap));
-    }
 
     public static RestResponse getMultipleCookieSpecifiedUsingMap(Map<String, String> cookieMap, String addCookieName, String addCookieValue) {
         return JettyService.getCookie.call(cookies().addAll(cookieMap).cookieUpdater().add(addCookieName, addCookieValue));
@@ -68,10 +47,6 @@ public class JettyService {
     @Cookie(name = "username", value = "John")
     @Cookie(name = "token", value = "1234")
     public static RestMethod getCookieWithCookies;
-
-    public static RestResponse getCookieWithNameValuePair(String name, String value) {
-        return getCookieWithCookies.call(cookies().add(name, value));
-    }
 
     @PUT("/cookie")
     public static RestMethod putCookie;
@@ -161,10 +136,6 @@ public class JettyService {
 
     @POST("/param-reflect")
     public static RestMethod paramUrlPost;
-
-    public static RestResponse paramUrlPostWithKeyValueQueryParam(String formParamKey, String formParamValue) {
-        return paramUrlPost.call(queryParams().add(formParamKey, formParamValue));
-    }
 
     @ContentType(TEXT)
     @POST("/body")
@@ -331,38 +302,17 @@ public class JettyService {
     @GET("/search?q={query}&hl=en")
     public static RestMethod searchGoogle;
 
-    public static RestResponse searchGoogleSpecificParam(String param) {
-        return searchGoogle.pathParams(param).call();
-    }
-
     @GET("/{channelName}/item-import/rss/import?source={url}")
     public static RestMethod getMixedParam;
-
-    public static RestResponse getMixedParam(Pair<String, String> pathParams, Pair<String, String> queryParams) {
-        return getMixedParam.call(pathParams().add(pathParams).queryParamsUpdater().add(queryParams));
-    }
 
     @GET("/{path}.json")
     public static RestMethod getParamBeforePath;
 
-    public static RestResponse getNamedParamBeforePath(String paramName, String paramValue) {
-        return getParamBeforePath.call(pathParams().add(paramName, paramValue));
-    }
-
     @GET("/something.{format}")
     public static RestMethod getParamAfterPath;
 
-    public static RestResponse getNamedParamAfterPath(String paramName, String paramValue) {
-        return getParamAfterPath.call(pathParams().add(paramName, paramValue));
-    }
-
     @GET("/matrix;{abcde}={value}")
     public static RestMethod getMatrix;
-
-    public static RestResponse getMatrixPathParamsSetByArray(Object[][] array) {
-        return getMatrix
-                .call(pathParams().addAll(array));
-    }
 
     @GET("/cookie_with_no_value")
     @Cookie(name = "some_cookie")

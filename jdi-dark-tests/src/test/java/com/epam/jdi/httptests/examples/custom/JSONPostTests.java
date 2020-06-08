@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFactory.formParams;
+import static com.epam.http.requests.RequestDataFactory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.JettyService.headerPost;
 import static com.epam.jdi.services.JettyService.notFoundedURIPost;
@@ -136,7 +137,7 @@ public class JSONPostTests extends WithJetty {
 
     @Test
     public void queryParametersInPostAreUrlEncoded() {
-        JettyService.paramUrlPostWithKeyValueQueryParam("first", "http://myurl.com")
+        JettyService.paramUrlPost.call(queryParams().add("first", "http://myurl.com"))
                 .isOk()
                 .body("first", equalTo("http://myurl.com"));
     }

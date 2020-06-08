@@ -25,7 +25,6 @@ public class MultiPartUploadTests extends WithJetty {
                 .body(is(new String(bytes)));
     }
 
-
     @Test
     public void multiPartFilePredefined() throws Exception {
         final byte[] bytes = IOUtils.toByteArray(getClass().getResourceAsStream("/car-records.xsd"));

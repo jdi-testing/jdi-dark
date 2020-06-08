@@ -70,6 +70,7 @@ public class RequestData extends DataClass<RequestData> {
      * @return generated request data with provided request body
      */
     public RequestData setBody(Object body) {
+        this.empty = false;
         this.body = body;
         return this;
     }
@@ -81,6 +82,7 @@ public class RequestData extends DataClass<RequestData> {
      * @return generated request data with provided request body
      */
     public RequestData setContentType(String contentType) {
+        this.empty = false;
         this.contentType = contentType;
         return this;
     }
@@ -92,6 +94,7 @@ public class RequestData extends DataClass<RequestData> {
      * @return generated request data with provided request body
      */
     public RequestData setContentType(ContentType contentType) {
+        this.empty = false;
         this.contentType = contentType.toString();
         return this;
     }
@@ -103,7 +106,20 @@ public class RequestData extends DataClass<RequestData> {
      * @return generated request data with provided request body
      */
     public RequestData setMultiPart(MultiPartSpecBuilder multiPartSpecBuilder) {
+        this.empty = false;
         this.multiPartSpec.add(multiPartSpecBuilder.build());
+        return this;
+    }
+
+    /**
+     * Add multipart spec content to request data.
+     *
+     * @param multiPartContent multiPartContent
+     * @return generated request data with provided request body
+     */
+    public RequestData setMultiPart(Object multiPartContent) {
+        this.empty = false;
+        this.multiPartSpec.add(new MultiPartSpecBuilder(multiPartContent).build());
         return this;
     }
 
@@ -116,6 +132,7 @@ public class RequestData extends DataClass<RequestData> {
      */
 
     public RequestData setAuthScheme(AuthenticationScheme authScheme) {
+        this.empty = false;
         this.authScheme = authScheme;
         return this;
     }
@@ -129,7 +146,8 @@ public class RequestData extends DataClass<RequestData> {
      * @return generated request data with provided request body
      */
     public RequestData setProxySpec(String scheme, String host, int port) {
-        proxySpec = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
+        this.empty = false;
+        this.proxySpec = ProxySpecification.host(host).and().withPort(port).and().withScheme(scheme);
         return this;
     }
 
@@ -152,7 +170,8 @@ public class RequestData extends DataClass<RequestData> {
      * @return generated request data with provided request body
      */
     public RequestData setTrustStore(String pathToJks, String password) {
-        trustStore = new Pair<>(pathToJks, password);
+        this.empty = false;
+        this.trustStore = new Pair<>(pathToJks, password);
         return this;
     }
 

@@ -8,7 +8,6 @@ import com.epam.jdi.dto.Product;
 import com.epam.jdi.dto.GreetingItself;
 import com.epam.jdi.dto.Hello;
 import com.epam.jdi.dto.User;
-import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.builder.MultiPartSpecBuilder;
 
 import java.util.Arrays;
@@ -16,7 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFactory.*;
-import static io.restassured.http.ContentType.*;
+import static io.restassured.http.ContentType.JSON;
+import static io.restassured.http.ContentType.TEXT;
+import static io.restassured.http.ContentType.URLENC;
 
 @ServiceDomain("http://localhost:8080")
 public class JettyService {

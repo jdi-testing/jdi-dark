@@ -5,10 +5,15 @@ import com.epam.http.requests.RestDataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Product;
+import com.epam.jdi.dto.GreetingItself;
+import com.epam.jdi.dto.Hello;
+import com.epam.jdi.dto.User;
 import com.epam.jdi.tools.pairs.Pair;
 import io.restassured.builder.MultiPartSpecBuilder;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFactory.*;
 import static io.restassured.http.ContentType.JSON;
@@ -125,6 +130,9 @@ public class JettyService {
     public static RestMethod deleteCookie;
 
     @GET("/greet")
+    public static RestDataMethod<GreetingItself> getGreetingItselfObject;
+
+    @GET("/greet")
     public static RestMethod getGreet;
 
     public static RestResponse getGreetWithMapOfQueryParams(Map<String, String> queryParamsMap) {
@@ -202,6 +210,9 @@ public class JettyService {
 
     @GET("/hello")
     public static RestMethod getHello;
+
+    @GET("/secured/hello")
+    public static RestDataMethod<Hello> getSecuredHelloObject;
 
     @GET("/secured/hello")
     public static RestMethod getSecuredHello;
@@ -304,6 +315,9 @@ public class JettyService {
     @GET("/redirect")
     @Header(name = "Redirect_test_header", value = "Redirect_test_header_value")
     public static RestMethod getRedirect;
+
+    @GET("/{firstName}/{lastName}")
+    public static RestDataMethod<User> getUserObject;
 
     @GET("/{firstName}/{lastName}")
     public static RestMethod getUser;

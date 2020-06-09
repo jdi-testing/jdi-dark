@@ -38,6 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.epam.http.ExceptionHandler.exception;
+import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.requests.RestMethodTypes.DELETE;
 import static com.epam.http.requests.RestMethodTypes.GET;
 import static com.epam.http.requests.RestMethodTypes.HEAD;
@@ -71,6 +72,7 @@ public class ServiceInit {
                 try {
                     action.value.execute();
                 } catch (Exception ex) {
+                    logger.error(ex.getMessage());
                     throw exception("Preinit '%s' failed. Please correct PageFactory.PRE_INIT function", action.key);
                 }
             initialized = true;

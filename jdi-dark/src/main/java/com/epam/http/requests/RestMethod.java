@@ -399,6 +399,7 @@ public class RestMethod {
         if (path != null && path.contains("?")) {
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
+            userData.empty = false;
             userData.path = pathString;
             uri = url + pathString;
             getQueryParams(insertQueryParams(queryString));
@@ -411,6 +412,7 @@ public class RestMethod {
      */
     private void insertPathParams() {
         if (uri.contains("{")) {
+            userData.empty = false;
             userData.path = path;
         }
         uri = insertPathParams.execute(uri, userData.pathParams);
@@ -449,6 +451,7 @@ public class RestMethod {
             catchPathParametersIllegalArguments(namedParams, pathParams);
             String pathString = substringBefore(path, "?");
             String queryString = substringAfter(path, "?");
+            userData.empty = false;
             userData.path = pathString;
             int index = 0;
             String[] namedPathParams = StringUtils.substringsBetween(pathString, "{", "}");
@@ -498,6 +501,7 @@ public class RestMethod {
      * @return RestMethod Rest method
      */
     public RestMethod body(Object body) {
+        userData.empty = false;
         userData.body = body;
         return this;
     }

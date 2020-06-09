@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.epam.http.requests.RequestDataFactory.formParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.JettyService.headerPost;
 import static com.epam.jdi.services.JettyService.notFoundedURIPost;
@@ -35,18 +36,24 @@ public class JSONPostTests extends WithJetty {
     }
 
     @Test
-    public void formParamsAcceptsIntArgumentsJDI() {
-        Object[][] queryPramsArray = new Object[][]{{"firstName", 1234}, {"lastName", 5678}};
-
-        JettyService.greetPost(queryPramsArray)
+    public void queryParamsAcceptsIntArgumentsJDI() {
+        Object[][] queryParamsArray = new Object[][]{{"firstName", 1234}, {"lastName", 5678}};
+        JettyService.greetPost(queryParamsArray)
                 .isOk()
                 .body("greeting", equalTo("Greetings 1234 5678"));
     }
 
     @Test
+    public void formParamsAcceptsIntArgumentsJDI() {
+        RestResponse response = JettyService.greetPost
+                .call(formParams()
+                        .addAll(new Object[][]{{"firstName", 1234}, {"lastName", 5678}}));
+        response.isOk().body("greeting", equalTo("Greetings 1234 5678"));
+    }
+
+    @Test
     public void bodyWithSingleHamcrestMatching() {
         Object[][] queryPramsArray = new Object[][]{{"firstName", 1234}, {"lastName", 5678}};
-
         JettyService.greetPost(queryPramsArray)
                 .isOk()
                 .body(containsString("greeting"));

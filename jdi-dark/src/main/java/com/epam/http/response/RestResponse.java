@@ -244,14 +244,17 @@ public class RestResponse {
     }
 
     public <T> T asData(Class<T> cl) {
+        isOk();
         return getRaResponse().as(cl);
     }
 
     public <T> T asData(Class<T> cl, ObjectMapper objectMapper) {
+        isOk();
         return getRaResponse().as(cl, objectMapper);
     }
 
     public <T> T asData(Class<T> cl, String responseType) {
+        isOk();
         switch (responseType) {
             case "List":
                 return (T) Arrays.asList((T[]) getRaResponse().as(cl));

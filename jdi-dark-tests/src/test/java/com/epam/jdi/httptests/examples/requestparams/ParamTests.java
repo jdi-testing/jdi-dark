@@ -1,7 +1,8 @@
 package com.epam.jdi.httptests.examples.requestparams;
 
-import com.epam.jdi.services.JettyService;
+import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.WithJetty;
+import com.epam.jdi.services.JettyService;
 import io.restassured.builder.MultiPartSpecBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.services.JettyService.greetPost;
 import static org.hamcrest.Matchers.*;
 
 /**
@@ -34,9 +36,9 @@ public class ParamTests extends WithJetty {
     @Test
     public void noValueParamWhenUsingQueryParamWithGetRequest() {
         JettyService.getNoValueParamWithKeyValueQueryParam(PARAM_NAME, StringUtils.EMPTY)
-            .isOk()
-            .assertThat()
-            .body(equalTo("Params: some="));
+                .isOk()
+                .assertThat()
+                .body(equalTo("Params: some="));
     }
 
     @Test
@@ -44,8 +46,7 @@ public class ParamTests extends WithJetty {
         Map<String, String> queryParamsMap = new HashMap<>();
         queryParamsMap.put(FIRST_NAME, FIRST_NAME_VALUE);
         queryParamsMap.put(LAST_NAME, StringUtils.EMPTY);
-
-        JettyService.getGreetWithMapOfQueryParams(queryParamsMap)
+        JettyService.getGreet.call(rd -> rd.queryParams.addAll(queryParamsMap))
                 .isOk()
                 .assertThat()
                 .body("greeting", equalTo("Greetings John "));
@@ -58,9 +59,9 @@ public class ParamTests extends WithJetty {
         queryParamsMap.put(LAST_NAME, LAST_NAME_VALUE);
 
         JettyService.getGreetWithMapOfQueryParams(queryParamsMap)
-            .isOk()
-            .assertThat()
-            .body("greeting", equalTo("Greetings  Doe"));
+                .isOk()
+                .assertThat()
+                .body("greeting", equalTo("Greetings  Doe"));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void singleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithStringQueryParams("some")
+        JettyService.getNoValueParam.queryParams("some").call()
                 .isOk()
                 .assertThat()
                 .body(is("Params: some="));
@@ -112,8 +113,11 @@ public class ParamTests extends WithJetty {
         formParamsMap.put(FIRST_NAME, "Some & firstname");
         formParamsMap.put(LAST_NAME, "<lastname>");
 
-        JettyService.greetPostWithContentTypeAndMapOfFormParams("application/x-www-form-urlencoded; charset=ISO-8859-1", formParamsMap)
-                .isOk()
+        RestResponse resp = greetPost.call(rd -> {
+            rd.setContentType("application/x-www-form-urlencoded; charset=ISO-8859-1");
+            rd.formParams.addAll(formParamsMap);
+        });
+        resp.isOk()
                 .assertThat()
                 .body("greeting", equalTo("Greetings Some & firstname <lastname>"));
     }

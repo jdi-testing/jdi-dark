@@ -16,6 +16,7 @@ import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
+import static org.testng.Assert.assertEquals;
 
 public class PathParamTests extends WithJetty {
     @BeforeClass
@@ -61,7 +62,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void namedPathParametersCanBeAppendedBeforeSubPath() {
-        RestResponse response = getNamedParamBeforePath("path", "something");
+        RestResponse response = getParamBeforePath.call(pathParams().add("path", "something"));
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -73,7 +74,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void namedPathParametersCanBeAppendedAfterSubPath() {
-        RestResponse response = getNamedParamAfterPath("format", "json");
+        RestResponse response = getParamAfterPath.call(pathParams().add("format", "json"));
         response.isOk().body("value", equalTo("something"));
     }
 
@@ -118,22 +119,21 @@ public class PathParamTests extends WithJetty {
     @Test
     public void mixingUnnamedPathParametersAndQueryParametersWorks() {
         RestResponse response = getMixedParam.pathParams("games", "http://myurl.com").call();
-        response.assertThat().statusCode(404);
+        assertEquals(response.getBody(), "Not found");
     }
 
     @Test
     public void mixingPathParametersAndQueryParametersWorks() {
         Pair<String, String> pathParams = new Pair<>("channelName", "games");
         Pair<String, String> queryParams = new Pair<>("url", "http://myurl.com");
-
-        RestResponse response = getMixedParam(pathParams, queryParams);
-        response.assertThat().statusCode(404);
+        RestResponse response = getMixedParam.call(pathParams().add(pathParams).queryParamsUpdater().add(queryParams));
+        assertEquals(response.getBody(), "Not found");
     }
 
     @Test
     public void usePathParametersLongerTheTemplateName() {
         Object[][] pathParams = new Object[][]{{"abcde", "JohnJohn"}, {"value", "Doe"}};
-        RestResponse response = getMatrixPathParamsSetByArray(pathParams);
+        RestResponse response = getMatrix.call(pathParams().addAll(pathParams));
         response.isOk().body("JohnJohn", equalTo("Doe"));
     }
 
@@ -184,7 +184,7 @@ public class PathParamTests extends WithJetty {
 
     @Test
     public void queryParametersWorksWithoutKeys() {
-        RestResponse response = searchGoogleSpecificParam("query");
+        RestResponse response = searchGoogle.pathParams("query").call();
         response.isOk();
     }
 

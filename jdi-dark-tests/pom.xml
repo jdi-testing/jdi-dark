@@ -14,7 +14,7 @@
         <java.version>1.8</java.version>
         <allure.testng>2.7.0</allure.testng>
         <allure.maven>2.10.0</allure.maven>
-        <aspectj.version>1.9.1</aspectj.version>
+        <aspectj.version>1.9.5</aspectj.version>
         <suiteXML.file>general.xml</suiteXML.file>
     </properties>
 

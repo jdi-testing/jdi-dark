@@ -46,6 +46,10 @@ public class RequestDataFactory {
         return new RequestData().setMultiPart(multiPartSpecBuilder);
     }
 
+    public static RequestData multipart(Object multiPartContent) {
+        return new RequestData().setMultiPart(multiPartContent);
+    }
+
     public static RequestData auth(AuthenticationScheme authScheme) {
         return new RequestData().setAuthScheme(authScheme);
     }
@@ -54,7 +58,6 @@ public class RequestDataFactory {
         return new RequestData().setTrustStore(pathToJks, password);
     }
 
-    //general
     public static RequestData requestData(JAction1<RequestData> valueFunc) {
         return new RequestData().set(valueFunc);
     }

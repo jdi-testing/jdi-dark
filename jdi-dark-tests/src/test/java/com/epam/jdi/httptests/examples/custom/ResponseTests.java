@@ -3,6 +3,7 @@ package com.epam.jdi.httptests.examples.custom;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
+import io.restassured.authentication.BasicAuthScheme;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.path.json.config.JsonPathConfig;
 import io.restassured.specification.RequestSpecification;
@@ -39,6 +40,17 @@ public class ResponseTests extends WithJetty {
         final String responseInfo = response.toString();
         assertThat(responseInfo, containsString("Response status: 200 OK (OK)"));
         assertThat(responseInfo, containsString("Response body: {\"hello\":\"Hello Scalatra\"}"));
+    }
+
+    @Test
+    public void getSecuredHello() {
+        BasicAuthScheme authScheme = new BasicAuthScheme();
+        authScheme.setUserName("jetty");
+        authScheme.setPassword("jetty");
+        RestResponse response = JettyService.getSecuredHello.auth(authScheme).call();
+        final String responseInfo = response.toString();
+        assertThat(responseInfo, containsString("Response status: 200 OK (OK)"));
+        assertThat(responseInfo, containsString("Response body: {\"hello\":\"Hello Secured Scalatra\"}"));
     }
 
     @Test

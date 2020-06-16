@@ -15,6 +15,7 @@ import com.epam.jdi.tools.func.JFunc2;
 import com.epam.jdi.tools.func.JFunc3;
 import com.epam.jdi.tools.map.MultiMap;
 import com.epam.jdi.tools.pairs.Pair;
+import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
@@ -23,7 +24,6 @@ import io.restassured.http.Cookies;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.internal.RequestSpecificationImpl;
-import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
@@ -457,7 +457,6 @@ public class RestMethod {
             String[] namedPathParams = StringUtils.substringsBetween(pathString, "{", "}");
             if (namedPathParams != null) {
                 for (String key : StringUtils.substringsBetween(pathString, "{", "}")) {
-                    userData.empty = false;
                     userData.pathParamsUpdater().add(key, pathParams[index].toString());
                     index++;
                 }
@@ -501,8 +500,7 @@ public class RestMethod {
      * @return RestMethod Rest method
      */
     public RestMethod body(Object body) {
-        userData.empty = false;
-        userData.body = body;
+        userData.setBody(body);
         return this;
     }
 
@@ -674,7 +672,12 @@ public class RestMethod {
     }
 
     public RestMethod multipart(Object multiPartContent) {
-        ((MultiPartSpecificationImpl) data.multiPartSpec.get(0)).setContent(multiPartContent);
+        userData.setMultiPart(new MultiPartSpecBuilder(multiPartContent));
+        return this;
+    }
+
+    public RestMethod auth(AuthenticationScheme authenticationScheme) {
+        userData.setAuthScheme(authenticationScheme);
         return this;
     }
 

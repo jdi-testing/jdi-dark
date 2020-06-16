@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.4
+  * fix multipart
+
 ## 1.1.3
   * fixes RestMethod data methods
   * check response before asData

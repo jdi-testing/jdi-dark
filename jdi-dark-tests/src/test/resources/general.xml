@@ -4,7 +4,22 @@
     <test name="Rest tests">
         <packages>
             <package name="com.epam.jdi.httptests.examples"/>
+            <package name="com.epam.jdi.httptests.examples.custom"/>
+            <package name="com.epam.jdi.httptests.examples.customsettings"/>
+            <package name="com.epam.jdi.httptests.examples.entities"/>
+            <package name="com.epam.jdi.httptests.examples.requestparams"/>
+            <package name="com.epam.jdi.httptests.examples.requestsretry"/>
         </packages>
+    </test>
+    <test name="Soap tests">
+        <packages>
+            <package name="com.epam.jdi.httptests.examples.soap"/>
+        </packages>
+    </test>
+    <test name="Performance tests">
+        <classes>
+            <class name="com.epam.jdi.httptests.perfomance.PerformanceTests"/>
+        </classes>
     </test>
     <test name="Websoket tests">
         <packages>

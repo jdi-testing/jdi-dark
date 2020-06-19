@@ -1,4 +1,4 @@
-package com.epam.jdi.httptests.examples;
+package com.epam.jdi.httptests.perfomance;
 
 import com.epam.http.performance.PerformanceResult;
 import com.epam.http.performance.RestLoad;

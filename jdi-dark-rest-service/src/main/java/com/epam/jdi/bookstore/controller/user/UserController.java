@@ -54,13 +54,13 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<User> updateUser(Long id, User user) {
         User updatedUser = userService.updateUser(id, user);
-        return ResponseEntity.ok(updatedUser);
+        return ok(updatedUser);
     }
 
     @Override
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = userService.getUsers();
-        return ResponseEntity.ok(users);
+        return ok(users);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<List<Address>> getAddresses(Long user_id) {
         List<Address> addresses = userService.getUserAddresses(user_id);
-        return ResponseEntity.ok(addresses);
+        return ok(addresses);
     }
 
     @Override

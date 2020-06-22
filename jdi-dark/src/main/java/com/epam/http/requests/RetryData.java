@@ -23,7 +23,7 @@ public class RetryData {
     }
 
     public RetryData merge(RetryOnFailure retryData) {
-        this.numberOfRetryAttempts = retryData.numberOfRetryAttempts() == (int) getDefaultValueOf("numberOfAttempts") ?
+        this.numberOfRetryAttempts = retryData.numberOfRetryAttempts() == (int) getDefaultValueOf("numberOfRetryAttempts") ?
                 numberOfRetryAttempts : retryData.numberOfRetryAttempts();
         this.errorCodes = retryData.errorCodes() == getDefaultValueOf("errorCodes") ?
                 errorCodes : intArrayToList(retryData);

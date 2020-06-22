@@ -13,6 +13,8 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.epam.http.JdiHttpSettings.DOMAIN;
+import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.requests.ServiceInit.init;
 import static java.lang.Thread.sleep;
 
@@ -44,7 +46,7 @@ public abstract class WithRestService {
             BufferedReader in = new BufferedReader(new InputStreamReader(webService.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
-                System.out.println(line);
+                logger.debug(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,17 +59,17 @@ public abstract class WithRestService {
         while (!getServiceStatus()) {
             long currentTime = System.currentTimeMillis();
             if ((currentTime - startPoint) > timeout) {
-                throw new RuntimeException("Timeout waiting for service to start");
+                throw new RuntimeException("Timeout waiting for service to start. Service is unavailable at http://localhost:8080");
             }
             sleep(500);
         }
     }
 
     private static boolean getServiceStatus() {
-        String url = "http://localhost:8081/status";
+        String url = DOMAIN.get("local") + "/status";
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("HEAD");
             int responseCode = connection.getResponseCode();
             return (responseCode == 200);
         } catch (IOException exception) {

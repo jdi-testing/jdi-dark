@@ -10,7 +10,7 @@ import com.epam.http.requests.RestMethod;
 import static io.restassured.http.ContentType.JSON;
 
 @RetryOnFailure
-@ServiceDomain(value = "http://localhost:8081/")
+@ServiceDomain(value = "http://localhost:8080/")
 public class RestService {
 
     @GET(value = "status")

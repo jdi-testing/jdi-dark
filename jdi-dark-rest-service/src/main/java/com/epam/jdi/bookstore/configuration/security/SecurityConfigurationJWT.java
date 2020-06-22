@@ -71,6 +71,7 @@ public class SecurityConfigurationJWT extends WebSecurityConfigurerAdapter {
                         "/users/registration",
                         "/**/api-docs",
                         "/status",
+                        "/actuator/shutdown",
                         "/swagger**",
                         "/**/docs",
                         "/favicon.ico",

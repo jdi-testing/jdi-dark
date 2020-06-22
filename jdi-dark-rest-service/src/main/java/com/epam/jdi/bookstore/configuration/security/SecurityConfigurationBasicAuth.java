@@ -38,6 +38,7 @@ public class SecurityConfigurationBasicAuth extends WebSecurityConfigurerAdapter
                         "/**/docs",
                         "/favicon.ico",
                         "/status",
+                        "/actuator/shutdown",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v2/api-docs/**",

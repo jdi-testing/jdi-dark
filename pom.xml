@@ -52,9 +52,9 @@
     <modules>
         <module>jdi-dark</module>
         <module>jdi-dark-ws</module>
+        <module>jdi-dark-rest-service</module>
         <module>jdi-dark-tests</module>
         <module>jdi-dark-bdd</module>
         <module>jdi-dark-bdd-tests</module>
-        <module>jdi-dark-rest-service</module>
     </modules>
 </project>

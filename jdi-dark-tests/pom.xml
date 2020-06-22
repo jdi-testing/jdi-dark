@@ -96,22 +96,42 @@
                 <version>3.1.1</version>
                 <executions>
                     <execution>
-                        <!-- Used to copy the foo bar war to the webapps folder -->
-                        <id>copy-dependency</id>
-                        <phase>process-resources</phase>
+                    <!-- Used to copy the foo bar war to the webapps folder -->
+                    <id>copy-dependency</id>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>copy</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>io.rest-assured.examples</groupId>
+                                <artifactId>scalatra-webapp</artifactId>
+                                <version>3.0.2</version>
+                                <type>war</type>
+                                <overWrite>true</overWrite>
+                                <outputDirectory>${project.build.directory}/webapps</outputDirectory>
+                                <destFileName>scalatra-webapp.war</destFileName>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
+                </execution>
+                    <execution>
+                        <id>copy-rest-service</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>io.rest-assured.examples</groupId>
-                                    <artifactId>scalatra-webapp</artifactId>
-                                    <version>3.0.2</version>
-                                    <type>war</type>
+                                    <groupId>com.epam.jdi</groupId>
+                                    <artifactId>jdi-dark-rest-service</artifactId>
+                                    <version>1.0.0</version>
+                                    <type>jar</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/webapps</outputDirectory>
-                                    <destFileName>scalatra-webapp.war</destFileName>
+                                    <outputDirectory>${project.build.directory}/rest-service</outputDirectory>
+                                    <destFileName>jdi-dark-rest-service.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

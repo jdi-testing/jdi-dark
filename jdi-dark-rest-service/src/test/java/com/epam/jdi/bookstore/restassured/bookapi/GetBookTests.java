@@ -22,7 +22,7 @@ import static com.epam.jdi.bookstore.restassured.base.Token.TOKEN;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-@SuppressWarnings({"PMD.MethodNamingConventions", "JUnitTestsShouldIncludeAssert"})
+@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.JUnitTestsShouldIncludeAssert"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GetBookTests extends BaseTestClass {

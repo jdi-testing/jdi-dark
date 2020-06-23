@@ -12,7 +12,7 @@ Highlights + fast start example: <https://jdi-docs.github.io/jdi-dark/?java#high
 Tutorial: <https://jdi-docs.github.io/jdi-dark/#tutorial> - helps to get main ideas on practice <br/>
 Project templates: <https://github.com/jdi-templates> - for fast projects start <br/>
 Examples: <https://github.com/jdi-examples> <br/>
-Increase test [performance examples](https://github.com/jdi-testing/jdi-dark/blob/master/jdi-dark-tests/src/test/java/com/epam/jdi/httptests/examples/PerformanceTests.java) <br/>
+Increase test [performance examples](https://github.com/jdi-testing/jdi-dark/blob/master/jdi-dark-tests/src/test/java/com/epam/jdi/httptests/performance/PerformanceTests.java) <br/>
  
 ## Introduction
 

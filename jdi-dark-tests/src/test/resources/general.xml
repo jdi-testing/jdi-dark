@@ -18,7 +18,7 @@
     </test>
     <test name="Performance tests">
         <classes>
-            <class name="com.epam.jdi.httptests.perfomance.PerformanceTests"/>
+            <class name="com.epam.jdi.httptests.performance.PerformanceTests"/>
         </classes>
     </test>
     <test name="Websoket tests">

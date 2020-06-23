@@ -4,8 +4,6 @@ import com.epam.jdi.bookstore.model.Book;
 import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.post;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.with;
 
 public class BaseTestClass {
 

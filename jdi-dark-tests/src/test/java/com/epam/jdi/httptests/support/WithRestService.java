@@ -4,12 +4,14 @@ import com.epam.jdi.services.RestService;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
+import javax.naming.ServiceUnavailableException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,7 +26,7 @@ public abstract class WithRestService {
     protected static ExecutorService executorService;
 
     @BeforeClass(alwaysRun = true)
-    public void startSpringBootApplication() throws InterruptedException {
+    public void startSpringBootApplication() throws InterruptedException, ServiceUnavailableException {
         init(RestService.class);
         File applicationJar = new File("target" + File.separator + "rest-service"
                 + File.separator + "jdi-dark-rest-service.jar");
@@ -33,7 +35,7 @@ public abstract class WithRestService {
             executorService.submit(WithRestService::buildProcess);
             waitUntilServiceIsReady();
         } else {
-            throw new RuntimeException("Couldn't found jar file to start");
+            throw new NoSuchElementException("Couldn't found jar file to start");
         }
     }
 
@@ -53,13 +55,13 @@ public abstract class WithRestService {
         }
     }
 
-    private void waitUntilServiceIsReady() throws InterruptedException {
+    private void waitUntilServiceIsReady() throws InterruptedException, ServiceUnavailableException {
         long timeout = 60000;
         long startPoint = System.currentTimeMillis();
         while (!getServiceStatus()) {
             long currentTime = System.currentTimeMillis();
             if ((currentTime - startPoint) > timeout) {
-                throw new RuntimeException("Timeout waiting for service to start. Service is unavailable at http://localhost:8080");
+                throw new ServiceUnavailableException("Timeout waiting for service to start. Service is unavailable at http://localhost:8080");
             }
             sleep(500);
         }

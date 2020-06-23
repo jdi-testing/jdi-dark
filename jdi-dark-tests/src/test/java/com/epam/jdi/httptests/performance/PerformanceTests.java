@@ -1,4 +1,4 @@
-package com.epam.jdi.httptests.perfomance;
+package com.epam.jdi.httptests.performance;
 
 import com.epam.http.performance.PerformanceResult;
 import com.epam.http.performance.RestLoad;
@@ -6,8 +6,6 @@ import com.epam.jdi.services.ServiceExample;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.concurrent.ExecutionException;
 
 import static com.epam.http.requests.ServiceInit.init;
 

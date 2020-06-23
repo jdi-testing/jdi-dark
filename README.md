@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/33945d791ef14f41ae05740328d7bdb9)](https://www.codacy.com/app/jdi-testing/jdi-dark?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jdi-testing/jdi-dark&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/cfbc3de984c9407ea0eaa3b86552f848)](https://www.codacy.com/gh/jdi-testing/jdi-dark?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jdi-testing/jdi-dark&amp;utm_campaign=Badge_Grade)
 
 # JDI Dark Test Automation Framework
 [![stackoverflow](https://img.shields.io/badge/stackoverflow-jdi-blue.svg?style=flat)](http://stackoverflow.com/questions/tagged/jdi)
@@ -12,7 +12,7 @@ Highlights + fast start example: <https://jdi-docs.github.io/jdi-dark/?java#high
 Tutorial: <https://jdi-docs.github.io/jdi-dark/#tutorial> - helps to get main ideas on practice <br/>
 Project templates: <https://github.com/jdi-templates> - for fast projects start <br/>
 Examples: <https://github.com/jdi-examples> <br/>
-Increase test [performance examples](https://github.com/jdi-testing/jdi-dark/blob/master/jdi-dark-tests/src/test/java/com/epam/jdi/httptests/examples/PerformanceTests.java) <br/>
+Increase test [performance examples](https://github.com/jdi-testing/jdi-dark/blob/master/jdi-dark-tests/src/test/java/com/epam/jdi/httptests/performance/PerformanceTests.java) <br/>
  
 ## Introduction
 

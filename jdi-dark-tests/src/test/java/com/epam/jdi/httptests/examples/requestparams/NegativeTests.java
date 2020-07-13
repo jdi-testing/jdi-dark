@@ -12,7 +12,7 @@ import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class negativeTests extends WithJetty {
+public class NegativeTests extends WithJetty {
 
 
     @BeforeClass

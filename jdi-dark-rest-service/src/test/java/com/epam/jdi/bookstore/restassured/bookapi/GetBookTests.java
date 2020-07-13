@@ -1,8 +1,8 @@
 package com.epam.jdi.bookstore.restassured.bookapi;
 
 import com.epam.jdi.bookstore.model.Book;
-import com.epam.jdi.bookstore.restassured.base.BaseTestClass;
 import com.epam.jdi.bookstore.model.Genre;
+import com.epam.jdi.bookstore.restassured.base.BaseTestClass;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveOAuth2HeaderScheme;
 import io.restassured.builder.RequestSpecBuilder;
@@ -22,7 +22,6 @@ import static com.epam.jdi.bookstore.restassured.base.Token.TOKEN;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.JUnitTestsShouldIncludeAssert"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GetBookTests extends BaseTestClass {
@@ -178,9 +177,9 @@ public class GetBookTests extends BaseTestClass {
                 .price("9.89")
                 .quantity(2)
                 .genres(Arrays.asList(
-                        Genre.builder().id(15L).build(),
-                        Genre.builder().id(14L).build(),
-                        Genre.builder().id(7L).build()
+                        Genre.builder().type("Black comedy").build(),
+                        Genre.builder().type("Postmodernism").build(),
+                        Genre.builder().type("Horror").build()
                 )).build();
 
         book2 = Book.builder()
@@ -191,7 +190,7 @@ public class GetBookTests extends BaseTestClass {
                 .price("12.59")
                 .quantity(1)
                 .genres(Arrays.asList(
-                        Genre.builder().id(3L).build()
+                        Genre.builder().type("Dystopian fiction").build()
                 )).build();
     }
 }

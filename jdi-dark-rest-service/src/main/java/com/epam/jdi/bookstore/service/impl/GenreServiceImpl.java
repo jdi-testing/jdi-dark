@@ -50,6 +50,15 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    public Genre getGenreByType(String type) throws NotFoundException {
+        Optional<Genre> genre = genreRepository.findGenreByType(type);
+        if (!genre.isPresent()) {
+            throw new NotFoundException("Genre with type '" + type + "' not found");
+        }
+        return genre.get();
+    }
+
+    @Override
     public Genre updateGenre(Long id, Genre genre) throws NotFoundException {
         Genre genreToUpdate = getGenreById(id);
         genre.setId(genreToUpdate.getId());

@@ -1,8 +1,8 @@
 package com.epam.jdi.bookstore.restassured.bookapi;
 
 import com.epam.jdi.bookstore.model.Book;
-import com.epam.jdi.bookstore.restassured.base.BaseTestClass;
 import com.epam.jdi.bookstore.model.Genre;
+import com.epam.jdi.bookstore.restassured.base.BaseTestClass;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveOAuth2HeaderScheme;
 import io.restassured.builder.RequestSpecBuilder;
@@ -18,11 +18,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 
+import static com.epam.jdi.bookstore.restassured.base.Token.TOKEN;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static com.epam.jdi.bookstore.restassured.base.Token.TOKEN;
 
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.JUnitTestsShouldIncludeAssert"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UpdateBookTests extends BaseTestClass {
@@ -55,8 +54,8 @@ public class UpdateBookTests extends BaseTestClass {
     public void updateBook_withValidObject_shouldReturn200() {
         int id = createBookPrecondition(requestSpec, book1);
         book1.setGenres(Arrays.asList(
-                Genre.builder().id(2L).build(),
-                Genre.builder().id(3L).build()
+                Genre.builder().type("Science fiction").build(),
+                Genre.builder().type("Dystopian fiction").build()
         ));
         given()
                 .spec(requestSpec)
@@ -88,7 +87,7 @@ public class UpdateBookTests extends BaseTestClass {
                 .price("6.82")
                 .quantity(2)
                 .genres(Arrays.asList(
-                        Genre.builder().id(2L).build()
+                        Genre.builder().type("Science fiction").build()
                 )).build();
 
         book2 = Book.builder()
@@ -99,8 +98,8 @@ public class UpdateBookTests extends BaseTestClass {
                 .price("7.50")
                 .quantity(1)
                 .genres(Arrays.asList(
-                        Genre.builder().id(16L).build(),
-                        Genre.builder().id(17L).build()
+                        Genre.builder().type("Bildungsroman").build(),
+                        Genre.builder().type("Southern Gothic").build()
                 )).build();
     }
 }

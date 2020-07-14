@@ -42,21 +42,24 @@ public class Book implements IdentifiedEntity {
     @Column(name = "isbn", nullable = false)
     private String isbn;
 
+    @NotBlank(message = "Title is mandatory")
     @Column(name = "title", nullable = false)
     private String title;
 
+    @NotBlank(message = "Author is mandatory")
     @Column(name = "author", nullable = false)
     private String author;
 
+    @NotBlank(message = "Publication year is mandatory")
     @Column(name = "publication_year", nullable = false)
     private String publicationYear;
 
     @NotBlank(message = "Price is mandatory")
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private String price;
 
     @NotNull(message = "Quantity is mandatory")
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @ManyToMany(fetch = FetchType.EAGER)

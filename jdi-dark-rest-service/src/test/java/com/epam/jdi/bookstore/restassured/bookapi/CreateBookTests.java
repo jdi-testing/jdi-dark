@@ -1,8 +1,8 @@
 package com.epam.jdi.bookstore.restassured.bookapi;
 
 import com.epam.jdi.bookstore.model.Book;
-import com.epam.jdi.bookstore.restassured.base.BaseTestClass;
 import com.epam.jdi.bookstore.model.Genre;
+import com.epam.jdi.bookstore.restassured.base.BaseTestClass;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveOAuth2HeaderScheme;
 import io.restassured.builder.RequestSpecBuilder;
@@ -18,11 +18,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 
+import static com.epam.jdi.bookstore.restassured.base.Token.TOKEN;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static com.epam.jdi.bookstore.restassured.base.Token.TOKEN;
 
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.JUnitTestsShouldIncludeAssert"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateBookTests extends BaseTestClass {
@@ -93,7 +92,7 @@ public class CreateBookTests extends BaseTestClass {
                 .then()
                 .assertThat()
                 .statusCode(404)
-                .body("message", equalTo("Genre with ID '999' not found"));
+                .body("message", equalTo("Genre with type 'Some unknown type' not found"));
     }
 
     @Test
@@ -161,10 +160,10 @@ public class CreateBookTests extends BaseTestClass {
                 .price("12.34")
                 .quantity(1)
                 .genres(Arrays.asList(
-                        Genre.builder().id(5L).build(),
-                        Genre.builder().id(6L).build(),
-                        Genre.builder().id(11L).build(),
-                        Genre.builder().id(12L).build()
+                        Genre.builder().id(5L).type("Satire").build(),
+                        Genre.builder().type("Tragedy").build(),
+                        Genre.builder().type("Modernism").build(),
+                        Genre.builder().type("Realism").build()
                 )).build();
 
         book2 = Book.builder()
@@ -175,7 +174,7 @@ public class CreateBookTests extends BaseTestClass {
                 .price("14.06")
                 .quantity(1)
                 .genres(Arrays.asList(
-                        Genre.builder().id(3L).build()
+                        Genre.builder().type("Dystopian fiction").build()
                 )).build();
 
         book3 = Book.builder()
@@ -186,7 +185,7 @@ public class CreateBookTests extends BaseTestClass {
                 .price("19.71")
                 .quantity(1)
                 .genres(Arrays.asList(
-                        Genre.builder().id(999L).build()
+                        Genre.builder().type("Some unknown type").build()
                 )).build();
 
         book4 = Book.builder()

@@ -14,6 +14,8 @@ public interface GenreService {
 
     Genre getGenreById(Long id) throws NotFoundException;
 
+    Genre getGenreByType(String type) throws NotFoundException;
+
     Genre updateGenre(Long id, Genre genre) throws NotFoundException;
 
 }

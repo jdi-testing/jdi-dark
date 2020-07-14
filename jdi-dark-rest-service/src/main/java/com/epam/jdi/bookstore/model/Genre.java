@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
@@ -30,10 +31,11 @@ public class Genre implements IdentifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
+    @NotBlank(message = "Genre type is mandatory")
     @Column(name = "type", nullable = false)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String type;
 
     @JsonIgnore

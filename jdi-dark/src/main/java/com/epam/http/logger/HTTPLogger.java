@@ -59,8 +59,11 @@ public class HTTPLogger implements ILogger {
 
     public void setLogLevel(LogLevels level) {
         logLevel = new Safe<>(level);
-        setRootLevel(getLog4j2Level(level));
-        setLevel(name, getLog4j2Level(level));
+        try {
+            setRootLevel(getLog4j2Level(level));
+            setLevel(name, getLog4j2Level(level));
+        } catch (Exception ignored) {
+        }
         setAllureRootLogLevel(level);
     }
 

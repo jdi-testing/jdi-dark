@@ -1,7 +1,10 @@
 # Changelog
 
+## 1.1.5
+  * fixes logger classes cast error
+
 ## 1.1.4
-  * fix multipart
+  * fixes multipart
 
 ## 1.1.3
   * fixes RestMethod data methods

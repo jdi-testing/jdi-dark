@@ -23,11 +23,16 @@ public enum LogLevels {
     TRACE(600),       // Trace info (not for prod)
     ALL(MAX_VALUE);   // All log messages
 
-    private int level;
+    private final int level;
 
     private static final List<Level> allLog4J2Levels =
             asList(Level.OFF, Level.FATAL, Level.ERROR, Level.WARN, Level.INFO,
                     Level.DEBUG, Level.TRACE, Level.ALL);
+
+    private static final List<ch.qos.logback.classic.Level> allLogbackLevels =
+            asList(ch.qos.logback.classic.Level.OFF, ch.qos.logback.classic.Level.ERROR,
+                    ch.qos.logback.classic.Level.ERROR, ch.qos.logback.classic.Level.WARN, ch.qos.logback.classic.Level.INFO,
+                    ch.qos.logback.classic.Level.DEBUG, ch.qos.logback.classic.Level.TRACE, ch.qos.logback.classic.Level.ALL);
 
     LogLevels(int level) {
         this.level = level;
@@ -45,9 +50,12 @@ public enum LogLevels {
         return getLevel() <= level.getLevel();
     }
 
-
     public static Level getLog4j2Level(LogLevels level) {
         return first(allLog4J2Levels, l -> l.intLevel() >= level.level);
+    }
+
+    public static ch.qos.logback.classic.Level getLogLogbackLevel(LogLevels level) {
+        return ch.qos.logback.classic.Level.toLevel(level.name());
     }
 
     public static LogLevels parseLogLevel(String logLevel) {

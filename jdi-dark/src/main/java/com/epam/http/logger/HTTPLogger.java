@@ -16,6 +16,7 @@ import static com.epam.http.logger.LogLevels.OFF;
 import static com.epam.http.logger.LogLevels.STEP;
 import static com.epam.http.logger.LogLevels.TRACE;
 import static com.epam.http.logger.LogLevels.getLog4j2Level;
+import static com.epam.http.logger.LogLevels.getLogLogbackLevel;
 import static com.epam.jdi.tools.StringUtils.format;
 import static org.apache.logging.log4j.LogManager.getLogger;
 import static org.apache.logging.log4j.core.config.Configurator.setLevel;
@@ -63,8 +64,14 @@ public class HTTPLogger implements ILogger {
             setRootLevel(getLog4j2Level(level));
             setLevel(name, getLog4j2Level(level));
         } catch (Exception ignored) {
+            setLogbackLevel(name, getLogLogbackLevel(level));
         }
         setAllureRootLogLevel(level);
+    }
+
+    public static void setLogbackLevel(String loggerName, ch.qos.logback.classic.Level level) {
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(loggerName);
+        root.setLevel(level);
     }
 
     public void logOff() {
@@ -175,4 +182,5 @@ public class HTTPLogger implements ILogger {
             }
         }
     }
+
 }

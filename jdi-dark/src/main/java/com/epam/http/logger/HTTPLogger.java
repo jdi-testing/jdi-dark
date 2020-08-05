@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.slf4j.LoggerFactory;
 
 import static com.epam.http.logger.AllureLogger.setAllureRootLogLevel;
 import static com.epam.http.logger.LogLevels.DEBUG;
@@ -16,7 +17,7 @@ import static com.epam.http.logger.LogLevels.OFF;
 import static com.epam.http.logger.LogLevels.STEP;
 import static com.epam.http.logger.LogLevels.TRACE;
 import static com.epam.http.logger.LogLevels.getLog4j2Level;
-import static com.epam.http.logger.LogLevels.getLogLogbackLevel;
+import static com.epam.http.logger.LogLevels.getLogbackLevel;
 import static com.epam.jdi.tools.StringUtils.format;
 import static org.apache.logging.log4j.LogManager.getLogger;
 import static org.apache.logging.log4j.core.config.Configurator.setLevel;
@@ -60,18 +61,18 @@ public class HTTPLogger implements ILogger {
 
     public void setLogLevel(LogLevels level) {
         logLevel = new Safe<>(level);
-        try {
+        if (LoggerFactory.getLogger(name) instanceof ch.qos.logback.classic.Logger) {
+            setLogbackLevel(name, getLogbackLevel(level));
+        } else {
             setRootLevel(getLog4j2Level(level));
             setLevel(name, getLog4j2Level(level));
-        } catch (Exception ignored) {
-            setLogbackLevel(name, getLogLogbackLevel(level));
         }
         setAllureRootLogLevel(level);
     }
 
     public static void setLogbackLevel(String loggerName, ch.qos.logback.classic.Level level) {
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(loggerName);
-        root.setLevel(level);
+        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(loggerName);
+        logger.setLevel(level);
     }
 
     public void logOff() {

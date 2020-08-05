@@ -3,10 +3,12 @@ package com.epam.http.logger;
 import io.qameta.allure.Allure;
 import io.qameta.allure.model.StepResult;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
+import static com.epam.http.logger.LogLevels.getLogbackLevel;
 import static io.qameta.allure.aspects.StepsAspects.getLifecycle;
 import static io.qameta.allure.model.Status.FAILED;
 import static io.qameta.allure.model.Status.PASSED;
@@ -15,8 +17,10 @@ public class AllureLogger {
     public static boolean writeToAllure = getLifecycle().getCurrentTestCase().isPresent();
 
     public static void setAllureRootLogLevel(LogLevels level) {
-        ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-        rootLogger.setLevel(ch.qos.logback.classic.Level.toLevel(level.name()));
+        Logger logger = LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        if (logger instanceof ch.qos.logback.classic.Logger) {
+            ((ch.qos.logback.classic.Logger) logger).setLevel(getLogbackLevel(level));
+        }
     }
 
     public static String startStep(String message, String requestData) {

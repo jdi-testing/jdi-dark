@@ -54,7 +54,7 @@ public enum LogLevels {
         return first(allLog4J2Levels, l -> l.intLevel() >= level.level);
     }
 
-    public static ch.qos.logback.classic.Level getLogLogbackLevel(LogLevels level) {
+    public static ch.qos.logback.classic.Level getLogbackLevel(LogLevels level) {
         return ch.qos.logback.classic.Level.toLevel(level.name());
     }
 

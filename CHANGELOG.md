@@ -1,7 +1,16 @@
 # Changelog
 
+## 1.1.7
+  * fixes authentication overwritten with empty scheme
+
+## 1.1.6
+  * fixes allure logger classes cast error
+
+## 1.1.5
+  * fixes logger classes cast error
+
 ## 1.1.4
-  * fix multipart
+  * fixes multipart
 
 ## 1.1.3
   * fixes RestMethod data methods

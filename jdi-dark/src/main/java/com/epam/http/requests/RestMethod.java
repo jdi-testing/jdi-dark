@@ -276,6 +276,7 @@ public class RestMethod {
         insertPathParams();
         RequestSpecification runSpec = (callSpec != null) ? callSpec : getInitSpec();
         if (!userData.empty) {
+            userData.authScheme = userData.authScheme != null ? userData.authScheme : data.authScheme;
             runSpec.spec(getDataSpec(userData));
         }
         String startUuid = LOG_REQUEST.execute(this, asList(data, userData));

@@ -34,7 +34,7 @@ public class AuthorizationPostman {
     }
 
     public static RestResponse callPostmanCustomAuth(AuthenticationScheme authenticationScheme) {
-        return postmanAuthBasic.data(auth(authenticationScheme)).call();
+        return postmanAuthCustom.data(auth(authenticationScheme)).call();
     }
 
     @ContentType(JSON)

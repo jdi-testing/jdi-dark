@@ -234,14 +234,14 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <domain>local=http://localhost:8080, trello=https://api.trello.com/1</domain>
+                <domain>local=http://localhost:8080, trello=https://api.trello.com/1, google=https://google.com</domain>
                 <log.level>INFO</log.level>
             </properties>
         </profile>
         <profile>
             <id>debug</id>
             <properties>
-                <domain>local=http://localhost:8080, trello=https://api.trello.com/1</domain>
+                <domain>local=http://localhost:8080, trello=https://api.trello.com/1, google=https://google.com</domain>
                 <log.level>DEBUG</log.level>
             </properties>
         </profile>

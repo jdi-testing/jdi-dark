@@ -1,29 +1,14 @@
 package com.epam.http.requests;
 
 import com.epam.http.JdiHttpSettings;
-import com.epam.http.annotations.ContentType;
-import com.epam.http.annotations.Cookie;
-import com.epam.http.annotations.Cookies;
 import com.epam.http.annotations.DELETE;
-import com.epam.http.annotations.FormParameter;
-import com.epam.http.annotations.FormParameters;
 import com.epam.http.annotations.GET;
 import com.epam.http.annotations.HEAD;
-import com.epam.http.annotations.Header;
-import com.epam.http.annotations.Headers;
-import com.epam.http.annotations.IgnoreRetry;
-import com.epam.http.annotations.MultiPart;
 import com.epam.http.annotations.OPTIONS;
 import com.epam.http.annotations.PATCH;
 import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
-import com.epam.http.annotations.Proxy;
-import com.epam.http.annotations.QueryParameter;
-import com.epam.http.annotations.QueryParameters;
-import com.epam.http.annotations.RetryOnFailure;
-import com.epam.http.annotations.ServiceDomain;
-import com.epam.http.annotations.TrustStore;
-import com.epam.http.annotations.URL;
+import com.epam.http.annotations.*;
 import com.epam.http.requests.errorhandler.ErrorHandler;
 import com.epam.jdi.tools.func.JAction;
 import com.epam.jdi.tools.map.MapArray;
@@ -39,13 +24,7 @@ import java.util.regex.Pattern;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettings.logger;
-import static com.epam.http.requests.RestMethodTypes.DELETE;
-import static com.epam.http.requests.RestMethodTypes.GET;
-import static com.epam.http.requests.RestMethodTypes.HEAD;
-import static com.epam.http.requests.RestMethodTypes.OPTIONS;
-import static com.epam.http.requests.RestMethodTypes.PATCH;
-import static com.epam.http.requests.RestMethodTypes.POST;
-import static com.epam.http.requests.RestMethodTypes.PUT;
+import static com.epam.http.requests.RestMethodTypes.*;
 import static com.epam.jdi.tools.LinqUtils.where;
 import static com.epam.jdi.tools.ReflectionUtils.isClass;
 import static java.lang.reflect.Modifier.isStatic;
@@ -107,7 +86,8 @@ public class ServiceInit {
         for (Field method : methods) {
             try {
                 method.setAccessible(true);
-                Object rm = getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme());
+                Object rm = getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(),
+                        serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme(), serviceSettings.getDomain());
                 if (isStatic(method.getModifiers()))
                     method.set(null, rm);
                 if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
@@ -143,6 +123,17 @@ public class ServiceInit {
     public static <T> T init(Class<T> c, AuthenticationScheme authenticationScheme) {
         return init(c, ServiceSettings.builder().authenticationScheme(authenticationScheme).build());
     }
+    /**
+     * Initialise the Service Object class.
+     *
+     * @param c class describing Service
+     * @param <T> type
+     * @param domain domain string
+     * @return initialised Service Object
+     */
+    public static <T> T init(Class<T> c, String domain) {
+        return init(c, ServiceSettings.builder().domain(domain).build());
+    }
 
     private static Object service;
 
@@ -163,6 +154,95 @@ public class ServiceInit {
         }
     }
 
+    /**
+     * @param field
+     * @param c
+     * @param requestSpecification
+     * @param objectMapper
+     * @param errorHandler
+     * @param authenticationScheme
+     * @param domain
+     * @param <T>
+     * @return
+     */
+    private static <T> Object getRestMethod(
+            Field field,
+            Class<T> c,
+            RequestSpecification requestSpecification,
+            ObjectMapper objectMapper,
+            ErrorHandler errorHandler,
+            AuthenticationScheme authenticationScheme,
+            String domain) {
+    MethodData mtData = getMethodData(field);
+    String url;
+        if (domain == null) {
+            url = field.isAnnotationPresent(URL.class)
+                            ? field.getAnnotation(URL.class).value()
+                            : getDomain(c);
+        } else {
+            url = replaceTemplateVariableInDomain(domain);
+        }
+    String path = mtData.path;
+    RestMethod method = field.getType() == SoapMethod.class
+            ? new SoapMethod<>(field, c)
+            : field.getType() == RestDataMethod.class
+                    ? new RestDataMethod<>(field)
+                    : new RestMethod();
+    method.setup(mtData.type, path, url, requestSpecification);
+    method.setObjectMapper(objectMapper);
+    method.setErrorHandler(errorHandler);
+    method.data.setAuthScheme(authenticationScheme);
+    if (field.isAnnotationPresent(ContentType.class))
+        method.data.setContentType(field.getAnnotation(ContentType.class).value());
+    if (field.isAnnotationPresent(Header.class))
+        method.header.add(field.getAnnotation(Header.class));
+    if (field.isAnnotationPresent(Headers.class))
+        method.header.addAll(field.getAnnotation(Headers.class).value());
+    if (field.isAnnotationPresent(Cookie.class)) {
+        setupCookie(method, field.getAnnotation(Cookie.class));
+    }
+    if (field.isAnnotationPresent(Cookies.class)) {
+        for (Cookie cookie : field.getAnnotation(Cookies.class).value()) {
+            setupCookie(method, cookie);
+        }
+    }
+    /* Case for class annotations*/
+    if (c.isAnnotationPresent(QueryParameter.class))
+        method.queryParams.add(c.getAnnotation(QueryParameter.class));
+    if (c.isAnnotationPresent(QueryParameters.class))
+        method.queryParams.addAll(c.getAnnotation(QueryParameters.class).value());
+    if (c.isAnnotationPresent(FormParameter.class))
+        method.formParams.add(c.getAnnotation(FormParameter.class));
+    if (c.isAnnotationPresent(FormParameters.class))
+        method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
+    if (c.isAnnotationPresent(TrustStore.class))
+        method.data.setTrustStore(c.getAnnotation(TrustStore.class));
+    if (c.isAnnotationPresent(RetryOnFailure.class))
+        method.reTryData = new RetryData(c.getAnnotation(RetryOnFailure.class));
+    /* Case for method annotations*/
+    if (field.isAnnotationPresent(QueryParameter.class))
+        method.queryParams.add(field.getAnnotation(QueryParameter.class));
+    if (field.isAnnotationPresent(QueryParameters.class))
+        method.queryParams.addAll(field.getAnnotation(QueryParameters.class).value());
+    if (field.isAnnotationPresent(FormParameter.class))
+        method.formParams.add(field.getAnnotation(FormParameter.class));
+    if (field.isAnnotationPresent(FormParameters.class))
+        method.formParams.addAll(field.getAnnotation(FormParameters.class).value());
+    if (field.isAnnotationPresent(MultiPart.class))
+        method.addMultiPartParams(field.getAnnotation(MultiPart.class));
+    if (field.isAnnotationPresent(Proxy.class))
+        method.data.setProxySpec(field.getAnnotation(Proxy.class));
+    if (field.isAnnotationPresent(TrustStore.class))
+        method.data.setTrustStore(field.getAnnotation(TrustStore.class));
+    if (field.isAnnotationPresent(RetryOnFailure.class)) {
+        RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
+        method.reTryData = (method.reTryData != null) ? method.reTryData.merge(methodRetryData) :
+                new RetryData(methodRetryData);
+    }
+    if (field.isAnnotationPresent(IgnoreRetry.class))
+        method.reTryData = null;
+    return method;
+}
 
     /**
      * Check whether the annotation present and add these values to request data.
@@ -174,70 +254,7 @@ public class ServiceInit {
      * @return http method with request data
      */
     private static <T> Object getRestMethod(Field field, Class<T> c, RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationScheme authenticationScheme) {
-        MethodData mtData = getMethodData(field);
-        String url = field.isAnnotationPresent(URL.class)
-                ? field.getAnnotation(URL.class).value()
-                : getDomain(c);
-        String path = mtData.path;
-        RestMethod method = field.getType() == SoapMethod.class
-                ? new SoapMethod<>(field, c)
-                : field.getType() == RestDataMethod.class
-                ? new RestDataMethod<>(field)
-                : new RestMethod();
-        method.setup(mtData.type, path, url, requestSpecification);
-        method.setObjectMapper(objectMapper);
-        method.setErrorHandler(errorHandler);
-        method.data.setAuthScheme(authenticationScheme);
-        if (field.isAnnotationPresent(ContentType.class))
-            method.data.setContentType(field.getAnnotation(ContentType.class).value());
-        if (field.isAnnotationPresent(Header.class))
-            method.header.add(field.getAnnotation(Header.class));
-        if (field.isAnnotationPresent(Headers.class))
-            method.header.addAll(field.getAnnotation(Headers.class).value());
-        if (field.isAnnotationPresent(Cookie.class)) {
-            setupCookie(method, field.getAnnotation(Cookie.class));
-        }
-        if (field.isAnnotationPresent(Cookies.class)) {
-            for (Cookie cookie : field.getAnnotation(Cookies.class).value()) {
-                setupCookie(method, cookie);
-            }
-        }
-        /* Case for class annotations*/
-        if (c.isAnnotationPresent(QueryParameter.class))
-            method.queryParams.add(c.getAnnotation(QueryParameter.class));
-        if (c.isAnnotationPresent(QueryParameters.class))
-            method.queryParams.addAll(c.getAnnotation(QueryParameters.class).value());
-        if (c.isAnnotationPresent(FormParameter.class))
-            method.formParams.add(c.getAnnotation(FormParameter.class));
-        if (c.isAnnotationPresent(FormParameters.class))
-            method.formParams.addAll(c.getAnnotation(FormParameters.class).value());
-        if (c.isAnnotationPresent(TrustStore.class))
-            method.data.setTrustStore(c.getAnnotation(TrustStore.class));
-        if (c.isAnnotationPresent(RetryOnFailure.class))
-            method.reTryData = new RetryData(c.getAnnotation(RetryOnFailure.class));
-        /* Case for method annotations*/
-        if (field.isAnnotationPresent(QueryParameter.class))
-            method.queryParams.add(field.getAnnotation(QueryParameter.class));
-        if (field.isAnnotationPresent(QueryParameters.class))
-            method.queryParams.addAll(field.getAnnotation(QueryParameters.class).value());
-        if (field.isAnnotationPresent(FormParameter.class))
-            method.formParams.add(field.getAnnotation(FormParameter.class));
-        if (field.isAnnotationPresent(FormParameters.class))
-            method.formParams.addAll(field.getAnnotation(FormParameters.class).value());
-        if (field.isAnnotationPresent(MultiPart.class))
-            method.addMultiPartParams(field.getAnnotation(MultiPart.class));
-        if (field.isAnnotationPresent(Proxy.class))
-            method.data.setProxySpec(field.getAnnotation(Proxy.class));
-        if (field.isAnnotationPresent(TrustStore.class))
-            method.data.setTrustStore(field.getAnnotation(TrustStore.class));
-        if (field.isAnnotationPresent(RetryOnFailure.class)) {
-            RetryOnFailure methodRetryData = field.getAnnotation(RetryOnFailure.class);
-            method.reTryData = (method.reTryData != null) ? method.reTryData.merge(methodRetryData) :
-                    new RetryData(methodRetryData);
-        }
-        if (field.isAnnotationPresent(IgnoreRetry.class))
-            method.reTryData = null;
-        return method;
+        return getRestMethod(field, c, requestSpecification, objectMapper, errorHandler, authenticationScheme, null);
     }
 
     private static void setupCookie(RestMethod method, Cookie cookie) {
@@ -278,13 +295,25 @@ public class ServiceInit {
      *
      * @param c Service Object class
      * @return service domain string
-     **/
+     */
     private static <T> String getDomain(Class<T> c) {
-        if (!c.isAnnotationPresent(ServiceDomain.class))
-            return JdiHttpSettings.getDomain();
-        Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(c.getAnnotation(ServiceDomain.class).value());
-        return m.find()
-                ? JdiHttpSettings.getDomain(m.group(1))
-                : c.getAnnotation(ServiceDomain.class).value();
+        if (!c.isAnnotationPresent(ServiceDomain.class)) return JdiHttpSettings.getDomain();
+        final String valueFromAnnotation = c
+                .getAnnotation(ServiceDomain.class)
+                .value();
+       
+        return replaceTemplateVariableInDomain(valueFromAnnotation);
+    }
+
+    /**
+     * Replace template variable in domain url if present
+     *
+     * @param domain service domain string
+     * @param <T>
+     * @return service domain string
+     */
+    private static <T> String replaceTemplateVariableInDomain(String domain) {
+        Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(domain);
+        return m.find() ? JdiHttpSettings.getDomain(m.group(1)) : domain;
     }
 }

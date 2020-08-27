@@ -6,6 +6,8 @@ import static com.epam.jdi.services.GoogleSearch.search;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.services.GoogleSearch;
+import java.util.HashMap;
+import java.util.Map;
 import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */
@@ -17,8 +19,12 @@ public class GoogleSearchSimpleGetWithParamsTest {
     @Test
     public static void testSearchWithParams() {
         init(GoogleSearch.class);
+
+        Map<String, String> params = new HashMap<>();
+        params.put(QUERY_PARAM, QUERY_VALUE);
+
         final RestResponse call =
-                search.call(queryParams().addAll(new Object[][] {{QUERY_PARAM, QUERY_VALUE}}));
+                search.call(queryParams().addAll(params));
         call.isOk();
         call.validate((it) -> it.getBody().contains("Apple"));
     }

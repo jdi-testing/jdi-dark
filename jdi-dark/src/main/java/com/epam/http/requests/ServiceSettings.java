@@ -11,15 +11,18 @@ public class ServiceSettings {
     private final ObjectMapper objectMapper;
     private final ErrorHandler errorHandler;
     private final AuthenticationScheme authenticationScheme;
+    private final String domain;
 
-    private ServiceSettings(RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler, AuthenticationScheme authenticationScheme) {
-        this.requestSpecification = requestSpecification;
-        this.objectMapper = objectMapper;
-        this.errorHandler = errorHandler;
-        this.authenticationScheme = authenticationScheme;
-    }
+public ServiceSettings(RequestSpecification requestSpecification, ObjectMapper objectMapper, ErrorHandler errorHandler,
+                       AuthenticationScheme authenticationScheme, String domain) {
+    this.requestSpecification = requestSpecification;
+    this.objectMapper = objectMapper;
+    this.errorHandler = errorHandler;
+    this.authenticationScheme = authenticationScheme;
+    this.domain = domain;
+}
 
-    public RequestSpecification getRequestSpecification() {
+public RequestSpecification getRequestSpecification() {
         return requestSpecification;
     }
 
@@ -39,12 +42,17 @@ public class ServiceSettings {
         return new ServiceSettings.Builder();
     }
 
-    public static class Builder {
+    public String getDomain() {
+        return domain;
+    }
+
+public static class Builder {
 
         private RequestSpecification requestSpecification;
         private ObjectMapper objectMapper;
         private ErrorHandler errorHandler;
         private AuthenticationScheme authenticationScheme;
+        private String domain;
 
         public Builder requestSpecification(RequestSpecification requestSpecification) {
             this.requestSpecification = requestSpecification;
@@ -66,8 +74,12 @@ public class ServiceSettings {
             return this;
         }
 
+        public Builder domain (String domain){
+            this.domain = domain;
+            return this;
+        }
         public ServiceSettings build() {
-            return new ServiceSettings(requestSpecification, objectMapper, errorHandler, authenticationScheme);
+            return new ServiceSettings(requestSpecification, objectMapper, errorHandler, authenticationScheme, domain);
         }
     }
 }

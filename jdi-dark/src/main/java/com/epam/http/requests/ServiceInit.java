@@ -86,12 +86,13 @@ public class ServiceInit {
         for (Field method : methods) {
             try {
                 method.setAccessible(true);
-                Object rm = getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(),
-                        serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme(), serviceSettings.getDomain());
-                if (isStatic(method.getModifiers()))
+                Object rm = getRestMethod(method, c, serviceSettings.getRequestSpecification(), serviceSettings.getObjectMapper(), serviceSettings.getErrorHandler(), serviceSettings.getAuthenticationScheme(), serviceSettings.getDomain());
+                if (isStatic(method.getModifiers())) {
                     method.set(null, rm);
-                if (!isStatic(method.getModifiers()) && method.get(getService(c)) == null)
+                    }
+                else {
                     method.set(getService(c), rm);
+                    }
             } catch (Throwable ex) {
                 logger.error(ex.getMessage());
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
@@ -301,7 +302,7 @@ public class ServiceInit {
         final String valueFromAnnotation = c
                 .getAnnotation(ServiceDomain.class)
                 .value();
-       
+
         return replaceTemplateVariableInDomain(valueFromAnnotation);
     }
 

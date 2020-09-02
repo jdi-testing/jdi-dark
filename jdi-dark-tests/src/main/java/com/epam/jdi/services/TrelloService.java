@@ -34,6 +34,10 @@ public class TrelloService {
     @GET("/boards/{board_id}")
     public static RestMethod getBoardById;
 
+    @ContentType(JSON)
+    @GET("/boards/{board_id}")
+    public RestMethod boardId;
+
     public static Board getBoard(String boardId) {
         return getBoardById.call(pathParams().add("board_id", boardId)).getRaResponse().as(Board.class);
     }

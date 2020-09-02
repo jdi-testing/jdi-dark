@@ -1,6 +1,5 @@
 package com.epam.jdi.httptests.examples.entities;
 
-import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.services.DuckDuckGo;
 import org.testng.annotations.Test;
@@ -11,7 +10,7 @@ public class DuckToGoRedeclareDomainToGoogleTest {
 
     @Test
     public void callGetWithRedeclaredDomainWithSimpleString() {
-        init(DuckDuckGo.class, ServiceSettings.builder().domain("https://google.com/").build());
+        init(DuckDuckGo.class, "https://google.com/");
     
         final RestResponse call = DuckDuckGo.simpleGet.call();
         call.isOk();
@@ -23,7 +22,7 @@ public class DuckToGoRedeclareDomainToGoogleTest {
 
     @Test
     public void callGetWithRedeclaredDomainWithSimpleStringWithTemplate() {
-        init(DuckDuckGo.class, ServiceSettings.builder().domain("${google}").build());
+        init(DuckDuckGo.class, "${google}");
     
         final RestResponse call = DuckDuckGo.simpleGet.call();
         call.isOk();

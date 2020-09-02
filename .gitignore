@@ -8,3 +8,4 @@ target/
 allure-results/
 allure-report/
 .allure/
+*.csv

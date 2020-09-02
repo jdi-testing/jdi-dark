@@ -57,9 +57,8 @@ public class GoogleSearchGetChangingDomainTests {
     }
 
     @Test
-    public static void testSearchWithStaticFieldChangingDomainAndOtherServiceCall() {
+    public static void testSearchChangingDomainAndOtherServiceCall() {
 
-        // Yahoo domain set globally in service object stored in ServiceInit
         final GoogleSearch yahoo =
                 init(
                         GoogleSearch.class,

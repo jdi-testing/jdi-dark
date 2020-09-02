@@ -9,18 +9,12 @@ import com.epam.jdi.services.GoogleSearch;
 import com.epam.jdi.services.QuotesService;
 import java.util.HashMap;
 import java.util.Map;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */
 public class GoogleSearchGetChangingDomainTests {
     public static final String QUERY_PARAM = "q";
     public static final String QUERY_VALUE = "apple";
-
-    @BeforeTest
-    public void before() {
-        init(GoogleSearch.class);
-    }
 
     @Test
     public static void testSearchWithParams() {

@@ -137,8 +137,6 @@ public class ServiceInit {
         return init(c, ServiceSettings.builder().domain(domain).build());
     }
 
-    private static Object service;
-
     /**
      * Helper method to instantiate the class.
      *
@@ -146,9 +144,8 @@ public class ServiceInit {
      * @return instantiated service
      */
     private static <T> T getService(Class<T> c) {
-        // if (service != null && service.getClass().equals(c)) return (T) service;
         try {
-            return (T) (service = c.newInstance());
+            return c.newInstance();
         } catch (IllegalAccessException | InstantiationException ex) {
             throw exception(
                     "Can't instantiate class %s, Service class should have empty constructor",

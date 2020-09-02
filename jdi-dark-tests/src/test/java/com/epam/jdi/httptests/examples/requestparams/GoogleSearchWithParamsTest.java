@@ -21,10 +21,7 @@ public class GoogleSearchWithParamsTest {
     public static void testSearchWithParams() {
         init(GoogleSearch.class, ServiceSettings.builder().domain("https://google.com").build());
 
-        Map<String, String> params = new HashMap<>();
-        params.put(QUERY_PARAM, QUERY_VALUE);
-
-        final RestResponse call = GoogleSearch.search.call(queryParams().addAll(params));
+        final RestResponse call = GoogleSearch.search.call(queryParams().add(QUERY_PARAM, QUERY_VALUE));
         call.isOk();
         call.validate((it) -> it.getBody().contains("Apple"));
     }

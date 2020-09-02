@@ -1,6 +1,9 @@
 package com.epam.jdi.httptests.examples.custom;
 
+import com.epam.http.requests.ServiceSettings;
+import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
+import com.epam.jdi.services.ServiceExample;
 import com.epam.jdi.services.TrelloService;
 import org.apache.commons.csv.*;
 import org.testng.annotations.*;
@@ -20,11 +23,15 @@ import static org.testng.Assert.assertEquals;
 public class PreconditionParallelTests {
     private ArrayList<String> createdBoardsId = new ArrayList<>();
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
+    public static TrelloService trello;
+    public static ServiceExample httpbin;
 
     @BeforeClass
     public void initService() throws IOException {
         init(TrelloService.class);
         new FileWriter(CSV_DATA_FILE, false).close();
+        trello = init(TrelloService.class, ServiceSettings.builder().domain("https://api.trello.com/1").build());
+        httpbin = init(ServiceExample.class, ServiceSettings.builder().domain("https://httpbin.org/").build());
     }
 
     @DataProvider(name = "createNewBoards", parallel = true)
@@ -79,6 +86,19 @@ public class PreconditionParallelTests {
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
                 .body("url", equalTo(expectedUrl));
+
+        trello = init(TrelloService.class, ServiceSettings.builder().domain("https://api.trello.com/1").build());
+        trello.boardId.call(pathParams().add("board_id", boardId))
+                .isOk().assertThat().body("name", equalTo(expectedName))
+                .body("shortUrl", equalTo(expectedShortUrl))
+                .body("url", equalTo(expectedUrl));
+
+        RestResponse info = httpbin.info.call();
+        info.isOk().
+                body("url", equalTo("https://httpbin.org/get")).
+                body("headers.Host", equalTo("httpbin.org")).
+                body("headers.Id", equalTo("Test"));
+        info.assertThat().header("Connection", "keep-alive");
     }
 
     private void writeToCSV(Board board) throws IOException {

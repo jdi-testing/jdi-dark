@@ -81,6 +81,7 @@ public class ServiceInit {
      */
     public static <T> T init(Class<T> c, ServiceSettings serviceSettings) {
         preInit();
+        T instance = getService(c);
         List<Field> methods = where(c.getDeclaredFields(),
                 f -> isClass(f.getType(), RestMethod.class));
         for (Field method : methods) {
@@ -91,14 +92,14 @@ public class ServiceInit {
                     method.set(null, rm);
                     }
                 else {
-                    method.set(getService(c), rm);
+                    method.set(instance, rm);
                     }
             } catch (Throwable ex) {
                 logger.error(ex.getMessage());
                 throw exception("Can't init method %s for class %s", method.getName(), c.getName());
             }
         }
-        return getService(c);
+        return instance;
     }
 
     /**
@@ -145,7 +146,7 @@ public class ServiceInit {
      * @return instantiated service
      */
     private static <T> T getService(Class<T> c) {
-        if (service != null && service.getClass().equals(c)) return (T) service;
+        // if (service != null && service.getClass().equals(c)) return (T) service;
         try {
             return (T) (service = c.newInstance());
         } catch (IllegalAccessException | InstantiationException ex) {

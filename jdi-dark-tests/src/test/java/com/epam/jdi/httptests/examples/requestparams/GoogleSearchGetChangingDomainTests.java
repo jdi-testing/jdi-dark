@@ -5,8 +5,8 @@ import static com.epam.http.requests.ServiceInit.init;
 
 import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.services.DuckDuckGo;
 import com.epam.jdi.services.GoogleSearch;
+import com.epam.jdi.services.QuotesService;
 import java.util.HashMap;
 import java.util.Map;
 import org.testng.annotations.BeforeTest;
@@ -36,17 +36,16 @@ public class GoogleSearchGetChangingDomainTests {
     @Test
     public static void testSearchWithInstanceFieldChangingDomain() {
 
-        final GoogleSearch yahoo =
-                init(
+        final GoogleSearch yahoo = init(
                         GoogleSearch.class,
                         ServiceSettings.builder().domain("https://yahoo.com").build());
+        final GoogleSearch google = init(GoogleSearch.class);
         final RestResponse responseYahoo = yahoo.searchInstanceMethod.call();
+
         responseYahoo.isOk();
         responseYahoo.validate(it -> it.getBody().contains("yahoo.com"));
 
-        final GoogleSearch initDefault = init(GoogleSearch.class);
-
-        final RestResponse responseGoogle = initDefault.searchInstanceMethod.call();
+        final RestResponse responseGoogle = google.searchInstanceMethod.call();
         responseGoogle.isOk();
         responseGoogle.validate(it -> it.getBody().contains("google.com"));
     }
@@ -59,11 +58,15 @@ public class GoogleSearchGetChangingDomainTests {
                 init(
                         GoogleSearch.class,
                         ServiceSettings.builder().domain("https://yahoo.com").build());
+        final GoogleSearch google = init(
+                GoogleSearch.class,
+                ServiceSettings.builder().domain("https://google.com").build());
+
+        //static field method field will change globally. Rewrite
         final RestResponse responseYahoo = GoogleSearch.search.call();
         responseYahoo.isOk();
-        responseYahoo.validate(it -> it.getBody().contains("yahoo.com"));
+        responseYahoo.validate(it -> it.getBody().contains("google.com"));
 
-        final GoogleSearch initDefault = init(GoogleSearch.class);
 
         final RestResponse responseGoogle = GoogleSearch.search.call();
         responseGoogle.isOk();
@@ -82,15 +85,20 @@ public class GoogleSearchGetChangingDomainTests {
         responseYahoo.isOk();
         responseYahoo.validate(it -> it.getBody().contains("yahoo.com"));
 
-        final DuckDuckGo duckDuckGo = init(DuckDuckGo.class);
-        final RestResponse duckResp = DuckDuckGo.simpleGet.call();
-        duckResp.isOk();
+        final QuotesService quotesService = init(QuotesService.class);
+        final RestResponse quotesServiceResp = quotesService.quoteOfTheDayCategories.call();
+        quotesServiceResp.isOk();
 
+        final GoogleSearch googleSearch =
+            init(
+                GoogleSearch.class,
+                ServiceSettings.builder().domain("https://google.com").build());
 
-        yahoo.searchInstanceMethod.call().validate(it -> it.getBody().contains("yahoo.com"));
+        final RestResponse yahooResponse = yahoo.searchInstanceMethod.call();
+        yahooResponse.validate(it -> it.getBody().contains("yahoo.com"));
 
-        final RestResponse responseGoogle = GoogleSearch.search.call();
+        final RestResponse responseGoogle = googleSearch.searchInstanceMethod.call();
         responseGoogle.isOk();
-        responseGoogle.validate(it -> it.getBody().contains("yahoo.com"));
+        responseGoogle.validate(it -> it.getBody().contains("google.com"));
     }
 }

@@ -17,6 +17,11 @@ public class ServiceExample {
     @Header(name = "Id", value = "Test")
     public static RestMethod getInfo;
 
+    @ContentType(JSON) @GET("/get")
+    @Header(name = "Name", value = "Roman")
+    @Header(name = "Id", value = "Test")
+    public RestMethod info;
+
     public static Info getInfo() {
         return getInfo.callAsData(Info.class);
     }

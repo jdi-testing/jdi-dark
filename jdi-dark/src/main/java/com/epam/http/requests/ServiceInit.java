@@ -315,6 +315,6 @@ public class ServiceInit {
      */
     private static <T> String replaceTemplateVariableInDomain(String domain) {
         Matcher m = Pattern.compile("\\$\\{(.*)}").matcher(domain);
-        return m.find() ? JdiHttpSettings.getDomain(m.group(1)) : domain;
+        return m.find() ? m.replaceFirst(JdiHttpSettings.getDomain(m.group(1))) : domain;
     }
 }

@@ -6,7 +6,7 @@ import com.epam.http.requests.RestMethod;
 import java.util.concurrent.TimeUnit;
 
 @RetryOnFailure
-@ServiceDomain(value = "http://localhost:8080/")
+@ServiceDomain(value = "http://localhost:8081/")
 public class RetryingService {
 
     @GET(value = "502")

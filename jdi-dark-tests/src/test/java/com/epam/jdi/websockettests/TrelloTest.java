@@ -1,11 +1,11 @@
-package com.epam.jdi.websockettest;
+package com.epam.jdi.websockettests;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Board;
 import com.epam.jdi.dto.Card;
 import com.epam.jdi.dto.TrelloList;
 import com.epam.jdi.services.TrelloService;
-import com.epam.jdi.services.TrelloSocket;
+import com.epam.jdi.services.WebSocketClient;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.*;
 
@@ -21,7 +21,7 @@ import static com.epam.jdi.services.TrelloService.*;
 import static org.testng.Assert.assertEquals;
 
 public class TrelloTest {
-    private TrelloSocket trelloSocket = new TrelloSocket();
+    private WebSocketClient webSocketClient = new WebSocketClient();
     String createdBoardId, token, createdListId, createdCardId;
 
     @BeforeClass
@@ -51,12 +51,12 @@ public class TrelloTest {
         Card createdCard = addNewCardToBoard(card);
         createdCardId = createdCard.id;
 
-        trelloSocket.connect("wss://trello.com/1/Session/socket?token=" + token);
-        trelloSocket.sendMessage("{\"type\":\"subscribe\",\"modelType\":\"Member\",\"idModel\":\"5e8ef65b384f806fbb911f5d\",\"tags\":[\"messages\",\"updates\"],\"invitationTokens\":[],\"reqid\":5}");
-        trelloSocket.waitNewMessage(30);
-        Assertions.assertThat(trelloSocket.getNewMessageAsJsonObject().get("reqid").getAsInt()).isEqualTo(5);
-        trelloSocket.waitNewMessage(60);
-        Assertions.assertThat(trelloSocket.newMessage.toString()).isEqualTo("null");
+        webSocketClient.connect("wss://trello.com/1/Session/socket?token=" + token);
+        webSocketClient.sendMessage("{\"type\":\"subscribe\",\"modelType\":\"Member\",\"idModel\":\"5e8ef65b384f806fbb911f5d\",\"tags\":[\"messages\",\"updates\"],\"invitationTokens\":[],\"reqid\":5}");
+        webSocketClient.waitNewMessage(30);
+        Assertions.assertThat(webSocketClient.getNewMessageAsJsonObject().get("reqid").getAsInt()).isEqualTo(5);
+        webSocketClient.waitNewMessage(60);
+        Assertions.assertThat(webSocketClient.newMessage.toString()).isEqualTo("null");
 
         //TODO: update card name
         // get message {"notify":{"event":"updateModels","typeName":"Card","deltas":[{"id":"5e8ef7089cd6a57c05381d35","name":"My card new","idBoard":"5e8ef687c723e95d23f15176","idList":"5e8ef6874feeca8b5d166ce7","dateLastActivity":"2020-04-13T18:39:02.720Z","closed":false}],"tags":["updates"],"idBoard":"5e8ef687c723e95d23f15176"},"idModelChannel":"5e8ef687c723e95d23f15176","ixLastUpdateChannel":42}

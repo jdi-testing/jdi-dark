@@ -33,7 +33,7 @@ public class RedirectTests extends WithJetty {
         RequestSpecification rs = given().redirects().follow(false).param("url", "/hello");
         RestResponse resp = getRedirect.callBasedOnSpec(rs);
         resp.assertThat().statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
-        resp.assertThat().header("Location", "http://localhost:8080/hello");
+        resp.assertThat().header("Location", "http://localhost:8081/hello");
     }
 
 }

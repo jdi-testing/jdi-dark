@@ -3,7 +3,6 @@ jdk:
   - openjdk8
 before_install:
   - sudo apt-get -y install jq
-  - sudo apt-get -y install ufw
   - java -Xmx32m -version
 before_script:
   - ls -lah
@@ -46,7 +45,6 @@ jobs:
   - stage: test
     name: Run tests - http
     script:
-      - sudo ufw allow 8008
       - mvn -ntp install -DskipTests
       - mvn verify -pl $HTTP_TESTS
 

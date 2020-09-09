@@ -11,7 +11,11 @@ public abstract class WithRetryService {
 
     @BeforeClass
     public void startSpringBootApplication() throws IOException {
-        application = Runtime.getRuntime().exec("java -Dserver.port=8008 -jar src/test/resources/jdi-dark-retry-service.jar");
+        final String startRetryServiceCommand = "java -jar src/test/resources/jdi-dark-retry-service.jar";
+        application = Runtime.getRuntime().exec(startRetryServiceCommand);
+        if (!application.isAlive()) {
+            application = Runtime.getRuntime().exec(startRetryServiceCommand);
+        }
     }
 
     @AfterClass

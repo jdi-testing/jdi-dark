@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
-public class JdiWSClient extends Endpoint {
+public class JdiWSEndpoint extends Endpoint {
 
     public static ILogger logger = instance("JDI_WS");
     public WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();

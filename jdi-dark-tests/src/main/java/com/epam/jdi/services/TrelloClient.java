@@ -1,9 +1,9 @@
 package com.epam.jdi.services;
 
-import com.epam.jdi.http.JdiWSClient;
+import com.epam.jdi.http.JdiWSEndpoint;
 import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint("/")
-public class WebSocketClient extends JdiWSClient {
+public class TrelloClient extends JdiWSEndpoint {
 
 }

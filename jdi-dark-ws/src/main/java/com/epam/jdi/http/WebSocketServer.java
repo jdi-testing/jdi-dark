@@ -1,4 +1,4 @@
-package com.epam.jdi.services;
+package com.epam.jdi.http;
 
 import com.epam.http.logger.ILogger;
 
@@ -8,12 +8,12 @@ import javax.websocket.server.*;
 import static com.epam.http.logger.HTTPLogger.instance;
 
 @ServerEndpoint("/test-ws")
-public class WebSocketTestServer {
+public class WebSocketServer {
     public static ILogger logger = instance("JDI_WS_Server");
 
     @OnOpen
-    public void onOpen(Session session) {
-        logger.info("Connection is open");
+    public void onOpen(Session session, EndpointConfig config) {
+        logger.info("Connection is opened");
     }
 
     @OnMessage
@@ -23,8 +23,8 @@ public class WebSocketTestServer {
     }
 
     @OnClose
-    public void onClose(Session session) {
-        logger.info("Connection is closed");
+    public void onClose(Session session, CloseReason closeReason) {
+        logger.info("Session closed with reason: " + closeReason.getReasonPhrase());
     }
 
     @OnError

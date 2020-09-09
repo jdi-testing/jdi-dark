@@ -18,6 +18,8 @@ public abstract class WithRetryService {
     public void startSpringBootApplication() throws IOException, InterruptedException {
         final String startRetryServiceCommand = "java -jar src/test/resources/jdi-dark-retry-service.jar";
         application = Runtime.getRuntime().exec(startRetryServiceCommand);
+        logger.info("Inside startSpringBootApplication(): " + application.getOutputStream().toString());
+        TimeUnit.SECONDS.sleep(10);
         for (int i = 0; i < 60 && !application.isAlive(); ++i) {
             TimeUnit.SECONDS.sleep(10);
             logger.info("Waiting for Retry Service to start: " + i);

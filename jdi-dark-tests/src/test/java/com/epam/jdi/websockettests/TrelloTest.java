@@ -5,7 +5,7 @@ import com.epam.jdi.dto.Board;
 import com.epam.jdi.dto.Card;
 import com.epam.jdi.dto.TrelloList;
 import com.epam.jdi.services.TrelloService;
-import com.epam.jdi.services.TrelloClient;
+import com.epam.jdi.services.websockets.TrelloClient;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.*;
 

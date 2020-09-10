@@ -1,4 +1,4 @@
-package com.epam.jdi.services;
+package com.epam.jdi.services.websockets;
 
 import com.epam.jdi.http.JdiWSEndpoint;
 

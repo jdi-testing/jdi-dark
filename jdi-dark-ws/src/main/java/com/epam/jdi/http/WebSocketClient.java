@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -46,15 +47,23 @@ public class WebSocketClient {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) {
-        logger.info("Received message: " + message);
+    public void onTextMessage(String message, Session session) {
+        logger.info("Received text message");
         lastMessage = message;
         messages.add(message);
         latch.countDown();
     }
 
+    @OnMessage
+    public void onBinaryMessage(ByteBuffer message, Session session) {
+        logger.info("Received binary message");
+        lastMessage = new String(message.array(), StandardCharsets.UTF_8);
+        messages.add(lastMessage);
+        latch.countDown();
+    }
+
     @OnClose
-    public void onClose(Session session, CloseReason closeReason) throws IOException {
+    public void onClose(Session session, CloseReason closeReason) {
         logger.info("Session closed with reason: " + closeReason.getReasonPhrase());
         clientManager.shutdown();
     }
@@ -83,7 +92,7 @@ public class WebSocketClient {
         return latch.await(millis, TimeUnit.MILLISECONDS);
     }
 
-    public String returnNewMessage(int millis) throws InterruptedException {
+    public String waitAndGetNewMessage(int millis) throws InterruptedException {
         waitNewMessage(millis);
         return lastMessage;
     }

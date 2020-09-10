@@ -29,6 +29,8 @@ public abstract class WithRetryService {
             logger.debug("Retrying service stdout: " + line);
             line = reader.readLine();
         }
+        reader.close();
+        in.close();
     }
 
     @AfterClass

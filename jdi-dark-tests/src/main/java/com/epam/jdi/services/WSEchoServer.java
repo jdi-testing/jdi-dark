@@ -17,9 +17,8 @@ public class WSEchoServer {
     }
 
     @OnMessage
-    public String onMessage(String message, Session session) throws InterruptedException {
+    public String onMessage(String message, Session session){
         logger.info("Received message: " + message);
-        Thread.sleep(500);
         return message;
     }
 

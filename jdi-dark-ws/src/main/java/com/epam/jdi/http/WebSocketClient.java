@@ -19,9 +19,9 @@ import static com.epam.http.logger.HTTPLogger.instance;
 @ClientEndpoint
 public class WebSocketClient {
     private static final ILogger logger = instance("JDI_WS_Client");
-    public Session session;
-    public CountDownLatch latch;
-    public ClientManager clientManager = ClientManager.createClient();
+    private Session session;
+    private CountDownLatch latch;
+    private final ClientManager clientManager = ClientManager.createClient();
     private String lastMessage;
     private final List<String> messages = new ArrayList<>();
 
@@ -29,7 +29,7 @@ public class WebSocketClient {
             throws URISyntaxException, IOException, DeploymentException
     {
         logger.info("Connect to: " + path);
-        session = clientManager.connectToServer(WebSocketClient.class, new URI(path));
+        session = clientManager.connectToServer(this, new URI(path));
     }
 
     public void close() throws IOException {
@@ -78,9 +78,13 @@ public class WebSocketClient {
         session.getBasicRemote().sendBinary(data);
     }
 
-    public String waitNewMessage(int millis) throws InterruptedException {
-        this.latch = new CountDownLatch(1);
-        this.latch.await(millis, TimeUnit.MILLISECONDS);
+    public boolean waitNewMessage(int millis) throws InterruptedException {
+        latch = new CountDownLatch(1);
+        return latch.await(millis, TimeUnit.MILLISECONDS);
+    }
+
+    public String returnNewMessage(int millis) throws InterruptedException {
+        waitNewMessage(millis);
         return lastMessage;
     }
 

@@ -26,7 +26,7 @@ public class TrelloService {
     @POST(BOARDS)
     public static RestDataMethod<Board> boardsPost;
 
-    public static Board createBoard(Board board) {
+    public static synchronized Board createBoard(Board board) {
         return boardsPost.postAsData(board);
     }
 

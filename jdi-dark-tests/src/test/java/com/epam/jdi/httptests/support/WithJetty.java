@@ -1,9 +1,18 @@
 package com.epam.jdi.httptests.support;
 
 import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.security.*;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.LoginService;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -13,10 +22,17 @@ import org.testng.annotations.BeforeSuite;
 import java.util.Collections;
 
 public abstract class WithJetty {
-    private static Server server;
+    private Server server;
+
+    private boolean requiresJetty() {
+        return WithJetty.class.isAssignableFrom(this.getClass());
+    }
 
     @BeforeSuite
-    public static void startJettyHttps() throws Exception {
+    public void startJettyHttps() throws Exception {
+        if (!requiresJetty())
+            return;
+
         server = new Server();
 
         HttpConfiguration httpConfig = new HttpConfiguration();
@@ -25,7 +41,7 @@ public abstract class WithJetty {
         httpConfig.setOutputBufferSize(32768);
 
         ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-        http.setPort(8080);
+        http.setPort(8081);
         http.setIdleTimeout(300000);
 
         HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
@@ -76,7 +92,9 @@ public abstract class WithJetty {
     }
 
     @AfterSuite
-    public static void stopJetty() throws Exception {
+    public void stopJetty() throws Exception {
+        if (!requiresJetty())
+            return;
         server.stop();
         server.join();
     }

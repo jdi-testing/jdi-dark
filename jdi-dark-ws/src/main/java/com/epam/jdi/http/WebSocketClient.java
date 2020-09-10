@@ -10,18 +10,22 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
+@ServerEndpoint("/")
 @ClientEndpoint
 public class WebSocketClient {
     private static ILogger logger = instance("JDI_WS_Client");
-    private Session session;
+    public Session session;
     public CountDownLatch latch;
-    private ClientManager client = ClientManager.createClient();
-    private String message = "";
+    public final ClientManager client = ClientManager.createClient();
+    public String newMessage;
+    public List<String> messages = new ArrayList<>();
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
@@ -31,7 +35,8 @@ public class WebSocketClient {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.info("Received message: " + message);
-        this.message = message;
+        this.newMessage = message;
+        this.messages.add(message);
         latch.countDown();
     }
 
@@ -68,12 +73,13 @@ public class WebSocketClient {
         session.getBasicRemote().sendBinary(data);
     }
 
-    public void waitNewMessage(int millis) throws InterruptedException {
+    public String waitNewMessage(int millis) throws InterruptedException {
         this.latch = new CountDownLatch(1);
         this.latch.await(millis, TimeUnit.MILLISECONDS);
+        return newMessage;
     }
 
-    public String getMessage() {
-        return this.message;
+    public String getNewMessage() {
+        return newMessage;
     }
 }

@@ -1,4 +1,4 @@
-package com.epam.jdi.http;
+package com.epam.jdi.services;
 
 import com.epam.http.logger.ILogger;
 
@@ -7,9 +7,9 @@ import javax.websocket.server.*;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
-@ServerEndpoint("/test-ws")
-public class WebSocketServer {
-    public static ILogger logger = instance("JDI_WS_Server");
+@ServerEndpoint("/echo-ws")
+public class WSEchoServer {
+    private static ILogger logger = instance("JDI_WS_Server");
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
@@ -17,8 +17,9 @@ public class WebSocketServer {
     }
 
     @OnMessage
-    public String onMessage(String message, Session session) {
-        logger.info("Reseived message:" + message);
+    public String onMessage(String message, Session session) throws InterruptedException {
+        logger.info("Received message: " + message);
+        Thread.sleep(500);
         return message;
     }
 

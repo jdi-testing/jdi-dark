@@ -37,7 +37,9 @@ public class JdiWSEndpoint extends Endpoint {
 
     public void closeSession() throws IOException {
         logger.info("Close current session");
-        this.session.close();
+        this.session.close(new CloseReason(
+                CloseReason.CloseCodes.GOING_AWAY, "Going away."
+        ));
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.epam.http.logger.ILogger;
 import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,46 +16,52 @@ import java.util.concurrent.TimeUnit;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
-@ServerEndpoint("/")
 @ClientEndpoint
 public class WebSocketClient {
-    private static ILogger logger = instance("JDI_WS_Client");
+    private static final ILogger logger = instance("JDI_WS_Client");
     public Session session;
     public CountDownLatch latch;
-    public final ClientManager client = ClientManager.createClient();
-    public String newMessage;
-    public List<String> messages = new ArrayList<>();
+    public ClientManager clientManager = ClientManager.createClient();
+    private String lastMessage;
+    private final List<String> messages = new ArrayList<>();
+
+    public void connect(String path)
+            throws URISyntaxException, IOException, DeploymentException
+    {
+        logger.info("Connect to: " + path);
+        session = clientManager.connectToServer(WebSocketClient.class, new URI(path));
+    }
+
+    public void close() throws IOException {
+        logger.info("Close connection");
+        session.close(new CloseReason(
+                CloseReason.CloseCodes.GOING_AWAY, "Going away."
+        ));
+    }
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
         logger.info("Connection is opened");
+        this.session = session;
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.info("Received message: " + message);
-        this.newMessage = message;
-        this.messages.add(message);
+        lastMessage = message;
+        messages.add(message);
         latch.countDown();
     }
 
     @OnClose
     public void onClose(Session session, CloseReason closeReason) throws IOException {
         logger.info("Session closed with reason: " + closeReason.getReasonPhrase());
-        this.session.close();
-        client.shutdown();
+        clientManager.shutdown();
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
         logger.error(throwable.getMessage());
-    }
-
-    public void connect(String path)
-            throws URISyntaxException, IOException, DeploymentException
-    {
-        logger.info("Connect to: " + path);
-        session = client.connectToServer(WebSocketClient.class, new URI(path));
     }
 
     public void sendPlainText(String message) throws IOException {
@@ -76,10 +81,10 @@ public class WebSocketClient {
     public String waitNewMessage(int millis) throws InterruptedException {
         this.latch = new CountDownLatch(1);
         this.latch.await(millis, TimeUnit.MILLISECONDS);
-        return newMessage;
+        return lastMessage;
     }
 
-    public String getNewMessage() {
-        return newMessage;
+    public List<String> getMessages() {
+        return messages;
     }
 }

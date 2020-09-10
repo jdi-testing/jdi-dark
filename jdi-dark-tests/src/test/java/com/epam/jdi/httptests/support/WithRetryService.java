@@ -25,7 +25,7 @@ public abstract class WithRetryService {
         String line = reader.readLine();
         final String successfullyStartedApp = "Started App in";
         final String failedAppStart = "Stopping service";
-        while (line != null && !line.trim().contains(successfullyStartedApp) && !line.trim().contains(failedAppStart)) {
+        while (line != null && !(line.trim().contains(successfullyStartedApp) || line.trim().contains(failedAppStart))) {
             logger.debug("Retrying service stdout: " + line);
             line = reader.readLine();
         }

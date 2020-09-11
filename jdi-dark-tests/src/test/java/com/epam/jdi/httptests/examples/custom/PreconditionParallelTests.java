@@ -88,11 +88,6 @@ public class PreconditionParallelTests {
                 .body("shortUrl", equalTo(expectedShortUrl))
                 .body("url", equalTo(expectedUrl));
 
-        trello.boardId.call(pathParams().add("board_id", boardId))
-                .isOk().assertThat().body("name", equalTo(expectedName))
-                .body("shortUrl", equalTo(expectedShortUrl))
-                .body("url", equalTo(expectedUrl));
-
         RestResponse info = httpbin.info.call();
         info.isOk().
                 body("url", equalTo("https://httpbin.org/get")).

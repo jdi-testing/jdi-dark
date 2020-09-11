@@ -13,7 +13,7 @@ import static com.epam.http.logger.HTTPLogger.instance;
 
 @ServerEndpoint("/echo-ws")
 public class WSEchoServer {
-    private static ILogger logger = instance("JDI_WS_Server");
+    private static final ILogger logger = instance("JDI_WS_Server");
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {

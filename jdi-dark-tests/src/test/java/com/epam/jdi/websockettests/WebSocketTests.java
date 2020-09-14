@@ -1,8 +1,7 @@
 package com.epam.jdi.websockettests;
 
 import com.epam.jdi.dto.Item;
-import com.epam.jdi.http.WebSocketClient;
-import com.epam.jdi.http.WebSocketGenericClient;
+import com.epam.jdi.http.WebSocketTextClient;
 import com.epam.jdi.services.websockets.*;
 import org.glassfish.tyrus.server.Server;
 import org.testng.annotations.AfterClass;
@@ -31,7 +30,7 @@ public class WebSocketTests {
             throws DeploymentException, IOException, URISyntaxException, InterruptedException
     {
         String message = "Simple text test message";
-        WebSocketClient client = new WebSocketClient();
+        WebSocketTextClient client = new WebSocketTextClient();
 
         client.connect("ws://localhost:8025/echo-ws");
         client.sendPlainText(message);
@@ -64,11 +63,11 @@ public class WebSocketTests {
     }
 
     @Test
-    public void binaryMessageTest()
+    public void binaryTextMessageTest()
             throws DeploymentException, IOException, URISyntaxException, InterruptedException
     {
         String message = "Simple text test message";
-        WebSocketClient client = new WebSocketClient();
+        WebSocketTextClient client = new WebSocketTextClient();
 
         client.connect("ws://localhost:8025/echo-ws");
         client.sendBinary(ByteBuffer.wrap(message.getBytes()));
@@ -81,38 +80,23 @@ public class WebSocketTests {
     }
 
     @Test
-    public void trelloClientEchoTest()
+    public void jsonClientEchoTest()
             throws DeploymentException, IOException, URISyntaxException, InterruptedException
     {
         String message = "{\"text\":\"Simple text test message\"}";
-        TrelloClient client1 = new TrelloClient();
+        JsonClient client = new JsonClient();
 
-        client1.connect("ws://localhost:8025/echo-ws");
-        client1.sendMessage(message);
+        client.connect("ws://localhost:8025/echo-ws");
+        client.sendMessage(message);
         assertEquals(
-                client1.waitAndGetNewMessage(1).toString(), message,
+                client.waitAndGetNewMessage(1000).toString(), message,
                 "Unexpected response from server"
         );
-    }
-
-    @Test
-    public void genericTest()
-            throws DeploymentException,
-            IOException,
-            URISyntaxException,
-            InterruptedException,
-            EncodeException
-    {
-        String message = "Simple text test message";
-        WSGenericClient<String> stringClient = new WSGenericClient<>();
-
-        stringClient.connect("ws://localhost:8025/echo-ws");
-        stringClient.sendObject(message);
         assertEquals(
-                stringClient.waitAndGetNewMessage(1000), message,
+                client.getNewMessageAsJsonObject().get("text").getAsString(),
+                "Simple text test message",
                 "Unexpected response from server"
         );
-        stringClient.close();
     }
 
     @AfterClass

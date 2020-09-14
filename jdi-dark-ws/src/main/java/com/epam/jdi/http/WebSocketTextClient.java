@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import static com.epam.http.logger.HTTPLogger.instance;
 
 @ClientEndpoint
-public class WebSocketClient {
+public class WebSocketTextClient {
     private static final ILogger logger = instance("JDI_WS_Client");
     private Session session;
     private CountDownLatch latch;

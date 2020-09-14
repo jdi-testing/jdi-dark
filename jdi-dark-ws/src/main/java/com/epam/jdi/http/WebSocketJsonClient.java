@@ -10,28 +10,29 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
-public class JdiWSEndpoint extends Endpoint {
+@ClientEndpoint
+public class WebSocketJsonClient extends Endpoint {
 
-    public static ILogger logger = instance("JDI_WS");
-    public WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
-    public Session session;
-    public CountDownLatch latch;
-    public Queue<JsonElement> receivedMessages = new LinkedList<>();
-    public JsonElement newMessage;
+    private static final ILogger logger = instance("JDI_WS");
+    private final WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+    private Session session;
+    private CountDownLatch latch;
+    private final List<JsonElement> receivedMessages = new ArrayList<>();
+    private JsonElement lastMessage;
 
     public void connect(URI path) throws IOException, DeploymentException {
+        logger.info("Connect to: " + path);
         webSocketContainer.connectToServer(this, path);
     }
 
     public void connect(String path) throws IOException, DeploymentException, URISyntaxException {
-        logger.info("Connect to: " + path);
         connect(new URI(path));
     }
 
@@ -49,8 +50,8 @@ public class JdiWSEndpoint extends Endpoint {
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String s) {
                 logger.info("Receive message:\n" + s);
-                newMessage = JsonParser.parseString(s);
-                receivedMessages.add(newMessage);
+                lastMessage = JsonParser.parseString(s);
+                receivedMessages.add(lastMessage);
                 latch.countDown();
             }
         });
@@ -71,20 +72,20 @@ public class JdiWSEndpoint extends Endpoint {
         session.getBasicRemote().sendBinary(data);
     }
 
-    public void waitNewMessage(int sec) throws InterruptedException {
+    public void waitNewMessage(int millis) throws InterruptedException {
         this.latch = new CountDownLatch(1);
-        this.latch.await(sec, TimeUnit.SECONDS);
+        this.latch.await(millis, TimeUnit.MILLISECONDS);
     }
 
-    public JsonElement waitAndGetNewMessage(int sec) throws InterruptedException {
+    public JsonElement waitAndGetNewMessage(int millis) throws InterruptedException {
         this.latch = new CountDownLatch(1);
-        this.latch.await(sec, TimeUnit.SECONDS);
-        return newMessage;
+        this.latch.await(millis, TimeUnit.MILLISECONDS);
+        return lastMessage;
     }
 
-    public void waitNewMessages(int count, int sec) throws InterruptedException {
+    public void waitNewMessages(int count, int millis) throws InterruptedException {
         this.latch = new CountDownLatch(count);
-        this.latch.await(sec, TimeUnit.SECONDS);
+        this.latch.await(millis, TimeUnit.MILLISECONDS);
     }
 
     public void waitNewMessageMatches(String regex, int maxMsgCount, int sec) throws InterruptedException {
@@ -115,7 +116,7 @@ public class JdiWSEndpoint extends Endpoint {
     }
 
     public JsonObject getNewMessageAsJsonObject() {
-        return newMessage.getAsJsonObject();
+        return lastMessage.getAsJsonObject();
     }
 
     public void clearMessages() {

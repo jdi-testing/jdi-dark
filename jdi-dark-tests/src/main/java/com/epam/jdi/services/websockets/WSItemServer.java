@@ -29,12 +29,6 @@ public class WSItemServer {
         return message;
     }
 
-//    @OnMessage
-//    public String onTextMessage(String message, Session session){
-//        logger.info("Received string message: " + message);
-//        return message;
-//    }
-
     @OnMessage
     public ByteBuffer onBinaryMessage(ByteBuffer message, Session session){
         logger.info("Received binary message: " + new String(message.array(), StandardCharsets.UTF_8));

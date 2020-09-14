@@ -1,7 +1,6 @@
 package com.epam.jdi.services.websockets;
 
 import com.epam.jdi.dto.Item;
-import com.epam.jdi.http.WebSocketClient;
 import com.epam.jdi.http.WebSocketObjectClient;
 
 import javax.websocket.ClientEndpoint;

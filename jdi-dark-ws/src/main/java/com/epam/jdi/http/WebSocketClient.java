@@ -17,14 +17,14 @@ import java.util.concurrent.TimeUnit;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
-@ClientEndpoint
+
 public class WebSocketClient {
     private static final ILogger logger = instance("JDI_WS_Client");
     private Session session;
     private CountDownLatch latch;
     private final ClientManager clientManager = ClientManager.createClient();
-    private String lastMessage;
-    private final List<String> messages = new ArrayList<>();
+    private Object lastMessage;
+    private final List<Object> messages = new ArrayList<>();
 
     public void connect(String path)
             throws URISyntaxException, IOException, DeploymentException
@@ -46,18 +46,26 @@ public class WebSocketClient {
         this.session = session;
     }
 
-    @OnMessage
-    public void onTextMessage(String message, Session session) {
-        logger.info("Received text message");
-        lastMessage = message;
-        messages.add(message);
-        latch.countDown();
-    }
+//    @OnMessage
+//    public void onTextMessage(String message, Session session) {
+//        logger.info("Received text message");
+//        lastMessage = message;
+//        messages.add(message);
+//        latch.countDown();
+//    }
+//
+//    @OnMessage
+//    public void onBinaryMessage(ByteBuffer message, Session session) {
+//        logger.info("Received binary message");
+//        lastMessage = new String(message.array(), StandardCharsets.UTF_8);
+//        messages.add(lastMessage);
+//        latch.countDown();
+//    }
 
     @OnMessage
-    public void onBinaryMessage(ByteBuffer message, Session session) {
-        logger.info("Received binary message");
-        lastMessage = new String(message.array(), StandardCharsets.UTF_8);
+    public void onMessage(Object message, Session session) {
+        logger.info("Received message");
+        lastMessage = message;
         messages.add(lastMessage);
         latch.countDown();
     }
@@ -92,12 +100,12 @@ public class WebSocketClient {
         return latch.await(millis, TimeUnit.MILLISECONDS);
     }
 
-    public String waitAndGetNewMessage(int millis) throws InterruptedException {
+    public Object waitAndGetNewMessage(int millis) throws InterruptedException {
         waitNewMessage(millis);
         return lastMessage;
     }
 
-    public List<String> getMessages() {
+    public List<Object> getMessages() {
         return messages;
     }
 }

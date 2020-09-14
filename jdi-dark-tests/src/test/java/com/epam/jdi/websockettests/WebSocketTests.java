@@ -1,10 +1,12 @@
 package com.epam.jdi.websockettests;
 
+import com.epam.jdi.dto.Item;
 import com.epam.jdi.http.WebSocketClient;
 import com.epam.jdi.http.WebSocketGenericClient;
 import com.epam.jdi.services.websockets.TrelloClient;
 import com.epam.jdi.services.websockets.WSGenericClient;
 import com.epam.jdi.services.websockets.WSEchoServer;
+import com.epam.jdi.services.websockets.WSItemClient;
 import org.glassfish.tyrus.server.Server;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -51,26 +53,17 @@ public class WebSocketTests {
     }
 
     @Test
-    public void textMessageGenericTest()
-            throws DeploymentException, IOException, URISyntaxException, InterruptedException
-    {
-        String message = "Simple text test message";
-        WebSocketGenericClient<String> client = new WebSocketGenericClient<>();
+    public void sendObjectTest()
+            throws DeploymentException, IOException, URISyntaxException, InterruptedException, EncodeException {
+        Item message = new Item(2, "sofa");
+        WSItemClient client = new WSItemClient();
 
         client.connect("ws://localhost:8025/echo-ws");
-        client.sendPlainText(message);
+        client.sendObject(message);
         assertEquals(
                 client.waitAndGetNewMessage(1000), message,
                 "Unexpected response from server"
         );
-
-        client.sendPlainText(message + "\nP.S. Goodbye!");
-        assertEquals(
-                client.waitAndGetNewMessage(1000),
-                message + "\nP.S. Goodbye!",
-                "Unexpected response from server"
-        );
-        client.close();
     }
 
     @Test

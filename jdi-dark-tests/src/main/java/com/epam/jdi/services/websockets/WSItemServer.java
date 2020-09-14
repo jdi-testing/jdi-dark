@@ -4,18 +4,18 @@ import com.epam.http.logger.ILogger;
 import com.epam.jdi.dto.Item;
 
 import javax.websocket.*;
-import javax.websocket.server.*;
-
+import javax.websocket.server.ServerEndpoint;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
 @ServerEndpoint(
-        value = "/echo-ws"
+        value = "/item-ws",
+        decoders = ItemDecoder.class,
+        encoders = ItemEncoder.class
 )
-public class WSEchoServer {
+public class WSItemServer {
     private static final ILogger logger = instance("JDI_WS_Server");
 
     @OnOpen
@@ -24,10 +24,16 @@ public class WSEchoServer {
     }
 
     @OnMessage
-    public String onTextMessage(String message, Session session){
-        logger.info("Received string message: " + message);
+    public Item onItemMessage(Item message, Session session){
+        logger.info("Received 'Item' message: " + message);
         return message;
     }
+
+//    @OnMessage
+//    public String onTextMessage(String message, Session session){
+//        logger.info("Received string message: " + message);
+//        return message;
+//    }
 
     @OnMessage
     public ByteBuffer onBinaryMessage(ByteBuffer message, Session session){

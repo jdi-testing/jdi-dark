@@ -45,4 +45,12 @@ public class Item {
     public int hashCode() {
         return Objects.hash(getId(), getName());
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

@@ -1,7 +1,7 @@
 package com.epam.jdi.services.websockets;
 
 import com.epam.jdi.dto.Item;
-import com.epam.jdi.http.WebSocketObjectClient;
+import com.epam.jdi.http.WebSocketGenericClient;
 
 import javax.websocket.ClientEndpoint;
 
@@ -9,10 +9,5 @@ import javax.websocket.ClientEndpoint;
         decoders = ItemDecoder.class,
         encoders = ItemEncoder.class
 )
-public class WSItemClient extends WebSocketObjectClient {
-
-    @Override
-    public Item waitAndGetNewMessage(int millis) throws InterruptedException {
-        return (Item) super.waitAndGetNewMessage(millis);
-    }
+public class WSItemClient extends WebSocketGenericClient<Item> {
 }

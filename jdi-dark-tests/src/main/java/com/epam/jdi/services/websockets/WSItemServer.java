@@ -29,12 +29,6 @@ public class WSItemServer {
         return message;
     }
 
-    @OnMessage
-    public ByteBuffer onBinaryMessage(ByteBuffer message, Session session){
-        logger.info("Received binary message: " + new String(message.array(), StandardCharsets.UTF_8));
-        return message;
-    }
-
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         logger.info("Session closed with reason: " + closeReason.getReasonPhrase());

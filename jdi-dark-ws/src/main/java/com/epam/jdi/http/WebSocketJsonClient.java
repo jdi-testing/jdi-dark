@@ -4,6 +4,7 @@ import com.epam.http.logger.ILogger;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.glassfish.tyrus.client.ClientManager;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -17,11 +18,14 @@ import java.util.concurrent.TimeUnit;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
+/**
+ * WebSocket client implementation for exchanging json objects encoded in text strings
+ */
 @ClientEndpoint
 public class WebSocketJsonClient extends Endpoint {
 
     private static final ILogger logger = instance("JDI_WS");
-    private final WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+    private final ClientManager client = ClientManager.createClient();
     private Session session;
     private CountDownLatch latch;
     private final List<JsonElement> receivedMessages = new ArrayList<>();
@@ -29,14 +33,14 @@ public class WebSocketJsonClient extends Endpoint {
 
     public void connect(URI path) throws IOException, DeploymentException {
         logger.info("Connect to: " + path);
-        webSocketContainer.connectToServer(this, path);
+        client.connectToServer(this, path);
     }
 
     public void connect(String path) throws IOException, DeploymentException, URISyntaxException {
         connect(new URI(path));
     }
 
-    public void closeSession() throws IOException {
+    public void close() throws IOException {
         logger.info("Close current session");
         this.session.close(new CloseReason(
                 CloseReason.CloseCodes.GOING_AWAY, "Going away."
@@ -49,7 +53,7 @@ public class WebSocketJsonClient extends Endpoint {
         this.session.getBasicRemote();
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String s) {
-                logger.info("Receive message:\n" + s);
+                logger.info("Received text message");
                 lastMessage = JsonParser.parseString(s);
                 receivedMessages.add(lastMessage);
                 latch.countDown();
@@ -57,8 +61,13 @@ public class WebSocketJsonClient extends Endpoint {
         });
     }
 
-    public void sendMessage(String text) throws IOException {
-        logger.info("Send message:\n" + text);
+    @Override
+    public void onError(Session session, Throwable throwable) {
+        logger.error(throwable.getMessage());
+    }
+
+    public void sendPlainText(String text) throws IOException {
+        logger.info("Send text");
         session.getBasicRemote().sendText(text);
     }
 

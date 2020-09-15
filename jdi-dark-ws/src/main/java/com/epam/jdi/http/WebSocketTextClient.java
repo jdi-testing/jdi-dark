@@ -17,12 +17,15 @@ import java.util.concurrent.TimeUnit;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 
+/**
+ * WebSocket client implementation for simple text interactions via WebSockets
+ */
 @ClientEndpoint
 public class WebSocketTextClient {
     private static final ILogger logger = instance("JDI_WS_Client");
     private Session session;
     private CountDownLatch latch;
-    private final ClientManager clientManager = ClientManager.createClient();
+    private final ClientManager client = ClientManager.createClient();
     private String lastMessage;
     private final List<String> messages = new ArrayList<>();
 
@@ -30,7 +33,7 @@ public class WebSocketTextClient {
             throws URISyntaxException, IOException, DeploymentException
     {
         logger.info("Connect to: " + path);
-        session = clientManager.connectToServer(this, new URI(path));
+        session = client.connectToServer(this, new URI(path));
     }
 
     public void close() throws IOException {
@@ -65,7 +68,7 @@ public class WebSocketTextClient {
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         logger.info("Session closed with reason: " + closeReason.getReasonPhrase());
-        clientManager.shutdown();
+        client.shutdown();
     }
 
     @OnError
@@ -74,6 +77,7 @@ public class WebSocketTextClient {
     }
 
     public void sendPlainText(String message) throws IOException {
+        logger.info("Send text");
         session.getBasicRemote().sendText(message);
     }
 

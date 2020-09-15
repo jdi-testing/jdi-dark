@@ -36,7 +36,7 @@ public class ConfigITests extends WithJetty {
         response.assertThat()
                 .statusCode(302)
                 .and()
-                .header("Location", is("http://localhost:8080/hello"));
+                .header("Location", is("http://localhost:8081/hello"));
     }
 
     @Test

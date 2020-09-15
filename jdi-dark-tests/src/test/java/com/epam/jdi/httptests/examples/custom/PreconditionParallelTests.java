@@ -82,11 +82,6 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
-                .isOk().assertThat().body("name", equalTo(expectedName))
-                .body("shortUrl", equalTo(expectedShortUrl))
-                .body("url", equalTo(expectedUrl));
-
         trello = init(TrelloService.class, ServiceSettings.builder().domain("https://api.trello.com/1").build());
         trello.boardId.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))

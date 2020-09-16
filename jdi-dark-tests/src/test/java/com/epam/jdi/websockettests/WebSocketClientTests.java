@@ -1,6 +1,7 @@
 package com.epam.jdi.websockettests;
 
 import com.epam.jdi.dto.Item;
+import com.epam.jdi.http.WebSocketJsonClient;
 import com.epam.jdi.http.WebSocketTextClient;
 import com.epam.jdi.services.websockets.*;
 import com.google.gson.*;
@@ -87,7 +88,7 @@ public class WebSocketClientTests {
             throws DeploymentException, IOException, URISyntaxException, InterruptedException
     {
         String message = "{\"text\":\"Simple text test message\"}";
-        JsonClient client = new JsonClient();
+        WebSocketJsonClient client = new WebSocketJsonClient();
 
         client.connect("ws://localhost:8025/echo-ws");
         client.sendPlainText(message);
@@ -107,7 +108,7 @@ public class WebSocketClientTests {
     public void jsonClientEchoTest()
             throws DeploymentException, IOException, URISyntaxException, InterruptedException
     {
-        JsonClient client = new JsonClient();
+        WebSocketJsonClient client = new WebSocketJsonClient();
         Item item = new Item(2, "sofa");
         Gson gson = new Gson();
         String message = gson.toJson(item);

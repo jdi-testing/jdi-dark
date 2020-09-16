@@ -5,14 +5,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.client.ClientProperties;
 
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -24,11 +24,11 @@ import static com.epam.http.logger.HTTPLogger.instance;
 @ClientEndpoint
 public class WebSocketJsonClient extends Endpoint {
 
-    private static final ILogger logger = instance("JDI_WS");
+    private static final ILogger logger = instance("JDI_WS_Client");
     private final ClientManager client = ClientManager.createClient();
     private Session session;
     private CountDownLatch latch;
-    private final List<JsonElement> receivedMessages = new ArrayList<>();
+    private final List<JsonElement> messages = new ArrayList<>();
     private JsonElement lastMessage;
 
     public void connect(URI path) throws IOException, DeploymentException {
@@ -38,6 +38,18 @@ public class WebSocketJsonClient extends Endpoint {
 
     public void connect(String path) throws IOException, DeploymentException, URISyntaxException {
         connect(new URI(path));
+    }
+
+    public void setClientProperties(Map<String, Object> properties) {
+        for(Map.Entry<String, Object> entry: properties.entrySet()) {
+            client.getProperties().put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void setClientProperties(Properties properties) {
+        for(Map.Entry<Object, Object> entry: properties.entrySet()) {
+            client.getProperties().put((String) entry.getKey(), entry.getValue());
+        }
     }
 
     public void close() throws IOException {
@@ -55,7 +67,7 @@ public class WebSocketJsonClient extends Endpoint {
             public void onMessage(String s) {
                 logger.info("Received text message");
                 lastMessage = JsonParser.parseString(s);
-                receivedMessages.add(lastMessage);
+                messages.add(lastMessage);
                 latch.countDown();
             }
         });
@@ -128,8 +140,12 @@ public class WebSocketJsonClient extends Endpoint {
         return lastMessage.getAsJsonObject();
     }
 
+    public List<JsonElement> getMessages() {
+        return messages;
+    }
+
     public void clearMessages() {
-        receivedMessages.clear();
+        messages.clear();
     }
 
 }

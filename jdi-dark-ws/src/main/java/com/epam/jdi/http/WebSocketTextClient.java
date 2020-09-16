@@ -12,6 +12,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -29,11 +31,25 @@ public class WebSocketTextClient {
     private String lastMessage;
     private final List<String> messages = new ArrayList<>();
 
-    public void connect(String path)
-            throws URISyntaxException, IOException, DeploymentException
-    {
+    public void connect(URI path) throws IOException, DeploymentException {
         logger.info("Connect to: " + path);
-        session = client.connectToServer(this, new URI(path));
+        client.connectToServer(this, path);
+    }
+
+    public void connect(String path) throws IOException, DeploymentException, URISyntaxException {
+        connect(new URI(path));
+    }
+
+    public void setClientProperties(Map<String, Object> properties) {
+        for(Map.Entry<String, Object> entry: properties.entrySet()) {
+            client.getProperties().put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public void setClientProperties(Properties properties) {
+        for(Map.Entry<Object, Object> entry: properties.entrySet()) {
+            client.getProperties().put((String) entry.getKey(), entry.getValue());
+        }
     }
 
     public void close() throws IOException {

@@ -20,19 +20,19 @@ import static com.epam.http.logger.HTTPLogger.instance;
 /**
  * Abstract class for implementing web socket custom clients,
  * that exchange abstract custom objects over text or binary messages.
- * In order to use it properly you should extend your WebSocket client class from {@code WebSocketGenericClient<T>}
+ * In order to use it properly you should extend your WebSocket client class from {@code WebSocketGenericEndpoint<T>}
  * and pass your class type, that represents an object being sent as message, as type parameter to it.
  * Also you should annotate your WebSocket client class with {@link ClientEndpoint}
  * and specify your {@link Encoder} and {@link Decoder} classes as annotation parameters.
  * @param <T> object message type
  */
-public abstract class WebSocketGenericClient<T> {
-    private static final ILogger logger = instance("JDI_WS_Client");
-    private Session session;
-    private CountDownLatch latch;
-    private final ClientManager client = ClientManager.createClient();
-    private T lastMessage;
-    private final List<T> messages = new ArrayList<>();
+public abstract class WebSocketGenericEndpoint<T> {
+    protected static final ILogger logger = instance("JDI_WS_Client");
+    protected Session session;
+    protected CountDownLatch latch;
+    protected final ClientManager client = ClientManager.createClient();
+    protected T lastMessage;
+    protected final List<T> messages = new ArrayList<>();
 
     public void connect(URI path) throws IOException, DeploymentException {
         logger.info("Connect to: " + path);
@@ -68,14 +68,6 @@ public abstract class WebSocketGenericClient<T> {
         this.session = session;
     }
 
-    @OnMessage
-    public  void onMessage(T message, Session session) {
-        logger.info("Received message");
-        lastMessage = message;
-        messages.add(lastMessage);
-        latch.countDown();
-    }
-
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         logger.info("Session closed with reason: " + closeReason.getReasonPhrase());
@@ -90,6 +82,21 @@ public abstract class WebSocketGenericClient<T> {
     public void sendMessage(T object) throws IOException, EncodeException {
         logger.info("Send Object");
         session.getBasicRemote().sendObject(object);
+    }
+
+    public void sendPlainText(String message) throws IOException {
+        logger.info("Send text");
+        session.getBasicRemote().sendText(message);
+    }
+
+    public void sendObject(Object object) throws IOException, EncodeException {
+        logger.info("Send Object");
+        session.getBasicRemote().sendObject(object);
+    }
+
+    public void sendBinary(ByteBuffer data) throws IOException {
+        logger.info("Send Binary");
+        session.getBasicRemote().sendBinary(data);
     }
 
     public boolean waitNewMessage(int millis) throws InterruptedException {

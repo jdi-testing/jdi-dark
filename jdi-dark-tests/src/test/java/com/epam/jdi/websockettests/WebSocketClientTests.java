@@ -36,14 +36,15 @@ public class WebSocketClientTests {
 
         client.connect("ws://localhost:8025/echo-ws");
         client.sendPlainText(message);
+        assertTrue(client.waitNewMessage(100));
         assertEquals(
-                client.waitAndGetNewMessage(1000), message,
+                client.getLastMessage(), message,
                 "Unexpected response from server"
         );
 
         client.sendPlainText(message + "\nP.S. Goodbye!");
         assertEquals(
-                client.waitAndGetNewMessage(1000),
+                client.waitAndGetNewMessage(100),
                 message + "\nP.S. Goodbye!",
                 "Unexpected response from server"
         );
@@ -59,8 +60,9 @@ public class WebSocketClientTests {
 
         client.connect("ws://localhost:8025/item-ws");
         client.sendMessage(message);
+        assertTrue(client.waitNewMessage(100));
         assertEquals(
-                client.waitAndGetNewMessage(1000), message,
+                client.waitAndGetNewMessage(100), message,
                 "Unexpected response from server"
         );
         client.close();
@@ -76,8 +78,9 @@ public class WebSocketClientTests {
         client.connect("ws://localhost:8025/echo-ws");
         client.sendBinary(ByteBuffer.wrap(message.getBytes()));
 
+        assertTrue(client.waitNewMessage(100));
         assertEquals(
-                client.waitAndGetNewMessage(1000), message,
+                client.waitAndGetNewMessage(100), message,
                 "Unexpected response from server"
         );
         client.close();
@@ -93,11 +96,11 @@ public class WebSocketClientTests {
         client.connect("ws://localhost:8025/echo-ws");
         client.sendPlainText(message);
         assertEquals(
-                client.waitAndGetNewMessage(1000).toString(), message,
+                client.waitAndGetNewMessage(100).toString(), message,
                 "Unexpected response from server"
         );
         assertEquals(
-                client.getNewMessageAsJsonObject().get("text").getAsString(),
+                client.getLastMessageAsJsonObject().get("text").getAsString(),
                 "Simple text test message",
                 "Unexpected response from server"
         );
@@ -116,16 +119,16 @@ public class WebSocketClientTests {
         client.connect("ws://localhost:8025/echo-ws");
         client.sendPlainText(message);
         assertEquals(
-                client.waitAndGetNewMessage(1000).toString(), message,
+                client.waitAndGetNewMessage(100).toString(), message,
                 "Unexpected response from server"
         );
         assertEquals(
-                client.getNewMessageAsJsonObject().get("id").getAsInt(),
+                client.getLastMessageAsJsonObject().get("id").getAsInt(),
                 2,
                 "Received object's fields isn't as expected"
         );
         assertEquals(
-                client.getNewMessageAsJsonObject().get("name").getAsString(),
+                client.getLastMessageAsJsonObject().get("name").getAsString(),
                 "sofa",
                 "Received object's fields isn't as expected"
         );

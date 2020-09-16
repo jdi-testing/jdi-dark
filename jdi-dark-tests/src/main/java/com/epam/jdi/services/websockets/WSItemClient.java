@@ -7,6 +7,10 @@ import javax.websocket.ClientEndpoint;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 
+/**
+ * Example of client implementation for custom protocol over WebSockets,
+ * that uses custom class as message type.
+ */
 @ClientEndpoint(
         decoders = ItemDecoder.class,
         encoders = ItemEncoder.class

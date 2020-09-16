@@ -22,12 +22,14 @@ import static com.epam.http.logger.HTTPLogger.instance;
  * that exchange abstract custom objects over text or binary messages.
  * In order to use it properly you should extend your WebSocket client class from {@code WebSocketGenericEndpoint<T>}
  * and pass your class type, that represents an object being sent as message, as type parameter to it.
- * Also you should annotate your WebSocket client class with {@link ClientEndpoint}
- * and specify your {@link Encoder} and {@link Decoder} classes as annotation parameters.
+ * Then implement onMessage method(s) and annotate them with {@link OnMessage}.
+ * Annotate your WebSocket client class with {@link ClientEndpoint}.
+ * Specify your {@link Encoder} and {@link Decoder} classes as annotation parameters,
+ * if you going to send and receive some custom classes.
  * @param <T> object message type
  */
 public abstract class WebSocketGenericEndpoint<T> {
-    protected static final ILogger logger = instance("JDI_WS_Client");
+    protected static final ILogger logger = instance("JDI_WS");
     protected Session session;
     protected CountDownLatch latch;
     protected final ClientManager client = ClientManager.createClient();
@@ -79,9 +81,9 @@ public abstract class WebSocketGenericEndpoint<T> {
         logger.error(throwable.getMessage());
     }
 
-    public void sendMessage(T object) throws IOException, EncodeException {
+    public void sendMessage(T message) throws IOException, EncodeException {
         logger.info("Send Object");
-        session.getBasicRemote().sendObject(object);
+        session.getBasicRemote().sendObject(message);
     }
 
     public void sendPlainText(String message) throws IOException {
@@ -106,6 +108,10 @@ public abstract class WebSocketGenericEndpoint<T> {
 
     public T waitAndGetNewMessage(int millis) throws InterruptedException {
         waitNewMessage(millis);
+        return lastMessage;
+    }
+
+    public T getLastMessage() {
         return lastMessage;
     }
 

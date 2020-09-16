@@ -20,7 +20,7 @@ public class WebSocketJsonClient extends WebSocketGenericEndpoint<JsonElement> {
         latch.countDown();
     }
 
-    public JsonObject getNewMessageAsJsonObject() {
+    public JsonObject getLastMessageAsJsonObject() {
         return lastMessage.getAsJsonObject();
     }
 }

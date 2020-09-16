@@ -5,8 +5,6 @@ import com.epam.jdi.dto.Item;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 

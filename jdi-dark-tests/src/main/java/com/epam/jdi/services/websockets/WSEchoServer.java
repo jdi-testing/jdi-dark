@@ -1,13 +1,11 @@
 package com.epam.jdi.services.websockets;
 
 import com.epam.http.logger.ILogger;
-import com.epam.jdi.dto.Item;
 
 import javax.websocket.*;
 import javax.websocket.server.*;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import static com.epam.http.logger.HTTPLogger.instance;

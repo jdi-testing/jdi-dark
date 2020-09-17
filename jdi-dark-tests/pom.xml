@@ -56,6 +56,11 @@
             <version>9.4.26.v20200117</version>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>javax-websocket-server-impl</artifactId>
+            <version>9.4.31.v20200723</version>
+        </dependency>
+        <dependency>
             <groupId>io.rest-assured.examples</groupId>
             <artifactId>scalatra-webapp</artifactId>
             <version>3.0.2</version>

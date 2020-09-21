@@ -101,9 +101,13 @@ public abstract class WebSocketGenericEndpoint<T> {
         session.getBasicRemote().sendBinary(data);
     }
 
-    public boolean waitNewMessage(int millis) throws InterruptedException {
-        latch = new CountDownLatch(1);
+    public boolean waitNewMessages(int count, int millis) throws InterruptedException {
+        latch = new CountDownLatch(count);
         return latch.await(millis, TimeUnit.MILLISECONDS);
+    }
+
+    public boolean waitNewMessage(int millis) throws InterruptedException {
+        return waitNewMessages(1, millis);
     }
 
     public T waitAndGetNewMessage(int millis) throws InterruptedException {

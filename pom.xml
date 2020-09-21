@@ -46,40 +46,42 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
             </plugin>
-        </plugins>
-    </build>
-<plugin>
-	<groupId>org.jacoco</groupId>
-	<artifactId>jacoco-maven-plugin</artifactId>
-	<version>0.8.4</version>
-	<executions>
-		<execution>
+		
+		<plugin>
+	          <groupId>org.jacoco</groupId>
+	          <artifactId>jacoco-maven-plugin</artifactId>
+	          <version>0.8.4</version>
+	          <executions>
+	        	<execution>
 			<goals>
 				<goal>prepare-agent</goal>
 			</goals>
-		</execution>
+		 </execution>
 		<!-- attached to Maven test phase -->
-		<execution>
+		 <execution>
 			<id>report</id>
 			<phase>test</phase>
 			<goals>
 				<goal>report</goal>
 			</goals>
 		</execution>
-	</executions>
-</plugin>
-<plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-surefire-plugin</artifactId>
-	<version>2.22.2</version>
-	<configuration>
+	        </executions>
+        </plugin>
+        <plugin>
+	 <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-surefire-plugin</artifactId>
+        	<version>2.22.2</version>
+	  <configuration>
 		<reportFormat>plain</reportFormat>
 		<includes>
 			<include>**/*Test*.java</include>
 			<include>**/*IT*.java</include>
 		</includes>
 	</configuration>
-</plugin>
+       </plugin>
+        </plugins>
+    </build>
+
     <modules>
         <module>jdi-dark</module>
         <module>jdi-dark-ws</module>

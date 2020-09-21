@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +31,7 @@ public abstract class WebSocketGenericEndpoint<T> {
     protected CountDownLatch latch;
     protected final ClientManager client = ClientManager.createClient();
     protected T lastMessage;
-    protected final List<T> messages = new ArrayList<>();
+    protected final Queue<T> messages = new LinkedList<>();
 
     public void connect(URI path) throws IOException, DeploymentException {
         logger.info("Connect to: " + path);
@@ -119,7 +116,7 @@ public abstract class WebSocketGenericEndpoint<T> {
         return lastMessage;
     }
 
-    public List<T> getMessages() {
+    public Queue<T> getMessages() {
         return messages;
     }
 }

@@ -4,7 +4,6 @@ import com.epam.http.logger.ILogger;
 import com.epam.jdi.dto.Item;
 import com.google.gson.Gson;
 
-import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 

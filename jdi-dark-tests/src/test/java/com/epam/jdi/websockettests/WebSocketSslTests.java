@@ -32,6 +32,8 @@ public class WebSocketSslTests {
     public void init() throws Exception {
         server = new Server();
 
+        System.getProperties().put("javax.net.debug", "all");
+
         HttpConfiguration httpConfig = new HttpConfiguration();
         httpConfig.setSecureScheme("https");
         httpConfig.setSecurePort(8443);
@@ -60,7 +62,6 @@ public class WebSocketSslTests {
         server.setHandler(context);
         server.setConnectors(new Connector[]{https, http});
         server.start();
-//        server.dump(System.err);
     }
 
     @Test
@@ -70,15 +71,14 @@ public class WebSocketSslTests {
         String message = "Simple text test message";
         WebSocketTextClient client = new WebSocketTextClient();
 
-        System.getProperties().put("javax.net.debug", "all");
+        SslContextConfigurator config = new SslContextConfigurator();
+        config.setTrustStoreFile("src/test/resources/jetty_localhost_client.jks");
+        config.setTrustStorePassword("test1234");
+        SslEngineConfigurator sslEngineConfigurator = new SslEngineConfigurator(config, true, false, false);
+        sslEngineConfigurator.setHostVerificationEnabled(false);
+        client.setClientProperties(Collections.singletonMap(ClientProperties.SSL_ENGINE_CONFIGURATOR, sslEngineConfigurator));
 
-//        SslContextConfigurator config = new SslContextConfigurator();
-//        config.setTrustStoreFile("src/test/resources/jetty_localhost_client.jks");
-//        config.setTrustStorePassword("test1234");
-//        SslEngineConfigurator sslEngineConfigurator = new SslEngineConfigurator(config, true, false, false);
-//        client.setClientProperties(Collections.singletonMap(ClientProperties.SSL_ENGINE_CONFIGURATOR, sslEngineConfigurator));
-
-        client.connect("ws://localhost:8081/echo-ws");
+        client.connect("wss://localhost:8443/echo-ws");
         client.sendPlainText(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(

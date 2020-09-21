@@ -11,6 +11,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.client.SslContextConfigurator;
+import org.glassfish.tyrus.client.SslEngineConfigurator;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -70,12 +71,12 @@ public class WebSocketSslTests {
         WebSocketTextClient client = new WebSocketTextClient();
 
         System.getProperties().put("javax.net.debug", "all");
-        System.getProperties().put(SslContextConfigurator.KEY_STORE_FILE, "src/test/resources/jetty_localhost_client.jks");
-//        System.getProperties().put(SslContextConfigurator.TRUST_STORE_FILE, "...");
-        System.getProperties().put(SslContextConfigurator.KEY_STORE_PASSWORD, "test1234");
-//        System.getProperties().put(SslContextConfigurator.TRUST_STORE_PASSWORD, "...");
-        SslContextConfigurator config = SslContextConfigurator.DEFAULT_CONFIG;
-        client.setClientProperties(Collections.singletonMap(ClientProperties.SSL_ENGINE_CONFIGURATOR, config));
+
+//        SslContextConfigurator config = new SslContextConfigurator();
+//        config.setTrustStoreFile("src/test/resources/jetty_localhost_client.jks");
+//        config.setTrustStorePassword("test1234");
+//        SslEngineConfigurator sslEngineConfigurator = new SslEngineConfigurator(config, true, false, false);
+//        client.setClientProperties(Collections.singletonMap(ClientProperties.SSL_ENGINE_CONFIGURATOR, sslEngineConfigurator));
 
         client.connect("ws://localhost:8081/echo-ws");
         client.sendPlainText(message);

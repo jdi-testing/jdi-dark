@@ -23,7 +23,7 @@
     </test>
     <test name="Websoket tests">
         <packages>
-            <package name="com.epam.jdi.websockettest"/>
+            <package name="com.epam.jdi.websockettests"/>
         </packages>
     </test>
 </suite>

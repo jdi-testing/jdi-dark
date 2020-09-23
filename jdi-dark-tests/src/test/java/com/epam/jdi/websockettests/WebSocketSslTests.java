@@ -1,23 +1,14 @@
 package com.epam.jdi.websockettests;
 
+import com.epam.jdi.dto.Item;
 import com.epam.jdi.http.WebSocketTextClient;
-import com.epam.jdi.services.websockets.WSEchoServer;
-import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.server.*;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+import com.epam.jdi.httptests.support.WithJettyWebSockets;
+import com.epam.jdi.services.websockets.WSItemClient;
 import org.glassfish.tyrus.client.ClientProperties;
-import org.glassfish.tyrus.client.SslContextConfigurator;
-import org.glassfish.tyrus.client.SslEngineConfigurator;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.websocket.DeploymentException;
-import javax.websocket.server.ServerContainer;
+import javax.websocket.EncodeException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -25,44 +16,7 @@ import java.util.Collections;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-public class WebSocketSslTests {
-    private Server server;
-
-    @BeforeClass
-    public void init() throws Exception {
-        server = new Server();
-
-        System.getProperties().put("javax.net.debug", "all");
-
-        HttpConfiguration httpConfig = new HttpConfiguration();
-        httpConfig.setSecureScheme("https");
-        httpConfig.setSecurePort(8443);
-
-        HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
-        httpsConfig.addCustomizer(new SecureRequestCustomizer());
-
-        String file = "src/test/resources/jetty_localhost_server.jks";
-        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
-        sslContextFactory.setKeyStorePath(file);
-        sslContextFactory.setKeyStorePassword("test1234");
-
-        ServerConnector https = new ServerConnector(server,
-                new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
-                new HttpConnectionFactory(httpsConfig));
-        https.setPort(8443);
-
-        ServerConnector http = new ServerConnector(server);
-        http.setPort(8081);
-
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        ServerContainer wscontainer = WebSocketServerContainerInitializer.initialize(context);
-        wscontainer.addEndpoint(WSEchoServer.class);
-
-        server.setHandler(context);
-        server.setConnectors(new Connector[]{https, http});
-        server.start();
-    }
+public class WebSocketSslTests extends WithJettyWebSockets {
 
     @Test
     public void textMessageTest()
@@ -71,14 +25,8 @@ public class WebSocketSslTests {
         String message = "Simple text test message";
         WebSocketTextClient client = new WebSocketTextClient();
 
-        SslContextConfigurator config = new SslContextConfigurator();
-        config.setTrustStoreFile("src/test/resources/jetty_localhost_client.jks");
-        config.setTrustStorePassword("test1234");
-        SslEngineConfigurator sslEngineConfigurator = new SslEngineConfigurator(config, true, false, false);
-        sslEngineConfigurator.setHostVerificationEnabled(false);
-        client.setClientProperties(Collections.singletonMap(ClientProperties.SSL_ENGINE_CONFIGURATOR, sslEngineConfigurator));
-
-        client.connect("wss://localhost:8443/echo-ws");
+        client.setClientProperties(Collections.singletonMap(ClientProperties.SSL_ENGINE_CONFIGURATOR, getClientSslConfig()));
+        client.connect(sslHost + "/echo-ws");
         client.sendPlainText(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(
@@ -88,8 +36,20 @@ public class WebSocketSslTests {
         client.close();
     }
 
-    @AfterClass
-    public void tearDown() throws Exception {
-        server.stop();
+    @Test
+    public void sendObjectGenericTest()
+            throws DeploymentException, IOException, URISyntaxException, InterruptedException, EncodeException
+    {
+        Item message = new Item(2, "sofa");
+        WSItemClient client = new WSItemClient();
+
+        client.connect(host + "/item-ws");
+        client.sendMessage(message);
+        assertTrue(client.waitNewMessage(100));
+        assertEquals(
+                client.waitAndGetNewMessage(100), message,
+                "Unexpected response from server"
+        );
+        client.close();
     }
 }

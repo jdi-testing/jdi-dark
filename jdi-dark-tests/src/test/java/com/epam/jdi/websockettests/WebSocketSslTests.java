@@ -6,7 +6,6 @@ import org.glassfish.tyrus.client.ClientProperties;
 import org.testng.annotations.Test;
 
 import javax.websocket.DeploymentException;
-import javax.websocket.EncodeException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -36,7 +35,7 @@ public class WebSocketSslTests extends WithJettyWebSockets {
 
     @Test
     public void sslInnerConfigTest()
-            throws DeploymentException, IOException, URISyntaxException, InterruptedException, EncodeException
+            throws DeploymentException, IOException, URISyntaxException, InterruptedException
     {
         String message = "Simple text test message";
         WebSocketTextClient client = new WebSocketTextClient();

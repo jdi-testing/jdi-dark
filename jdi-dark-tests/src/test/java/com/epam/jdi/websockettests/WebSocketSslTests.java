@@ -1,9 +1,7 @@
 package com.epam.jdi.websockettests;
 
-import com.epam.jdi.dto.Item;
 import com.epam.jdi.http.WebSocketTextClient;
 import com.epam.jdi.httptests.support.WithJettyWebSockets;
-import com.epam.jdi.services.websockets.WSItemClient;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.testng.annotations.Test;
 
@@ -19,7 +17,7 @@ import static org.testng.Assert.assertTrue;
 public class WebSocketSslTests extends WithJettyWebSockets {
 
     @Test
-    public void textMessageTest()
+    public void sslOutsideConfigTest()
             throws DeploymentException, IOException, URISyntaxException, InterruptedException
     {
         String message = "Simple text test message";
@@ -37,17 +35,21 @@ public class WebSocketSslTests extends WithJettyWebSockets {
     }
 
     @Test
-    public void sendObjectGenericTest()
+    public void sslInnerConfigTest()
             throws DeploymentException, IOException, URISyntaxException, InterruptedException, EncodeException
     {
-        Item message = new Item(2, "sofa");
-        WSItemClient client = new WSItemClient();
+        String message = "Simple text test message";
+        WebSocketTextClient client = new WebSocketTextClient();
 
-        client.connect(host + "/item-ws");
-        client.sendMessage(message);
+        client.setClientSslConfig(
+                "src/test/resources/jetty_localhost_client.jks",
+                "test1234", true, false, false
+        );
+        client.connect(sslHost + "/echo-ws");
+        client.sendPlainText(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(
-                client.waitAndGetNewMessage(100), message,
+                client.getLastMessage(), message,
                 "Unexpected response from server"
         );
         client.close();

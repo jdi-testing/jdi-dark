@@ -21,7 +21,7 @@
             <class name="com.epam.jdi.httptests.performance.PerformanceTests"/>
         </classes>
     </test>
-    <test name="Websoket tests">
+    <test name="Websocket tests">
         <packages>
             <package name="com.epam.jdi.websockettests"/>
         </packages>

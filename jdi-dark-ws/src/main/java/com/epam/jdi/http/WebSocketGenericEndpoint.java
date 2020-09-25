@@ -2,6 +2,9 @@ package com.epam.jdi.http;
 
 import com.epam.http.logger.ILogger;
 import org.glassfish.tyrus.client.ClientManager;
+import org.glassfish.tyrus.client.ClientProperties;
+import org.glassfish.tyrus.client.SslContextConfigurator;
+import org.glassfish.tyrus.client.SslEngineConfigurator;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -42,6 +45,13 @@ public abstract class WebSocketGenericEndpoint<T> {
         connect(new URI(path));
     }
 
+    public void close() throws IOException {
+        logger.info("Close connection");
+        session.close(new CloseReason(
+                CloseReason.CloseCodes.GOING_AWAY, "Going away."
+        ));
+    }
+
     public void setClientProperties(Map<String, Object> properties) {
         for(Map.Entry<String, Object> entry: properties.entrySet()) {
             client.getProperties().put(entry.getKey(), entry.getValue());
@@ -54,11 +64,21 @@ public abstract class WebSocketGenericEndpoint<T> {
         }
     }
 
-    public void close() throws IOException {
-        logger.info("Close connection");
-        session.close(new CloseReason(
-                CloseReason.CloseCodes.GOING_AWAY, "Going away."
-        ));
+    public void setClientSslConfig(
+            String trustStorePath,
+            String trustStorePassword,
+            Boolean clientMode,
+            Boolean needClientAuth,
+            Boolean wantClientAuth
+    ) {
+        SslContextConfigurator config = new SslContextConfigurator();
+        config.setTrustStoreFile(trustStorePath);
+        config.setTrustStorePassword(trustStorePassword);
+        SslEngineConfigurator sslEngineConfigurator = new SslEngineConfigurator(
+                config, clientMode, needClientAuth, wantClientAuth
+        );
+        sslEngineConfigurator.setHostVerificationEnabled(false);
+        client.getProperties().put(ClientProperties.SSL_ENGINE_CONFIGURATOR, sslEngineConfigurator);
     }
 
     @OnOpen

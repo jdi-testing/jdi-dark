@@ -3,11 +3,9 @@ package com.epam.jdi.websockettests;
 import com.epam.jdi.dto.Item;
 import com.epam.jdi.http.WebSocketJsonClient;
 import com.epam.jdi.http.WebSocketTextClient;
+import com.epam.jdi.httptests.support.WithJettyWebSockets;
 import com.epam.jdi.services.websockets.*;
 import com.google.gson.*;
-import org.glassfish.tyrus.server.Server;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.websocket.DeploymentException;
@@ -18,14 +16,7 @@ import java.nio.ByteBuffer;
 
 import static org.testng.Assert.*;
 
-public class WebSocketClientTests {
-    private Server server;
-
-    @BeforeClass
-    public void init() throws DeploymentException {
-        server = new Server(WSEchoServer.class, WSItemServer.class);
-        server.start();
-    }
+public class WebSocketClientTests extends WithJettyWebSockets {
 
     @Test
     public void textMessageTest()
@@ -34,7 +25,7 @@ public class WebSocketClientTests {
         String message = "Simple text test message";
         WebSocketTextClient client = new WebSocketTextClient();
 
-        client.connect("ws://localhost:8025/echo-ws");
+        client.connect(host + "/echo-ws");
         client.sendPlainText(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(
@@ -58,7 +49,7 @@ public class WebSocketClientTests {
         Item message = new Item(2, "sofa");
         WSItemClient client = new WSItemClient();
 
-        client.connect("ws://localhost:8025/item-ws");
+        client.connect(host + "/item-ws");
         client.sendMessage(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(
@@ -75,7 +66,7 @@ public class WebSocketClientTests {
         String message = "Simple text test message";
         WebSocketTextClient client = new WebSocketTextClient();
 
-        client.connect("ws://localhost:8025/echo-ws");
+        client.connect(host + "/echo-ws");
         client.sendBinary(ByteBuffer.wrap(message.getBytes()));
 
         assertTrue(client.waitNewMessage(100));
@@ -93,7 +84,7 @@ public class WebSocketClientTests {
         String message = "{\"text\":\"Simple text test message\"}";
         WebSocketJsonClient client = new WebSocketJsonClient();
 
-        client.connect("ws://localhost:8025/echo-ws");
+        client.connect(host + "/echo-ws");
         client.sendPlainText(message);
         assertEquals(
                 client.waitAndGetNewMessage(100).toString(), message,
@@ -116,7 +107,7 @@ public class WebSocketClientTests {
         Gson gson = new Gson();
         String message = gson.toJson(item);
 
-        client.connect("ws://localhost:8025/echo-ws");
+        client.connect(host + "/echo-ws");
         client.sendPlainText(message);
         assertEquals(
                 client.waitAndGetNewMessage(100).toString(), message,
@@ -133,10 +124,5 @@ public class WebSocketClientTests {
                 "Received object's fields isn't as expected"
         );
         client.close();
-    }
-
-    @AfterClass
-    public void tearDown() {
-        server.stop();
     }
 }

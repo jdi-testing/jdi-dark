@@ -139,4 +139,8 @@ public abstract class WebSocketGenericEndpoint<T> {
     public Queue<T> getMessages() {
         return messages;
     }
+
+    public void clearMessages() {
+        messages.clear();
+    }
 }

@@ -1,16 +1,17 @@
 package com.epam.jdi.bookstore.controller.user;
 
-import com.epam.jdi.bookstore.model.security.Token;
-import com.epam.jdi.bookstore.service.RoleService;
 import com.epam.jdi.bookstore.controller.UserApi;
 import com.epam.jdi.bookstore.model.security.Credentials;
+import com.epam.jdi.bookstore.model.security.Token;
 import com.epam.jdi.bookstore.model.user.Address;
 import com.epam.jdi.bookstore.model.user.User;
 import com.epam.jdi.bookstore.service.AuthService;
+import com.epam.jdi.bookstore.service.RoleService;
 import com.epam.jdi.bookstore.service.UserService;
 import com.epam.jdi.bookstore.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,15 +86,17 @@ public class UserController implements UserApi {
         return ok().build();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #userId")
     @Override
-    public ResponseEntity<List<Address>> getAddresses(Long user_id) {
-        List<Address> addresses = userService.getUserAddresses(user_id);
+    public ResponseEntity<List<Address>> getAddresses(Long userId) {
+        List<Address> addresses = userService.getUserAddresses(userId);
         return ok(addresses);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or principal.id == #userId")
     @Override
-    public ResponseEntity<Void> addAddress(Long user_id, Address address) {
-        userService.createAddress(user_id, address);
+    public ResponseEntity<Void> addAddress(Long userId, Address address) {
+        userService.createAddress(userId, address);
         URI location = URI.create(String.format("/%s", address.getId()));
         return created(location).build();
     }

@@ -3,13 +3,12 @@ package com.epam.jdi.bookstore.service.impl;
 import com.epam.jdi.bookstore.exception.AlreadyExistException;
 import com.epam.jdi.bookstore.exception.NotFoundException;
 import com.epam.jdi.bookstore.model.Genre;
-import com.epam.jdi.bookstore.service.GenreService;
 import com.epam.jdi.bookstore.repository.genre.GenreRepository;
+import com.epam.jdi.bookstore.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class GenreServiceImpl implements GenreService {
@@ -23,14 +22,15 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre createGenre(Genre genre) throws AlreadyExistException {
-        if (genre.getId() != null) {
-            Optional<Genre> existingGenre = genreRepository.findById(genre.getId());
-            if (existingGenre.isPresent()) {
-                throw new AlreadyExistException("Genre with ID '" + genre.getId() + "' already exists. Use 'PUT genres/" + genre.getId() + "' to update existing record");
-            }
+        Long genreId = genre.getId();
+        String genreType = genre.getType();
+        if (genreId != null) {
+            genreRepository.findById(genreId).ifPresent(e -> {
+                throw new AlreadyExistException(String.format("Genre with ID '%1$d' already exists. Use 'PUT genres/%1$d' to update existing record", genreId));
+            });
         }
-        genreRepository.findGenreByType(genre.getType()).ifPresent(e -> {
-            throw new AlreadyExistException("Genre '" + e.getType() + "' already exists");
+        genreRepository.findGenreByType(genreType).ifPresent(e -> {
+            throw new AlreadyExistException(String.format("Genre '%s' already exists", genreType));
         });
         return genreRepository.save(genre);
     }
@@ -42,20 +42,14 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre getGenreById(Long id) throws NotFoundException {
-        Optional<Genre> genre = genreRepository.findById(id);
-        if (!genre.isPresent()) {
-            throw new NotFoundException("Genre with ID '" + id + "' not found");
-        }
-        return genre.get();
+        return genreRepository.findById(id).orElseThrow(() ->
+                new NotFoundException(String.format("Genre with ID '%d' not found", id)));
     }
 
     @Override
     public Genre getGenreByType(String type) throws NotFoundException {
-        Optional<Genre> genre = genreRepository.findGenreByType(type);
-        if (!genre.isPresent()) {
-            throw new NotFoundException("Genre with type '" + type + "' not found");
-        }
-        return genre.get();
+        return genreRepository.findGenreByType(type).orElseThrow(() ->
+                new NotFoundException(String.format("Genre with type '%s' not found", type)));
     }
 
     @Override

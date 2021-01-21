@@ -38,21 +38,21 @@ jobs:
 
       - name: Run tests - bdd
         run: |
-          - mvn -ntp install -DskipTests
-          - mvn verify -pl $BDD_TESTS
+          mvn -ntp install -DskipTests
+          mvn verify -pl $BDD_TESTS
 
       - name: Run tests - http
         run: |
-            - mvn -ntp install -DskipTests
-            - mvn verify -pl $HTTP_TESTS
+          mvn -ntp install -DskipTests
+          mvn verify -pl $HTTP_TESTS
 
       - name: Deploy allure reports to netlify
         run: |
-            - npm install -g allure-commandline
-            - npm install -g netlify-cli
-            - allure --version
-            - source reports.sh
-            - deployAllureResults
+          npm install -g allure-commandline
+          npm install -g netlify-cli
+          allure --version
+          source reports.sh
+          deployAllureResults
 
       - name: Test Coverage
         uses: codecov/codecov-action@v1

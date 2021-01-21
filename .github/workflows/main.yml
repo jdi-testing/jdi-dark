@@ -1,24 +1,60 @@
-name: Build
+name: Testing JDI Dark
+env:
+  HTTP_TESTS=com:epam:jdi:jdi-dark-tests
+  BDD_TESTS=com.epam.jdi:jdi-dark-bdd-tests
+
 
 on:
-  pull_request:
-    branches:
-      - '*'
   push:
-    branches:
-      - '*'
+    branches: [ test_ga ]
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 8 ]
+
     steps:
-      - uses: actions/checkout@v1
-      - name: set up JDK 8
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
-      - name: Maven Verify
-        run: mvn -B package
+          java-version: ${{ matrix.java }}
+          java-package: jdk
+      - name: Prepare environment
+        run: |
+          sudo apt-get -y install jq
+          java -Xmx32m -version
+          ls -lah
+          env
+
+      - name: Welcome to JDI
+        run: |
+            echo ------------------- WELCOME TO JDI DARK ----------------------
+            mvn --version
+
+      - name: Compile jdi code
+        run: mvn install -DskipTests
+
+      - name: Run tests - bdd
+        run: |
+          - mvn -ntp install -DskipTests
+          - mvn verify -pl $BDD_TESTS
+
+      - name: Run tests - http
+        run: |
+            - mvn -ntp install -DskipTests
+            - mvn verify -pl $HTTP_TESTS
+
+      - name: Deploy allure reports to netlify
+        run: |
+            - npm install -g allure-commandline
+            - npm install -g netlify-cli
+            - allure --version
+            - source reports.sh
+            - deployAllureResults
+
       - name: Test Coverage
         uses: codecov/codecov-action@v1
         with:

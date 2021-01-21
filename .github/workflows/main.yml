@@ -1,6 +1,6 @@
 name: Testing JDI Dark
 env:
-  HTTP_TESTS: "com:epam:jdi:jdi-dark-tests"
+  HTTP_TESTS: "com.epam.jdi:jdi-dark-tests"
   BDD_TESTS: "com.epam.jdi:jdi-dark-bdd-tests"
 
 on:

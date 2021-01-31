@@ -2,6 +2,7 @@ name: Testing JDI Dark
 env:
   HTTP_TESTS: "com.epam.jdi:jdi-dark-tests"
   BDD_TESTS: "com.epam.jdi:jdi-dark-bdd-tests"
+  ALLURE_VERSION: "2.7.0"
 
 on:
   push:
@@ -9,10 +10,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
+      fail-fast: false
       matrix:
-        java: [ 8 ]
+        java: [ 8 ] # all [8, 9, 10, 11, 12, 13]
 
     steps:
       - uses: actions/checkout@v2
@@ -28,31 +30,53 @@ jobs:
           ls -lah
           env
 
+# run cann't start from comment
+#  curl -o allure-${ALLURE_VERSION}.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz
+      - name: Install Allure
+        run: |
+          sudo tar -zxvf allure-${ALLURE_VERSION}.tgz -C /opt/
+          sudo ln -s /opt/allure-${ALLURE_VERSION}/bin/allure /usr/bin/allure
+          allure --version
+
       - name: Welcome to JDI
         run: |
             echo ------------------- WELCOME TO JDI DARK ----------------------
             mvn --version
 
       - name: Compile jdi code
+        id: jdi-compile
         run: mvn install -DskipTests
 
-      - name: Run tests - bdd
+      - name: Run tests - BDD
+        if: steps.jdi-compile.outcome == 'success'
+        timeout-minutes: 90 # prevent blocking
+        continue-on-error: true
         run: |
-          mvn -ntp install -DskipTests
           mvn verify -pl $BDD_TESTS
 
-      - name: Run tests - http
+      - name: Run tests - HTTP
+        if: steps.jdi-compile.outcome == 'success'
+        timeout-minutes: 90 # prevent blocking
+        continue-on-error: true
         run: |
-          mvn -ntp install -DskipTests
           mvn verify -pl $HTTP_TESTS
 
-      - name: Deploy allure reports to netlify
+      - name: Collect reports
         run: |
-          npm install -g allure-commandline
-          npm install -g netlify-cli
-          allure --version
-          source reports.sh
-          deployAllureResults
+          echo --------------- Collecting Allure Reports.... ------------------
+          sudo chmod +x reporting.sh
+          source reporting.sh
+          generateAllureReports
+          printAllureSummary ${{ matrix.java }}
+          zip -r allure-report.zip ./allure-report/
+
+      - name: 'Upload allure report'
+        if: steps.jdi-compile.outcome == 'success'
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-report-dark-jdk${{ matrix.java }}
+          path: ./allure-report.zip
+          retention-days: 2
 
       - name: Test Coverage
         uses: codecov/codecov-action@v1

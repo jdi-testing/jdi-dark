@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - main
-      - test_ga
   pull_request:
     branches:
       - main
@@ -19,6 +18,7 @@ on:
 
 jobs:
   build:
+    name: Run tests for JDK
     runs-on: ubuntu-18.04
     strategy:
       max-parallel: 3

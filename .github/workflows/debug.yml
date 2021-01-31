@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    name: Run tests on JDK
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false

@@ -52,8 +52,6 @@ jobs:
         run: |
             echo ------------------- WELCOME TO JDI DARK ----------------------
             mvn --version
-      - name: Check dependencies
-        run: mvn dependency:tree -Dverbose
 
       - name: Compile jdi code
         id: jdi-compile

@@ -22,8 +22,9 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
-        java: [11, 12, 13] # all [8, 9, 10, 11, 12, 13], only one is [8]
+        java: [11] # all [8, 9, 10, 11, 12, 13], only one is [8]
 
     steps:
       - uses: actions/checkout@v2

@@ -7,10 +7,10 @@ env:
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
   page_build:
   release:
     types: # This configuration does not affect the page_build event above

@@ -1,4 +1,4 @@
-name: Testing JDI Dark
+name: Testing JDI Dark - debug on server
 env:
   HTTP_TESTS: "com.epam.jdi:jdi-dark-tests"
   BDD_TESTS: "com.epam.jdi:jdi-dark-bdd-tests"
@@ -7,6 +7,7 @@ env:
 on:
   push:
     branches: [ debugging_branch_name ]
+# !!!! Please make sure that you don't change this file in master after debug is completed
 
 jobs:
   build:

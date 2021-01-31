@@ -6,16 +6,7 @@ env:
 
 on:
   push:
-    branches:
-      - main
-      - test_ga
-  pull_request:
-    branches:
-      - main
-  page_build:
-  release:
-    types: # This configuration does not affect the page_build event above
-      - created
+    branches: [ debugging_branch_name ]
 
 jobs:
   build:

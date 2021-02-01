@@ -24,7 +24,7 @@ jobs:
       max-parallel: 3
       fail-fast: false
       matrix:
-        java: [8, 9, 10, 11, 12, 13, 14] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
+        java: [8, 9, 10, 11, 12, 13] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
 
     steps:
       - uses: actions/checkout@v2
@@ -37,7 +37,6 @@ jobs:
         run: |
           sudo apt-get -y install jq
           java -Xmx32m -version
-          ls -lah
           env
 
 # run cann't start from comment
@@ -64,18 +63,12 @@ jobs:
         continue-on-error: true
         run: mvn verify -pl $BDD_TESTS --fail-at-end
 
-      - name: Print results
-        run: echo HTTP tests result ${{ steps.testsBdd.outcome }} ${{ steps.testsBdd.outcome != 'success' }} ${{ steps.testsBdd.outcome == 'success' }}
-
       - name: Run tests - HTTP
         id: testsHttp
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
         run: mvn verify -pl $HTTP_TESTS --fail-at-end
-
-      - name: Check connections
-        run: echo HTTP tests result ${{ steps.testsHttp.outcome }} ${{ steps.testsHttp.outcome != 'success' }} ${{ steps.testsHttp.outcome == 'success' }}
 
       - name: Collect reports
         if: steps.jdi-compile.outcome == 'success'
@@ -100,12 +93,35 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Debug if condition
-        run: echo ${{ steps.testsBdd.outcome != 'success' }} ${{steps.testsHttp.outcome != 'success'}} ${{ (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
-
       - name: Check for any failure
-        if: ${{ (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
+        if: ${{ matrix.java != 14 (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
         run: |
-          echo BDD tests result ${{ steps.testsBdd.outcome }} ${{ steps.testsBdd.outcome != 'success' }}
-          echo HTTP tests result ${{ steps.testsHttp.outcome }} ${{ steps.testsHttp.outcome != 'success' }}
+          echo BDD tests result ${{ steps.testsBdd.outcome }}
+          echo HTTP tests result ${{ steps.testsHttp.outcome }}
           exit 1
+
+  checkCompileJdk14:
+    name: Check compile on jdk 14
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+          java-package: jdk
+      - name: Prepare environment
+        run: |
+          sudo apt-get -y install jq
+          java -Xmx32m -version
+          env
+
+      - name: Welcome to JDI
+        run: |
+          echo ------------------- WELCOME TO JDI DARK ----------------------
+          mvn --version
+
+      - name: Compile jdi code
+        id: jdi-compile
+        run: mvn clean install -DskipTests

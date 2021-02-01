@@ -1,8 +1,6 @@
 #!/bin/bash
 
 function printAllureSummary() {
-    FAILED_OR_BROKEN_TESTS=false
-
     echo "Brief passed/failed/broken/skipped summary by JDK: $1"
 
     content=$(<"allure-report/widgets/summary.json")     #file system request
@@ -15,9 +13,6 @@ function printAllureSummary() {
     echo "  Failed:  ${failed}"
     echo "  Broken:  ${skipped}"
     echo "  Skipped: ${broken}"
-    if [[ ${failed} -gt 0 || ${broken} -gt 0 ]]; then
-      FAILED_OR_BROKEN_TESTS=true
-    fi
 
     echo "End of summary"
 }

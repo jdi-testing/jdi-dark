@@ -62,7 +62,7 @@ jobs:
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
-        run: mvn verify -pl $BDD_TESTS
+        run: mvn verify --fail-at-end -pl $BDD_TESTS
 
       - name: Print results
         run: echo HTTP tests result ${{ steps.testsBdd.outcome }} ${{ steps.testsBdd.outcome != 'success' }} ${{ steps.testsBdd.outcome == 'success' }}
@@ -72,7 +72,7 @@ jobs:
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
-        run: mvn verify -pl $HTTP_TESTS
+        run: mvn verify --fail-at-end -pl $HTTP_TESTS
 
       - name: Check connections
         run: echo HTTP tests result ${{ steps.testsHttp.outcome }} ${{ steps.testsHttp.outcome != 'success' }} ${{ steps.testsHttp.outcome == 'success' }}

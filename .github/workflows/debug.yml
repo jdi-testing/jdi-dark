@@ -54,14 +54,14 @@ jobs:
         timeout-minutes: 90 # prevent blocking
         continue-on-error: true
         run: |
-          mvn verify -pl $BDD_TESTS
+          mvn verify -pl $BDD_TESTS --fail-at-end
 
       - name: Run tests - HTTP
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 90 # prevent blocking
         continue-on-error: true
         run: |
-          mvn verify -pl $HTTP_TESTS
+          mvn verify -pl $HTTP_TESTS --fail-at-end
 
       - name: Collect reports
         run: |

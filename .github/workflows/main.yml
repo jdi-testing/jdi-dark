@@ -103,7 +103,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Check for any failure
-        if: (steps.tests-bdd.outcome != 'success') || (steps.tests-http.outcome != 'success')
+        if: ${{ (steps.tests-bdd.outcome != 'success') || (steps.tests-http.outcome != 'success')}}
         run: |
           echo BDD tests result ${{ steps.tests-bdd.outcome }} ${{ steps.tests-bdd.outcome != 'success' }}
           echo HTTP tests result ${{ steps.tests-http.outcome }} ${{ steps.tests-http.outcome != 'success' }}

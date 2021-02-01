@@ -21,10 +21,10 @@ jobs:
     name: Run tests for JDK
     runs-on: ubuntu-18.04
     strategy:
-      max-parallel: 1
+      max-parallel: 2
       fail-fast: false
       matrix:
-        java: [8] # all [8, 9, 10, 11, 12, 13], only one is [8]
+        java: [8, 9, 10, 11, 12, 13] # all [8, 9, 10, 11, 12, 13], only one is [8]
 
     steps:
       - uses: actions/checkout@v2
@@ -105,7 +105,6 @@ jobs:
       - name: Check for any failure
         if: (steps.tests-bdd.outcome != 'success') || (steps.tests-http.outcome != 'success')
         run: |
-          echo ${{ steps.tests-bdd.outcome != 'success' || steps.tests-http.outcome != 'success' }}
           echo BDD tests result ${{ steps.tests-bdd.outcome }} ${{ steps.tests-bdd.outcome != 'success' }}
           echo HTTP tests result ${{ steps.tests-http.outcome }} ${{ steps.tests-http.outcome != 'success' }}
           exit 1

@@ -89,6 +89,7 @@ public abstract class WithJetty {
         server.setHandler(security);
         server.setConnectors(new Connector[]{http, https});
         server.start();
+        server.join();
     }
 
     @AfterSuite
@@ -96,6 +97,6 @@ public abstract class WithJetty {
         if (!requiresJetty())
             return;
         server.stop();
-        server.join();
+        server.destroy();
     }
 }

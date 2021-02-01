@@ -54,11 +54,13 @@ public abstract class WithJettyWebSockets {
         server.setHandler(context);
         server.setConnectors(new Connector[]{https, http});
         server.start();
+        server.join();
     }
 
     @AfterClass
     public void tearDown() throws Exception {
         server.stop();
+        server.destroy();
     }
 
     protected SslEngineConfigurator getClientSslConfig() {

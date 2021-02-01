@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [8, 9, 10, 11, 12, 13] # all [8, 9, 10, 11, 12, 13], only one is [8]
+        java: [8, 9, 10, 11, 12, 13] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
 
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +47,7 @@ jobs:
 
       - name: Compile jdi code
         id: jdi-compile
-        run: mvn install -DskipTests
+        run: mvn clean install -DskipTests
 
       - name: Run tests - BDD
         if: steps.jdi-compile.outcome == 'success'

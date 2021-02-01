@@ -54,7 +54,7 @@ public abstract class WithJettyWebSockets {
         server.setHandler(context);
         server.setConnectors(new Connector[]{https, http});
         server.start();
-        server.join();
+        //server.join();
     }
 
     @AfterClass

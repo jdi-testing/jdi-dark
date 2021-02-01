@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - master
+      - test_ga
   pull_request:
     branches:
       - master
@@ -58,6 +59,7 @@ jobs:
         run: mvn install -DskipTests
 
       - name: Run tests - BDD
+        id: tests-bdd
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 90 # prevent blocking
         continue-on-error: true
@@ -65,6 +67,7 @@ jobs:
           mvn verify -pl $BDD_TESTS
 
       - name: Run tests - HTTP
+        id: tests-http
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 90 # prevent blocking
         continue-on-error: true
@@ -72,6 +75,7 @@ jobs:
           mvn verify -pl $HTTP_TESTS
 
       - name: Collect reports
+        if: steps.jdi-compile.outcome == 'success'
         run: |
           echo --------------- Collecting Allure Reports.... ------------------
           sudo chmod +x reporting.sh
@@ -92,3 +96,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Check tests are passed
+        if: (${{ steps.tests-bdd.outcome }} == 'failure' || ${{ steps.tests-http.outcome }} == 'failure')
+        run: exit 1

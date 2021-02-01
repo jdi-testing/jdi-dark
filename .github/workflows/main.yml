@@ -58,18 +58,18 @@ jobs:
         run: mvn install -DskipTests
 
       - name: Run tests - BDD
-        id: tests-bdd
+        id: testsBdd
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
         run: |
           mvn verify -pl $BDD_TESTS
 
-      - name: Check connections
-        run: ss -l
+      - name: Print results
+        run: echo HTTP tests result ${{ steps.testsBdd.outcome }} ${{ steps.testsBdd.outcome != 'success' }} ${{ steps.testsBdd.outcome == 'success' }} ${{ steps.testsBdd.outcome == "success" }}
 
       - name: Run tests - HTTP
-        id: tests-http
+        id: testsHttp
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
@@ -77,7 +77,7 @@ jobs:
           mvn verify -pl $HTTP_TESTS
 
       - name: Check connections
-        run: ss -l
+        run: echo HTTP tests result ${{ steps.testsHttp.outcome }} ${{ steps.testsHttp.outcome != 'success' }} ${{ steps.testsHttp.outcome == 'success' }} ${{ steps.testsHttp.outcome == "success" }}
 
       - name: Collect reports
         if: steps.jdi-compile.outcome == 'success'
@@ -102,9 +102,12 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: Debug if condition
+        run: echo ${{ steps.testsBdd.outcome != 'success' }} ${{steps.testsHttp.outcome != 'success'}} ${{ (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
+
       - name: Check for any failure
-        if: ${{ (steps.tests-bdd.outcome != 'success') || (steps.tests-http.outcome != 'success')}}
+        if: ${{ (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
         run: |
-          echo BDD tests result ${{ steps.tests-bdd.outcome }} ${{ steps.tests-bdd.outcome != 'success' }}
-          echo HTTP tests result ${{ steps.tests-http.outcome }} ${{ steps.tests-http.outcome != 'success' }}
+          echo BDD tests result ${{ steps.testsBdd.outcome }} ${{ steps.testsBdd.outcome != 'success' }}
+          echo HTTP tests result ${{ steps.testsHttp.outcome }} ${{ steps.testsHttp.outcome != 'success' }}
           exit 1

@@ -55,7 +55,7 @@ jobs:
 
       - name: Compile jdi code
         id: jdi-compile
-        run: mvn install -DskipTests -X
+        run: mvn install -DskipTests
 
       - name: Run tests - BDD
         if: steps.jdi-compile.outcome == 'success'

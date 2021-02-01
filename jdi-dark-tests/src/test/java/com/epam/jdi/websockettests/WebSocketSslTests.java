@@ -23,7 +23,7 @@ public class WebSocketSslTests extends WithJettyWebSockets {
         WebSocketTextClient client = new WebSocketTextClient();
 
         client.setClientProperties(Collections.singletonMap(ClientProperties.SSL_ENGINE_CONFIGURATOR, getClientSslConfig()));
-        client.connect(sslHost + "/echo-ws");
+        client.connect(sslHost + "echo-ws");
         client.sendPlainText(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(
@@ -44,7 +44,7 @@ public class WebSocketSslTests extends WithJettyWebSockets {
                 "src/test/resources/jetty_localhost_client.jks",
                 "test1234", true, false, false
         );
-        client.connect(sslHost + "/echo-ws");
+        client.connect(sslHost + "echo-ws");
         client.sendPlainText(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(

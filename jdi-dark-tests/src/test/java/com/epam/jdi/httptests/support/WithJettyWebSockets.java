@@ -23,8 +23,8 @@ import static com.epam.http.JdiHttpSettings.logger;
 
 public abstract class WithJettyWebSockets {
     private Server server;
-    protected final String host = "ws://localhost:8081";
-    protected final String sslHost = "wss://localhost:8463";
+    protected final String host = "ws://localhost:8681/";
+    protected final String sslHost = "wss://localhost:8463/";
     protected final int SSL_PORT = 8463;
     protected final int WS_PORT = 8681;
 

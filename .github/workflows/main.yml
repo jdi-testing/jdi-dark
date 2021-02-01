@@ -94,7 +94,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Check for any failure
-        if: ${{ matrix.java != 14 (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
+        if: ${{ (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
         run: |
           echo BDD tests result ${{ steps.testsBdd.outcome }}
           echo HTTP tests result ${{ steps.testsHttp.outcome }}

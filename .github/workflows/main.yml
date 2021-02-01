@@ -65,6 +65,9 @@ jobs:
         run: |
           mvn verify -pl $BDD_TESTS
 
+      - name: Check connections
+        run: ss -l
+
       - name: Run tests - HTTP
         id: tests-http
         if: steps.jdi-compile.outcome == 'success'
@@ -72,6 +75,9 @@ jobs:
         continue-on-error: true
         run: |
           mvn verify -pl $HTTP_TESTS
+
+      - name: Check connections
+        run: ss -l
 
       - name: Collect reports
         if: steps.jdi-compile.outcome == 'success'

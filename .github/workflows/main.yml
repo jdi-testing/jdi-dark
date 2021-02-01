@@ -21,7 +21,7 @@ jobs:
     name: Run tests for JDK
     runs-on: ubuntu-18.04
     strategy:
-      max-parallel: 3
+      max-parallel: 1 # can be changed to 3 to speed-up, but it's not always stable
       fail-fast: false
       matrix:
         java: [8, 9, 10, 11, 12, 13] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]

@@ -60,7 +60,7 @@ jobs:
       - name: Run tests - BDD
         id: tests-bdd
         if: steps.jdi-compile.outcome == 'success'
-        timeout-minutes: 90 # prevent blocking
+        timeout-minutes: 30 # prevent blocking
         continue-on-error: true
         run: |
           mvn verify -pl $BDD_TESTS
@@ -71,7 +71,7 @@ jobs:
       - name: Run tests - HTTP
         id: tests-http
         if: steps.jdi-compile.outcome == 'success'
-        timeout-minutes: 90 # prevent blocking
+        timeout-minutes: 30 # prevent blocking
         continue-on-error: true
         run: |
           mvn verify -pl $HTTP_TESTS

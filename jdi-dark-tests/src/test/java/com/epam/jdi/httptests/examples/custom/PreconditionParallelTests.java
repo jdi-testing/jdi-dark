@@ -14,11 +14,16 @@ import java.util.ArrayList;
 
 import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.utils.TrelloDataGenerator.*;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
 import static com.epam.jdi.services.TrelloService.createOrganization;
 import static com.epam.jdi.services.TrelloService.deleteOrg;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
+
+import static com.epam.http.JdiHttpSettings.logger;
 
 public class PreconditionParallelTests {
     public static final String TRELLO_API = "https://api.trello.com/1";
@@ -54,7 +59,7 @@ public class PreconditionParallelTests {
     public void createCardInBoard(Board board) throws IOException {
         //Create board
         Board createdBoard = TrelloService.createBoard(board);
-
+        logger.info("Created board with id = %s, name = '%s'", createdBoard.id, createdBoard.name);
         Board gotBoard = TrelloService.getBoard(createdBoard.id);
         createdBoardsId.add(createdBoard.id);
         assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
@@ -89,6 +94,7 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
+        logger.info("Get info about board id = %s", boardId);
         trello.boardId.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
@@ -102,7 +108,7 @@ public class PreconditionParallelTests {
         info.assertThat().header("Connection", "keep-alive");
     }
 
-    private void writeToCSV(Board board) throws IOException {
+    private synchronized void writeToCSV(Board board) throws IOException {
         Writer writer = Files.newBufferedWriter(Paths.get(CSV_DATA_FILE), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
         CSVPrinter printer = CSVFormat.EXCEL.print(writer);
         printer.printRecord(board.id, board.name, board.shortUrl, board.url);

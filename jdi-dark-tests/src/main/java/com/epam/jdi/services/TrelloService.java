@@ -85,7 +85,7 @@ public class TrelloService {
     @POST("/lists")
     public static RestMethod createList;
 
-    public static TrelloList createList(TrelloList list) {
+    public static synchronized TrelloList createList(TrelloList list) {
         return createList.body(list).callAsData(TrelloList.class);
     }
 

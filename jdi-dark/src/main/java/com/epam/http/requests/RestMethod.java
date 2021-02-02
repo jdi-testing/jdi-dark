@@ -372,11 +372,11 @@ public class RestMethod {
      * @param <T>  type
      * @return response body as object
      */
-    public <T> T post(Object body, Class<T> cl) {
+    public synchronized <T> T post(Object body, Class<T> cl) {
         return body(body).callAsData(cl);
     }
 
-    public <T> T postAsData(Object object) {
+    public synchronized <T> T postAsData(Object object) {
         return (T) body(object).call().asData(dataType, responseType);
     }
 

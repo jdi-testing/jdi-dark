@@ -24,7 +24,7 @@ jobs:
       max-parallel: 1 # can be changed to 3 to speed-up, but it's not always stable
       fail-fast: false
       matrix:
-        java: [8, 9, 10, 11, 12, 13] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
+        java: [8, 9, 10, 11, 12, 13, 14] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
 
     steps:
       - uses: actions/checkout@v2
@@ -125,10 +125,3 @@ jobs:
       - name: Compile jdi code
         id: jdi-compile
         run: mvn clean install -DskipTests
-
-      - name: Run tests - BDD
-        id: testsBdd
-        if: steps.jdi-compile.outcome == 'success'
-        timeout-minutes: 30 # prevent blocking
-        continue-on-error: true
-        run: mvn verify -pl $BDD_TESTS --fail-at-end

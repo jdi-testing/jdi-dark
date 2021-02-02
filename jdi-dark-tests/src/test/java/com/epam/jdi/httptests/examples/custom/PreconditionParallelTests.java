@@ -14,24 +14,31 @@ import java.util.ArrayList;
 
 import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
-import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
-import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.*;
+import static com.epam.jdi.services.TrelloService.createOrganization;
+import static com.epam.jdi.services.TrelloService.deleteOrg;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
 public class PreconditionParallelTests {
+    public static final String TRELLO_API = "https://api.trello.com/1";
     private ArrayList<String> createdBoardsId = new ArrayList<>();
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
     public static TrelloService trello;
     public static ServiceExample httpbin;
+    private static String newOrgId;
 
     @BeforeClass
     public void initService() throws IOException {
-        init(TrelloService.class);
+        //init(TrelloService.class);
         new FileWriter(CSV_DATA_FILE, false).close();
-        trello = init(TrelloService.class, ServiceSettings.builder().domain("https://api.trello.com/1").build());
+        trello = init(TrelloService.class, ServiceSettings.builder().domain(TRELLO_API).build());
         httpbin = init(ServiceExample.class, ServiceSettings.builder().domain("https://httpbin.org/").build());
+
+        // create Organization as we will get a error during Board creation in case of zero organizations
+        Organization org = generateOrganization();
+        Organization newOrg = createOrganization(org);
+        newOrgId = newOrg.id;
     }
 
     @DataProvider(name = "createNewBoards", parallel = true)
@@ -82,7 +89,6 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        trello = init(TrelloService.class, ServiceSettings.builder().domain("https://api.trello.com/1").build());
         trello.boardId.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
@@ -107,5 +113,8 @@ public class PreconditionParallelTests {
     @AfterClass
     public void clearBoards() {
         createdBoardsId.forEach(TrelloService::deleteBoard);
+        if (newOrgId != null) {
+            deleteOrg(newOrgId);
+        }
     }
 }

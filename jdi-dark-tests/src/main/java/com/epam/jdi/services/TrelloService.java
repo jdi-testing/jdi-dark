@@ -110,8 +110,8 @@ public class TrelloService {
     @GET("/organizations/{id}/boards")
     public static RestMethod getOrganizationBoards;
 
-    public static List<Board> getOrganizationBoards(Organization organization) {
-        return asList(getOrganizationBoards.call(pathParams().add("id", organization.id)).getRaResponse().as(Board[].class));
+    public static List<Board> getOrganizationBoards(String orgId) {
+        return asList(getOrganizationBoards.call(pathParams().add("id", orgId)).getRaResponse().as(Board[].class));
     }
 
     @ContentType(JSON)

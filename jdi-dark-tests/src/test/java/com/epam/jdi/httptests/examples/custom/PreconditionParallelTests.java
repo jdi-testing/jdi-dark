@@ -55,7 +55,7 @@ public class PreconditionParallelTests {
         };
     }
 
-    @Test(dataProvider = "createNewBoards", threadPoolSize = 3)
+    @Test(dataProvider = "createNewBoards")
     public void createCardInBoard(Board board) throws IOException {
         //Create board
         Board createdBoard = TrelloService.createBoard(board);

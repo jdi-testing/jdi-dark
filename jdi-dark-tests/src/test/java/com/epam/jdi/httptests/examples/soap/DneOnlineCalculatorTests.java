@@ -32,7 +32,7 @@ public class DneOnlineCalculatorTests {
                 throw new SkipException(skipMessage);
             }
             else {
-                logger.error("checkAdd test is failed with message %s %s and exception %s", ex.getMessage(), ex.getCause().getMessage(),ex.getCause().getClass().getName(), ex);
+                logger.error("checkAdd test is failed with message '%s' and exception %s", ex.getMessage(), ex.getCause().getClass().getName(), ex);
                 throw ex;
             }
         }
@@ -50,7 +50,7 @@ public class DneOnlineCalculatorTests {
                 throw new SkipException(skipMessage);
             }
             else {
-                logger.error("checkDivide test is failed with message %s %s and exception %s", ex.getMessage(), ex.getCause().getMessage(),ex.getCause().getClass().getName(), ex);
+                logger.error("checkDivide test is failed with message '%s' and exception %s", ex.getMessage(), ex.getCause().getClass().getName(), ex);
                 throw ex;
             }
         }
@@ -68,7 +68,7 @@ public class DneOnlineCalculatorTests {
                 throw new SkipException(skipMessage);
             }
             else {
-                logger.error("checkMultiply test is failed with message %s %s and exception %s", ex.getMessage(), ex.getCause().getMessage(),ex.getCause().getClass().getName(), ex);
+                logger.error("checkMultiply test is failed with message '%s' and exception %s", ex.getMessage(), ex.getCause().getClass().getName(), ex);
                 throw ex;
             }
         }
@@ -86,7 +86,7 @@ public class DneOnlineCalculatorTests {
                 throw new SkipException(skipMessage);
             }
             else {
-                logger.error("checkSubtract test is failed with message %s %s and exception %s", ex.getMessage(), ex.getCause().getMessage(),ex.getCause().getClass().getName(), ex);
+                logger.error("checkSubtract test is failed with message '%s' and exception %s", ex.getMessage(), ex.getCause().getClass().getName(), ex);
                 throw ex;
             }
         }

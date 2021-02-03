@@ -17,7 +17,10 @@ import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.RequestDataFactory.body;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
-import static com.epam.jdi.services.TrelloService.*;
+import static com.epam.jdi.services.TrelloService.deleteOrg;
+import static com.epam.jdi.services.TrelloService.createOrganization;
+import static com.epam.jdi.services.TrelloService.boardsPost;
+import static com.epam.jdi.services.TrelloService.getBoardById;
 import static java.lang.String.format;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -69,7 +72,7 @@ public class PreconditionTests {
 
     @Test(dataProvider = "dataProviderFromCSV")
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
+        getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
                 .body("url", equalTo(expectedUrl));

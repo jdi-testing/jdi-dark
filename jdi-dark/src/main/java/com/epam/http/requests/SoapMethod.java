@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.UUID;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.requests.RequestDataFactory.headers;

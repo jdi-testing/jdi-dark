@@ -7,8 +7,8 @@ import static com.epam.http.JdiHttpSettings.logger;
 
 public class RetryAnalyzer implements IRetryAnalyzer {
 
-    int counter = 0;
-    int retryLimit = 3;
+    private int counter = 0;
+    private int retryLimit = 3;
 
     @Override
     public boolean retry(ITestResult result) {

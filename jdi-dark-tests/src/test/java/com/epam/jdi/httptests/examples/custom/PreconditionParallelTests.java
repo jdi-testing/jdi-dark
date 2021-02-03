@@ -5,8 +5,13 @@ import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
 import com.epam.jdi.services.ServiceExample;
 import com.epam.jdi.services.TrelloService;
-import org.apache.commons.csv.*;
-import org.testng.annotations.*;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVFormat;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
 
 import java.io.*;
 import java.nio.file.*;

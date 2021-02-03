@@ -3,19 +3,19 @@ package com.epam.jdi.httptests.examples.soap;
 import com.epam.jdi.soap.DneOnlineCalculator;
 import com.epam.jdi.soap.org.tempuri.*;
 import org.assertj.core.api.Assertions;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 
 public class DneOnlineCalculatorTests {
 
-    @BeforeTest
+    @BeforeMethod
     public void before() {
         init(DneOnlineCalculator.class);
     }
 
-    @Test
+    @Test()
     public void checkAdd() {
         AddResponse response = DneOnlineCalculator.add.callSoap(new Add().withIntA(2).withIntB(3));
         Assertions.assertThat(response.getAddResult()).isEqualTo(5);

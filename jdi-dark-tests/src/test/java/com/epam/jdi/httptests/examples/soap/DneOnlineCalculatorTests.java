@@ -12,7 +12,6 @@ import java.net.ConnectException;
 import static com.epam.http.requests.ServiceInit.init;
 
 public class DneOnlineCalculatorTests {
-    private boolean isSkipped = false;
     private static final String skipMessage = "External Server is unavailable. Skip test";
 
     @BeforeClass
@@ -28,36 +27,59 @@ public class DneOnlineCalculatorTests {
         }
         catch (RuntimeException ex) {
             if (ex.getCause() instanceof ConnectException) {
-                isSkipped = true;
                 throw new SkipException(skipMessage);
+            }
+            else {
+                throw ex;
             }
         }
     }
 
     @Test()
     public void checkDivide() {
-        if (isSkipped) {
-            throw new SkipException(skipMessage);
+        try {
+            DivideResponse response = DneOnlineCalculator.divide.callSoap(new Divide().withIntA(6).withIntB(3));
+            Assertions.assertThat(response.getDivideResult()).isEqualTo(2);
         }
-        DivideResponse response = DneOnlineCalculator.divide.callSoap(new Divide().withIntA(6).withIntB(3));
-        Assertions.assertThat(response.getDivideResult()).isEqualTo(2);
+        catch (RuntimeException ex) {
+            if (ex.getCause() instanceof ConnectException) {
+                throw new SkipException(skipMessage);
+            }
+            else {
+                throw ex;
+            }
+        }
     }
 
     @Test()
     public void checkMultiply() {
-        if (isSkipped) {
-            throw new SkipException(skipMessage);
+        try {
+            MultiplyResponse response = DneOnlineCalculator.multiply.callSoap(new Multiply().withIntA(2).withIntB(3));
+            Assertions.assertThat(response.getMultiplyResult()).isEqualTo(6);
         }
-        MultiplyResponse response = DneOnlineCalculator.multiply.callSoap(new Multiply().withIntA(2).withIntB(3));
-        Assertions.assertThat(response.getMultiplyResult()).isEqualTo(6);
+        catch (RuntimeException ex) {
+            if (ex.getCause() instanceof ConnectException) {
+                throw new SkipException(skipMessage);
+            }
+            else {
+                throw ex;
+            }
+        }
     }
 
     @Test()
     public void checkSubtract() {
-        if (isSkipped) {
-            throw new SkipException(skipMessage);
+        try {
+            SubtractResponse response = DneOnlineCalculator.subtract.callSoap(new Subtract().withIntA(7).withIntB(3));
+            Assertions.assertThat(response.getSubtractResult()).isEqualTo(4);
         }
-        SubtractResponse response = DneOnlineCalculator.subtract.callSoap(new Subtract().withIntA(7).withIntB(3));
-        Assertions.assertThat(response.getSubtractResult()).isEqualTo(4);
+        catch (RuntimeException ex) {
+            if (ex.getCause() instanceof ConnectException) {
+                throw new SkipException(skipMessage);
+            }
+            else {
+                throw ex;
+            }
+        }
     }
 }

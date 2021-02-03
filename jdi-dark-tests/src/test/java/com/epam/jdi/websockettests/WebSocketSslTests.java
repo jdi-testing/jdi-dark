@@ -47,9 +47,9 @@ public class WebSocketSslTests extends WithJettyWebSockets {
                 getClientSslConfig()));
         client.connect(sslHost + "echo-ws");
         client.sendPlainText(message);
-        assertTrue(client.waitNewMessage(100), "There is no message from the server");
+        //assertTrue(client.waitNewMessage(100), "There is no message from the server");
         assertEquals(
-                client.getLastMessage(), message,
+                client.waitAndGetNewMessage(100), message,
                 "Unexpected response from server"
         );
     }
@@ -66,9 +66,9 @@ public class WebSocketSslTests extends WithJettyWebSockets {
         );
         client.connect(sslHost + "echo-ws");
         client.sendPlainText(message);
-        assertTrue(client.waitNewMessage(100), "There is no message from the server");
+        //assertTrue(client.waitNewMessage(100), "There is no message from the server");
         assertEquals(
-                client.getLastMessage(), message,
+                client.waitAndGetNewMessage(100), message,
                 "Unexpected response from server"
         );
     }

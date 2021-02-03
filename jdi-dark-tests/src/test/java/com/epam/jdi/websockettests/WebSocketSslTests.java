@@ -13,7 +13,6 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 import static com.epam.http.JdiHttpSettings.logger;
 

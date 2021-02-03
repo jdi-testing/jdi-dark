@@ -61,7 +61,6 @@ public class SoapMethod<T, S> extends RestMethod {
         try {
             return getResponse(restMethod()
                     .data(headers().addAll(headers).setBody(createSoapBody(object)))
-                    .queryParams("uid=" + UUID.randomUUID().toString())
                     .call().getBody());
         } catch (Exception ex) {
             throw exception(ex.toString());

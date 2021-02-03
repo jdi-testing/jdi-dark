@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.net.ConnectException;
+import static com.epam.http.JdiHttpSettings.logger;
 
 import static com.epam.http.requests.ServiceInit.init;
 
@@ -27,9 +28,11 @@ public class DneOnlineCalculatorTests {
         }
         catch (RuntimeException ex) {
             if (ex.getCause() instanceof ConnectException) {
+                logger.info("checkAdd test is skipped due to Connection problems");
                 throw new SkipException(skipMessage);
             }
             else {
+                logger.error("checkAdd test is failed with exception", ex);
                 throw ex;
             }
         }
@@ -43,9 +46,11 @@ public class DneOnlineCalculatorTests {
         }
         catch (RuntimeException ex) {
             if (ex.getCause() instanceof ConnectException) {
+                logger.info("checkDivide test is skipped due to Connection problems");
                 throw new SkipException(skipMessage);
             }
             else {
+                logger.error("checkDivide test is failed with exception", ex);
                 throw ex;
             }
         }
@@ -59,9 +64,11 @@ public class DneOnlineCalculatorTests {
         }
         catch (RuntimeException ex) {
             if (ex.getCause() instanceof ConnectException) {
+                logger.info("checkMultiply test is skipped due to Connection problems");
                 throw new SkipException(skipMessage);
             }
             else {
+                logger.error("checkMultiply test is failed with exception", ex);
                 throw ex;
             }
         }
@@ -75,9 +82,11 @@ public class DneOnlineCalculatorTests {
         }
         catch (RuntimeException ex) {
             if (ex.getCause() instanceof ConnectException) {
+                logger.info("checkSubtract test is skipped due to Connection problems");
                 throw new SkipException(skipMessage);
             }
             else {
+                logger.error("checkSubtract test is failed with exception", ex);
                 throw ex;
             }
         }

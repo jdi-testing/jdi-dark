@@ -5,6 +5,7 @@ import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
 import com.epam.jdi.services.ServiceExample;
 import com.epam.jdi.services.TrelloService;
+import com.epam.jdi.utils.RetryAnalyzer;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVFormat;
@@ -60,7 +61,7 @@ public class PreconditionParallelTests {
         };
     }
 
-    @Test(dataProvider = "createNewBoards", threadPoolSize = 1)
+    @Test(dataProvider = "createNewBoards", threadPoolSize = 1, skipFailedInvocations = true, retryAnalyzer = RetryAnalyzer.class)
     public void createCardInBoard(Board board) throws IOException {
         //Create board
         Board createdBoard = TrelloService.createBoard(board);

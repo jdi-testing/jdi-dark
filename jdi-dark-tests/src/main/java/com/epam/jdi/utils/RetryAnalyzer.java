@@ -3,14 +3,12 @@ package com.epam.jdi.utils;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 
-import java.net.ConnectException;
-
 import static com.epam.http.JdiHttpSettings.logger;
 
 public class RetryAnalyzer implements IRetryAnalyzer {
 
     int counter = 0;
-    int retryLimit = 4;
+    int retryLimit = 3;
 
     @Override
     public boolean retry(ITestResult result) {

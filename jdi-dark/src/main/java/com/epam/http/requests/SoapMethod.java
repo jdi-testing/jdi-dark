@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.requests.RequestDataFactory.headers;
@@ -58,7 +59,10 @@ public class SoapMethod<T, S> extends RestMethod {
 
     public S callSoap(T object) {
         try {
-            return getResponse(restMethod().data(headers().addAll(headers).setBody(createSoapBody(object))).call().getBody());
+            return getResponse(restMethod()
+                    .data(headers().addAll(headers).setBody(createSoapBody(object)))
+                    .queryParams("uid=" + UUID.randomUUID().toString())
+                    .call().getBody());
         } catch (Exception ex) {
             throw exception(ex.toString());
         }

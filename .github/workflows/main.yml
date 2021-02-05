@@ -88,6 +88,15 @@ jobs:
           path: ./allure-report.zip
           retention-days: 2
 
+#      - name: Deploy to Neflify
+#        uses: South-Paw/action-netlify-deploy@v1.0.4
+#        with:
+#          github-token: ${{ secrets.GIT_COMMENT_USER }}
+#          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+#          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+#          build-dir: './allure-report'
+#          comment-on-pull-request: true
+
       - name: Test Coverage
         uses: codecov/codecov-action@v1
         with:

@@ -26,7 +26,7 @@ public class DomainSwitchTest extends TwoServicesInit {
   @Test
   public static void testSearchWithStaticFieldChangingDomain() {
     // static field method field will change globally. Rewrite
-    final RestResponse responseYahoo = yahoo.getStatic.call();;
+    final RestResponse responseYahoo = yahoo.getStatic.call();
     responseYahoo.isOk().body(containsString("google.com"));
 
     //The same as     ServiceNoDomain.getStatic.call();

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.epam.jdi</groupId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
     <artifactId>jdi-dark-tests</artifactId>
     <name>JDI Dark Tests</name>
 
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.8</version>
         </dependency>
         <dependency>
             <groupId>com.epam.jdi</groupId>

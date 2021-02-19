@@ -33,7 +33,7 @@ import static com.epam.http.JdiHttpSettings.logger;
 
 public class PreconditionParallelTests {
     public static final String TRELLO_API = "https://api.trello.com/1";
-    private ArrayList<String> createdBoardsId = new ArrayList<>();
+    private final ArrayList<String> createdBoardsId = new ArrayList<>();
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
     public static TrelloService trello;
     public static ServiceExample httpbin;
@@ -41,7 +41,6 @@ public class PreconditionParallelTests {
 
     @BeforeClass
     public void initService() throws IOException {
-        //init(TrelloService.class);
         new FileWriter(CSV_DATA_FILE, false).close();
         trello = init(TrelloService.class, ServiceSettings.builder().domain(TRELLO_API).build());
         httpbin = init(ServiceExample.class, ServiceSettings.builder().domain("https://httpbin.org/").build());

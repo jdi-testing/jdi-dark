@@ -1,0 +1,86 @@
+name: Testing JDI Dark - debug on server
+env:
+  HTTP_TESTS: "com.epam.jdi:jdi-dark-tests"
+  BDD_TESTS: "com.epam.jdi:jdi-dark-bdd-tests"
+  ALLURE_VERSION: "2.7.0"
+
+on:
+  push:
+    branches: [ debugging_branch_name ]
+# !!!! Please make sure that you don't change this file in master after debug is completed
+
+jobs:
+  build:
+    name: Run tests on JDK
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [8, 9, 10, 11, 12, 13] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+          java-package: jdk
+      - name: Prepare environment
+        run: |
+          sudo apt-get -y install jq
+          java -Xmx32m -version
+          ls -lah
+          env
+
+# run cann't start from comment
+#  curl -o allure-${ALLURE_VERSION}.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz
+      - name: Install Allure
+        run: |
+          sudo tar -zxvf allure-${ALLURE_VERSION}.tgz -C /opt/
+          sudo ln -s /opt/allure-${ALLURE_VERSION}/bin/allure /usr/bin/allure
+          allure --version
+
+      - name: Welcome to JDI
+        run: |
+            echo ------------------- WELCOME TO JDI DARK ----------------------
+            mvn --version
+
+      - name: Compile jdi code
+        id: jdi-compile
+        run: mvn clean install -DskipTests
+
+      - name: Run tests - BDD
+        if: steps.jdi-compile.outcome == 'success'
+        timeout-minutes: 90 # prevent blocking
+        continue-on-error: true
+        run: |
+          mvn verify -pl $BDD_TESTS --fail-at-end
+
+      - name: Run tests - HTTP
+        if: steps.jdi-compile.outcome == 'success'
+        timeout-minutes: 90 # prevent blocking
+        continue-on-error: true
+        run: |
+          mvn verify -pl $HTTP_TESTS --fail-at-end
+
+      - name: Collect reports
+        run: |
+          echo --------------- Collecting Allure Reports.... ------------------
+          sudo chmod +x reporting.sh
+          source reporting.sh
+          generateAllureReports
+          printAllureSummary ${{ matrix.java }}
+          zip -r allure-report.zip ./allure-report/
+
+      - name: 'Upload allure report'
+        if: steps.jdi-compile.outcome == 'success'
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-report-dark-jdk${{ matrix.java }}
+          path: ./allure-report.zip
+          retention-days: 2
+
+      - name: Test Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

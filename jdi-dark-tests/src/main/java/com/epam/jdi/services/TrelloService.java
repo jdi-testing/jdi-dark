@@ -85,8 +85,8 @@ public class TrelloService {
     @POST("/lists")
     public static RestMethod createList;
 
-    public static TrelloList createList(TrelloList list) {
-        return createList.body(list).callAsData(TrelloList.class);
+    public static synchronized TrelloList createList(TrelloList list) {
+        return createList.post(list, TrelloList.class);
     }
 
     @ContentType(JSON)
@@ -110,8 +110,11 @@ public class TrelloService {
     @GET("/organizations/{id}/boards")
     public static RestMethod getOrganizationBoards;
 
-    public static List<Board> getOrganizationBoards(Organization organization) {
-        return asList(getOrganizationBoards.call(pathParams().add("id", organization.id)).getRaResponse().as(Board[].class));
+    public static List<Board> getOrganizationBoards(String orgId) {
+        return asList(getOrganizationBoards
+                .call(pathParams().add("id", orgId))
+                .getRaResponse()
+                .as(Board[].class));
     }
 
     @ContentType(JSON)

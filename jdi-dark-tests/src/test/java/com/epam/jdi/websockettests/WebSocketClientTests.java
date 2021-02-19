@@ -25,7 +25,7 @@ public class WebSocketClientTests extends WithJettyWebSockets {
         String message = "Simple text test message";
         WebSocketTextClient client = new WebSocketTextClient();
 
-        client.connect(host + "/echo-ws");
+        client.connect(host + "echo-ws");
         client.sendPlainText(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(
@@ -49,7 +49,7 @@ public class WebSocketClientTests extends WithJettyWebSockets {
         Item message = new Item(2, "sofa");
         WSItemClient client = new WSItemClient();
 
-        client.connect(host + "/item-ws");
+        client.connect(host + "item-ws");
         client.sendMessage(message);
         assertTrue(client.waitNewMessage(100));
         assertEquals(
@@ -66,7 +66,7 @@ public class WebSocketClientTests extends WithJettyWebSockets {
         String message = "Simple text test message";
         WebSocketTextClient client = new WebSocketTextClient();
 
-        client.connect(host + "/echo-ws");
+        client.connect(host + "echo-ws");
         client.sendBinary(ByteBuffer.wrap(message.getBytes()));
 
         assertTrue(client.waitNewMessage(100));
@@ -84,7 +84,7 @@ public class WebSocketClientTests extends WithJettyWebSockets {
         String message = "{\"text\":\"Simple text test message\"}";
         WebSocketJsonClient client = new WebSocketJsonClient();
 
-        client.connect(host + "/echo-ws");
+        client.connect(host + "echo-ws");
         client.sendPlainText(message);
         assertEquals(
                 client.waitAndGetNewMessage(100).toString(), message,
@@ -107,7 +107,7 @@ public class WebSocketClientTests extends WithJettyWebSockets {
         Gson gson = new Gson();
         String message = gson.toJson(item);
 
-        client.connect(host + "/echo-ws");
+        client.connect(host + "echo-ws");
         client.sendPlainText(message);
         assertEquals(
                 client.waitAndGetNewMessage(100).toString(), message,

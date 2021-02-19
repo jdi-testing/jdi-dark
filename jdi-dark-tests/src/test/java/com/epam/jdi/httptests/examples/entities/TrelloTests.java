@@ -22,6 +22,11 @@ public class TrelloTests {
     @BeforeClass
     public void initService() {
         init(TrelloService.class);
+        // Create organization to use.
+        // It's impossible to create a board in case of no organizations exists
+        Organization organization = generateOrganization();
+        Organization createOrg = createOrganization(organization);
+        createdOrgId = createOrg.id;
     }
 
     @Test
@@ -48,19 +53,14 @@ public class TrelloTests {
 
     @Test
     public void assignBoardToOrganization() {
-        //Create organization
-        Organization organization = generateOrganization();
-        Organization createOrg = createOrganization(organization);
-
         //Create board
         Board board = generateBoard();
-        createdOrgId = createOrg.id;
         board.idOrganization = createdOrgId;
         Board createdBoard = createBoard(board);
         createdBoardId2 = createdBoard.id;
 
         //Check that organization contains created board
-        List<Board> boards = getOrganizationBoards(createOrg);
+        List<Board> boards = getOrganizationBoards(createdOrgId);
         assertTrue(map(boards, b -> b.name).contains(board.name), "Board wasn't added to organization");
     }
 

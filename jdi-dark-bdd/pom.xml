@@ -9,7 +9,7 @@
     <name>JDI Dark BDD</name>
     <description>BDD add-in for JDI Dark</description>
     <url>http://jdi.epam.com/</url>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,7 +17,7 @@
         <cucumber.version>4.8.1</cucumber.version>
         <junit.version>4.13.1</junit.version>
         <testng.version>7.1.0</testng.version>
-        <jdi.dark.version>1.1.7</jdi.dark.version>
+        <jdi.dark.version>1.1.8</jdi.dark.version>
     </properties>
 
     <dependencies>

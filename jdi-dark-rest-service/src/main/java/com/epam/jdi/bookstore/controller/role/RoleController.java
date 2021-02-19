@@ -1,8 +1,8 @@
 package com.epam.jdi.bookstore.controller.role;
 
-import com.epam.jdi.bookstore.service.RoleService;
 import com.epam.jdi.bookstore.controller.RoleApi;
 import com.epam.jdi.bookstore.model.user.Role;
+import com.epam.jdi.bookstore.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

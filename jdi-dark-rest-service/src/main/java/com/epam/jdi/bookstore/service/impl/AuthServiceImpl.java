@@ -1,8 +1,8 @@
 package com.epam.jdi.bookstore.service.impl;
 
 import com.epam.jdi.bookstore.exception.InvalidCredentialsException;
-import com.epam.jdi.bookstore.model.security.Token;
 import com.epam.jdi.bookstore.model.security.Credentials;
+import com.epam.jdi.bookstore.model.security.Token;
 import com.epam.jdi.bookstore.security.JwtTokenProvider;
 import com.epam.jdi.bookstore.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;

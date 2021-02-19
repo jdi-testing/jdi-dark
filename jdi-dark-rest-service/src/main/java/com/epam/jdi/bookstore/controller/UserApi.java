@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -29,6 +30,7 @@ import java.util.List;
 
 @Validated
 @Tag(name = "user", description = "Users API")
+@RequestMapping("/users")
 public interface UserApi {
 
     @Operation(summary = "Register new user", security = @SecurityRequirement(name = "basicAuth"))
@@ -36,7 +38,7 @@ public interface UserApi {
             @ApiResponse(responseCode = "201", description = "User created", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "User role not found"),
             @ApiResponse(responseCode = "409", description = "User already exists")})
-    @PostMapping(value = "/users/registration", consumes = {"application/json"})
+    @PostMapping(value = "/registration", consumes = {"application/json"})
     ResponseEntity<User> registerUser(@Parameter(description = "User object", required = true) @Valid @RequestBody User user);
 
 
@@ -44,7 +46,7 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Token created", content = @Content(schema = @Schema(implementation = Token.class))),
             @ApiResponse(responseCode = "401", description = "Invalid login or password provided")})
-    @PostMapping(value = "/users/auth", consumes = {"application/json"})
+    @PostMapping(value = "/auth", consumes = {"application/json"})
     ResponseEntity<Token> authenticateUser(@Parameter(description = "Credentials need to be provided to generate token") @Valid @RequestBody Credentials credentials);
 
 
@@ -52,7 +54,7 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    @PutMapping(value = "/users/{id}", produces = {"application/json"})
+    @PutMapping(value = "/{id}", produces = {"application/json"})
     ResponseEntity<User> updateUser(@Parameter(description = "ID of user to update", required = true)
                                     @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long id,
                                     @Parameter(description = "User object record") @RequestBody User user);
@@ -61,7 +63,7 @@ public interface UserApi {
     @Operation(summary = "Get all existing users", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User records", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class))))})
-    @GetMapping(value = "/users", produces = {"application/json"})
+    @GetMapping(value = "", produces = {"application/json"})
     ResponseEntity<List<User>> getUsers();
 
 
@@ -69,7 +71,7 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User record", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    @GetMapping(value = "/users/{id}", produces = {"application/json"})
+    @GetMapping(value = "/{id}", produces = {"application/json"})
     ResponseEntity<User> getUserById(@Parameter(description = "ID of user to return", required = true)
                                      @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long id);
 
@@ -78,7 +80,7 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User record", content = @Content(schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    @GetMapping(value = "/users/email/{email}", produces = {"application/json"})
+    @GetMapping(value = "/email/{email}", produces = {"application/json"})
     ResponseEntity<User> getUserByEmail(@Parameter(description = "Email of user to return", required = true)
                                         @NotBlank @PathVariable String email);
 
@@ -87,7 +89,7 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been deleted"),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    @DeleteMapping(value = "/users/{id}")
+    @DeleteMapping(value = "/{id}")
     ResponseEntity<Void> deleteUser(@Parameter(description = "ID of user to be deleted", required = true)
                                     @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long id);
 
@@ -96,7 +98,7 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been restored"),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    @PutMapping(value = "/users/{id}/restore")
+    @PutMapping(value = "/{id}/restore")
     ResponseEntity<Void> restoreUser(@Parameter(description = "ID of user to be restored", required = true)
                                      @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long id);
 
@@ -104,17 +106,17 @@ public interface UserApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Address list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Address.class)))),
             @ApiResponse(responseCode = "404", description = "User not found")})
-    @GetMapping(value = "/users/{user_id}/addresses", produces = {"application/json"})
+    @GetMapping(value = "/{userId}/addresses", produces = {"application/json"})
     ResponseEntity<List<Address>> getAddresses(@Parameter(description = "ID of the user whose addresses to get", required = true)
-                                               @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long user_id);
+                                               @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long userId);
 
 
     @Operation(summary = "Add new address", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Address created", content = @Content(schema = @Schema(implementation = Address.class)))})
-    @PostMapping(value = "/users/{user_id}/addresses}", consumes = {"application/json"})
+    @PostMapping(value = "/{userId}/addresses}", consumes = {"application/json"})
     ResponseEntity<Void> addAddress(@Parameter(description = "ID of the user to add addresses to", required = true)
-                                    @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long user_id,
+                                    @Min(value = 1, message = "must be greater than or equal to 1") @PathVariable Long userId,
                                     @Parameter(description = "Address object", required = true) @Valid @RequestBody Address address);
 
 }

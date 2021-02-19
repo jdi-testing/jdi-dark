@@ -25,10 +25,6 @@ public class GoogleSearchGetChangingDomainTests {
 
     @Test
     public static void testSearchWithStaticFieldChangingDomain() {
-        // Yahoo domain set globally in service object stored in ServiceInit
-        final GoogleSearch yahoo = init(GoogleSearch.class,"https://yahoo.com");
-        final GoogleSearch google = init(GoogleSearch.class, "https://google.com");
-
         // static field method field will change globally. Rewrite
         final RestResponse responseYahoo = GoogleSearch.search.call();
         responseYahoo.isOk().body(containsString("google.com"));

@@ -1,8 +1,8 @@
 package com.epam.jdi.bookstore.service.impl;
 
-import com.epam.jdi.bookstore.model.Book;
 import com.epam.jdi.bookstore.exception.AlreadyExistException;
 import com.epam.jdi.bookstore.exception.NotFoundException;
+import com.epam.jdi.bookstore.model.Book;
 import com.epam.jdi.bookstore.model.Genre;
 import com.epam.jdi.bookstore.repository.book.BookRepository;
 import com.epam.jdi.bookstore.service.BookService;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BooksServiceImpl implements BookService {
@@ -29,27 +28,21 @@ public class BooksServiceImpl implements BookService {
     public Book createBook(Book book) {
         findAndSetGenres(book);
         bookRepository.findBookByIsbn(book.getIsbn()).ifPresent(e -> {
-            throw new AlreadyExistException("Book with ISBN '" + e.getIsbn() + "' already exists");
+            throw new AlreadyExistException(String.format("Book with ISBN '%s' already exists", book.getIsbn()));
         });
         return saveBook(book);
     }
 
     @Override
     public Book getBook(Long id) throws NotFoundException {
-        Optional<Book> bookOpt = bookRepository.findById(id);
-        if (!bookOpt.isPresent()) {
-            throw new NotFoundException("Book with ID '" + id + "' not found");
-        }
-        return bookOpt.get();
+        return bookRepository.findById(id).orElseThrow(() ->
+            new NotFoundException(String.format("Book with ID '%d' not found", id)));
     }
 
     @Override
     public Book getBookByIsbn(String isbn) throws NotFoundException {
-        Optional<Book> bookOpt = bookRepository.findBookByIsbn(isbn);
-        if (!bookOpt.isPresent()) {
-            throw new NotFoundException("Book with ISBN '" + isbn + "' not found");
-        }
-        return bookOpt.get();
+        return  bookRepository.findBookByIsbn(isbn).orElseThrow(() ->
+            new AlreadyExistException(String.format("Book with ISBN '%s' already exists", isbn)));
     }
 
     @Override

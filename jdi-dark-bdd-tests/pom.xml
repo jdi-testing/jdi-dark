@@ -19,7 +19,7 @@
         <allure.cucumber.jvm.version>2.13.1</allure.cucumber.jvm.version>
         <allure.common.version>2.13.1</allure.common.version>
         <junit.version>4.12</junit.version>
-        <surefire.version>2.22.1</surefire.version>
+        <surefire.version>2.22.2</surefire.version>
         <jdi.dark.bdd.version>1.1.7</jdi.dark.bdd.version>
     </properties>
 
@@ -63,7 +63,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <!-- testFailureIgnore>true</testFailureIgnore -->
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                         -Dcucumber.options="--plugin io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm"

@@ -1,25 +1,110 @@
-name: Build
+name: Testing JDI Dark
+env:
+  HTTP_TESTS: "com.epam.jdi:jdi-dark-tests"
+  BDD_TESTS: "com.epam.jdi:jdi-dark-bdd-tests"
+  ALLURE_VERSION: "2.7.0"
 
 on:
-  pull_request:
-    branches:
-      - '*'
   push:
     branches:
-      - '*'
+      - master
+  pull_request:
+    branches:
+      - master
+  page_build:
+  release:
+    types: # This configuration does not affect the page_build event above
+      - created
 
 jobs:
   build:
-    runs-on: windows-latest
+    name: Run tests for JDK
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 4 # can be changed to 3 to speed-up, but it's not always stable
+      fail-fast: false
+      matrix:
+        java: [8, 9, 10, 11, 12, 13, 14] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
+
     steps:
-      - uses: actions/checkout@v1
-      - name: set up JDK 8
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v1
         with:
-          java-version: 1.8
-      - name: Maven Verify
-        run: mvn -B package
+          java-version: ${{ matrix.java }}
+          java-package: jdk
+      - name: Prepare environment
+        run: |
+          sudo apt-get -y install jq
+          java -Xmx32m -version
+          env
+
+# run cann't start from comment
+#  curl -o allure-${ALLURE_VERSION}.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz
+      - name: Install Allure
+        run: |
+          sudo tar -zxvf allure-${ALLURE_VERSION}.tgz -C /opt/
+          sudo ln -s /opt/allure-${ALLURE_VERSION}/bin/allure /usr/bin/allure
+          allure --version
+
+      - name: Welcome to JDI
+        run: |
+            echo ------------------- WELCOME TO JDI DARK ----------------------
+            mvn --version
+
+      - name: Compile jdi code
+        id: jdi-compile
+        run: mvn clean install -DskipTests
+
+      - name: Run tests - BDD
+        id: testsBdd
+        if: steps.jdi-compile.outcome == 'success'
+        timeout-minutes: 30 # prevent blocking
+        continue-on-error: true
+        run: mvn verify -pl $BDD_TESTS --fail-at-end
+
+      - name: Run tests - HTTP
+        id: testsHttp
+        if: steps.jdi-compile.outcome == 'success'
+        timeout-minutes: 30 # prevent blocking
+        continue-on-error: true
+        run: mvn verify -pl $HTTP_TESTS --fail-at-end
+
+      - name: Collect reports
+        if: steps.jdi-compile.outcome == 'success'
+        run: |
+          echo --------------- Collecting Allure Reports.... ------------------
+          sudo chmod +x reporting.sh
+          source reporting.sh
+          generateAllureReports
+          printAllureSummary ${{ matrix.java }}
+          zip -r allure-report.zip ./allure-report/
+
+      - name: 'Upload allure report'
+        if: steps.jdi-compile.outcome == 'success'
+        uses: actions/upload-artifact@v2
+        with:
+          name: allure-report-dark-jdk${{ matrix.java }}
+          path: ./allure-report.zip
+          retention-days: 2
+
+#      - name: Deploy to Neflify
+#        uses: South-Paw/action-netlify-deploy@v1.0.4
+#        with:
+#          github-token: ${{ secrets.GIT_COMMENT_USER }}
+#          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+#          netlify-site-id: ${{ secrets.NETLIFY_SITE_ID }}
+#          build-dir: './allure-report'
+#          comment-on-pull-request: true
+
       - name: Test Coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Check for any failure
+        if: ${{ (steps.testsBdd.outcome != 'success') || (steps.testsHttp.outcome != 'success')}}
+        run: |
+          echo BDD tests result ${{ steps.testsBdd.outcome }}
+          echo HTTP tests result ${{ steps.testsHttp.outcome }}
+          exit 1

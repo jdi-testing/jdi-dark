@@ -2,6 +2,7 @@ package com.epam.jdi.httptests.examples.custom;
 
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.Board;
+import com.epam.jdi.dto.Organization;
 import com.epam.jdi.services.TrelloService;
 import org.apache.commons.csv.*;
 import org.testng.Assert;
@@ -15,13 +16,18 @@ import java.util.ArrayList;
 import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.RequestDataFactory.body;
 import static com.epam.http.requests.ServiceInit.init;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
+import static com.epam.jdi.services.TrelloService.deleteOrg;
+import static com.epam.jdi.services.TrelloService.createOrganization;
 import static com.epam.jdi.services.TrelloService.boardsPost;
+import static com.epam.jdi.services.TrelloService.getBoardById;
 import static java.lang.String.format;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class PreconditionTests {
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
     private ArrayList<String> createdBoardsId = new ArrayList<String>();
+    private static String newOrgId;
 
     @DataProvider(name = "createNewBoards")
     public static Object[][] createNewBoards() {
@@ -49,6 +55,11 @@ public class PreconditionTests {
     public void initService() throws IOException {
         init(TrelloService.class);
         new FileWriter(CSV_DATA_FILE, false).close();
+
+        // create Organization as we will get a error during Board creation in case of zero organizations
+        Organization org = generateOrganization();
+        Organization newOrg = createOrganization(org);
+        newOrgId = newOrg.id;
     }
 
     @Test(dataProvider = "createNewBoards")
@@ -61,7 +72,7 @@ public class PreconditionTests {
 
     @Test(dataProvider = "dataProviderFromCSV")
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        TrelloService.getBoardById.call(pathParams().add("board_id", boardId))
+        getBoardById.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
                 .body("url", equalTo(expectedUrl));
@@ -86,5 +97,9 @@ public class PreconditionTests {
     @AfterClass
     public void clearBoards() {
         createdBoardsId.forEach(TrelloService::deleteBoard);
+
+        if (newOrgId != null) {
+            deleteOrg(newOrgId);
+        }
     }
 }

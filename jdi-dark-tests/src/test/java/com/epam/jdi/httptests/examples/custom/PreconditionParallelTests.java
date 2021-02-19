@@ -5,8 +5,14 @@ import com.epam.http.response.RestResponse;
 import com.epam.jdi.dto.*;
 import com.epam.jdi.services.ServiceExample;
 import com.epam.jdi.services.TrelloService;
-import org.apache.commons.csv.*;
-import org.testng.annotations.*;
+import com.epam.jdi.utils.RetryAnalyzer;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVFormat;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import org.testng.annotations.AfterClass;
 
 import java.io.*;
 import java.nio.file.*;
@@ -15,23 +21,34 @@ import java.util.ArrayList;
 import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
-import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
+import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
+import static com.epam.jdi.services.TrelloService.createOrganization;
+import static com.epam.jdi.services.TrelloService.deleteOrg;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
+import static com.epam.http.JdiHttpSettings.logger;
+
 public class PreconditionParallelTests {
-    private ArrayList<String> createdBoardsId = new ArrayList<>();
+    public static final String TRELLO_API = "https://api.trello.com/1";
+    private final ArrayList<String> createdBoardsId = new ArrayList<>();
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
     public static TrelloService trello;
     public static ServiceExample httpbin;
+    private static String newOrgId;
 
     @BeforeClass
     public void initService() throws IOException {
-        init(TrelloService.class);
         new FileWriter(CSV_DATA_FILE, false).close();
-        trello = init(TrelloService.class, ServiceSettings.builder().domain("https://api.trello.com/1").build());
+        trello = init(TrelloService.class, ServiceSettings.builder().domain(TRELLO_API).build());
         httpbin = init(ServiceExample.class, ServiceSettings.builder().domain("https://httpbin.org/").build());
+
+        // create Organization as we will get a error during Board creation in case of zero organizations
+        Organization org = generateOrganization();
+        Organization newOrg = createOrganization(org);
+        newOrgId = newOrg.id;
     }
 
     @DataProvider(name = "createNewBoards", parallel = true)
@@ -43,11 +60,11 @@ public class PreconditionParallelTests {
         };
     }
 
-    @Test(dataProvider = "createNewBoards", threadPoolSize = 3)
+    @Test(dataProvider = "createNewBoards", threadPoolSize = 1, skipFailedInvocations = true, retryAnalyzer = RetryAnalyzer.class)
     public void createCardInBoard(Board board) throws IOException {
         //Create board
         Board createdBoard = TrelloService.createBoard(board);
-
+        logger.info("Created board with id = %s, name = '%s'", createdBoard.id, createdBoard.name);
         Board gotBoard = TrelloService.getBoard(createdBoard.id);
         createdBoardsId.add(createdBoard.id);
         assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
@@ -82,7 +99,7 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
-        trello = init(TrelloService.class, ServiceSettings.builder().domain("https://api.trello.com/1").build());
+        logger.info("Get info about board id = %s", boardId);
         trello.boardId.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
                 .body("shortUrl", equalTo(expectedShortUrl))
@@ -96,7 +113,7 @@ public class PreconditionParallelTests {
         info.assertThat().header("Connection", "keep-alive");
     }
 
-    private void writeToCSV(Board board) throws IOException {
+    private synchronized void writeToCSV(Board board) throws IOException {
         Writer writer = Files.newBufferedWriter(Paths.get(CSV_DATA_FILE), StandardOpenOption.APPEND, StandardOpenOption.CREATE);
         CSVPrinter printer = CSVFormat.EXCEL.print(writer);
         printer.printRecord(board.id, board.name, board.shortUrl, board.url);
@@ -107,5 +124,8 @@ public class PreconditionParallelTests {
     @AfterClass
     public void clearBoards() {
         createdBoardsId.forEach(TrelloService::deleteBoard);
+        if (newOrgId != null) {
+            deleteOrg(newOrgId);
+        }
     }
 }

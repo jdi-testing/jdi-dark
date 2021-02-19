@@ -2,7 +2,7 @@ package com.epam.jdi.bookstore.controller.genre;
 
 import com.epam.jdi.bookstore.controller.GenreApi;
 import com.epam.jdi.bookstore.model.Genre;
-import com.epam.jdi.bookstore.service.impl.GenreServiceImpl;
+import com.epam.jdi.bookstore.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +15,12 @@ import java.util.List;
 @RestController
 public class GenreApiController implements GenreApi {
 
+    private GenreService genreService;
+
     @Autowired
-    private GenreServiceImpl genreService;
+    public GenreApiController(GenreService genreService) {
+        this.genreService = genreService;
+    }
 
     @Override
     public ResponseEntity<Genre> createGenre(@Valid Genre genre) {

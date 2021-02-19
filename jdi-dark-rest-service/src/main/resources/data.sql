@@ -21,5 +21,7 @@ INSERT INTO book_genre (book_id, genre_id) VALUES (1, 10);
 INSERT INTO role (id, name) VALUES (1, 'ROLE_ADMIN');
 INSERT INTO role (id, name) VALUES (2, 'ROLE_USER');
 INSERT INTO user (id, email, password, enabled) VALUES (1, 'admin@epam.com', '$2a$10$BEebJV2WCUPndkLvYiDbB.1MmvsdIvcdQIhD60mj/IXmy9QaUcBWy', true );
+INSERT INTO user (id, email, password, enabled) VALUES (2, 'user@epam.com', '$2a$10$BEebJV2WCUPndkLvYiDbB.1MmvsdIvcdQIhD60mj/IXmy9QaUcBWy', true );
 INSERT INTO user_role (user_id, role_id) VALUES (1, 1);
+INSERT INTO user_role (user_id, role_id) VALUES (2, 2);
 INSERT INTO address (id, user_id, full_name, address_line1, address_line2, city, region, postal, country) VALUES (1, 1, 'Kinyaev Foma', 'Pushkina Street, 8 unit 1, apartment 131', '', 'Moscow', 'MSK', '409004', 'Russia');

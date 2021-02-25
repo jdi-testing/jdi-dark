@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.epam.jdi</groupId>
-    <version>1.1.8</version>
+    <version>1.1.9-SNAPSHOT</version>
     <artifactId>jdi-dark-tests</artifactId>
     <name>JDI Dark Tests</name>
 
@@ -16,6 +14,7 @@
         <allure.maven>2.10.0</allure.maven>
         <aspectj.version>1.9.5</aspectj.version>
         <suiteXML.file>general.xml</suiteXML.file>
+        <jdi.dark.version>1.1.9-SNAPSHOT</jdi.dark.version>
     </properties>
 
     <dependencies>
@@ -27,12 +26,12 @@
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>
-            <version>1.1.8</version>
+            <version>${jdi.dark.version}</version>
         </dependency>
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark-ws</artifactId>
-            <version>1.1.0</version>
+            <version>${jdi.dark.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -143,7 +142,7 @@
                                 <artifactItem>
                                     <groupId>com.epam.jdi</groupId>
                                     <artifactId>jdi-dark-rest-service</artifactId>
-                                    <version>1.0.0</version>
+                                    <version>${jdi.dark.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/rest-service</outputDirectory>

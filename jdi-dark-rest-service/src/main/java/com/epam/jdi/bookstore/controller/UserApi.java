@@ -15,13 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -35,9 +29,9 @@ public interface UserApi {
 
     @Operation(summary = "Register new user", security = @SecurityRequirement(name = "basicAuth"))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created", content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "404", description = "User role not found"),
-            @ApiResponse(responseCode = "409", description = "User already exists")})
+        @ApiResponse(responseCode = "201", description = "User created", content = @Content(schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "404", description = "User role not found"),
+        @ApiResponse(responseCode = "409", description = "User already exists")})
     @PostMapping(value = "/registration", consumes = {"application/json"})
     ResponseEntity<User> registerUser(@Parameter(description = "User object", required = true) @Valid @RequestBody User user);
 

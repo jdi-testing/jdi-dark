@@ -34,6 +34,6 @@ public class PerformanceStepsEN extends Utils {
 
     @And("print number of performance results requests")
     public void printNumberOfRequests() {
-        System.out.println("There were " + performanceResult.get().getNumberOfRequests() + " requests.");
+        System.out.println("There were " + performanceResult.get().numberOfRequests + " requests.");
     }
 }

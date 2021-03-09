@@ -1,15 +1,12 @@
 package com.epam.jdi.bookstore.model.security;
 
+import com.epam.jdi.tools.DataClass;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Data;
 
-@Data
-@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Token {
+public class Token extends DataClass<Token> {
 
     @JsonProperty("access_token")
-    private String accessToken;
+    public String accessToken;
 }

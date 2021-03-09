@@ -23,7 +23,7 @@ public interface RoleApi {
 
     @Operation(summary = "Get all existing user roles", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Genre list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Role.class))))})
+        @ApiResponse(responseCode = "200", description = "Genre list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Role.class))))})
     @GetMapping(value = "", produces = {"application/json"})
     ResponseEntity<List<Role>> getRoles();
 

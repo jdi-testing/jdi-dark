@@ -1,8 +1,8 @@
 package com.epam.jdi.bookstore.configuration.security;
 
 import com.epam.jdi.bookstore.security.BasicAuthEntryPoint;
-import com.epam.jdi.bookstore.utils.constants.Roles;
 import com.epam.jdi.bookstore.security.BasicAuthFilter;
+import com.epam.jdi.bookstore.utils.constants.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;

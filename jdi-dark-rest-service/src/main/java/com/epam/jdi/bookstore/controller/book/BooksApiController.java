@@ -23,7 +23,7 @@ public class BooksApiController implements BooksApi {
     @Override
     public ResponseEntity<Book> createBook(Book book) {
         Book savedBook = booksService.createBook(book);
-        URI location = URI.create(String.format("/books/%s", savedBook.getId()));
+        URI location = URI.create(String.format("/books/%s", savedBook.id));
         return ResponseEntity.created(location).body(savedBook);
     }
 

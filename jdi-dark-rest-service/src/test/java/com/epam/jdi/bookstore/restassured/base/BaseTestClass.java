@@ -10,24 +10,24 @@ public class BaseTestClass {
     public int createBookPrecondition(RequestSpecification requestSpec, Book book) {
         String id = given()
                 .auth().basic("admin@epam.com", "1234")
-                .spec(requestSpec)
-                .body(book)
-                .when()
-                .post("/books")
-                .then()
-                .assertThat()
-                .statusCode(201)
-                .extract()
-                .body().jsonPath().getString("id");
+            .spec(requestSpec)
+            .body(book)
+            .when()
+            .post("/books")
+            .then()
+            .assertThat()
+            .statusCode(201)
+            .extract()
+            .body().jsonPath().getString("id");
         return Integer.parseInt(id);
     }
 
     public void createBookPreconditionNoValidation(RequestSpecification requestSpec, Book book) {
         given()
-                .auth().basic("admin@epam.com", "1234")
-                .spec(requestSpec)
-                .body(book)
-                .when()
-                .post("/books");
+            .auth().basic("admin@epam.com", "1234")
+            .spec(requestSpec)
+            .body(book)
+            .when()
+            .post("/books");
     }
 }

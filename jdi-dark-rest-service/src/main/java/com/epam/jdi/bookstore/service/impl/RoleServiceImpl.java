@@ -27,13 +27,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role getRole(Long id) throws NotFoundException {
         return roleRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(String.format("Role with ID '%d' not found", id)));
+            new NotFoundException(String.format("Role with ID '%d' not found", id)));
     }
 
     @Override
     public Role getRoleByName(String name) throws NotFoundException {
         return roleRepository.findByName(name).orElseThrow(() ->
-                new NotFoundException(String.format("Role with name '%s' not found", name)));
+            new NotFoundException(String.format("Role with name '%s' not found", name)));
     }
 
 }

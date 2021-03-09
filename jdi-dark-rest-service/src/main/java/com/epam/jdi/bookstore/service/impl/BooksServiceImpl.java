@@ -27,8 +27,8 @@ public class BooksServiceImpl implements BookService {
     @Override
     public Book createBook(Book book) {
         findAndSetGenres(book);
-        bookRepository.findBookByIsbn(book.getIsbn()).ifPresent(e -> {
-            throw new AlreadyExistException(String.format("Book with ISBN '%s' already exists", book.getIsbn()));
+        bookRepository.findBookByIsbn(book.isbn).ifPresent(e -> {
+            throw new AlreadyExistException(String.format("Book with ISBN '%s' already exists", book.isbn));
         });
         return saveBook(book);
     }
@@ -59,7 +59,7 @@ public class BooksServiceImpl implements BookService {
     @Override
     public void updateBook(Long id, Book book) {
         Book bookToUpdate = getBook(id);
-        book.setId(bookToUpdate.getId());
+        book.id = bookToUpdate.id;
         findAndSetGenres(book);
         saveBook(book);
     }
@@ -69,8 +69,8 @@ public class BooksServiceImpl implements BookService {
     }
 
     private void findAndSetGenres(Book book) {
-        List<Genre> genres = book.getGenres();
-        genres.forEach(g -> g.setId(genreService.getGenreByType(g.getType()).getId()));
-        book.setGenres(genres);
+        List<Genre> genres = book.genres;
+        genres.forEach(g -> g.id = genreService.getGenreByType(g.type).id);
+        book.genres = genres;
     }
 }

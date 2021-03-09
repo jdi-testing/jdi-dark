@@ -32,13 +32,13 @@ public class AuthServiceImpl implements AuthService {
     public Token authenticateUser(Credentials credentials) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword())
+                    new UsernamePasswordAuthenticationToken(credentials.email, credentials.password)
             );
             if (authentication.isAuthenticated()) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             String jwt = tokenProvider.generateToken(authentication);
-            return Token.builder().accessToken(jwt).build();
+            return new Token().set(t -> t.accessToken = jwt);
         } catch (BadCredentialsException | ParseException e) {
             throw new InvalidCredentialsException("Invalid login or password");
         }

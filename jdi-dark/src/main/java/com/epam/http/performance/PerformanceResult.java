@@ -1,13 +1,12 @@
 package com.epam.http.performance;
 
-import lombok.Data;
+import com.epam.jdi.tools.DataClass;
 
 import java.util.List;
 
 import static com.epam.http.JdiHttpSettings.logger;
 
-@Data
-public class PerformanceResult {
+public class PerformanceResult extends DataClass<PerformanceResult> {
 
     public long minResponseTime = 0;
     public long maxResponseTime = 0;
@@ -28,13 +27,13 @@ public class PerformanceResult {
      */
     public void aggregateResult(List<ThreadResult> results) {
         results.forEach(res -> {
-            minResponseTime = minResponseTime == 0 ? res.getMinResponseTime() : Math.min(minResponseTime, res.getMinResponseTime());
-            maxResponseTime = Math.max(maxResponseTime, res.getMaxResponseTime());
-            averageResponseTime = (averageResponseTime * numberOfRequests + res.getAverageResponseTime())
+            minResponseTime = minResponseTime == 0 ? res.minResponseTime : Math.min(minResponseTime, res.minResponseTime);
+            maxResponseTime = Math.max(maxResponseTime, res.minResponseTime);
+            averageResponseTime = (averageResponseTime * numberOfRequests + res.averageResponseTime)
                     / (numberOfRequests + 1);
-            numberOfRequests += res.getNumberOfRequests();
-            numberOfClientFails += res.getNumberOfClientFails();
-            numberOfServerFails += res.getNumberOfServerFails();
+            numberOfRequests += res.numberOfRequests;
+            numberOfClientFails += res.numberOfClientFails;
+            numberOfServerFails += res.numberOfServerFails;
             numberOfFails = numberOfClientFails + numberOfServerFails;
         });
         logger.info("Performance test results:");

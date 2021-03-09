@@ -25,7 +25,7 @@ public class GenreApiController implements GenreApi {
     @Override
     public ResponseEntity<Genre> createGenre(@Valid Genre genre) {
         Genre savedGenre = genreService.createGenre(genre);
-        URI location = URI.create(String.format("/genres/%s", savedGenre.getId()));
+        URI location = URI.create(String.format("/genres/%s", savedGenre.id));
         return ResponseEntity.created(location).body(savedGenre);
     }
 

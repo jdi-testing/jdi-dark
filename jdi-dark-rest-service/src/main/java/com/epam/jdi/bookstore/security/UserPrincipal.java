@@ -2,10 +2,8 @@ package com.epam.jdi.bookstore.security;
 
 import com.epam.jdi.bookstore.model.user.Role;
 import com.epam.jdi.bookstore.model.user.User;
+import com.epam.jdi.tools.DataClass;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,26 +12,30 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal extends DataClass<UserPrincipal> implements UserDetails {
 
-    private Long id;
-    private String name;
+    public UserPrincipal() {}
+    public UserPrincipal(User user) {
+        id = user.id;
+        name = user.email;
+        password = user.password;
+        roles = user.roles;
+    }
+    public Long id;
+    public String name;
 
     @JsonIgnore
-    private String password;
-    private List<Role> roles;
+    public String password;
+    public List<Role> roles;
 
     public static UserPrincipal create(User user) {
-        return new UserPrincipal(user.getId(), user.getEmail(), user.getPassword(), user.getRoles());
+        return new UserPrincipal(user);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .map(role -> new SimpleGrantedAuthority(role.name))
                 .collect(Collectors.toList());
     }
 
@@ -68,12 +70,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     public User getUser() {
-        return User.builder()
-                .id(id)
-                .email(name)
-                .password(password)
-                .roles(roles)
-                .build();
+        return new User(this);
     }
 
 }

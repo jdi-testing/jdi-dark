@@ -3,14 +3,7 @@ package com.epam.jdi.bookstore.security;
 import com.epam.jdi.bookstore.utils.gson.GsonIgnoreStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import lombok.extern.slf4j.Slf4j;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -18,14 +11,15 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.util.Date;
 
-@Slf4j
+import static com.epam.jdi.bookstore.BookstoreApiApplication.logger;
+
 @Component
 public class JwtTokenProvider {
 
-    @Value("${security.jwtSecret}")
+    @Value("12345")
     private String jwtSecret;
 
-    @Value("${security.jwtExpirationInMs}")
+    @Value("28800000")
     private int jwtExpirationInMs;
 
     public String generateToken(Authentication authentication) throws ParseException {
@@ -52,7 +46,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         UserPrincipal userPrincipal = new Gson().fromJson(claims.getSubject(), UserPrincipal.class);
-        return userPrincipal.getId();
+        return userPrincipal.id;
     }
 
     public boolean validateToken(String authToken) {
@@ -60,15 +54,15 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-            log.error("Invalid JWT signature");
+            logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
+            logger.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
+            logger.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
+            logger.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty.");
+            logger.error("JWT claims string is empty.");
         }
         return false;
     }

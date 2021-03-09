@@ -22,8 +22,8 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre createGenre(Genre genre) throws AlreadyExistException {
-        Long genreId = genre.getId();
-        String genreType = genre.getType();
+        Long genreId = genre.id;
+        String genreType = genre.type;
         if (genreId != null) {
             genreRepository.findById(genreId).ifPresent(e -> {
                 throw new AlreadyExistException(String.format("Genre with ID '%1$d' already exists. Use 'PUT genres/%1$d' to update existing record", genreId));
@@ -55,7 +55,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public Genre updateGenre(Long id, Genre genre) throws NotFoundException {
         Genre genreToUpdate = getGenreById(id);
-        genre.setId(genreToUpdate.getId());
+        genre.id = genreToUpdate.id;
         return saveGenre(genre);
     }
 

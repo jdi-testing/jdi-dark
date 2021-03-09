@@ -1,7 +1,7 @@
 package com.epam.jdi.bookstore.security;
 
 import com.epam.jdi.bookstore.service.impl.CustomUserDetailsService;
-import lombok.extern.slf4j.Slf4j;
+import com.epam.jdi.tools.ReflectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,9 +15,11 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 
-@Slf4j
+import static com.epam.jdi.tools.ReflectionUtils.isClass;
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -35,8 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         try {
             String jwt = getJwtFromRequest(request);
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
@@ -48,9 +49,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-            log.error("Could not set user authentication in security context", ex);
+            logger.error("Could not set user authentication in security context", ex);
         }
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } catch (Exception ex) {
+            if (isClass(ex.getCause().getClass(), ConstraintViolationException.class)) {
+                throw (ConstraintViolationException) ex.getCause();
+            }
+        }
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

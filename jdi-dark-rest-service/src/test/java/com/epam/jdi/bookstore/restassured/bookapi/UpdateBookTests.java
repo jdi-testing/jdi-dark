@@ -16,10 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-
 import static com.epam.jdi.bookstore.restassured.base.Token.TOKEN;
 import static io.restassured.RestAssured.given;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +31,6 @@ public class UpdateBookTests extends BaseTestClass {
     RequestSpecification requestSpec;
 
     private Book book1;
-    private Book book2;
 
     @Before
     public void setUp() {
@@ -40,66 +38,54 @@ public class UpdateBookTests extends BaseTestClass {
         PreemptiveOAuth2HeaderScheme oAuth2Scheme = new PreemptiveOAuth2HeaderScheme();
         oAuth2Scheme.setAccessToken(TOKEN);
         requestSpec = new RequestSpecBuilder()
-                .setBaseUri("http://localhost")
-                .setPort(port)
-                .setAccept(ContentType.JSON)
-                .setContentType(ContentType.JSON)
-                .setAuth(oAuth2Scheme)
-                .log(LogDetail.ALL)
-                .build();
+            .setBaseUri("http://localhost")
+            .setPort(port)
+            .setAccept(ContentType.JSON)
+            .setContentType(ContentType.JSON)
+            .setAuth(oAuth2Scheme)
+            .log(LogDetail.ALL)
+            .build();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     @Test
     public void updateBook_withValidObject_shouldReturn200() {
         int id = createBookPrecondition(requestSpec, book1);
-        book1.setGenres(Arrays.asList(
-                Genre.builder().type("Science fiction").build(),
-                Genre.builder().type("Dystopian fiction").build()
-        ));
+        book1.genres = asList(
+            new Genre().set(g -> g.type = "Science fiction"),
+            new Genre().set(g -> g.type = "Dystopian fiction")
+        );
         given()
-                .spec(requestSpec)
-                .body(book1)
-                .when()
-                .put("/books/" + id)
-                .then()
-                .assertThat()
-                .statusCode(200);
+            .spec(requestSpec)
+            .body(book1)
+            .when()
+            .put("/books/" + id)
+            .then()
+            .assertThat()
+            .statusCode(200);
 
         given()
-                .spec(requestSpec)
-                .when()
-                .get("/books/" + id)
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body("id", equalTo(id))
-                .body("genres[0].type", equalTo("Science fiction"))
-                .body("genres[1].type", equalTo("Dystopian fiction"));
+            .spec(requestSpec)
+            .when()
+            .get("/books/" + id)
+            .then()
+            .assertThat()
+            .statusCode(200)
+            .body("id", equalTo(id))
+            .body("genres[0].type", equalTo("Science fiction"))
+            .body("genres[1].type", equalTo("Dystopian fiction"));
     }
 
     private void initBooks() {
-        book1 = Book.builder()
-                .isbn("9780451524935")
-                .title("1984")
-                .author("George Orwell")
-                .publicationYear("1961")
-                .price("6.82")
-                .quantity(2)
-                .genres(Arrays.asList(
-                        Genre.builder().type("Science fiction").build()
-                )).build();
+        book1 = new Book().set(b -> {
+            b.isbn = "9780451524935";
+            b.title = "1984";
+            b.author = "George Orwell";
+            b.publicationYear = "1961";
+            b.price = "6.82";
+            b.quantity = 2;
+            b.genres = asList(new Genre().set(g -> g.type = "Science fiction"));
+        });
 
-        book2 = Book.builder()
-                .isbn("9780060935467")
-                .title("To Kill a Mockingbird")
-                .author("Harper Lee")
-                .publicationYear("2002")
-                .price("7.50")
-                .quantity(1)
-                .genres(Arrays.asList(
-                        Genre.builder().type("Bildungsroman").build(),
-                        Genre.builder().type("Southern Gothic").build()
-                )).build();
     }
 }

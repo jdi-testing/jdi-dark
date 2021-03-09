@@ -42,8 +42,8 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<User> registerUser(User userToRegister) {
         userService.createUser(userToRegister);
-        User user = userService.getUserByEmail(userToRegister.getEmail());
-        URI location = URI.create(String.format("/%s", user.getId()));
+        User user = userService.getUserByEmail(userToRegister.email);
+        URI location = URI.create(String.format("/%s", user.id));
         return created(location).body(user);
     }
 
@@ -97,7 +97,7 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<Void> addAddress(Long userId, Address address) {
         userService.createAddress(userId, address);
-        URI location = URI.create(String.format("/%s", address.getId()));
+        URI location = URI.create(String.format("/%s", address.id));
         return created(location).build();
     }
 }

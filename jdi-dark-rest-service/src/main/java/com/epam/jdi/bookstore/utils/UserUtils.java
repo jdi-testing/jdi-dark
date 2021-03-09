@@ -18,7 +18,7 @@ public final class UserUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-            return Optional.ofNullable(userPrincipal.getId());
+            return Optional.ofNullable(userPrincipal.id);
         }
         return Optional.empty();
     }

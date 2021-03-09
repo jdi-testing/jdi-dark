@@ -1,13 +1,12 @@
 package com.epam.http.performance;
 
 import com.epam.http.response.RestResponse;
-import lombok.Data;
+import com.epam.jdi.tools.DataClass;
 
 import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 import static com.epam.http.response.ResponseStatusType.SERVER_ERROR;
 
-@Data
-public class ThreadResult {
+public class ThreadResult extends DataClass<ThreadResult> {
 
     public long minResponseTime = 0;
     public long maxResponseTime = 0;

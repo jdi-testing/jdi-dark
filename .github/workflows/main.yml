@@ -24,7 +24,7 @@ jobs:
       max-parallel: 4 # can be changed to 3 to speed-up, but it's not always stable
       fail-fast: false
       matrix:
-        java: [8, 9, 10, 11, 12, 13, 14] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
+        java: [8, 9, 10, 11, 12, 13, 14, 15, 16] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
 
     steps:
       - uses: actions/checkout@v2

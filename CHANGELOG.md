@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.9
+  * support jdk 10-15
+
 ## 1.1.8
   * fixes for using several identical service instances
 

@@ -38,25 +38,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>
-            <version>1.1.9</version>
+            <version>[1.1.9,)</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.tyrus.bundles</groupId>

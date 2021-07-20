@@ -9,7 +9,6 @@ import io.restassured.builder.RequestSpecBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */

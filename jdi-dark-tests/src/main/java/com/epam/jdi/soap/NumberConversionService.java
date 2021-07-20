@@ -10,7 +10,7 @@ import com.epam.jdi.soap.com.dataaccess.webservicesserver.NumberToDollarsRespons
 import com.epam.jdi.soap.com.dataaccess.webservicesserver.NumberToWords;
 import com.epam.jdi.soap.com.dataaccess.webservicesserver.NumberToWordsResponse;
 
-@ServiceDomain("http://www.dataaccess.com/webservicesserver/NumberConversion.wso")
+@ServiceDomain("https://www.dataaccess.com/webservicesserver/NumberConversion.wso")
 @SOAPNamespace("http://www.dataaccess.com/webservicesserver/")
 public class NumberConversionService {
 

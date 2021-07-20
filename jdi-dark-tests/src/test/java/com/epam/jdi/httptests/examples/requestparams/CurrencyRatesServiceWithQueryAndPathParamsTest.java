@@ -13,6 +13,7 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */
+// !!!!! Important!!!! https://api.ratesapi.io/ is off
 public class CurrencyRatesServiceWithQueryAndPathParamsTest {
 
     public static final String SYMBOLS_PARAM = "symbols";

@@ -206,6 +206,18 @@ public class ServiceInit {
         }
     }
     /* Case for class annotations*/
+    if (c.isAnnotationPresent(Header.class))
+        method.header.add(c.getAnnotation(Header.class));
+    if (c.isAnnotationPresent(Headers.class))
+        method.header.addAll(c.getAnnotation(Headers.class).value());
+    if (c.isAnnotationPresent(Cookie.class)) {
+        setupCookie(method, c.getAnnotation(Cookie.class));
+    }
+    if (c.isAnnotationPresent(Cookies.class)) {
+        for (Cookie cookie : c.getAnnotation(Cookies.class).value()) {
+            setupCookie(method, cookie);
+        }
+    }
     if (c.isAnnotationPresent(QueryParameter.class))
         method.queryParams.add(c.getAnnotation(QueryParameter.class));
     if (c.isAnnotationPresent(QueryParameters.class))

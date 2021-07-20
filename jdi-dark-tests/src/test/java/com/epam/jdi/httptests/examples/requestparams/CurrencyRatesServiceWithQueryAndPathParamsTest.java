@@ -12,6 +12,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */
+// !!!!! Important!!!! https://api.ratesapi.io/ is off
 public class CurrencyRatesServiceWithQueryAndPathParamsTest {
 
     public static final String SYMBOLS_PARAM = "symbols";
@@ -24,14 +25,14 @@ public class CurrencyRatesServiceWithQueryAndPathParamsTest {
         init(CurrencyRatesService.class);
     }
 
-    @Test
+    @Test(enabled = false)
     public void callGetLatestQuotes() {
 
         final RestResponse call = CurrencyRatesService.latest.call();
         call.isOk();
     }
 
-    @Test
+    @Test(enabled = false)
     public void callGetLatestQuotesSymbolsParam() {
 
         init(CurrencyRatesService.class);
@@ -48,7 +49,7 @@ public class CurrencyRatesServiceWithQueryAndPathParamsTest {
         System.out.println(call.getBody());
     }
 
-    @Test
+    @Test(enabled = false)
     public void callGetLatestQuotesSymbolsAndBaseParam() {
 
         init(CurrencyRatesService.class);
@@ -68,7 +69,7 @@ public class CurrencyRatesServiceWithQueryAndPathParamsTest {
         System.out.println(call.getBody());
     }
 
-    @Test
+    @Test(enabled = false)
     public void callGetHistoricalQuotesSymbolsAndBaseParam() {
 
         final Map<String, Object> parametersMap = new HashMap<>();

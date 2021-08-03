@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.10
+  * add processing Header/Cookies annotations for class
+
 ## 1.1.9
   * support jdk 10-15
 

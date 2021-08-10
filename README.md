@@ -2,7 +2,7 @@
 
 # JDI Dark Test Automation Framework
 [![stackoverflow](https://img.shields.io/badge/stackoverflow-jdi-blue.svg?style=flat)](http://stackoverflow.com/questions/tagged/jdi)
-[![SLACK](https://join.slack.com/t/jdi-family/shared_invite/zt-toag8fgg-ppPiW~lZDU9873JAiSwTJw)
+[![SLACK](https://img.shields.io/badge/slack-community-green.svg?style=flat)](https://join.slack.com/t/jdi-family/shared_invite/zt-toag8fgg-ppPiW~lZDU9873JAiSwTJw)
 
 ## Documentation
 For fast start you can go through [tutorial](https://jdi-docs.github.io/jdi-dark/#tutorial) </br>

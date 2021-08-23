@@ -19,7 +19,7 @@ public class WSItemClient extends WebSocketGenericEndpoint<Item> {
 
     @OnMessage
     public void onMessage(Item message, Session session) {
-        logger.info("Received message");
+        //logger.info("Received message");
         lastMessage = message;
         messages.add(lastMessage);
         latch.countDown();

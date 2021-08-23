@@ -166,6 +166,7 @@
                         <suiteXmlFile>src/test/resources/${suiteXML.file}</suiteXmlFile>
                     </suiteXmlFiles>
                     <!-- testFailureIgnore>true</testFailureIgnore -->
+                    <forkMode>never</forkMode>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>

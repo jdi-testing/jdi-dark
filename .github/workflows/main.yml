@@ -68,7 +68,7 @@ jobs:
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
-        run: mvn verify -pl $HTTP_TESTS --fail-at-end
+        run: mvn verify -X -pl $HTTP_TESTS --fail-at-end
 
       - name: Collect reports
         if: steps.jdi-compile.outcome == 'success'

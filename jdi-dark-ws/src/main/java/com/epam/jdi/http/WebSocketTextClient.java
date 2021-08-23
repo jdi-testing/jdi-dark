@@ -13,7 +13,7 @@ public class WebSocketTextClient extends WebSocketGenericEndpoint<String> {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        logger.info("Received text message");
+        //logger.info("Received text message");
         lastMessage = message;
         messages.add(message);
         latch.countDown();
@@ -21,7 +21,7 @@ public class WebSocketTextClient extends WebSocketGenericEndpoint<String> {
 
     @OnMessage
     public void onMessage(ByteBuffer message, Session session) {
-        logger.info("Received binary message");
+        //logger.info("Received binary message");
         lastMessage = new String(message.array(), StandardCharsets.UTF_8);
         messages.add(lastMessage);
         latch.countDown();

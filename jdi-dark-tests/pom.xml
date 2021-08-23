@@ -92,6 +92,17 @@
             <version>1.17</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>org.apache.commons.lang</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
@@ -111,26 +122,26 @@
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                    <!-- Used to copy the foo bar war to the webapps folder -->
-                    <id>copy-dependency</id>
-                    <phase>process-resources</phase>
-                    <goals>
-                        <goal>copy</goal>
-                    </goals>
-                    <configuration>
-                        <artifactItems>
-                            <artifactItem>
-                                <groupId>io.rest-assured.examples</groupId>
-                                <artifactId>scalatra-webapp</artifactId>
-                                <version>3.0.2</version>
-                                <type>war</type>
-                                <overWrite>true</overWrite>
-                                <outputDirectory>${project.build.directory}/webapps</outputDirectory>
-                                <destFileName>scalatra-webapp.war</destFileName>
-                            </artifactItem>
-                        </artifactItems>
-                    </configuration>
-                </execution>
+                        <!-- Used to copy the foo bar war to the webapps folder -->
+                        <id>copy-dependency</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>io.rest-assured.examples</groupId>
+                                    <artifactId>scalatra-webapp</artifactId>
+                                    <version>3.0.2</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/webapps</outputDirectory>
+                                    <destFileName>scalatra-webapp.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-rest-service</id>
                         <phase>compile</phase>

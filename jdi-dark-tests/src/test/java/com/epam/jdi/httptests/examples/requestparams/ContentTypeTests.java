@@ -57,8 +57,7 @@ public class ContentTypeTests extends WithJetty {
     }
 
     @Test
-    public void
-    contentTypeIsSentToTheServerWhenUsingAGetRequest() {
+    public void contentTypeIsSentToTheServerWhenUsingAGetRequest() {
         getContentTypeAsBody.call(rd -> {
             rd.queryParams.add("foo", "bar");
             rd.setContentType(ContentType.XML.withCharset("utf-8"));
@@ -77,11 +76,11 @@ public class ContentTypeTests extends WithJetty {
     public void whenFormParamAreSuppliedWithGetRequestAndContentTypeIsExplicitlyDefinedThenContentTypeIsNotAutomaticallySetToFormEncoded() {
         RestResponse response = getReturnContentTypeAsBody
                 .call(rd -> {
-                    rd.setContentType(ContentType.JSON.toString());
+                    rd.setContentType(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON)));
                     rd.queryParams.add("firstName", "John");
                     rd.queryParams.add("lastName", "Doe");
                 });
-        response.isOk().assertThat().body(equalTo(ContentType.JSON));
+        response.isOk().assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
     }
 
     @Test
@@ -141,8 +140,10 @@ public class ContentTypeTests extends WithJetty {
     @Test
     public void headerWithContentTypeEnumWorks() {
         postReturnContentTypeAsBody
-                .call(rd -> rd.headers = new Headers(new Header("Content-Type", ContentType.JSON.toString())))
-                .assertThat().body(equalTo(ContentType.JSON));
+                .call(rd -> rd.headers =
+                        new Headers(new Header("Content-Type",
+                                ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON)))))
+                .assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
     }
 
     @Test

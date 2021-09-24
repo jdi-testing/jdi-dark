@@ -363,7 +363,7 @@ public class JettyService {
     @GET("/textHTML")
     public static RestMethod getTextHtml;
 
-    @POST("multipart/multiple")
+    @POST("/multipart/multiple")
     public static RestMethod postMultiPartMultiple;
 
     public static RestResponse postMultiPartMultipleWithFormParamsAndMPBuilders(Map<String, String> formParamsMap,
@@ -383,7 +383,7 @@ public class JettyService {
     @PUT("/reflect")
     public static RestMethod putReflect;
 
-    @POST("contentTypeAsBody")
+    @POST("/contentTypeAsBody")
     public static RestMethod postContentTypeAsBody;
 
     @GET("/reflect")

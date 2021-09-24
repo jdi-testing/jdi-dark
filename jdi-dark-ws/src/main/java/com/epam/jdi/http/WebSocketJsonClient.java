@@ -14,7 +14,7 @@ public class WebSocketJsonClient extends WebSocketGenericEndpoint<JsonElement> {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        //logger.info("Received text message");
+        logger.info("Received text message");
         lastMessage = JsonParser.parseString(message);
         messages.add(lastMessage);
         latch.countDown();
@@ -30,7 +30,7 @@ public class WebSocketJsonClient extends WebSocketGenericEndpoint<JsonElement> {
                 break;
             }
         }
-        //logger.info("Message matches '%s' not found", regex);
+        logger.info("Message matches '%s' not found", regex);
     }
 
     public void waitNewMessageContainsText(String text, int maxMsgCount, int sec) throws InterruptedException {
@@ -39,7 +39,7 @@ public class WebSocketJsonClient extends WebSocketGenericEndpoint<JsonElement> {
                 break;
             }
         }
-        //logger.info("Message contains text '%s' not found", text);
+        logger.info("Message contains text '%s' not found", text);
     }
 
     public void waitNewMessageContainsKey(String key, int maxMsgCount, int sec) throws InterruptedException {
@@ -48,6 +48,6 @@ public class WebSocketJsonClient extends WebSocketGenericEndpoint<JsonElement> {
                 break;
             }
         }
-        //logger.info("Message with key '%s' not found", key);
+        logger.info("Message with key '%s' not found", key);
     }
 }

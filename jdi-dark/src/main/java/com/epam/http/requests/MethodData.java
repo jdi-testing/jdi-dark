@@ -1,6 +1,6 @@
 package com.epam.http.requests;
 
-import com.epam.jdi.tools.DataClass;
+import com.jdiai.tools.DataClass;
 
 import static com.epam.http.requests.RestMethodTypes.GET;
 

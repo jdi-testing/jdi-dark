@@ -10,9 +10,9 @@ import com.epam.http.annotations.POST;
 import com.epam.http.annotations.PUT;
 import com.epam.http.annotations.*;
 import com.epam.http.requests.errorhandler.ErrorHandler;
-import com.epam.jdi.tools.func.JAction;
-import com.epam.jdi.tools.map.MapArray;
-import com.epam.jdi.tools.pairs.Pair;
+import com.jdiai.tools.func.JAction;
+import com.jdiai.tools.map.MapArray;
+import com.jdiai.tools.pairs.Pair;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.mapper.ObjectMapper;
 import io.restassured.specification.RequestSpecification;
@@ -25,8 +25,8 @@ import java.util.regex.Pattern;
 import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.requests.RestMethodTypes.*;
-import static com.epam.jdi.tools.LinqUtils.where;
-import static com.epam.jdi.tools.ReflectionUtils.isClass;
+import static com.jdiai.tools.LinqUtils.where;
+import static com.jdiai.tools.ReflectionUtils.isClass;
 import static java.lang.reflect.Modifier.isStatic;
 
 /**

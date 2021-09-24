@@ -81,7 +81,7 @@ public class ContentTypeTests extends WithJetty {
                     rd.queryParams.add("firstName", "John");
                     rd.queryParams.add("lastName", "Doe");
                 });
-        response.isOk().assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
+        response.isOk().assertThat().body(equalTo(ContentType.JSON));
     }
 
     @Test
@@ -142,7 +142,7 @@ public class ContentTypeTests extends WithJetty {
     public void headerWithContentTypeEnumWorks() {
         postReturnContentTypeAsBody
                 .call(rd -> rd.headers = new Headers(new Header("Content-Type", ContentType.JSON.toString())))
-                .assertThat().body(equalTo(ContentType.JSON.withCharset(config().getEncoderConfig().defaultCharsetForContentType(ContentType.JSON))));
+                .assertThat().body(equalTo(ContentType.JSON));
     }
 
     @Test

@@ -20,9 +20,12 @@ public class NegativeTests extends WithJetty {
         init(JettyService.class);
     }
 
-    @Test
+    @Test(enabled = false)
+    // not an invalid char anymore
     public void brokenStringTest(){
-        RestResponse response = JettyService.getMultiCookieRequest.call(cookies().add("key`1", "value\1", "value2\n"));
+        RestResponse response = JettyService.getMultiCookieRequest.call(
+                cookies().add("key`1", "value\1", "value2\n")
+        );
         assertThat(response.getStatus().code, equalTo(400));
         assertThat(response.getBody(), containsString("<h1>Bad Message 400</h1><pre>reason: Illegal character"));
     }

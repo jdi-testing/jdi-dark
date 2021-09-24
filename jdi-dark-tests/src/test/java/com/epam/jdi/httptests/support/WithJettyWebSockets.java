@@ -53,9 +53,9 @@ public abstract class WithJettyWebSockets {
 
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
-            ServerContainer wscontainer = WebSocketServerContainerInitializer.initialize(context);
-            wscontainer.addEndpoint(WSEchoServer.class);
-            wscontainer.addEndpoint(WSItemServer.class);
+            ServerContainer wsContainer = WebSocketServerContainerInitializer.initialize(context);
+            wsContainer.addEndpoint(WSEchoServer.class);
+            wsContainer.addEndpoint(WSItemServer.class);
 
             server.setHandler(context);
             server.setConnectors(new Connector[]{https, http});
@@ -79,7 +79,8 @@ public abstract class WithJettyWebSockets {
         SslContextConfigurator config = new SslContextConfigurator();
         config.setTrustStoreFile("src/test/resources/jetty_localhost_client.jks");
         config.setTrustStorePassword("test1234");
-        SslEngineConfigurator sslEngineConfigurator = new SslEngineConfigurator(config, true, false, false);
+        SslEngineConfigurator sslEngineConfigurator =
+                new SslEngineConfigurator(config, true, false, false);
         return sslEngineConfigurator.setHostVerificationEnabled(false);
     }
 }

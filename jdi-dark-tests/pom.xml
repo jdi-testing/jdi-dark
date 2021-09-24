@@ -94,11 +94,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>${maven.dep.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
@@ -114,10 +109,56 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <encoding>utf-8</encoding>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                    <!-- Used to copy the foo bar war to the webapps folder -->
+                    <id>copy-dependency</id>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>copy</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>io.rest-assured.examples</groupId>
+                                <artifactId>scalatra-webapp</artifactId>
+                                <version>3.0.2</version>
+                                <type>war</type>
+                                <overWrite>true</overWrite>
+                                <outputDirectory>${project.build.directory}/webapps</outputDirectory>
+                                <destFileName>scalatra-webapp.war</destFileName>
+                            </artifactItem>
+                        </artifactItems>
+                    </configuration>
+                </execution>
+                    <execution>
+                        <id>copy-rest-service</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.epam.jdi</groupId>
+                                    <artifactId>jdi-dark-rest-service</artifactId>
+                                    <version>${jdi.dark.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/rest-service</outputDirectory>
+                                    <destFileName>jdi-dark-rest-service.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -160,18 +201,12 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/allure-results</outputDirectory>
-                            <nonFilteredFileExtensions>
-                                <nonFilteredFileExtension>properties</nonFilteredFileExtension>
-                            </nonFilteredFileExtensions>
                             <resources>
                                 <resource>
                                     <directory>src/test/resources/</directory>
                                     <includes>
                                         <include>environment.properties</include>
                                     </includes>
-                                    <excludes>
-                                        <exclude>**/*.war</exclude>
-                                    </excludes>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>
@@ -184,9 +219,6 @@
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
-                <excludes>
-                    <exclude>**/*.war</exclude>
-                </excludes>
                 <filtering>false</filtering>
             </testResource>
         </testResources>

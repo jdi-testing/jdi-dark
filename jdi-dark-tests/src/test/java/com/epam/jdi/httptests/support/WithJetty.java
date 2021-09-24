@@ -85,7 +85,7 @@ public abstract class WithJetty {
 
             WebAppContext context = new WebAppContext();
             context.setContextPath("/");
-            String warPath = "src/test/resources/webapps/scalatra-webapp.war";
+            String warPath = "target/webapps/scalatra-webapp.war";
             context.setWar(warPath);
             context.setServer(server);
 

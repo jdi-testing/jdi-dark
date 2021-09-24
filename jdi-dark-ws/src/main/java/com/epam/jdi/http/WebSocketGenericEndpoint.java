@@ -1,6 +1,6 @@
 package com.epam.jdi.http;
 
-//import com.epam.http.logger.ILogger;
+import com.epam.http.logger.ILogger;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.client.SslContextConfigurator;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-//import static com.epam.http.logger.HTTPLogger.instance;
+import static com.epam.http.logger.HTTPLogger.instance;
 
 /**
  * Abstract class for implementing web socket custom clients,
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * @param <T> object message type
  */
 public abstract class WebSocketGenericEndpoint<T> {
-    //protected static final ILogger logger = instance("JDI_WS");
+    protected static final ILogger logger = instance("JDI_WS");
     protected Session session;
     protected CountDownLatch latch;
     protected final ClientManager client = ClientManager.createClient();
@@ -37,7 +37,7 @@ public abstract class WebSocketGenericEndpoint<T> {
     protected final Queue<T> messages = new LinkedList<>();
 
     public void connect(URI path) throws IOException, DeploymentException {
-        //logger.info("Connect to: " + path);
+        logger.info("Connect to: " + path);
         client.connectToServer(this, path);
     }
 
@@ -46,7 +46,7 @@ public abstract class WebSocketGenericEndpoint<T> {
     }
 
     public void close() throws IOException {
-        //logger.info("Close connection");
+        logger.info("Close connection");
         session.close(new CloseReason(
                 CloseReason.CloseCodes.GOING_AWAY, "Going away."
         ));
@@ -83,38 +83,38 @@ public abstract class WebSocketGenericEndpoint<T> {
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
-        //logger.info("Connection is opened");
+        logger.info("Connection is opened");
         this.session = session;
     }
 
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        //logger.info("Session closed with reason: " + closeReason.getReasonPhrase());
+        logger.info("Session closed with reason: " + closeReason.getReasonPhrase());
         client.shutdown();
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        //logger.error(throwable.getMessage());
+        logger.error(throwable.getMessage());
     }
 
     public void sendMessage(T message) throws IOException, EncodeException {
-        //logger.info("Send Object");
+        logger.info("Send Object");
         session.getBasicRemote().sendObject(message);
     }
 
     public void sendPlainText(String message) throws IOException {
-        //logger.info("Send text");
+        logger.info("Send text");
         session.getBasicRemote().sendText(message);
     }
 
     public void sendObject(Object object) throws IOException, EncodeException {
-        //logger.info("Send Object");
+        logger.info("Send Object");
         session.getBasicRemote().sendObject(object);
     }
 
     public void sendBinary(ByteBuffer data) throws IOException {
-        //logger.info("Send Binary");
+        logger.info("Send Binary");
         session.getBasicRemote().sendBinary(data);
     }
 

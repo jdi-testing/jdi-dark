@@ -54,7 +54,7 @@ jobs:
 
       - name: Compile jdi code
         id: jdi-compile
-        run: mvn clean install -DskipTests -X
+        run: mvn clean install -DskipTests
 
       - name: Run tests - BDD
         id: testsBdd

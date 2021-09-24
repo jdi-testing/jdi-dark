@@ -25,11 +25,13 @@ public abstract class WithRestService {
     protected static Process webService;
     protected static ExecutorService executorService;
 
+    private static String serviceName = "jdi-dark-rest-service.jar";
+
     @BeforeClass(alwaysRun = true)
     public void startSpringBootApplication() throws InterruptedException, ServiceUnavailableException {
         init(RestService.class);
         File applicationJar = new File("target" + File.separator + "rest-service"
-                + File.separator + "jdi-dark-rest-service.jar");
+                + File.separator + serviceName);
         if (applicationJar.exists()) {
             executorService = Executors.newSingleThreadExecutor();
             executorService.submit(WithRestService::buildProcess);
@@ -40,7 +42,7 @@ public abstract class WithRestService {
     }
 
     private static void buildProcess() {
-        ProcessBuilder builder = new ProcessBuilder("java", "-jar", "jdi-dark-rest-service.jar");
+        ProcessBuilder builder = new ProcessBuilder("java", "-jar", serviceName);
         builder.directory(new File("target/rest-service"));
         builder.redirectErrorStream(true);
         try {

@@ -1,7 +1,7 @@
 package com.epam.http.logger;
 
-import com.epam.jdi.tools.func.JAction;
-import com.epam.jdi.tools.func.JFunc;
+import com.jdiai.tools.func.JAction;
+import com.jdiai.tools.func.JFunc;
 
 /**
  * Created by Roman Iovlev on 14.02.2018

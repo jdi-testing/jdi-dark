@@ -3,7 +3,7 @@ package com.epam.jdi.httptests.examples.requestparams;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.pairs.Pair;
+import com.jdiai.tools.pairs.Pair;
 import io.restassured.RestAssured;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

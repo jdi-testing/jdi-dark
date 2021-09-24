@@ -1,6 +1,6 @@
 package com.epam.jdi.dto;
 
-import com.epam.jdi.tools.DataClass;
+import com.jdiai.tools.DataClass;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

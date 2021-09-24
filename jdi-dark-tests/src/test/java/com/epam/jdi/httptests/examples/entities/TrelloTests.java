@@ -12,7 +12,7 @@ import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 import static com.epam.jdi.services.TrelloService.*;
-import static com.epam.jdi.tools.LinqUtils.map;
+import static com.jdiai.tools.LinqUtils.map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 

@@ -2,8 +2,8 @@ package com.epam.http.response;
 
 import java.util.List;
 
-import static com.epam.jdi.tools.EnumUtils.getAllEnumValues;
-import static com.epam.jdi.tools.LinqUtils.first;
+import static com.jdiai.tools.EnumUtils.getAllEnumValues;
+import static com.jdiai.tools.LinqUtils.first;
 
 /**
  * Enumeration of response codes.

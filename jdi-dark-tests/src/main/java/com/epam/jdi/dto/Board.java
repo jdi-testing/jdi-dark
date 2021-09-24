@@ -1,6 +1,6 @@
 package com.epam.jdi.dto;
 
-import com.epam.jdi.tools.DataClass;
+import com.jdiai.tools.DataClass;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;

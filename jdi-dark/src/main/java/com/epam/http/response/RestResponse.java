@@ -1,10 +1,10 @@
 package com.epam.http.response;
 
 import com.epam.http.logger.AllureLogger;
-import com.epam.jdi.tools.func.JAction1;
-import com.epam.jdi.tools.func.JAction2;
-import com.epam.jdi.tools.map.MapArray;
-import com.epam.jdi.tools.pairs.Pair;
+import com.jdiai.tools.func.JAction1;
+import com.jdiai.tools.func.JAction2;
+import com.jdiai.tools.map.MapArray;
+import com.jdiai.tools.pairs.Pair;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
 import io.restassured.mapper.ObjectMapper;
@@ -22,7 +22,7 @@ import static com.epam.http.ExceptionHandler.exception;
 import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
 import static com.epam.http.response.ResponseStatusType.OK;
-import static com.epam.jdi.tools.StringUtils.LINE_BREAK;
+import static com.jdiai.tools.StringUtils.LINE_BREAK;
 import static java.lang.String.format;
 
 /**

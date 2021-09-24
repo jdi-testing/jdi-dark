@@ -7,8 +7,8 @@ import java.util.Map;
 
 import static com.epam.http.logger.HTTPLogger.instance;
 import static com.epam.http.logger.LogLevels.parseLogLevel;
-import static com.epam.jdi.tools.PropertyReader.fillAction;
-import static com.epam.jdi.tools.PropertyReader.getProperties;
+import static com.jdiai.tools.PropertyReader.fillAction;
+import static com.jdiai.tools.PropertyReader.getProperties;
 
 public class JdiHttpSettings {
     public static String TEST_PROPERTIES_PATH = "test.properties";

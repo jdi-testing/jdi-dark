@@ -59,7 +59,7 @@
             <version>${rest-assured.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.epam.jdi.tools</groupId>
+            <groupId>com.jdiai.tools</groupId>
             <artifactId>jdi-light-saber</artifactId>
             <version>${jdi-light-saber.version}</version>
         </dependency>

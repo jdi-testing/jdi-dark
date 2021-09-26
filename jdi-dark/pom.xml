@@ -19,7 +19,7 @@
         <allure-rest-assured.version>2.14.0</allure-rest-assured.version>
         <log4j2.version>2.13.3</log4j2.version>
         <lombok.version>1.18.20</lombok.version>
-        <jaxb.version>2.3.0</jaxb.version>
+        <jaxb.version>2.3.1</jaxb.version>
     </properties>
 
     <dependencies>

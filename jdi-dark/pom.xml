@@ -19,8 +19,7 @@
         <allure-rest-assured.version>2.14.0</allure-rest-assured.version>
         <log4j2.version>2.13.3</log4j2.version>
         <lombok.version>1.18.20</lombok.version>
-        <jaxb.version>2.3.1</jaxb.version>
-        <sunjaxb.version>3.0.2</sunjaxb.version>
+        <jaxb.version>2.3.0</jaxb.version>
     </properties>
 
     <dependencies>
@@ -37,12 +36,12 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
-            <version>${sunjaxb.version}</version>
+            <version>${jaxb.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>${sunjaxb.version}</version>
+            <version>${jaxb.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.messaging.saaj</groupId>
@@ -60,7 +59,7 @@
             <version>${rest-assured.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.jdiai.tools</groupId>
+            <groupId>com.epam.jdi.tools</groupId>
             <artifactId>jdi-light-saber</artifactId>
             <version>${jdi-light-saber.version}</version>
         </dependency>

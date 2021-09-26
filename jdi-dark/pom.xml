@@ -20,6 +20,7 @@
         <log4j2.version>2.13.3</log4j2.version>
         <lombok.version>1.18.20</lombok.version>
         <jaxb.version>2.3.1</jaxb.version>
+        <sunjaxb.version>3.0.2</sunjaxb.version>
     </properties>
 
     <dependencies>
@@ -36,12 +37,12 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
-            <version>${jaxb.version}</version>
+            <version>${sunjaxb.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
+            <version>${sunjaxb.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.messaging.saaj</groupId>

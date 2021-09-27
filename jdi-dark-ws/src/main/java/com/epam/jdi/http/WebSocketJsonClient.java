@@ -1,8 +1,8 @@
 package com.epam.jdi.http;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import javax.websocket.*;
 
@@ -15,7 +15,7 @@ public class WebSocketJsonClient extends WebSocketGenericEndpoint<JsonElement> {
     @OnMessage
     public void onMessage(String message, Session session) {
         logger.info("Received text message");
-        lastMessage = JsonParser.parseString(message);
+        lastMessage = new Gson().fromJson(message, JsonElement.class); //JsonParser.parseString(message);
         messages.add(lastMessage);
         latch.countDown();
     }

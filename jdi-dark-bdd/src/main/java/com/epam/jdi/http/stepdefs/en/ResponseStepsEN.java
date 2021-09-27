@@ -2,7 +2,7 @@ package com.epam.jdi.http.stepdefs.en;
 
 import com.epam.http.response.ResponseStatusType;
 import com.epam.jdi.http.Utils;
-import com.epam.jdi.tools.map.MapArray;
+import com.jdiai.tools.map.MapArray;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;

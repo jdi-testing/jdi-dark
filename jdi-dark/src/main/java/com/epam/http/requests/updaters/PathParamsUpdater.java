@@ -2,8 +2,8 @@ package com.epam.http.requests.updaters;
 
 import com.epam.http.ExceptionHandler;
 import com.epam.http.requests.RequestData;
-import com.epam.jdi.tools.func.JFunc;
-import com.epam.jdi.tools.pairs.Pair;
+import com.jdiai.tools.func.JFunc;
+import com.jdiai.tools.pairs.Pair;
 
 import java.lang.annotation.Annotation;
 

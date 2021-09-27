@@ -5,7 +5,7 @@ import com.epam.http.requests.updaters.FormParamsUpdater;
 import com.epam.http.requests.updaters.HeaderUpdater;
 import com.epam.http.requests.updaters.PathParamsUpdater;
 import com.epam.http.requests.updaters.QueryParamsUpdater;
-import com.epam.jdi.tools.func.JAction1;
+import com.jdiai.tools.func.JAction1;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 

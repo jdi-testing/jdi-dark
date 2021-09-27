@@ -1,6 +1,6 @@
 package com.epam.http.response;
 
-import com.epam.jdi.tools.DataClass;
+import com.jdiai.tools.DataClass;
 import io.restassured.response.Response;
 import lombok.Data;
 import lombok.experimental.Accessors;

@@ -37,7 +37,8 @@ public class YandexSpellerSOAPTests {
 
     @Test
     public void checkTextsResponseError() {
-        CheckTextsResponse response = YandexSpeller.checkTexts.callSoap(new CheckTextsRequest().withText("saop").withLang("en"));
+        CheckTextsResponse response = YandexSpeller.checkTexts
+                .callSoap(new CheckTextsRequest().withText("saop").withLang("en"));
         SpellError spellError = response.getArrayOfSpellResult().getSpellResult().get(0).getError().get(0);
         Assertions.assertThat(spellError.getWord()).isEqualTo("saop");
         Assertions.assertThat(spellError.getS()).contains("shop", "stop", "soap");

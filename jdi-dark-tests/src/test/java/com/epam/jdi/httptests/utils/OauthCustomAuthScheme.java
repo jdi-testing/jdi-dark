@@ -1,6 +1,6 @@
 package com.epam.jdi.httptests.utils;
 
-import com.epam.jdi.tools.DataClass;
+import com.jdiai.tools.DataClass;
 import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.internal.http.HTTPBuilder;
 

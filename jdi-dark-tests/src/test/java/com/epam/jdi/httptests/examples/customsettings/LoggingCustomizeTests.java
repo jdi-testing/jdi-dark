@@ -6,7 +6,7 @@ import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
-import com.epam.jdi.tools.map.MultiMap;
+import com.jdiai.tools.map.MultiMap;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

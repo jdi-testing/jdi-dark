@@ -1,9 +1,9 @@
 package com.epam.http.logger;
 
-import com.epam.jdi.tools.Safe;
-import com.epam.jdi.tools.func.JAction;
-import com.epam.jdi.tools.func.JFunc;
-import com.epam.jdi.tools.map.MapArray;
+import com.jdiai.tools.Safe;
+import com.jdiai.tools.func.JAction;
+import com.jdiai.tools.func.JFunc;
+import com.jdiai.tools.map.MapArray;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -18,7 +18,7 @@ import static com.epam.http.logger.LogLevels.STEP;
 import static com.epam.http.logger.LogLevels.TRACE;
 import static com.epam.http.logger.LogLevels.getLog4j2Level;
 import static com.epam.http.logger.LogLevels.getLogbackLevel;
-import static com.epam.jdi.tools.StringUtils.format;
+import static com.jdiai.tools.StringUtils.format;
 import static org.apache.logging.log4j.LogManager.getLogger;
 import static org.apache.logging.log4j.core.config.Configurator.setLevel;
 import static org.apache.logging.log4j.core.config.Configurator.setRootLevel;

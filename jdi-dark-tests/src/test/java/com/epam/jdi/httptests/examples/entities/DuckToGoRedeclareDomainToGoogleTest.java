@@ -10,9 +10,7 @@ public class DuckToGoRedeclareDomainToGoogleTest {
 
     @Test
     public void callGetWithRedeclaredDomainWithSimpleString() {
-        init(DuckDuckGo.class, "https://google.com/");
-    
-        final RestResponse call = DuckDuckGo.simpleGet.call();
+        RestResponse call = init(DuckDuckGo.class, "https://google.com/").simpleGet.call();
         call.isOk();
         call.validate((it-> {
             final String body = it.getBody();
@@ -22,9 +20,7 @@ public class DuckToGoRedeclareDomainToGoogleTest {
 
     @Test
     public void callGetWithRedeclaredDomainWithSimpleStringWithTemplate() {
-        init(DuckDuckGo.class, "${google}");
-    
-        final RestResponse call = DuckDuckGo.simpleGet.call();
+        RestResponse call = init(DuckDuckGo.class, "${google}").simpleGet.call();
         call.isOk();
         call.validate((it-> {
             final String body = it.getBody();

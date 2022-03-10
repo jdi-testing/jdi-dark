@@ -21,37 +21,38 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ObjectMappingForServiceTests extends WithJetty {
 
+    private ObjectMapper objectMapper;
+
     @BeforeClass
     public void before() {
-        ObjectMapper objectMapper = new Jackson2Mapper((type, s) -> {
+        objectMapper = new Jackson2Mapper((type, s) -> {
             com.fasterxml.jackson.databind.ObjectMapper objectMapper1 = new com.fasterxml.jackson.databind.ObjectMapper();
             objectMapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             return objectMapper1;
         });
-        init(JettyService.class, ServiceSettings.builder().objectMapper(objectMapper).build());
     }
 
     @Test
     public void contentTypesEndingWithPlusForJsonObjectMapping() {
-        Message messageObject = JettyService.getMimeType.callAsData(Message.class);
+        Message messageObject = getJettyService().getMimeType.callAsData(Message.class);
         assertThat(messageObject.getMessage(), equalTo("It works"));
     }
 
     @Test
     public void mapResponseToObjectJson() {
-        Product[] products = JettyService.getProducts.callAsData(Product[].class);
+        Product[] products = getJettyService().getProducts.callAsData(Product[].class);
         Assert.assertEquals(products.length, 2, "Number of products is incorrect");
     }
 
     @Test
     public void mapResponseToObjectAsList() {
-        List<Product> products = JettyService.getProductsAsList.callAsData();
+        List<Product> products = getJettyService().getProductsAsList.callAsData();
         Assert.assertEquals(products.get(1).name, "A blue mouse", "Name of product is incorrect");
     }
 
     @Test
     public void mapResponseToObjectAsArray() {
-        Product[] products = JettyService.getProductsAsArray.callAsData();
+        Product[] products = getJettyService().getProductsAsArray.callAsData();
         Assert.assertEquals(products[1].name, "A blue mouse", "Name of product is incorrect");
     }
 
@@ -59,7 +60,11 @@ public class ObjectMappingForServiceTests extends WithJetty {
     public void sendObjectToRequest() {
         final Hello object = new Hello();
         object.hello = "Hello world";
-        Hello response = JettyService.postObject.post(object, Hello.class);
+        Hello response = getJettyService().postObject.post(object, Hello.class);
         Assert.assertEquals(response.hello, "Hello world", "Response is incorrect");
+    }
+
+    protected JettyService getJettyService() {
+        return init(JettyService.class, ServiceSettings.builder().objectMapper(objectMapper).build());
     }
 }

@@ -18,16 +18,11 @@ public class GoogleSearchWithParamsTest {
     public static final String QUERY_VALUE = "apple";
 
     @Test
-    public static void testSearchWithParams() {
-        init(GoogleSearch.class, ServiceSettings.builder().domain("https://google.com").build());
+    public void testSearchWithParams() {
+        GoogleSearch google = init(GoogleSearch.class, ServiceSettings.builder().domain("https://google.com").build());
 
-        final RestResponse call = GoogleSearch.search.call(queryParams().add(QUERY_PARAM, QUERY_VALUE));
+        final RestResponse call = google.search.call(queryParams().add(QUERY_PARAM, QUERY_VALUE));
         call.isOk();
         call.validate((it) -> it.getBody().contains("Apple"));
-    }
-
-    @BeforeTest
-    public void before() {
-        init(GoogleSearch.class);
     }
 }

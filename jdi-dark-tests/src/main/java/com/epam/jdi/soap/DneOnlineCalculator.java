@@ -10,19 +10,19 @@ public class DneOnlineCalculator {
 
     @POST
     @SOAPAction("http://tempuri.org/Add")
-    public static SoapMethod<Add, AddResponse> add;
+    public SoapMethod<Add, AddResponse> add;
 
     @POST
     @SOAPAction("http://tempuri.org/Divide")
-    public static SoapMethod<Divide, DivideResponse> divide;
+    public SoapMethod<Divide, DivideResponse> divide;
 
     @POST
     @SOAPAction("http://tempuri.org/Multiply")
     @SOAP12
-    public static SoapMethod<Multiply, MultiplyResponse> multiply;
+    public SoapMethod<Multiply, MultiplyResponse> multiply;
 
     @POST
     @SOAPAction("http://tempuri.org/Subtract")
     @SOAP12
-    public static SoapMethod<Subtract, SubtractResponse> subtract;
+    public SoapMethod<Subtract, SubtractResponse> subtract;
 }

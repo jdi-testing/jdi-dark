@@ -1,14 +1,10 @@
 package com.epam.jdi.httptests.examples.requestparams;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.RequestDataFactory.*;
-import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.assertEquals;
@@ -28,14 +24,9 @@ public class DeleteTest extends WithJetty {
     private static final String TOKEN = "token";
     private static final String TOKEN_VALUE = "1234";
 
-    @BeforeTest
-    public void before() {
-        init(JettyService.class);
-    }
-
     @Test
     public void requestSpecificationAllowsSpecifyingCookie() {
-        RestResponse response = deleteCookie.call(cookies().addAll(new Object[][]{
+        RestResponse response = getJettyService().deleteCookie.call(cookies().addAll(new Object[][]{
             {USERNAME, FIRST_NAME_VALUE},
             {TOKEN, TOKEN_VALUE}
         }));
@@ -44,7 +35,7 @@ public class DeleteTest extends WithJetty {
 
     @Test
     public void bodyHamcrestMatcherWithKey() {
-        deleteGreet.call(queryParams().addAll(new Object[][] {
+        getJettyService().deleteGreet.call(queryParams().addAll(new Object[][] {
             { FIRST_NAME, FIRST_NAME_VALUE },
             { LAST_NAME, LAST_NAME_VALUE }
         })).isOk().assertThat().body("greeting", equalTo("Greetings John Doe"));
@@ -52,7 +43,7 @@ public class DeleteTest extends WithJetty {
 
     @Test
     public void bodyHamcrestMatcherWithOutKey() {
-        deleteGreet.call(queryParams().addAll(
+        getJettyService().deleteGreet.call(queryParams().addAll(
                 new Object[][]{{FIRST_NAME, FIRST_NAME_VALUE},
                         {LAST_NAME, LAST_NAME_VALUE}
                 })).isOk().assertThat().body(equalTo("{\"greeting\":\"Greetings John Doe\"}"));
@@ -60,7 +51,7 @@ public class DeleteTest extends WithJetty {
 
     @Test
     public void deleteSupportsStringBody() {
-        RestResponse response = deleteBody.call(body(TEST_BODY_VALUE));
+        RestResponse response = getJettyService().deleteBody.call(body(TEST_BODY_VALUE));
         response.assertThat().body(is(TEST_BODY_VALUE));
     }
 }

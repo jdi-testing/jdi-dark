@@ -9,8 +9,8 @@ public class CurrencyRatesService {
 
 
 @GET("/latest")
- public static RestMethod latest;
+ public RestMethod latest;
 
     @GET("/{date}")
-    public static RestMethod historical;
+    public RestMethod historical;
 }

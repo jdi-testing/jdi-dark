@@ -6,5 +6,5 @@ import com.epam.http.requests.RestMethod;
 
 @ServiceDomain("https://www.alphavantage.co/query")
 public class AlphaVantageFinanceService {
-    @GET public static RestMethod getQuotes;
+    @GET public RestMethod getQuotes;
 }

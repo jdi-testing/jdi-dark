@@ -8,7 +8,8 @@ import com.epam.http.requests.RestMethod;
 public class GoogleSearch {
 
     @GET(value = "search")
-    public static RestMethod search;
+    public RestMethod search;
+
     @GET
     public RestMethod searchInstanceMethod;
 

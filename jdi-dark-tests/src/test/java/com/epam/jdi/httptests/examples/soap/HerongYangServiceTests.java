@@ -3,7 +3,6 @@ package com.epam.jdi.httptests.examples.soap;
 import com.epam.jdi.soap.HerongYangService;
 import com.epam.jdi.soap.com.herongyang.service.*;
 import org.assertj.core.api.Assertions;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -15,21 +14,16 @@ import static com.epam.http.requests.ServiceInit.init;
 
 public class HerongYangServiceTests {
 
-    @BeforeTest
-    public void before() {
-        init(HerongYangService.class);
-    }
-
     @Test
     public void checkHello() {
-        String response = HerongYangService.hello.callSoap("Hello from client.");
+        String response = getHerongYangService().hello.callSoap("Hello from client.");
         Assertions.assertThat(response).isEqualTo("Hello from server - herongyang.com.");
     }
 
     @Test
     public void checkRegistration() throws DatatypeConfigurationException {
         ObjectFactory objectFactory = new ObjectFactory();
-        RegistrationResponse response = HerongYangService.registration.callSoap(new RegistrationRequest()
+        RegistrationResponse response = getHerongYangService().registration.callSoap(new RegistrationRequest()
                 .withEvent("OpenGame")
                 .withDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("2008-08-08"))
                 .withContent(objectFactory.createRegistrationRequestGuest("Herong Yang"),
@@ -40,7 +34,7 @@ public class HerongYangServiceTests {
 
     @Test
     public void checkRefillOrder() throws DatatypeConfigurationException {
-        RefillOrderResponse response = HerongYangService.refillOrder.callSoap(new RefillOrderRequest()
+        RefillOrderResponse response = getHerongYangService().refillOrder.callSoap(new RefillOrderRequest()
                 .withVersion("1.0")
         .withPatient(new PatientType().withName("Joe Smith")
                 .withBirthDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("1970-01-01")))
@@ -53,7 +47,7 @@ public class HerongYangServiceTests {
     @Test
     public void checkRegistration12() throws DatatypeConfigurationException {
         ObjectFactory objectFactory = new ObjectFactory();
-        RegistrationResponse response = HerongYangService.registration12.callSoap(new RegistrationRequest()
+        RegistrationResponse response = getHerongYangService().registration12.callSoap(new RegistrationRequest()
                 .withEvent("OpenGame")
                 .withDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("2008-08-08"))
                 .withContent(objectFactory.createRegistrationRequestGuest("Herong Yang"),
@@ -65,7 +59,7 @@ public class HerongYangServiceTests {
 
     @Test
     public void checkRefillOrder12() throws DatatypeConfigurationException {
-        RefillOrderResponse response = HerongYangService.refillOrder12.callSoap(new RefillOrderRequest()
+        RefillOrderResponse response = getHerongYangService().refillOrder12.callSoap(new RefillOrderRequest()
                 .withVersion("1.0")
                 .withPatient(new PatientType().withName("Joe Smith")
                         .withBirthDate(DatatypeFactory.newInstance().newXMLGregorianCalendar("1970-01-01")))
@@ -73,5 +67,9 @@ public class HerongYangServiceTests {
         Assertions.assertThat(response.getVersion()).isEqualTo("1.0");
         Assertions.assertThat(response.getOrderStatus().getNumber()).isEqualTo("20070707");
         Assertions.assertThat(response.getOrderStatus().getStatus()).isEqualTo("Verifying");
+    }
+
+    public HerongYangService getHerongYangService() {
+        return init(HerongYangService.class);
     }
 }

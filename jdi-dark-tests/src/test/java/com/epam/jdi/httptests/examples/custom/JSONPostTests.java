@@ -1,11 +1,9 @@
 package com.epam.jdi.httptests.examples.custom;
 
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -13,25 +11,18 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFactory.formParams;
 import static com.epam.http.requests.RequestDataFactory.queryParams;
-import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.JettyService.headerPost;
-import static com.epam.jdi.services.JettyService.notFoundedURIPost;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 public class JSONPostTests extends WithJetty {
-    @BeforeClass
-    public void initService() {
-        init(JettyService.class);
-    }
 
     @Test
     public void simpleJSONAndHamcrestMatcherJDI() {
         Object[][] queryPramsArray = new Object[][]{{"firstName", "John"}, {"lastName", "Doe"}};
 
-        JettyService.greetPost(queryPramsArray)
+        getJettyService().greetPost(queryPramsArray)
                 .isOk()
                 .body("greeting", equalTo("Greetings John Doe"));
     }
@@ -39,14 +30,14 @@ public class JSONPostTests extends WithJetty {
     @Test
     public void queryParamsAcceptsIntArgumentsJDI() {
         Object[][] queryParamsArray = new Object[][]{{"firstName", 1234}, {"lastName", 5678}};
-        JettyService.greetPost(queryParamsArray)
+        getJettyService().greetPost(queryParamsArray)
                 .isOk()
                 .body("greeting", equalTo("Greetings 1234 5678"));
     }
 
     @Test
     public void formParamsAcceptsIntArgumentsJDI() {
-        RestResponse response = JettyService.greetPost
+        RestResponse response = getJettyService().greetPost
                 .call(formParams()
                         .addAll(new Object[][]{{"firstName", 1234}, {"lastName", 5678}}));
         response.isOk().body("greeting", equalTo("Greetings 1234 5678"));
@@ -55,7 +46,7 @@ public class JSONPostTests extends WithJetty {
     @Test
     public void bodyWithSingleHamcrestMatching() {
         Object[][] queryPramsArray = new Object[][]{{"firstName", 1234}, {"lastName", 5678}};
-        JettyService.greetPost(queryPramsArray)
+        getJettyService().greetPost(queryPramsArray)
                 .isOk()
                 .body(containsString("greeting"));
     }
@@ -63,7 +54,7 @@ public class JSONPostTests extends WithJetty {
     @Test
     public void bodyHamcrestMatcherWithoutKey() {
         Object[][] queryPramsArray = {{"firstName", "John"}, {"lastName", "Doe"}};
-        JettyService.greetPost(queryPramsArray)
+        getJettyService().greetPost(queryPramsArray)
                 .isOk()
                 .body(equalTo("{\"greeting\":\"Greetings John Doe\"}"));
     }
@@ -74,7 +65,7 @@ public class JSONPostTests extends WithJetty {
         queryParamsMap.put("firstName", "John");
         queryParamsMap.put("lastName", "Doe");
 
-        JettyService.greetPostWithContentTypeAndMapOfFormParams(ContentType.URLENC.toString(), queryParamsMap)
+        getJettyService().greetPostWithContentTypeAndMapOfFormParams(ContentType.URLENC.toString(), queryParamsMap)
                 .isOk()
                 .contentType(ContentType.JSON)
                 .body("greeting", equalTo("Greetings John Doe"));
@@ -82,7 +73,7 @@ public class JSONPostTests extends WithJetty {
 
     @Test
     public void responseAllowsSpecifyingJsonBodyForPost() {
-        JettyService.postJsonBodyAcceptHeader("accept", "application/json"
+        getJettyService().postJsonBodyAcceptHeader("accept", "application/json"
                 , "{ \"message\" : \"hello world\"}")
                 .isOk()
                 .contentType(ContentType.JSON)
@@ -92,19 +83,19 @@ public class JSONPostTests extends WithJetty {
 
     @Test
     public void uriNotFoundTWhenPost() {
-        RestResponse response = notFoundedURIPost.call();
+        RestResponse response = getJettyService().notFoundedURIPost.call();
         response.assertThat().statusCode(greaterThanOrEqualTo(400));
     }
 
     @Test
     public void requestAllowsSpecifyingHeaders() {
-        RestResponse response = headerPost.call();
+        RestResponse response = getJettyService().headerPost.call();
         response.isOk().body(containsString("MyHeader"));
     }
 
     @Test
     public void requestAllowsSpecifyingJsonBodyForPost() {
-        JettyService.jsonBodyPost("{ \"message\" : \"hello world\"}")
+        getJettyService().jsonBodyPost("{ \"message\" : \"hello world\"}")
                 .isOk()
                 .body(equalTo("hello world"));
     }
@@ -112,14 +103,14 @@ public class JSONPostTests extends WithJetty {
     @Test
     public void supportsReturningPostBody() {
         Object[][] queryPramsArray = {{"firstName", "John"}, {"lastName", "Doe"}};
-        RestResponse response = JettyService.greetPost(queryPramsArray);
+        RestResponse response = getJettyService().greetPost(queryPramsArray);
         final JsonPath jsonPath = new JsonPath(response.getBody());
         assertThat(jsonPath.getString("greeting"), equalTo("Greetings John Doe"));
     }
 
     @Test
     public void bodyWithSingleHamcrestMatchingUsingQueryParams() {
-        JettyService.greetPostWithStringOfQueryParams("firstName=John&lastName=Doe")
+        getJettyService().greetPostWithStringOfQueryParams("firstName=John&lastName=Doe")
                 .isOk()
                 .assertThat()
                 .body(containsString("greeting"));
@@ -130,56 +121,56 @@ public class JSONPostTests extends WithJetty {
         HashMap<String, Object> cookiesMap = new HashMap<>();
         cookiesMap.put("username", "John");
         cookiesMap.put("token", "1234");
-        JettyService.cookiePost(cookiesMap)
+        getJettyService().cookiePost(cookiesMap)
                 .isOk()
                 .body(equalTo("username, token"));
     }
 
     @Test
     public void queryParametersInPostAreUrlEncoded() {
-        JettyService.paramUrlPost.call(queryParams().add("first", "http://myurl.com"))
+        getJettyService().paramUrlPost.call(queryParams().add("first", "http://myurl.com"))
                 .isOk()
                 .body("first", equalTo("http://myurl.com"));
     }
 
     @Test
     public void requestAllowsSpecifyingStringBodyForPostJDI() {
-        JettyService.bodyPost("some body")
+        getJettyService().bodyPost("some body")
                 .isOk()
                 .body(equalTo("some body"));
     }
 
     @Test
     public void requestAllowsSpecifyingIntForPost() {
-        JettyService.postReflectWithBody(2)
+        getJettyService().postReflectWithBody(2)
                 .isOk()
                 .body(equalTo("2"));
     }
 
     @Test
     public void requestAllowsSpecifyingFloatForPost() {
-        JettyService.postReflectWithBody(2f)
+        getJettyService().postReflectWithBody(2f)
                 .isOk()
                 .body(equalTo("2.0"));
     }
 
     @Test
     public void requestAllowsSpecifyingDoubleForPost() {
-        JettyService.postReflectWithBody(2d)
+        getJettyService().postReflectWithBody(2d)
                 .isOk()
                 .body(equalTo("2.0"));
     }
 
     @Test
     public void requestAllowsSpecifyingShortForPost() {
-        JettyService.postReflectWithBody((short) 2)
+        getJettyService().postReflectWithBody((short) 2)
                 .isOk()
                 .body(equalTo("2"));
     }
 
     @Test
     public void requestAllowsSpecifyingBooleanForPost() {
-        JettyService.postReflectWithBody(true)
+        getJettyService().postReflectWithBody(true)
                 .isOk()
                 .body(equalTo("true"));
     }

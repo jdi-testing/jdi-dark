@@ -12,7 +12,7 @@ public class QuotesService {
     public static final String DETAILED_PARAM = "detailed";
 
     @GET("/qod")
-    public static RestMethod quoteOfTheDay;
+    public RestMethod quoteOfTheDay;
 
     @GET("/qod/categories")
     public RestMethod quoteOfTheDayCategories;

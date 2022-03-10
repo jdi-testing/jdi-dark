@@ -15,23 +15,23 @@ import java.util.List;
 public class JettyServiceHttps {
 
     @GET("/hello")
-    public static RestMethod getHello;
+    public RestMethod getHello;
 
     @GET("/secured/hello")
-    public static RestMethod getSecuredHello;
+    public RestMethod getSecuredHello;
 
     @GET("/greet")
-    public static RestMethod getGreet;
+    public RestMethod getGreet;
 
     @GET("/jsonStore")
     @TrustStore(pathToJks = "src/test/resources/truststore_mjvmobile.jks", password = "test4321")
-    public static RestMethod getJsonStore;
+    public RestMethod getJsonStore;
 
     @GET("/products")
     @TrustStore(pathToJks = "src/test/resources/jetty_localhost_client.jks", password = "test1234")
-    public static RestMethod getProducts;
+    public RestMethod getProducts;
 
-    public static List<Product> getProducts() {
+    public List<Product> getProducts() {
         return Arrays.asList(getProducts.callAsData(Product[].class));
     }
 

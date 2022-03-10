@@ -8,7 +8,6 @@ import com.epam.jdi.services.AlphaVantageFinanceService;
 import io.restassured.builder.RequestSpecBuilder;
 import java.util.HashMap;
 import java.util.Map;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */
@@ -21,11 +20,6 @@ public class AlphaVantageFinanceQueryParamsTest {
     public static final String API_KEY_PARAM = "apikey";
     public static final String API_KEY_PARAM_VALUE = "JSE55UV7F8PW7PYT";
 
-    @BeforeTest
-    public void before() {
-        init(AlphaVantageFinanceService.class);
-    }
-
     @Test
     public void callGetLatestQuotesSymbolParamWithMap() {
 
@@ -35,7 +29,7 @@ public class AlphaVantageFinanceQueryParamsTest {
         parametersMap.put(SYMBOL_PARAM, SYMBOL_PARAM_VALUE);
         parametersMap.put(API_KEY_PARAM, API_KEY_PARAM_VALUE);
 
-        final RestResponse call = AlphaVantageFinanceService.getQuotes.call(
+        final RestResponse call = getAlphaVantageFinanceService().getQuotes.call(
             queryParams()
                 .addAll(
                     new Object[][]{
@@ -60,7 +54,7 @@ public class AlphaVantageFinanceQueryParamsTest {
         RequestSpecBuilder requestSpecBuilder = new RequestSpecBuilder();
         requestSpecBuilder.addQueryParams(parametersMap);
 
-        final RestResponse call2 = AlphaVantageFinanceService.getQuotes.call(requestSpecBuilder.build());
+        final RestResponse call2 = getAlphaVantageFinanceService().getQuotes.call(requestSpecBuilder.build());
 
         call2.isOk();
     }
@@ -68,7 +62,7 @@ public class AlphaVantageFinanceQueryParamsTest {
     @Test
     public void callGetLatestQuotesSymbolParamWith2DArray() {
 
-        final RestResponse call = AlphaVantageFinanceService.getQuotes.call(
+        final RestResponse call = getAlphaVantageFinanceService().getQuotes.call(
             queryParams()
                 .addAll(
                     new Object[][]{
@@ -77,6 +71,10 @@ public class AlphaVantageFinanceQueryParamsTest {
                         {API_KEY_PARAM, API_KEY_PARAM_VALUE}
                     }));
         call.isOk();
+    }
+
+    public AlphaVantageFinanceService getAlphaVantageFinanceService() {
+        return init(AlphaVantageFinanceService.class);
     }
 
 }

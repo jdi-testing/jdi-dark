@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.ResponseStatusType.CLIENT_ERROR;
-import static com.epam.jdi.services.TrelloService.createOrganization;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 
 public class ErrorHandlerTests {
@@ -36,11 +35,6 @@ public class ErrorHandlerTests {
         serviceSettings = ServiceSettings.builder().errorHandler(errorHandler).build();
     }
 
-    @BeforeClass(dependsOnMethods = {"initServiceSettings"})
-    public void initService() {
-        init(TrelloService.class, serviceSettings);
-    }
-
     @Test(expectedExceptions = {AssertionError.class})
     public void assignBoardToOrganization() {
         //Create organization
@@ -48,7 +42,10 @@ public class ErrorHandlerTests {
             o.name = null; o.displayName = null;
         });
         //this endpoint causes 400 error
-        createOrganization(organization);
+        getTrelloService().createOrganization(organization);
     }
 
+    private TrelloService getTrelloService() {
+        return init(TrelloService.class, serviceSettings);
+    }
 }

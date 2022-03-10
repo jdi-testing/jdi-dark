@@ -13,7 +13,6 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestDataFactory.cookies;
 import static com.epam.http.requests.RequestDataFactory.requestData;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.ServiceExample.getInfo;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
@@ -24,18 +23,16 @@ import static org.testng.Assert.assertEquals;
 public class ServiceTests {
 
     private RequestSpecification requestSpecification;
-    private ServiceExample service;
 
     @BeforeClass
     public void before() {
         requestSpecification = given().filter(new AllureRestAssured());
         requestSpecification.auth().basic("user", "password");
-        service = init(ServiceExample.class, ServiceSettings.builder().requestSpecification(requestSpecification).build());
     }
 
     @Test
     public void simpleRestTest() {
-        RestResponse resp = ServiceExample.getInfo.call();
+        RestResponse resp = getService().getInfo.call();
         resp.isOk().
                 body("url", equalTo("https://httpbin.org/get")).
                 body("headers.Host", equalTo("httpbin.org")).
@@ -63,7 +60,7 @@ public class ServiceTests {
 
     @Test
     public void entityTest() {
-        Info e = getInfo();
+        Info e = getService().getInfo();
         assertEquals(e.url, "https://httpbin.org/get");
         assertEquals(e.headers.Host, "httpbin.org");
         assertEquals(e.headers.Id, "Test");
@@ -72,14 +69,14 @@ public class ServiceTests {
 
     @Test
     public void statusTest() {
-        RestResponse resp = service.status.pathParams("503").call();
+        RestResponse resp = getService().status.pathParams("503").call();
         assertEquals(resp.getStatus().code, 503);
         resp.isEmpty();
     }
 
     @Test
     public void statusTestWithQueryInPath() {
-        RestResponse resp = service.statusWithQuery.pathParams("503", "some").call();
+        RestResponse resp = getService().statusWithQuery.pathParams("503", "some").call();
         assertEquals(resp.getStatus().code, 503);
         resp.isEmpty();
     }
@@ -87,7 +84,7 @@ public class ServiceTests {
     @Test
     public void staticServiceInitTest() {
         init(ServiceExample.class);
-        RestResponse resp = ServiceExample.getInfo.call();
+        RestResponse resp = getService().getInfo.call();
         resp.isOk().assertThat().
                 body("url", equalTo("https://httpbin.org/get")).
                 body("headers.Host", equalTo("httpbin.org"));
@@ -95,7 +92,7 @@ public class ServiceTests {
 
     @Test
     public void serviceInitTest() {
-        RestResponse resp = service.postMethod.call();
+        RestResponse resp = getService().postMethod.call();
         resp.isOk().assertThat().
                 body("url", equalTo("https://httpbin.org/post")).
                 body("headers.Host", equalTo("httpbin.org"));
@@ -103,14 +100,14 @@ public class ServiceTests {
 
     @Test
     public void htmlBodyParseTest() {
-        RestResponse resp = service.getHTMLMethod.call();
+        RestResponse resp = getService().getHTMLMethod.call();
         resp.isOk();
         assertEquals(resp.getFromHtml("html.body.h1"), "Herman Melville - Moby-Dick");
     }
 
     @Test
     public void cookiesTest() {
-        RestResponse response = service.getCookies.call(cookies().add("additionalCookie", "test"));
+        RestResponse response = getService().getCookies.call(cookies().add("additionalCookie", "test"));
         response.isOk()
                 .body("cookies.additionalCookie", equalTo("test"))
                 .body("cookies.session_id", equalTo("1234"))
@@ -119,10 +116,14 @@ public class ServiceTests {
 
     @Test
     public void getWithRaRequestSpecification() {
-        service.getWithAuth.call(
+        getService().getWithAuth.call(
                 given().auth().basic("user", "password")
         ).assertThat()
                 .body("authenticated", equalTo(true))
                 .body("user", equalTo("user"));
+    }
+
+    private ServiceExample getService() {
+        return init(ServiceExample.class, ServiceSettings.builder().requestSpecification(requestSpecification).build());
     }
 }

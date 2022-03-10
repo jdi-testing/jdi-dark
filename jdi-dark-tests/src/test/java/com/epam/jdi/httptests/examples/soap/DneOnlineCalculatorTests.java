@@ -4,7 +4,6 @@ import com.epam.jdi.soap.DneOnlineCalculator;
 import com.epam.jdi.soap.org.tempuri.*;
 import org.assertj.core.api.Assertions;
 import org.testng.SkipException;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.JdiHttpSettings.logger;
@@ -12,17 +11,13 @@ import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.requests.ServiceInit.init;
 
 public class DneOnlineCalculatorTests {
-    private static final String skipMessage = "External Server is unavailable. Skip test";
 
-    @BeforeClass
-    public void before() {
-        init(DneOnlineCalculator.class);
-    }
+    private static final String skipMessage = "External Server is unavailable. Skip test";
 
     @Test()
     public void checkAdd() {
         try {
-            AddResponse response = DneOnlineCalculator.add.callSoap(new Add().withIntA(2).withIntB(3));
+            AddResponse response = getDneOnlineCalculator().add.callSoap(new Add().withIntA(2).withIntB(3));
             Assertions.assertThat(response.getAddResult()).isEqualTo(5);
         }
         catch (RuntimeException ex) {
@@ -40,7 +35,7 @@ public class DneOnlineCalculatorTests {
     @Test()
     public void checkDivide() {
         try {
-            DivideResponse response = DneOnlineCalculator.divide.callSoap(new Divide().withIntA(6).withIntB(3));
+            DivideResponse response = getDneOnlineCalculator().divide.callSoap(new Divide().withIntA(6).withIntB(3));
             Assertions.assertThat(response.getDivideResult()).isEqualTo(2);
         }
         catch (RuntimeException ex) {
@@ -58,7 +53,7 @@ public class DneOnlineCalculatorTests {
     @Test()
     public void checkMultiply() {
         try {
-            MultiplyResponse response = DneOnlineCalculator.multiply.callSoap(new Multiply().withIntA(2).withIntB(3));
+            MultiplyResponse response = getDneOnlineCalculator().multiply.callSoap(new Multiply().withIntA(2).withIntB(3));
             Assertions.assertThat(response.getMultiplyResult()).isEqualTo(6);
         }
         catch (RuntimeException ex) {
@@ -76,7 +71,7 @@ public class DneOnlineCalculatorTests {
     @Test()
     public void checkSubtract() {
         try {
-            SubtractResponse response = DneOnlineCalculator.subtract.callSoap(new Subtract().withIntA(7).withIntB(3));
+            SubtractResponse response = getDneOnlineCalculator().subtract.callSoap(new Subtract().withIntA(7).withIntB(3));
             Assertions.assertThat(response.getSubtractResult()).isEqualTo(4);
         }
         catch (RuntimeException ex) {
@@ -89,5 +84,9 @@ public class DneOnlineCalculatorTests {
                 throw ex;
             }
         }
+    }
+
+    public DneOnlineCalculator getDneOnlineCalculator() {
+        return init(DneOnlineCalculator.class);
     }
 }

@@ -11,10 +11,10 @@ public class GeoServices {
 
     @POST
     @SOAPAction("https://geoservices.tamu.edu/GeocodeAddressNonParsed")
-    public static SoapMethod<GeocodeAddressNonParsed, GeocodeAddressNonParsedResponse> geocodeAddressNonParsed;
+    public SoapMethod<GeocodeAddressNonParsed, GeocodeAddressNonParsedResponse> geocodeAddressNonParsed;
 
     @POST
     @SOAP12
-    public static SoapMethod<GeocodeAddressNonParsed, GeocodeAddressNonParsedResponse> geocodeAddressNonParsed12;
+    public SoapMethod<GeocodeAddressNonParsed, GeocodeAddressNonParsedResponse> geocodeAddressNonParsed12;
 
 }

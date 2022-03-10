@@ -4,7 +4,11 @@ import com.epam.http.annotations.*;
 import com.epam.http.requests.RestDataMethod;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.dto.*;
+import com.epam.jdi.dto.Board;
+import com.epam.jdi.dto.Card;
+import com.epam.jdi.dto.Organization;
+import com.epam.jdi.dto.TrelloList;
+
 import static java.util.Arrays.asList;
 
 import java.util.List;
@@ -20,97 +24,97 @@ public class TrelloService {
 
     @ContentType(JSON)
     @GET(BOARDS)
-    public static RestMethod boardsGet;
+    public RestMethod boardsGet;
 
     @ContentType(JSON)
     @POST(BOARDS)
-    public static RestDataMethod<Board> boardsPost;
+    public RestDataMethod<Board> boardsPost;
 
-    public static synchronized Board createBoard(Board board) {
+    public synchronized Board createBoard(Board board) {
         return boardsPost.postAsData(board);
     }
 
     @ContentType(JSON)
     @GET("/boards/{board_id}")
-    public static RestMethod getBoardById;
+    public RestMethod getBoardById;
 
     @ContentType(JSON)
     @GET("/boards/{board_id}")
     public RestMethod boardId;
 
-    public static Board getBoard(String boardId) {
+    public Board getBoard(String boardId) {
         return getBoardById.call(pathParams().add("board_id", boardId)).getRaResponse().as(Board.class);
     }
 
     @ContentType(JSON)
     @GET("/boards/{board_id}/cards/{short_card_id}")
-    public static RestMethod getBoardCardById;
+    public RestMethod getBoardCardById;
 
     @ContentType(JSON)
     @GET("/members/{user_name}/boards")
-    public static RestMethod getAllMemberBoards;
+    public RestMethod getAllMemberBoards;
 
     @ContentType(JSON)
     @GET("/members")
-    public static RestMethod membersGet;
+    public RestMethod membersGet;
 
     @GET("/members/me")
-    public static RestMethod membersMeGet;
+    public RestMethod membersMeGet;
 
     @ContentType(JSON)
     @DELETE("/cards")
-    public static RestMethod deleteACardFromBoard;
+    public RestMethod deleteACardFromBoard;
 
     @ContentType(JSON)
     @POST("/cards")
-    public static RestMethod addNewCardToBoard;
+    public RestMethod addNewCardToBoard;
 
-    public static Card addNewCardToBoard(Card card) {
+    public Card addNewCardToBoard(Card card) {
         return addNewCardToBoard.body(card).callAsData(Card.class);
     }
 
     @ContentType(JSON)
     @GET("/cards/{id}/board")
-    public static RestMethod getCardBoard;
+    public RestMethod getCardBoard;
 
-    public static Board getCardBoard(String cardId) {
+    public Board getCardBoard(String cardId) {
         return getCardBoard.call(pathParams().add("id", cardId)).getRaResponse().as(Board.class);
     }
 
     @ContentType(JSON)
     @GET("/boards/{board_id}/cards")
-    public static RestMethod getBoardCardsList;
+    public RestMethod getBoardCardsList;
 
     @ContentType(JSON)
     @POST("/lists")
-    public static RestMethod createList;
+    public RestMethod createList;
 
-    public static synchronized TrelloList createList(TrelloList list) {
+    public synchronized TrelloList createList(TrelloList list) {
         return createList.post(list, TrelloList.class);
     }
 
     @ContentType(JSON)
     @POST("/cards/{card_id}/actions/comments")
-    public static RestMethod postNewCommentToCard;
+    public RestMethod postNewCommentToCard;
 
     @QueryParameter(name = "test", value = "test")
     @ContentType(JSON)
     @GET("/cards/{card_id}")
-    public static RestMethod getCardByUniqueId;
+    public RestMethod getCardByUniqueId;
 
     @ContentType(JSON)
     @POST("/organizations")
-    public static RestMethod createOrganization;
+    public RestMethod createOrganization;
 
-    public static Organization createOrganization(Organization organization) {
+    public Organization createOrganization(Organization organization) {
         return createOrganization.post(organization, Organization.class);
     }
 
     @ContentType(JSON)
     @GET("/organizations/{id}/boards")
-    public static RestMethod getOrganizationBoards;
+    public RestMethod getOrganizationBoards;
 
-    public static List<Board> getOrganizationBoards(String orgId) {
+    public List<Board> getOrganizationBoards(String orgId) {
         return asList(getOrganizationBoards
                 .call(pathParams().add("id", orgId))
                 .getRaResponse()
@@ -119,16 +123,16 @@ public class TrelloService {
 
     @ContentType(JSON)
     @DELETE("/boards/{board_id}")
-    public static RestMethod deleteBoard;
+    public RestMethod deleteBoard;
     @ContentType(JSON)
     @DELETE("/organizations/{org_id}")
-    public static RestMethod deleteOrg;
+    public RestMethod deleteOrg;
 
-    public static RestResponse deleteBoard(String boardId) {
+    public RestResponse deleteBoard(String boardId) {
         return deleteBoard.call(pathParams().add("board_id", boardId));
     }
 
-    public static RestResponse deleteOrg(String orgId) {
+    public RestResponse deleteOrg(String orgId) {
         return deleteOrg.call(pathParams().add("org_id", orgId));
     }
 }

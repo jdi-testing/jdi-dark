@@ -12,17 +12,18 @@ import static io.restassured.http.ContentType.JSON;
  */
 @ServiceDomain("https://httpbin.org/")
 public class ServiceExample {
+
     @ContentType(JSON) @GET("/get")
     @Header(name = "Name", value = "Roman")
     @Header(name = "Id", value = "Test")
-    public static RestMethod getInfo;
+    public RestMethod getInfo;
 
     @ContentType(JSON) @GET("/get")
     @Header(name = "Name", value = "Roman")
     @Header(name = "Id", value = "Test")
     public RestMethod info;
 
-    public static Info getInfo() {
+    public Info getInfo() {
         return getInfo.callAsData(Info.class);
     }
 

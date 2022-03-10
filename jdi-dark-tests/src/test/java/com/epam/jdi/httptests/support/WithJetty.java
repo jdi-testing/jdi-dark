@@ -1,5 +1,7 @@
 package com.epam.jdi.httptests.support;
 
+import com.epam.http.requests.ServiceInit;
+import com.epam.jdi.services.JettyService;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -108,5 +110,9 @@ public abstract class WithJetty {
         logger.debug("WithJetty.stopJetty");
         server.stop();
         server.destroy();
+    }
+
+    protected JettyService getJettyService() {
+        return ServiceInit.init(JettyService.class);
     }
 }

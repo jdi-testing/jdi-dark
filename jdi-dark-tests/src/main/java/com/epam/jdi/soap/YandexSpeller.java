@@ -12,9 +12,9 @@ import com.epam.jdi.soap.net.yandex.speller.services.spellservice.CheckTextsResp
 public class YandexSpeller {
 
     @POST
-    public static SoapMethod<CheckTextRequest, CheckTextResponse> checkText;
+    public SoapMethod<CheckTextRequest, CheckTextResponse> checkText;
 
     @POST
-    public static SoapMethod<CheckTextsRequest, CheckTextsResponse> checkTexts;
+    public SoapMethod<CheckTextsRequest, CheckTextsResponse> checkTexts;
 
 }

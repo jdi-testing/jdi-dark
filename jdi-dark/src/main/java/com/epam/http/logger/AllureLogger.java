@@ -25,7 +25,7 @@ public class AllureLogger {
 
     public static String startStep(String message, String requestData) {
         if (!writeToAllure) return "";
-        StepResult step = new StepResult().withName(message).withStatus(PASSED);
+        StepResult step = new StepResult().setName(message).setStatus(PASSED);
 
         String uuid = UUID.randomUUID().toString();
         getLifecycle().startStep(uuid, step);
@@ -36,14 +36,14 @@ public class AllureLogger {
     public static void failStep() {
         if (!writeToAllure) return;
 
-        getLifecycle().updateStep(s -> s.withStatus(FAILED));
+        getLifecycle().updateStep(s -> s.setStatus(FAILED));
         getLifecycle().stopStep();
     }
 
     public static void passStep(String responseData, String uuid) {
         if (!writeToAllure || StringUtils.isBlank(uuid)) return;
 
-        getLifecycle().updateStep(uuid, s -> s.withStatus(PASSED));
+        getLifecycle().updateStep(uuid, s -> s.setStatus(PASSED));
         attachResponse(responseData);
         getLifecycle().stopStep();
     }

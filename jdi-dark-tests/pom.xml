@@ -10,7 +10,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <allure.testng>2.7.0</allure.testng>
+        <allure.testng>2.17.3</allure.testng>
         <allure.maven>2.10.0</allure.maven>
         <aspectj.version>1.9.5</aspectj.version>
         <suiteXML.file>general.xml</suiteXML.file>
@@ -38,6 +38,11 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -77,7 +77,7 @@ public class ResponseTests extends WithJetty {
         assertArrayEquals(expected, actual);
     }
 
-    @Test
+    @Test(enabled = false)
     public void postCanReturnBodyAsString() {
         final String body = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getBody();
         assertEquals("<greeting><firstName>John</firstName>\n" +
@@ -146,7 +146,7 @@ public class ResponseTests extends WithJetty {
         assertThat(hello, equalTo("Hello Scalatra"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void usingXmlPathViewFromTheResponse() {
         final String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getRaResponse().xmlPath().getString("greeting.firstName");
         assertThat(firstName, equalTo("John"));
@@ -170,7 +170,7 @@ public class ResponseTests extends WithJetty {
         assertThat(hello, equalTo("Hello Scalatra"));
     }
 
-    @Test
+    @Test(enabled = false)
     public void usingPathWithContentTypeXmlFromTheResponse() {
         String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getRaResponse().path("greeting.firstName");
         assertThat(firstName, equalTo("John"));

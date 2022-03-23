@@ -267,7 +267,7 @@ public class RestMethod {
      *
      * @return response
      */
-    public synchronized RestResponse call() {
+    public RestResponse call() {
         if (type == null) {
             throw exception("HttpMethodType not specified");
         }
@@ -288,7 +288,7 @@ public class RestMethod {
         return response;
     }
 
-    public synchronized RestResponse call(JAction1<RequestData> action) {
+    public RestResponse call(JAction1<RequestData> action) {
         RequestData rd = new RequestData();
         action.execute(rd);
         return call(rd);
@@ -300,7 +300,7 @@ public class RestMethod {
      * @param requestData requestData
      * @return response
      */
-    public synchronized RestResponse call(RequestData requestData) {
+    public RestResponse call(RequestData requestData) {
         return data(requestData).call();
     }
 
@@ -310,7 +310,7 @@ public class RestMethod {
      * @param requestSpecification Rest Assured request specification
      * @return response
      */
-    public synchronized RestResponse call(RequestSpecification requestSpecification) {
+    public RestResponse call(RequestSpecification requestSpecification) {
         callSpec = getInitSpec().spec(requestSpecification).baseUri(url).basePath(path);
         return call();
     }
@@ -321,7 +321,7 @@ public class RestMethod {
      * @param requestSpecification Rest Assured request specification
      * @return response
      */
-    public synchronized RestResponse callBasedOnSpec(RequestSpecification requestSpecification) {
+    public RestResponse callBasedOnSpec(RequestSpecification requestSpecification) {
         callSpec = requestSpecification.spec(getInitSpec());
         return call();
     }
@@ -332,7 +332,7 @@ public class RestMethod {
      * @param restAssuredConfig Rest Assured config
      * @return response
      */
-    public synchronized RestResponse call(RestAssuredConfig restAssuredConfig) {
+    public RestResponse call(RestAssuredConfig restAssuredConfig) {
         callSpec = getInitSpec().config(restAssuredConfig);
         return call();
     }
@@ -372,11 +372,11 @@ public class RestMethod {
      * @param <T>  type
      * @return response body as object
      */
-    public synchronized <T> T post(Object body, Class<T> cl) {
+    public <T> T post(Object body, Class<T> cl) {
         return body(body).callAsData(cl);
     }
 
-    public synchronized <T> T postAsData(Object object) {
+    public <T> T postAsData(Object object) {
         return (T) body(object).call().asData(dataType, responseType);
     }
 

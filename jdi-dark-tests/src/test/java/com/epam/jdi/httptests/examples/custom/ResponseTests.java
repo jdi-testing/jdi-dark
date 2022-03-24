@@ -73,7 +73,8 @@ public class ResponseTests extends WithJetty {
     @Test
     public void whenNoExpectationsDefinedThenGetCanReturnAStringAsByteArray() {
         final byte[] expected = "{\"hello\":\"Hello Scalatra\"}".getBytes();
-        final byte[] actual = JettyService.getHello.call().getRaResponse().asByteArray();
+        final byte[] actual = JettyService.getHello.call()
+                .getRaResponse().asByteArray();
         assertArrayEquals(expected, actual);
     }
 
@@ -148,7 +149,8 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void usingXmlPathViewFromTheResponse() {
-        final String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getRaResponse().xmlPath().getString("greeting.firstName");
+        final String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe"))
+                .getRaResponse().xmlPath().getString("greeting.firstName");
         assertThat(firstName, equalTo("John"));
     }
 
@@ -172,7 +174,8 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void usingPathWithContentTypeXmlFromTheResponse() {
-        String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe")).getRaResponse().path("greeting.firstName");
+        String firstName = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe"))
+                .getRaResponse().path("greeting.firstName");
         assertThat(firstName, equalTo("John"));
     }
 
@@ -183,7 +186,9 @@ public class ResponseTests extends WithJetty {
                         jsonConfig(jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)));
 
         RestResponse response = getJsonStore.call(rs);
-        assertThat(response.getRaResponse().jsonPath().<BigDecimal>get("store.book.price.min()"), is(new BigDecimal("8.95")));
-        assertThat(response.getRaResponse().jsonPath().<BigDecimal>get("store.book.price.max()"), is(new BigDecimal("22.99")));
+        assertThat(response.getRaResponse().jsonPath().<BigDecimal>get("store.book.price.min()"),
+                is(new BigDecimal("8.95")));
+        assertThat(response.getRaResponse().jsonPath().<BigDecimal>get("store.book.price.max()"),
+                is(new BigDecimal("22.99")));
     }
 }

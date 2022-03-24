@@ -73,7 +73,8 @@ public class ResponseTests extends WithJetty {
     @Test
     public void whenNoExpectationsDefinedThenGetCanReturnAStringAsByteArray() {
         final byte[] expected = "{\"hello\":\"Hello Scalatra\"}".getBytes();
-        final byte[] actual = JettyService.getHello.call().getRaResponse().asByteArray();
+        final byte[] actual = JettyService.getHello.call()
+                .getRaResponse().asByteArray();
         assertArrayEquals(expected, actual);
     }
 

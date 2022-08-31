@@ -1,3 +1,4 @@
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://stand-with-ukraine.pp.ua)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/cfbc3de984c9407ea0eaa3b86552f848)](https://www.codacy.com/gh/jdi-testing/jdi-dark?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jdi-testing/jdi-dark&amp;utm_campaign=Badge_Grade)
 
 # JDI Dark Test Automation Framework

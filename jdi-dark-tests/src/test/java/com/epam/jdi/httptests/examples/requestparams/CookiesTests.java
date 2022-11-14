@@ -201,7 +201,7 @@ public class CookiesTests extends WithJetty {
         assertThat(secondCookie.getValue(), equalTo("cookieValue2"));
         assertThat(secondCookie.getDomain(), equalTo("localhost"));
         assertThat(secondCookie.getPath(), equalTo("/"));
-        assertThat(secondCookie.getMaxAge(), is(1234567));
+        assertThat(secondCookie.getMaxAge(), is(1234567L));
         assertThat(secondCookie.isSecured(), is(true));
         assertThat(secondCookie.getVersion(), is(-1));
     }

@@ -32,7 +32,7 @@ public class GeoServicesTests {
                 .withCensusYear(CensusYear.ALL_AVAILABLE)
                 .withShouldNotStoreTransactionDetails(false)
         );
-        Assertions.assertThat(response.getGeocodeAddressNonParsedResult().getQueryStatusCodes()).isEqualTo(QueryStatusCodes.SUCCESS);
+        Assertions.assertThat(response.getGeocodeAddressNonParsedResult().getQueryStatusCodes()).isEqualTo(200);
         List<WebServiceGeocodeQueryResult> results = response.getGeocodeAddressNonParsedResult().getWebServiceGeocodeQueryResults().getWebServiceGeocodeQueryResult();
         List<CensusOutputRecord> censusOutputRecords = results.get(0).getCensusRecords().getCensusOutputRecord();
         Assertions.assertThat(censusOutputRecords.stream().map(CensusOutputRecord::getCensusYear).collect(Collectors.toList()))
@@ -52,7 +52,7 @@ public class GeoServicesTests {
                 .withCensusYear(CensusYear.ALL_AVAILABLE)
                 .withShouldNotStoreTransactionDetails(false)
         );
-        Assertions.assertThat(response.getGeocodeAddressNonParsedResult().getQueryStatusCodes()).isEqualTo(QueryStatusCodes.SUCCESS);
+        Assertions.assertThat(response.getGeocodeAddressNonParsedResult().getQueryStatusCodes()).isEqualTo(200);
         List<WebServiceGeocodeQueryResult> results = response.getGeocodeAddressNonParsedResult().getWebServiceGeocodeQueryResults().getWebServiceGeocodeQueryResult();
         List<CensusOutputRecord> censusOutputRecords = results.get(0).getCensusRecords().getCensusOutputRecord();
         Assertions.assertThat(censusOutputRecords.stream().map(CensusOutputRecord::getCensusYear).collect(Collectors.toList()))
@@ -72,7 +72,7 @@ public class GeoServicesTests {
                 .withCensusYear(CensusYear.ALL_AVAILABLE)
                 .withShouldNotStoreTransactionDetails(false)
         );
-        Assertions.assertThat(response.getGeocodeAddressNonParsedResult().getQueryStatusCodes()).isEqualTo(QueryStatusCodes.API_KEY_INVALID);
+        Assertions.assertThat(response.getGeocodeAddressNonParsedResult().getQueryStatusCodes()).isEqualTo(402);
     }
 
 }

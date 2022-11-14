@@ -134,12 +134,12 @@ public class WebServiceGeocodeQueryResultSet {
     @XmlElement(name = "PenaltyCodeSummary")
     protected String penaltyCodeSummary;
     @XmlElement(name = "QueryStatusCodes", required = true)
-    @XmlSchemaType(name = "string")
-    protected QueryStatusCodes queryStatusCodes;
+    protected int queryStatusCodes;
     @XmlElement(name = "WebServiceGeocodeQueryResults")
     protected ArrayOfWebServiceGeocodeQueryResult webServiceGeocodeQueryResults;
     @XmlElement(name = "QueryStatusCodeName")
-    protected String queryStatusCodeName;
+    @XmlSchemaType(name = "string")
+    protected QueryStatusCodes queryStatusCodeName;
     @XmlElement(name = "QueryStatusCodeValue")
     protected int queryStatusCodeValue;
     @XmlElement(name = "TimeTaken")
@@ -358,9 +358,9 @@ public class WebServiceGeocodeQueryResultSet {
      * Gets the value of the queryStatusCodes property.
      *
      * @return possible object is
-     * {@link QueryStatusCodes }
+     * {@link String }
      */
-    public QueryStatusCodes getQueryStatusCodes() {
+    public int getQueryStatusCodes() {
         return queryStatusCodes;
     }
 
@@ -368,9 +368,9 @@ public class WebServiceGeocodeQueryResultSet {
      * Sets the value of the queryStatusCodes property.
      *
      * @param value allowed object is
-     *              {@link QueryStatusCodes }
+     *              {@link String }
      */
-    public void setQueryStatusCodes(QueryStatusCodes value) {
+    public void setQueryStatusCodes(int value) {
         this.queryStatusCodes = value;
     }
 
@@ -398,9 +398,9 @@ public class WebServiceGeocodeQueryResultSet {
      * Gets the value of the queryStatusCodeName property.
      *
      * @return possible object is
-     * {@link String }
+     * {@link QueryStatusCodes }
      */
-    public String getQueryStatusCodeName() {
+    public QueryStatusCodes getQueryStatusCodeName() {
         return queryStatusCodeName;
     }
 
@@ -408,9 +408,9 @@ public class WebServiceGeocodeQueryResultSet {
      * Sets the value of the queryStatusCodeName property.
      *
      * @param value allowed object is
-     *              {@link String }
+     *              {@link QueryStatusCodes }
      */
-    public void setQueryStatusCodeName(String value) {
+    public void setQueryStatusCodeName(QueryStatusCodes value) {
         this.queryStatusCodeName = value;
     }
 
@@ -1137,7 +1137,7 @@ public class WebServiceGeocodeQueryResultSet {
         return this;
     }
 
-    public WebServiceGeocodeQueryResultSet withQueryStatusCodes(QueryStatusCodes value) {
+    public WebServiceGeocodeQueryResultSet withQueryStatusCodes(int value) {
         setQueryStatusCodes(value);
         return this;
     }
@@ -1147,7 +1147,7 @@ public class WebServiceGeocodeQueryResultSet {
         return this;
     }
 
-    public WebServiceGeocodeQueryResultSet withQueryStatusCodeName(String value) {
+    public WebServiceGeocodeQueryResultSet withQueryStatusCodeName(QueryStatusCodes value) {
         setQueryStatusCodeName(value);
         return this;
     }

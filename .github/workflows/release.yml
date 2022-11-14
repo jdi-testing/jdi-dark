@@ -1,0 +1,21 @@
+name: Release JDI Dark
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  check_examples:
+    name: Run examples run
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Webhook send to template bdd
+        uses: joelwmale/webhook-action@master
+        with:
+          url: 'https://api.github.com/repos/jdi-templates/jdi-dark-bdd-testng-template/dispatches'
+          headers: '{"Accept": "application/vnd.github+json", "Authorization": "${{ secrets.WEBHOOK_AUTH }}"}'
+          body: '{"event_type": "webhook"}'

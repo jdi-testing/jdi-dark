@@ -3,6 +3,8 @@ env:
   HTTP_TESTS: "com.epam.jdi:jdi-dark-tests"
   BDD_TESTS: "com.epam.jdi:jdi-dark-bdd-tests"
   ALLURE_VERSION: "2.7.0"
+  SUREFIRE_ARGS: "--add-opens java.base/java.lang=ALL-UNNAMED"
+  SUREFIRE_ARGS_BDD: "--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED  --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
 
 on:
   push:
@@ -19,25 +21,42 @@ on:
 jobs:
   build:
     name: Run tests for JDK
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       max-parallel: 2 # can be removed to speed-up, but it's not always stable
       fail-fast: false
       matrix:
-        java: [8, 9, 10, 11, 12, 13, 14, 15, 16] # all [8, 9, 10, 11, 12, 13, 14], only one is [8]
+        java: [8, 11, 13, 14, 15, 17, 18] # [8, 11, 13, 14, 15, 17, 18]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java }}
           java-package: jdk
+          distribution: 'zulu'
+          cache: 'maven'
+
       - name: Prepare environment
         run: |
           sudo apt-get -y install jq
           java -Xmx32m -version
           env
+
+      - name: Set parameters for AspectJ
+        id: aspect_j_params
+        if: ${{ matrix.java > 15 }}
+        run: |
+          echo "ASPECT_ARGS=-Daspectj.args="\"$SUREFIRE_ARGS\" >> $GITHUB_ENV
+          echo "ASPECT_ARGS_BDD=-Daspectj.args="\"$SUREFIRE_ARGS_BDD\" >> $GITHUB_ENV
+
+      - name: Set parameters for AspectJ
+        id: aspect_j_params_empty
+        if: ${{ matrix.java < 16 }}
+        run: |
+          echo "ASPECT_ARGS=-Daspectj.args=''" >> $GITHUB_ENV
+          echo "ASPECT_ARGS_BDD=-Daspectj.args=''" >> $GITHUB_ENV
 
 # run cann't start from comment
 #  curl -o allure-${ALLURE_VERSION}.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz
@@ -61,14 +80,14 @@ jobs:
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
-        run: mvn verify -pl $BDD_TESTS --fail-at-end
+        run: mvn verify -pl $BDD_TESTS ${{ env.ASPECT_ARGS_BDD }} --fail-at-end
 
       - name: Run tests - HTTP
         id: testsHttp
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
-        run: mvn verify -pl $HTTP_TESTS --fail-at-end
+        run: mvn verify -pl $HTTP_TESTS ${{ env.ASPECT_ARGS }} --fail-at-end
 
       - name: Collect reports
         if: steps.jdi-compile.outcome == 'success'
@@ -82,7 +101,7 @@ jobs:
 
       - name: 'Upload allure report'
         if: steps.jdi-compile.outcome == 'success'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: allure-report-dark-jdk${{ matrix.java }}
           path: ./allure-report.zip

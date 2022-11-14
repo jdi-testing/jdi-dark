@@ -13,9 +13,30 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: Webhook send to template bdd
+      - name: Webhook send to template bdd testng
         uses: joelwmale/webhook-action@master
         with:
           url: 'https://api.github.com/repos/jdi-templates/jdi-dark-bdd-testng-template/dispatches'
+          headers: '{"Accept": "application/vnd.github+json", "Authorization": "${{ secrets.WEBHOOK_AUTH }}"}'
+          body: '{"event_type": "webhook"}'
+
+      - name: Webhook send to template bdd junit
+        uses: joelwmale/webhook-action@master
+        with:
+          url: 'https://api.github.com/repos/jdi-templates/jdi-dark-bdd-junit-template/dispatches'
+          headers: '{"Accept": "application/vnd.github+json", "Authorization": "${{ secrets.WEBHOOK_AUTH }}"}'
+          body: '{"event_type": "webhook"}'
+
+      - name: Webhook send to template junit
+        uses: joelwmale/webhook-action@master
+        with:
+          url: 'https://api.github.com/repos/jdi-templates/jdi-dark-junit-template/dispatches'
+          headers: '{"Accept": "application/vnd.github+json", "Authorization": "${{ secrets.WEBHOOK_AUTH }}"}'
+          body: '{"event_type": "webhook"}'
+
+      - name: Webhook send to template testng
+        uses: joelwmale/webhook-action@master
+        with:
+          url: 'https://api.github.com/repos/jdi-templates/jdi-dark-testng-template/dispatches'
           headers: '{"Accept": "application/vnd.github+json", "Authorization": "${{ secrets.WEBHOOK_AUTH }}"}'
           body: '{"event_type": "webhook"}'

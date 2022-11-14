@@ -4,7 +4,6 @@ import com.epam.http.logger.AllureLogger;
 import com.epam.http.requests.RequestData;
 import com.epam.http.requests.RestMethod;
 import com.epam.http.response.RestResponse;
-import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
 import com.jdiai.tools.map.MultiMap;
 import org.testng.annotations.AfterClass;
@@ -19,7 +18,6 @@ import static com.epam.http.JdiHttpSettings.logger;
 import static com.epam.http.logger.AllureLogger.startStep;
 import static com.epam.http.requests.RestMethod.LOG_REQUEST;
 import static com.epam.http.requests.RestMethod.resetLogRequest;
-import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.http.response.RestResponse.LOG_RESPONSE;
 import static com.epam.http.response.RestResponse.resetLogResponse;
 import static org.hamcrest.Matchers.equalTo;
@@ -28,7 +26,6 @@ public class LoggingCustomizeTests extends WithJetty {
 
     @BeforeClass
     public void initService() {
-        init(JettyService.class);
         LOG_REQUEST = this::logRequest;
         LOG_RESPONSE = this::logResponse;
     }
@@ -58,7 +55,7 @@ public class LoggingCustomizeTests extends WithJetty {
         Map<String, String> queryParamsMap = new HashMap<>();
         queryParamsMap.put("firstName", "Ivan");
         queryParamsMap.put("lastName", "Ivanov");
-        JettyService.getGreetWithMapOfQueryParams(queryParamsMap)
+        getJettyService().getGreetWithMapOfQueryParams(queryParamsMap)
                 .isOk()
                 .assertThat()
                 .body("greeting", equalTo("Greetings Ivan Ivanov"));

@@ -12,28 +12,28 @@ public class HerongYangService {
 
     @POST
     @URL("http://www.herongyang.com/Service/Hello_SOAP_11.php")
-    public static SoapMethod<String, String> hello;
+    public SoapMethod<String, String> hello;
 
     @POST
     @URL("http://www.herongyang.com/Service/Registration.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
-    public static SoapMethod<RegistrationRequest, RegistrationResponse> registration;
+    public SoapMethod<RegistrationRequest, RegistrationResponse> registration;
 
     @POST
     @URL("http://www.herongyang.com/Service/RefillOrder.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
-    public static SoapMethod<RefillOrderRequest, RefillOrderResponse> refillOrder;
+    public SoapMethod<RefillOrderRequest, RefillOrderResponse> refillOrder;
 
     @POST
     @SOAP12
     @URL("http://www.herongyang.com/Service/Registration12.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
-    public static SoapMethod<RegistrationRequest, RegistrationResponse> registration12;
+    public SoapMethod<RegistrationRequest, RegistrationResponse> registration12;
 
     @POST
     @SOAP12
     @URL("http://www.herongyang.com/Service/RefillOrder12.php")
     @SOAPNamespace("http://www.herongyang.com/Service/")
-    public static SoapMethod<RefillOrderRequest, RefillOrderResponse> refillOrder12;
+    public SoapMethod<RefillOrderRequest, RefillOrderResponse> refillOrder12;
 
 }

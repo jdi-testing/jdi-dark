@@ -12,44 +12,43 @@ import static org.hamcrest.Matchers.containsString;
 public class GoogleSearchGetChangingDomainTests {
 
     @Test
-    public static void testSearchWithInstanceFieldChangingDomain() {
-        final GoogleSearch yahoo = init(GoogleSearch.class,"https://yahoo.com");
-        final GoogleSearch google = init(GoogleSearch.class, "https://google.com");
+    public void testSearchWithInstanceFieldChangingDomain() {
+        GoogleSearch yahoo = init(GoogleSearch.class,"https://yahoo.com");
+        GoogleSearch google = init(GoogleSearch.class, "https://google.com");
 
-        final RestResponse responseYahoo = yahoo.searchInstanceMethod.call();
-        responseYahoo.isOk().body(containsString("yahoo.com"));
+        RestResponse response = yahoo.searchInstanceMethod.call();
+        response.isOk().body(containsString("yahoo.com"));
 
-        final RestResponse responseGoogle = google.searchInstanceMethod.call();
-        responseGoogle.isOk().body(containsString("google.com"));
+        response = google.searchInstanceMethod.call();
+        response.isOk().body(containsString("google.com"));
     }
 
-    @Test
+    @Test (enabled = false) // test have incorrect steps logic and not understandable validations logic, need to refactor
     public static void testSearchWithStaticFieldChangingDomain() {
         // static field method field will change globally. Rewrite
-        final RestResponse responseYahoo = GoogleSearch.search.call();
-        responseYahoo.isOk().body(containsString("google.com"));
+        //final RestResponse responseYahoo = GoogleSearch.search.call();
+        //responseYahoo.isOk().body(containsString("google.com"));
 
-        final RestResponse responseGoogle = GoogleSearch.search.call();
-        responseGoogle.isOk().body(containsString("google.com"));
+        //final RestResponse responseGoogle = GoogleSearch.search.call();
+        //responseGoogle.isOk().body(containsString("google.com"));
     }
 
     @Test
-    public static void testSearchChangingDomainAndOtherServiceCall() {
+    public void testSearchChangingDomainAndOtherServiceCall() {
+        GoogleSearch yahoo = init(GoogleSearch.class, "https://yahoo.com");
+        RestResponse response = yahoo.searchInstanceMethod.call();
+        response.isOk().body(containsString("yahoo.com"));
 
-        final GoogleSearch yahoo = init(GoogleSearch.class, "https://yahoo.com");
-        final RestResponse responseYahoo = yahoo.searchInstanceMethod.call();
-        responseYahoo.isOk().body(containsString("yahoo.com"));
+        QuotesService quotesService = init(QuotesService.class);
+        response = quotesService.quoteOfTheDayCategories.call();
+        response.isOk();
 
-        final QuotesService quotesService = init(QuotesService.class);
-        final RestResponse quotesServiceResp = quotesService.quoteOfTheDayCategories.call();
-        quotesServiceResp.isOk();
+        GoogleSearch googleSearch = init(GoogleSearch.class, "https://google.com");
 
-        final GoogleSearch googleSearch = init(GoogleSearch.class, "https://google.com");
+        response = yahoo.searchInstanceMethod.call();
+        response.assertThat().body(containsString("yahoo.com"));
 
-        final RestResponse yahooResponse = yahoo.searchInstanceMethod.call();
-        yahooResponse.assertThat().body(containsString("yahoo.com"));
-
-        final RestResponse responseGoogle = googleSearch.searchInstanceMethod.call();
-        responseGoogle.isOk().body(containsString("google.com"));
+        response = googleSearch.searchInstanceMethod.call();
+        response.isOk().body(containsString("google.com"));
     }
 }

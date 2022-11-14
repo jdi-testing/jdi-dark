@@ -14,7 +14,7 @@ import static io.restassured.http.ContentType.JSON;
 public class RestService {
 
     @GET(value = "status")
-    public static RestMethod getStatus;
+    public RestMethod getStatus;
 
     @POST(value = "actuator/shutdown")
     @ContentType(JSON)

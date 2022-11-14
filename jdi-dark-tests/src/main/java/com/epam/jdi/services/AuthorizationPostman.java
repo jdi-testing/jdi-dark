@@ -15,33 +15,33 @@ public class AuthorizationPostman {
 
     @ContentType(JSON)
     @GET("basic-auth")
-    public static RestMethod postmanAuthBasic;
+    public RestMethod postmanAuthBasic;
 
-    public static RestResponse callPostmanServiceAuthBasic() {
+    public RestResponse callPostmanServiceAuthBasic() {
         return postmanAuthBasic.call();
     }
 
-    public static RestResponse callPostmanAuthBasic(AuthenticationScheme authenticationScheme) {
+    public RestResponse callPostmanAuthBasic(AuthenticationScheme authenticationScheme) {
         return postmanAuthBasic.data(auth(authenticationScheme)).call();
     }
 
     @ContentType(JSON)
     @GET("oauth1")
-    public static RestMethod postmanAuthCustom;
+    public RestMethod postmanAuthCustom;
 
-    public static RestResponse callPostmanServiceCustomAuth() {
+    public RestResponse callPostmanServiceCustomAuth() {
         return postmanAuthCustom.call();
     }
 
-    public static RestResponse callPostmanCustomAuth(AuthenticationScheme authenticationScheme) {
+    public RestResponse callPostmanCustomAuth(AuthenticationScheme authenticationScheme) {
         return postmanAuthCustom.data(auth(authenticationScheme)).call();
     }
 
     @ContentType(JSON)
     @GET("digest-auth")
-    public static RestMethod postmanAuthDigest;
+    public RestMethod postmanAuthDigest;
 
-    public static RestResponse callPostmanDigestAuth(AuthenticationScheme authenticationScheme) {
+    public RestResponse callPostmanDigestAuth(AuthenticationScheme authenticationScheme) {
         return postmanAuthBasic.data(auth(authenticationScheme)).call();
     }
 }

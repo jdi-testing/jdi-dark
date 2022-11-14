@@ -3,7 +3,6 @@ package com.epam.jdi.httptests.examples.soap;
 import com.epam.jdi.soap.GeoServices;
 import com.epam.jdi.soap.https.geoservices_tamu.*;
 import org.assertj.core.api.Assertions;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -14,14 +13,9 @@ import static com.epam.http.requests.ServiceInit.init;
 
 public class GeoServicesTests {
 
-    @BeforeTest
-    public void before() {
-        init(GeoServices.class);
-    }
-
     @Test
     public void checkGeocodeAddressNonParsed() {
-        GeocodeAddressNonParsedResponse response = GeoServices.geocodeAddressNonParsed.callSoap(new GeocodeAddressNonParsed()
+        GeocodeAddressNonParsedResponse response = getGeoServices().geocodeAddressNonParsed.callSoap(new GeocodeAddressNonParsed()
                 .withStreetAddress("9355 Burton Way")
                 .withCity("Beverly Hills")
                 .withState("ca")
@@ -41,7 +35,7 @@ public class GeoServicesTests {
 
     @Test
     public void checkGeocodeAddressNonParsed12() {
-        GeocodeAddressNonParsedResponse response = GeoServices.geocodeAddressNonParsed12.callSoap(new GeocodeAddressNonParsed()
+        GeocodeAddressNonParsedResponse response = getGeoServices().geocodeAddressNonParsed12.callSoap(new GeocodeAddressNonParsed()
                 .withStreetAddress("9355 Burton Way")
                 .withCity("Beverly Hills")
                 .withState("ca")
@@ -61,7 +55,7 @@ public class GeoServicesTests {
 
     @Test
     public void negativeGeocodeAddressNonParsed() {
-        GeocodeAddressNonParsedResponse response = GeoServices.geocodeAddressNonParsed.callSoap(new GeocodeAddressNonParsed()
+        GeocodeAddressNonParsedResponse response = getGeoServices().geocodeAddressNonParsed.callSoap(new GeocodeAddressNonParsed()
                 .withStreetAddress("9355 Burton Way")
                 .withCity("Beverly Hills")
                 .withState("ca")
@@ -75,4 +69,7 @@ public class GeoServicesTests {
         Assertions.assertThat(response.getGeocodeAddressNonParsedResult().getQueryStatusCodes()).isEqualTo(402);
     }
 
+    public GeoServices getGeoServices() {
+        return init(GeoServices.class);
+    }
 }

@@ -12,52 +12,50 @@ import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */
 public class QuotesServiceStaticAndInstanceRestMethodsTests {
-    @BeforeTest
-    public void before() {
-        service = init(QuotesService.class);
-    }
-    private static QuotesService service;
 
     @Test
-    public static void testRandomQuote() {
+    public void testRandomQuote() {
 
-        final RestResponse call = service.quoteOfTheDay.call();
+        final RestResponse call = getQuotesService().quoteOfTheDay.call();
         call.isOk();
     }
 
     @Test
-    public static void testRandomQuoteCategoryLanguage() {
+    public void testRandomQuoteCategoryLanguage() {
 
         Map<String, Object> params = new HashMap<>();
         params.put(QuotesService.CATEGORY_PARAM, "inspire");
         params.put(QuotesService.LANGUAGE_PARAM, "en");
-        // static RestMethod field quoteOfTheDay
-        final RestResponse call = QuotesService.quoteOfTheDay.call(queryParams().addAll(params));
+        // RestMethod field quoteOfTheDay
+        final RestResponse call = getQuotesService().quoteOfTheDay.call(queryParams().addAll(params));
         call.isOk();
     }
 
     @Test
-    public static void testQuoteOfTheDayCategories() {
-        final RestResponse call = service.quoteOfTheDayCategories.call();
+    public void testQuoteOfTheDayCategories() {
+        final RestResponse call = getQuotesService().quoteOfTheDayCategories.call();
         call.isOk();
     }
 
     @Test
-    public static void testQuoteOfTheDayCategoriesWithParams() {
+    public void testQuoteOfTheDayCategoriesWithParams() {
         Map<String, Object> params = new HashMap<>();
 
         params.put(QuotesService.CATEGORY_PARAM, "inspire");
         params.put(QuotesService.DETAILED_PARAM, "false");
         final RestResponse call =
-                service.quoteOfTheDayCategories.call(queryParams().addAll(params));
+                getQuotesService().quoteOfTheDayCategories.call(queryParams().addAll(params));
         call.isOk();
     }
 
     @Test
-    public static void testGetLanguages() {
-        final RestResponse call = service.quoteOfTheDayLanguages.call();
+    public void testGetLanguages() {
+        final RestResponse call = getQuotesService().quoteOfTheDayLanguages.call();
         call.isOk();
     }
 
-
+    @BeforeTest
+    public QuotesService getQuotesService() {
+        return init(QuotesService.class);
+    }
 }

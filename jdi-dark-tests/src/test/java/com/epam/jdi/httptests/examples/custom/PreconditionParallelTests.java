@@ -24,8 +24,6 @@ import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateBoard;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateOrganization;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateList;
 import static com.epam.jdi.httptests.utils.TrelloDataGenerator.generateCard;
-import static com.epam.jdi.services.TrelloService.createOrganization;
-import static com.epam.jdi.services.TrelloService.deleteOrg;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.Assert.assertEquals;
 
@@ -35,19 +33,15 @@ public class PreconditionParallelTests {
     public static final String TRELLO_API = "https://api.trello.com/1";
     private final ArrayList<String> createdBoardsId = new ArrayList<>();
     public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
-    public static TrelloService trello;
-    public static ServiceExample httpbin;
     private static String newOrgId;
 
     @BeforeClass
     public void initService() throws IOException {
         new FileWriter(CSV_DATA_FILE, false).close();
-        trello = init(TrelloService.class, ServiceSettings.builder().domain(TRELLO_API).build());
-        httpbin = init(ServiceExample.class, ServiceSettings.builder().domain("https://httpbin.org/").build());
 
         // create Organization as we will get a error during Board creation in case of zero organizations
         Organization org = generateOrganization();
-        Organization newOrg = createOrganization(org);
+        Organization newOrg = getTrelloService().createOrganization(org);
         newOrgId = newOrg.id;
     }
 
@@ -62,23 +56,25 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "createNewBoards", threadPoolSize = 1, skipFailedInvocations = true, retryAnalyzer = RetryAnalyzer.class)
     public void createCardInBoard(Board board) throws IOException {
+        TrelloService trello = getTrelloService();
+
         //Create board
-        Board createdBoard = TrelloService.createBoard(board);
+        Board createdBoard = trello.createBoard(board);
         logger.info("Created board with id = %s, name = '%s'", createdBoard.id, createdBoard.name);
-        Board gotBoard = TrelloService.getBoard(createdBoard.id);
+        Board gotBoard = trello.getBoard(createdBoard.id);
         createdBoardsId.add(createdBoard.id);
         assertEquals(gotBoard.name, createdBoard.name, "Name of created board is incorrect");
 
         //Create list
         TrelloList tList = generateList(createdBoard);
-        TrelloList createdList = TrelloService.createList(tList);
+        TrelloList createdList = trello.createList(tList);
 
         //Create Card
         Card card = generateCard(createdBoard, createdList);
-        Card createdCard = TrelloService.addNewCardToBoard(card);
+        Card createdCard = trello.addNewCardToBoard(card);
 
         //Check that card was added
-        Board cardBoard = TrelloService.getCardBoard(createdCard.id);
+        Board cardBoard = trello.getCardBoard(createdCard.id);
         assertEquals(cardBoard.name, board.name, "Card wasn't added to board");
 
         writeToCSV(cardBoard);
@@ -99,6 +95,9 @@ public class PreconditionParallelTests {
 
     @Test(dataProvider = "dataProviderFromCSV", threadPoolSize = 3)
     public void getBoardTestWithRequestData(String boardId, String expectedName, String expectedShortUrl, String expectedUrl) {
+        TrelloService trello = init(TrelloService.class, ServiceSettings.builder().domain(TRELLO_API).build());
+        ServiceExample httpbin = init(ServiceExample.class, ServiceSettings.builder().domain("https://httpbin.org/").build());
+
         logger.info("Get info about board id = %s", boardId);
         trello.boardId.call(pathParams().add("board_id", boardId))
                 .isOk().assertThat().body("name", equalTo(expectedName))
@@ -123,9 +122,15 @@ public class PreconditionParallelTests {
 
     @AfterClass
     public void clearBoards() {
-        createdBoardsId.forEach(TrelloService::deleteBoard);
+        TrelloService trello = getTrelloService();
+
+        createdBoardsId.forEach(trello::deleteBoard);
         if (newOrgId != null) {
-            deleteOrg(newOrgId);
+            trello.deleteOrg(newOrgId);
         }
+    }
+
+    private TrelloService getTrelloService() {
+        return init(TrelloService.class);
     }
 }

@@ -20,24 +20,16 @@ public class CurrencyRatesServiceWithQueryAndPathParamsTest {
     public static final String BASE_PARAM = "base";
     public static final String BASE_PARAM_VALUE = "USD";
 
-    @BeforeTest
-    public void before() {
-        init(CurrencyRatesService.class);
-    }
-
     @Test(enabled = false)
     public void callGetLatestQuotes() {
-
-        final RestResponse call = CurrencyRatesService.latest.call();
+        final RestResponse call = getCurrencyRatesService().latest.call();
         call.isOk();
     }
 
     @Test(enabled = false)
     public void callGetLatestQuotesSymbolsParam() {
-
-        init(CurrencyRatesService.class);
         final RestResponse call =
-                CurrencyRatesService.latest.call(
+                getCurrencyRatesService().latest.call(
                         queryParams()
                                 .addAll(
                                         new Object[][] {
@@ -51,10 +43,8 @@ public class CurrencyRatesServiceWithQueryAndPathParamsTest {
 
     @Test(enabled = false)
     public void callGetLatestQuotesSymbolsAndBaseParam() {
-
-        init(CurrencyRatesService.class);
         final RestResponse call =
-                CurrencyRatesService.latest.call(
+                getCurrencyRatesService().latest.call(
                         queryParams()
                                 .addAll(
                                         new Object[][] {
@@ -80,8 +70,12 @@ public class CurrencyRatesServiceWithQueryAndPathParamsTest {
         final RequestSpecBuilder requestSpecBuilder = new RequestSpecBuilder();
         requestSpecBuilder.addPathParams("date", "2010-01-12").addQueryParams(parametersMap);
 
-        final RestResponse call = CurrencyRatesService.historical.call(requestSpecBuilder.build());
+        final RestResponse call = getCurrencyRatesService().historical.call(requestSpecBuilder.build());
         call.isOk();
         System.out.println(call.getBody());
+    }
+
+    public CurrencyRatesService getCurrencyRatesService() {
+        return init(CurrencyRatesService.class);
     }
 }

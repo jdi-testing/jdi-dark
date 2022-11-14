@@ -15,18 +15,18 @@ import com.epam.jdi.soap.com.dataaccess.webservicesserver.NumberToWordsResponse;
 public class NumberConversionService {
 
     @POST
-    public static SoapMethod<NumberToWords, NumberToWordsResponse> numberToWords;
+    public SoapMethod<NumberToWords, NumberToWordsResponse> numberToWords;
 
     @POST
-    public static SoapMethod<NumberToDollars, NumberToDollarsResponse> numberToDollars;
-
-    @POST
-    @SOAP12
-    public static SoapMethod<NumberToWords, NumberToWordsResponse> numberToWords12;
+    public SoapMethod<NumberToDollars, NumberToDollarsResponse> numberToDollars;
 
     @POST
     @SOAP12
-    public static SoapMethod<NumberToDollars, NumberToDollarsResponse> numberToDollars12;
+    public SoapMethod<NumberToWords, NumberToWordsResponse> numberToWords12;
+
+    @POST
+    @SOAP12
+    public SoapMethod<NumberToDollars, NumberToDollarsResponse> numberToDollars12;
 
 
 }

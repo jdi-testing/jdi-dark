@@ -10,21 +10,21 @@ import java.util.concurrent.TimeUnit;
 public class RetryingService {
 
     @GET(value = "502")
-    public static RestMethod get502;
+    public RestMethod get502;
 
     @GET(value = "503")
     @RetryOnFailure(numberOfRetryAttempts = 2, delay = 1, unit = TimeUnit.SECONDS)
-    public static RestMethod get503;
+    public RestMethod get503;
 
     @GET(value = "451")
     @RetryOnFailure(numberOfRetryAttempts = 6, errorCodes = 451, unit = TimeUnit.NANOSECONDS)
-    public static RestMethod get451;
+    public RestMethod get451;
 
     @GET(value = "502")
     @IgnoreRetry
-    public static RestMethod ignoreRetrying;
+    public RestMethod ignoreRetrying;
 
     @GET(value = "502")
     @RetryOnFailure(errorCodes = 503)
-    public static RestMethod ignoreUnspecifiedStatus;
+    public RestMethod ignoreUnspecifiedStatus;
 }

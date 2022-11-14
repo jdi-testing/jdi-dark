@@ -10,29 +10,23 @@ import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.config.JsonPathConfig;
 import io.restassured.specification.RequestSpecification;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 
-import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.JettyService.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class ConfigITests extends WithJetty {
 
-    @BeforeTest
-    public void before() {
-        init(JettyService.class);
-    }
-
     @Test
     public void configCanBeSetPerRequest() {
-        RequestSpecification rs = getRedirect.getInitSpec()
+        JettyService jetty = getJettyService();
+
+        RequestSpecification rs = jetty.getRedirect.getInitSpec()
             .config(RestAssuredConfig.newConfig()
                     .redirect(RedirectConfig.redirectConfig().followRedirects(false))).param("url", "/hello");
-        RestResponse response = getRedirect.call(rs);
+        RestResponse response = jetty.getRedirect.call(rs);
         response.assertThat()
                 .statusCode(302)
                 .and()
@@ -41,13 +35,15 @@ public class ConfigITests extends WithJetty {
 
     @Test
     public void supportsSpecifyingDefaultContentCharset() {
+        JettyService jetty = getJettyService();
+
         String body = "Something {\\\\+$%???";
-        RequestSpecification rs = postReflect.getInitSpec()
+        RequestSpecification rs = jetty.postReflect.getInitSpec()
             .config(RestAssuredConfig.newConfig()
                     .encoderConfig(EncoderConfig.encoderConfig()
                             .defaultContentCharset("US-ASCII")));
-        postReflect.getData().setContentType(ContentType.TEXT);
-        RestResponse resp = postReflect.call(rs.body(body));
+        jetty.postReflect.getData().setContentType(ContentType.TEXT);
+        RestResponse resp = jetty.postReflect.call(rs.body(body));
         resp.isOk().assertThat()
             .header("Content-Type", is("text/plain; charset=US-ASCII"))
             .body(equalTo(body));
@@ -55,7 +51,7 @@ public class ConfigITests extends WithJetty {
 
     @Test
     public void supportsConfiguringJsonConfigProperties() {
-        RestResponse resp = getJsonStore.call(RestAssuredConfig.newConfig().
+        RestResponse resp = getJettyService().getJsonStore.call(RestAssuredConfig.newConfig().
             jsonConfig(JsonConfig.jsonConfig().
                     numberReturnType(JsonPathConfig.NumberReturnType.BIG_DECIMAL)));
         resp.isOk()

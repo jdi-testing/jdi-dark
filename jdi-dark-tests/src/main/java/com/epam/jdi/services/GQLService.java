@@ -9,6 +9,6 @@ import com.epam.http.requests.RestMethod;
 public class GQLService {
     @POST("/simple/v1/cjrqzet3c0fc30162tgt8wzf4/")
     @ContentType(io.restassured.http.ContentType.JSON)
-    public static RestMethod simple;
+    public RestMethod simple;
 
 }

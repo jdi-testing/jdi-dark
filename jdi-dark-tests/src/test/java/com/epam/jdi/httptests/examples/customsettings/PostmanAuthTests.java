@@ -18,25 +18,15 @@ import java.util.Map;
 
 import static com.epam.http.requests.RequestDataFactory.headers;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.PostmanAuth.authBase;
-import static com.epam.jdi.services.PostmanAuth.authBaseForm;
-import static com.epam.jdi.services.PostmanAuth.authDigest;
-import static com.epam.jdi.services.PostmanAuth.authHawk;
-import static com.epam.jdi.services.PostmanAuth.oauth;
 import static com.wealdtech.hawk.Hawk.calculateMAC;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
 
 public class PostmanAuthTests {
 
-    @BeforeClass
-    public void before() {
-        init(PostmanAuth.class);
-    }
-
     @Test
     public void authBaseTest() {
-        RestResponse resp = authBase.call();
+        RestResponse resp = getPostmanAuth().authBase.call();
         resp.isOk().assertThat().
                 body("authenticated", equalTo(true));
         assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
@@ -44,34 +34,40 @@ public class PostmanAuthTests {
 
     @Test
     public void authPutCredentialsInFormTest() {
-        RequestSpecification resp2 = authBaseForm
+        PostmanAuth postman = getPostmanAuth();
+
+        RequestSpecification resp2 = postman.authBaseForm
                 .getInitSpec()
                 .auth()
                 .basic("postman", "password");
-        RestResponse resp = authBaseForm.call(resp2);
+        RestResponse resp = postman.authBaseForm.call(resp2);
         resp.isOk().assertThat().
                 body("authenticated", equalTo(true));
         assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
     @Test
     public void entityTest() {
-        PostmanInfo info = authBase.callAsData(PostmanInfo.class);
+        PostmanInfo info = getPostmanAuth().authBase.callAsData(PostmanInfo.class);
         assertEquals(info.authenticated, "true");
     }
 
     @Test
     public void authBaseFailTest() {
-        RequestSpecification spec = authBaseForm.getInitSpec().header("Authorization", "Basic cG9zdG1hbjpwYXNzd29yBB==");
-        RestResponse resp = authBaseForm.call(spec);
+        PostmanAuth postmanAuth = getPostmanAuth();
+
+        RequestSpecification spec = postmanAuth.authBaseForm.getInitSpec().header("Authorization", "Basic cG9zdG1hbjpwYXNzd29yBB==");
+        RestResponse resp = postmanAuth.authBaseForm.call(spec);
         resp.assertThat()
                 .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 
     @Test
     public void authDigestTest() {
-        RequestSpecification rs = authDigest.getInitSpec()
+        PostmanAuth postmanAuth = getPostmanAuth();
+
+        RequestSpecification rs = postmanAuth.authDigest.getInitSpec()
                 .auth().digest("postman", "password");
-        RestResponse resp = authDigest.call(rs);
+        RestResponse resp = postmanAuth.authDigest.call(rs);
         resp.isOk().assertThat().
                 body("authenticated", equalTo(true));
         resp.assertThat()
@@ -80,7 +76,7 @@ public class PostmanAuthTests {
 
     @Test
     public void authDigestFailTest() {
-        RestResponse resp = authDigest.call(headers().addAll(new Object[][]{
+        RestResponse resp = getPostmanAuth().authDigest.call(headers().addAll(new Object[][]{
                         {"Authorization", "Digest username=\"postman\", realm=\"Users\", nonce=\"ni1LiL0O37PRRhofWdCLmwFsnEtH1lew\", uri=\"/digest-auth\", response=\"254679099562cf07df9b6f5d8d15db45\", opaque=\"\""}
                 }));
         resp.assertThat()
@@ -97,7 +93,7 @@ public class PostmanAuthTests {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         long ts = timestamp.getTime() / 1000;
         String mac = calculateMAC(hawkCredentials, Hawk.AuthType.HEADER, ts, uri, "x9Feni", "GET", null, null, null, null);
-        RestResponse resp = authHawk.call(headers().addAll(new Object[][]{
+        RestResponse resp = getPostmanAuth().authHawk.call(headers().addAll(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"" + ts + "\", nonce=\"x9Feni\", mac=\"" + mac + "\""}
                 }));
         resp.isOk().assertThat()
@@ -114,7 +110,7 @@ public class PostmanAuthTests {
         HawkCredentials hawkCredentials = hc.key(key).keyId(id).algorithm(HawkCredentials.Algorithm.SHA256).build();
         long ts = 1234567890;
         String mac = calculateMAC(hawkCredentials, Hawk.AuthType.HEADER, ts, uri, "x9Feni", "GET", null, null, null, null);
-        RestResponse resp = authHawk.call(headers().addAll(new Object[][]{
+        RestResponse resp = getPostmanAuth().authHawk.call(headers().addAll(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"" + ts + "\", nonce=\"x9Feni\", mac=\"" + mac + "\""}
                 }));
         resp.assertThat()
@@ -133,7 +129,7 @@ public class PostmanAuthTests {
         body.put("error", "Unauthorized");
         body.put("message", "Bad mac");
         body.put("attributes", attr);
-        RestResponse resp = authHawk.call(headers().addAll(new Object[][]{
+        RestResponse resp = getPostmanAuth().authHawk.call(headers().addAll(new Object[][]{
                         {"Authorization", "Hawk id=\"dh37fgj492je\", ts=\"ts\", nonce=\"x9Feni\", mac=\"mac\""}
                 }));
         resp.assertThat()
@@ -145,7 +141,7 @@ public class PostmanAuthTests {
     public void oauthTest() {
         String key = "RKCGzna7bv9YD57c";
         String nonce = "R6MyHe5WCRx";
-        RestResponse resp = oauth.call(headers().addAll(new Object[][]{
+        RestResponse resp = getPostmanAuth().oauth.call(headers().addAll(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}
                 }));
         resp.isOk().assertThat()
@@ -158,7 +154,7 @@ public class PostmanAuthTests {
     public void oauthFailTest() {
         String key = "RKCGzna7bv9YD57";
         String nonce = "R6MyHe5WCRx";
-        RestResponse resp = oauth.call(headers().addAll(new Object[][]{
+        RestResponse resp = getPostmanAuth().oauth.call(headers().addAll(new Object[][]{
                         {"Authorization", "OAuth oauth_consumer_key=\"" + key + "\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1580379117\", oauth_nonce=\"" + nonce + "\", oauth_version=\"1.0\", oauth_signature=\"hzZRrfQkn4ux9qSbmDJFPKj3P8w%3D\""}
                 }));
         resp.assertThat()
@@ -168,4 +164,7 @@ public class PostmanAuthTests {
                 .body("base_uri", equalTo("https://postman-echo.com/oauth1"));
     }
 
+    private PostmanAuth getPostmanAuth() {
+        return init(PostmanAuth.class);
+    }
 }

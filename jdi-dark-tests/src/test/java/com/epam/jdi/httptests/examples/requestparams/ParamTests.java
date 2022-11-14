@@ -13,8 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.JettyService.greetPost;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 /**
  * This class is using for param cases for JettyService
@@ -35,7 +37,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void noValueParamWhenUsingQueryParamWithGetRequest() {
-        JettyService.getNoValueParamWithKeyValueQueryParam(PARAM_NAME, StringUtils.EMPTY)
+        getJettyService().getNoValueParamWithKeyValueQueryParam(PARAM_NAME, StringUtils.EMPTY)
                 .isOk()
                 .assertThat()
                 .body(equalTo("Params: some="));
@@ -46,7 +48,7 @@ public class ParamTests extends WithJetty {
         Map<String, String> queryParamsMap = new HashMap<>();
         queryParamsMap.put(FIRST_NAME, FIRST_NAME_VALUE);
         queryParamsMap.put(LAST_NAME, StringUtils.EMPTY);
-        JettyService.getGreet.call(rd -> rd.queryParams.addAll(queryParamsMap))
+        getJettyService().getGreet.call(rd -> rd.queryParams.addAll(queryParamsMap))
                 .isOk()
                 .assertThat()
                 .body("greeting", equalTo("Greetings John "));
@@ -58,7 +60,7 @@ public class ParamTests extends WithJetty {
         queryParamsMap.put(FIRST_NAME, StringUtils.EMPTY);
         queryParamsMap.put(LAST_NAME, LAST_NAME_VALUE);
 
-        JettyService.getGreetWithMapOfQueryParams(queryParamsMap)
+        getJettyService().getGreetWithMapOfQueryParams(queryParamsMap)
                 .isOk()
                 .assertThat()
                 .body("greeting", equalTo("Greetings  Doe"));
@@ -67,7 +69,7 @@ public class ParamTests extends WithJetty {
     @Test
     public void multipleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
         // For some reason Scalatra returns the order different when running in Intellij and Maven
-        JettyService.getNoValueParamWithStringQueryParams("some&some1")
+        getJettyService().getNoValueParamWithStringQueryParams("some&some1")
                 .isOk()
                 .assertThat()
                 .body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
@@ -75,7 +77,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void singleNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParam.queryParams("some").call()
+        getJettyService().getNoValueParam.queryParams("some").call()
                 .isOk()
                 .assertThat()
                 .body(is("Params: some="));
@@ -83,7 +85,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void mixingStartingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithStringQueryParams("some1&some2=one")
+        getJettyService().getNoValueParamWithStringQueryParams("some1&some2=one")
                 .isOk()
                 .assertThat()
                 .body(is("Params: some1=some2=one"));
@@ -91,7 +93,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void mixingEndingNoValueQueryParamWhenUsingQueryParamInUrlForGetRequest() {
-        JettyService.getNoValueParamWithStringQueryParams("some1=one&some2")
+        getJettyService().getNoValueParamWithStringQueryParams("some1=one&some2")
                 .isOk().assertThat().body(is("Params: some1=onesome2="));
     }
 
@@ -101,7 +103,7 @@ public class ParamTests extends WithJetty {
         formParamsMap.put(FIRST_NAME, "Some & firstname");
         formParamsMap.put(LAST_NAME, "<lastname>");
 
-        JettyService.greetPostWithContentTypeAndMapOfFormParams("application/x-www-form-urlencoded; charset", formParamsMap)
+        getJettyService().greetPostWithContentTypeAndMapOfFormParams("application/x-www-form-urlencoded; charset", formParamsMap)
                 .isOk()
                 .assertThat()
                 .body("greeting", equalTo("Greetings Some & firstname <lastname>"));
@@ -113,7 +115,7 @@ public class ParamTests extends WithJetty {
         formParamsMap.put(FIRST_NAME, "Some & firstname");
         formParamsMap.put(LAST_NAME, "<lastname>");
 
-        RestResponse resp = greetPost.call(rd -> {
+        RestResponse resp = getJettyService().greetPost.call(rd -> {
             rd.setContentType("application/x-www-form-urlencoded; charset=ISO-8859-1");
             rd.formParams.addAll(formParamsMap);
         });
@@ -124,7 +126,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void formParamsAreUrlEncodedWithDefinedCharset() {
-        JettyService.postCharEncodingWithContentTypeAndKeyValueFormParam("application/x-www-form-urlencoded; charset=ISO-8859-1",
+        getJettyService().postCharEncodingWithContentTypeAndKeyValueFormParam("application/x-www-form-urlencoded; charset=ISO-8859-1",
                 "ikk", "&&&")
                 .isOk()
                 .assertThat()
@@ -133,7 +135,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void noValueParamWhenUsingFormParamWithPutRequest() {
-        JettyService.putNoValueParamWithKeyValueFormParam("some", StringUtils.EMPTY)
+        getJettyService().putNoValueParamWithKeyValueFormParam("some", StringUtils.EMPTY)
                 .isOk()
                 .assertThat()
                 .body(is("OK"));
@@ -141,7 +143,7 @@ public class ParamTests extends WithJetty {
 
     @Test
     public void noValueParamWhenUsingFormParamWithPostRequest() {
-        JettyService.postNoValueParamWithKeyValueFormParam("some", StringUtils.EMPTY)
+        getJettyService().postNoValueParamWithKeyValueFormParam("some", StringUtils.EMPTY)
                 .isOk().assertThat().body(is("Params: some="));
     }
 
@@ -152,7 +154,7 @@ public class ParamTests extends WithJetty {
         formParamsMap.put("some", StringUtils.EMPTY);
         formParamsMap.put("some1", StringUtils.EMPTY);
 
-        JettyService.postNoValueParamWithMapOfFormParams(formParamsMap)
+        getJettyService().postNoValueParamWithMapOfFormParams(formParamsMap)
                 .isOk()
                 .assertThat()
                 .body(anyOf(is("Params: some=some1="), is("Params: some1=some=")));
@@ -165,7 +167,7 @@ public class ParamTests extends WithJetty {
         formParamsMap.put("some", StringUtils.EMPTY);
         formParamsMap.put("some1", "one");
 
-        JettyService.postNoValueParamWithMapOfFormParams(formParamsMap)
+        getJettyService().postNoValueParamWithMapOfFormParams(formParamsMap)
                 .isOk()
                 .assertThat()
                 .body(anyOf(is("Params: some=some1=one"), is("Params: some1=onesome=")));
@@ -174,7 +176,7 @@ public class ParamTests extends WithJetty {
     @Test
     public void mixingNoValueAndValueParamWhenUsingFormParamWithPostRequestAnnotationDefinedFormParam() {
         // For some reason Scalatra returns the order different when running in Intellij and Maven
-        JettyService.postNoValueParamWithPreDefinedFormParamAndNewKeyValueParam("some", StringUtils.EMPTY)
+        getJettyService().postNoValueParamWithPreDefinedFormParamAndNewKeyValueParam("some", StringUtils.EMPTY)
                 .isOk()
                 .assertThat()
                 .body(anyOf(is("Params: some=some1=one"), is("Params: some1=onesome=")));
@@ -186,7 +188,7 @@ public class ParamTests extends WithJetty {
         formParamsMap.put("formParam1", StringUtils.EMPTY);
         formParamsMap.put("formParam2", "formParamValue");
 
-        JettyService.postMultiPartMultipleWithFormParamsAndMPBuilders(formParamsMap,
+        getJettyService().postMultiPartMultipleWithFormParamsAndMPBuilders(formParamsMap,
                 new MultiPartSpecBuilder("juX").controlName("file"),
                 new MultiPartSpecBuilder("body").controlName("string"))
                 .assertThat()

@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestDataFactory.pathParams;
 import static com.epam.http.requests.RequestDataFactory.queryParams;
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.TrelloService.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -24,15 +23,10 @@ public class ErrorMessageTrelloTests {
     public static final int NOT_FOUND_CODE = 404;
     public static final int ERROR_CODE = 400;
 
-    @BeforeMethod
-    public void initService() {
-        init(TrelloService.class);
-    }
-
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void getBoardByNotExistsId() {
-        RestResponse response = getBoardById.call(pathParams().add("board_id", NON_EXISTENT_BOARD_ID));
+        RestResponse response = getTrelloService().getBoardById.call(pathParams().add("board_id", NON_EXISTENT_BOARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
         assertEquals(response.getBody(), "The requested resource was not found.");
@@ -42,7 +36,7 @@ public class ErrorMessageTrelloTests {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void getBoardByInvalidId() {
-        RestResponse response = getBoardById.call(pathParams().add("board_id", INVALID_BOARD_ID));
+        RestResponse response = getTrelloService().getBoardById.call(pathParams().add("board_id", INVALID_BOARD_ID));
         response.hasErrors()
                 .statusCode(ERROR_CODE);
         assertEquals(response.getBody(), "invalid id");
@@ -53,7 +47,7 @@ public class ErrorMessageTrelloTests {
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void postInvalidCommentToCard() {
         String invalidComment = "";
-        RestResponse response = postNewCommentToCard
+        RestResponse response = getTrelloService().postNewCommentToCard
                 .call(pathParams().add("card_id", CARD_UNIQUE_ID)
                         .queryParamsUpdater().add("text", invalidComment));
         response.hasErrors()
@@ -65,11 +59,15 @@ public class ErrorMessageTrelloTests {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = ".*Bad raResponse:.*")
     public void deleteNotExistsCardFromBoard() {
-        RestResponse response = deleteACardFromBoard
+        RestResponse response = getTrelloService().deleteACardFromBoard
                 .call(queryParams().add("card_id", NON_EXISTENT_CARD_ID));
         response.hasErrors()
                 .statusCode(NOT_FOUND_CODE);
         assertTrue(response.getBody().contains("Cannot DELETE"));
         response.isEmpty();
+    }
+
+    private TrelloService getTrelloService() {
+        return init(TrelloService.class);
     }
 }

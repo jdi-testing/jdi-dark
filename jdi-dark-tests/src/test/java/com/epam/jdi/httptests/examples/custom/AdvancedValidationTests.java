@@ -1,11 +1,8 @@
 package com.epam.jdi.httptests.examples.custom;
 
-import com.epam.jdi.services.JettyService;
 import com.epam.jdi.httptests.support.WithJetty;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.Matchers.*;
 
 /**
@@ -14,26 +11,21 @@ import static org.hamcrest.Matchers.*;
  */
 public class AdvancedValidationTests extends WithJetty {
 
-    @BeforeTest
-    public void before() {
-        init(JettyService.class);
-    }
-
     @Test
     public void groceriesContainsChocolateAndCoffee() {
-        JettyService.getShopping.call().isOk().assertThat()
+        getJettyService().getShopping.call().isOk().assertThat()
             .body("shopping.category.find { it.@type == 'groceries' }", hasItems("Chocolate", "Coffee"));
     }
 
     @Test
     public void groceriesContainsChocolateAndCoffeeUsingDoubleStarNotation() {
-        JettyService.getShopping.call().isOk().assertThat()
+        getJettyService().getShopping.call().isOk().assertThat()
             .body("**.find { it.@type == 'groceries' }", hasItems("Chocolate", "Coffee"));
     }
 
     @Test
     public void advancedJsonValidation() {
-        JettyService.getJsonStore.call().isOk().assertThat()
+        getJettyService().getJsonStore.call().isOk().assertThat()
             .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
                 rootPath("store.book").
                 body("findAll { book -> book.price < 10 }.title", hasItems("Sayings of the Century", "Moby Dick")).
@@ -42,7 +34,7 @@ public class AdvancedValidationTests extends WithJetty {
 
     @Test
     public void advancedJsonValidation2() {
-        JettyService.getJsonStore.call().isOk().assertThat()
+        getJettyService().getJsonStore.call().isOk().assertThat()
             .statusCode(allOf(greaterThanOrEqualTo(200), lessThanOrEqualTo(300))).
                 rootPath("store.book").
                 body("findAll { book -> book.price < 10 }.title", hasItems("Sayings of the Century", "Moby Dick")).
@@ -55,7 +47,7 @@ public class AdvancedValidationTests extends WithJetty {
 
     @Test
     public void products() {
-        JettyService.getProducts.call().isOk().assertThat()
+        getJettyService().getProducts.call().isOk().assertThat()
             .body("price.sum()", is(38.0d))
             .body("dimensions.width.min()", is(1.0f))
             .body("name.collect { it.length() }.max()", is(16))

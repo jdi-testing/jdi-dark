@@ -1,15 +1,12 @@
 package com.epam.jdi.httptests.examples.customsettings;
 
-import com.epam.http.requests.ServiceSettings;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.services.AuthorizationPostman;
 import io.restassured.authentication.BasicAuthScheme;
 import org.apache.http.HttpStatus;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static com.epam.http.requests.ServiceInit.init;
-import static com.epam.jdi.services.AuthorizationPostman.*;
 import static com.epam.jdi.httptests.utils.Defaults.defaultOauthScheme;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.testng.AssertJUnit.assertEquals;
@@ -21,20 +18,12 @@ public class AuthenticationTests {
  * This scheme should be passed to Service Settings to affect the whole service.
  */
 
-    @BeforeClass
-    public void before() {
-        BasicAuthScheme authScheme = new BasicAuthScheme();
-        authScheme.setUserName("postman");
-        authScheme.setPassword("password");
-        init(AuthorizationPostman.class, authScheme);
-    }
-
     /**
      * This test represents basic authorization using service settings.
      */
     @Test
     public void authBaseTest() {
-        RestResponse resp = callPostmanServiceAuthBasic();
+        RestResponse resp = getAuthorizationPostman().callPostmanServiceAuthBasic();
         resp.isOk().assertThat().body("authenticated", equalTo(true));
         assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
@@ -49,7 +38,7 @@ public class AuthenticationTests {
         BasicAuthScheme basic = new BasicAuthScheme();
         basic.setUserName("wrongName");
         basic.setPassword("wrongPassword");
-        RestResponse resp = callPostmanAuthBasic(basic);
+        RestResponse resp = getAuthorizationPostman().callPostmanAuthBasic(basic);
         assertEquals(resp.getStatus().code, HttpStatus.SC_UNAUTHORIZED);
     }
 
@@ -58,7 +47,7 @@ public class AuthenticationTests {
      */
     @Test
     public void authDigestTest() {
-        RestResponse resp =  callPostmanServiceAuthBasic();
+        RestResponse resp =  getAuthorizationPostman().callPostmanServiceAuthBasic();
         resp.isOk().assertThat().body("authenticated", equalTo(true));
         assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
     }
@@ -69,10 +58,17 @@ public class AuthenticationTests {
 
     @Test
     public void authCustomAuthSchemeTest() {
-        RestResponse resp = callPostmanCustomAuth(defaultOauthScheme());
+        RestResponse resp = getAuthorizationPostman().callPostmanCustomAuth(defaultOauthScheme());
         resp.isOk().assertThat().
             body("status", equalTo("pass"));
         assertEquals(resp.getStatus().code, HttpStatus.SC_OK);
+    }
+
+    private AuthorizationPostman getAuthorizationPostman() {
+        BasicAuthScheme authScheme = new BasicAuthScheme();
+        authScheme.setUserName("postman");
+        authScheme.setPassword("password");
+        return init(AuthorizationPostman.class, authScheme);
     }
 }
 

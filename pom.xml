@@ -7,6 +7,8 @@
     <artifactId>jdi-dark-project</artifactId>
     <name>JDI Dark Project</name>
     <packaging>pom</packaging>
+    <description>Test automation framework for web service testing powered by REST Assured.</description>
+    <url>http://jdi.epam.com/</url>
 
     <properties>
         <java.version>1.8</java.version>

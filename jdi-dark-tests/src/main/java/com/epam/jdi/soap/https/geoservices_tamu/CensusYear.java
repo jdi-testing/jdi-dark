@@ -30,6 +30,9 @@ public enum CensusYear {
     UNKNOWN("Unknown"),
     @XmlEnumValue("NineteenNinety")
     NINETEEN_NINETY("NineteenNinety"),
+
+    @XmlEnumValue("TwoThousandTwenty")
+    TWO_THOUSAND_TWENTY("TwoThousandTwenty"),
     @XmlEnumValue("TwoThousand")
     TWO_THOUSAND("TwoThousand"),
     @XmlEnumValue("TwoThousandTen")

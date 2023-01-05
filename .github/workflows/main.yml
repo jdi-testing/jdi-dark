@@ -73,7 +73,7 @@ jobs:
 
       - name: Compile jdi code
         id: jdi-compile
-        run: mvn clean install -DskipTests -Dsource.skip -Dmaven.source.skip -Dmaven.javadoc.skip=true
+        run: mvn clean install -DskipTests -Dsource.skip -Dmaven.source.skip -Dmaven.javadoc.skip=true -ntp
 
       - name: Run tests - BDD
         id: testsBdd

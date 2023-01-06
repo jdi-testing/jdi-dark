@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import static com.epam.http.requests.RequestDataFactory.*;
 import static com.epam.http.requests.ServiceInit.init;
 import static com.epam.jdi.services.JettyService.*;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.testng.Assert.assertEquals;
 
@@ -61,6 +61,6 @@ public class DeleteTest extends WithJetty {
     @Test
     public void deleteSupportsStringBody() {
         RestResponse response = deleteBody.call(body(TEST_BODY_VALUE));
-        response.assertThat().body(contains(TEST_BODY_VALUE));
+        response.assertThat().body(containsString(TEST_BODY_VALUE));
     }
 }

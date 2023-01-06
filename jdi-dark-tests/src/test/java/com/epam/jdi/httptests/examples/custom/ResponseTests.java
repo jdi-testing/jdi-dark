@@ -63,7 +63,7 @@ public class ResponseTests extends WithJetty {
 
     @Test
     public void whenParamsSpecifiedCanReturnBodyAsString() {
-        RestResponse response = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe&"));
+        RestResponse response = JettyService.postGreetXml.call(body("firstName=John&lastName=Doe"));
         final String body = response.getBody();
         assertEquals("<greeting><firstName>John</firstName>\n" +
                 "      <lastName>Doe</lastName>\n" +

@@ -32,7 +32,7 @@ public class RequestStepsEN extends Utils {
     public void setRequestHeaders(DataTable headers) {
         preparedHeader.set(null);
         HashMap<String, String> hashMap = new HashMap<>();
-        for (Map.Entry<Object, Object> entry : headers.asMap(String.class, String.class).entrySet()) {
+        for (Map.Entry<String, String> entry : headers.asMap(String.class, String.class).entrySet()) {
             hashMap.put((String) entry.getKey(), (String) entry.getValue());
         }
         preparedHeader.set(hashMap);

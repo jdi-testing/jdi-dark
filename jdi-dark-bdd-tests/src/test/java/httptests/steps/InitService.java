@@ -1,4 +1,4 @@
-package com.epam.jdi.httptests.steps;
+package httptests.steps;
 
 import com.epam.jdi.services.ServiceExample;
 import io.cucumber.java.en.Given;

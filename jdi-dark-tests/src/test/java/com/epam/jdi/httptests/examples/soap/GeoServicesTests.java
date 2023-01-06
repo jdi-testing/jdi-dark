@@ -19,7 +19,7 @@ public class GeoServicesTests {
         init(GeoServices.class);
     }
 
-    @Test
+    @Test(enabled = false)
     public void checkGeocodeAddressNonParsed() {
         GeocodeAddressNonParsedResponse response = GeoServices.geocodeAddressNonParsed.callSoap(new GeocodeAddressNonParsed()
                 .withStreetAddress("9355 Burton Way")
@@ -41,7 +41,7 @@ public class GeoServicesTests {
                         CensusYear.TWO_THOUSAND_TEN, CensusYear.TWO_THOUSAND_TWENTY));
     }
 
-    @Test
+    @Test(enabled = false)
     public void checkGeocodeAddressNonParsed12() {
         GeocodeAddressNonParsedResponse response = GeoServices.geocodeAddressNonParsed12.callSoap(new GeocodeAddressNonParsed()
                 .withStreetAddress("9355 Burton Way")

@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.epam.jdi</groupId>
 	<artifactId>jdi-dark-rest-service</artifactId>
-	<version>1.1.13</version>
+	<version>1.1.14-SNAPSHOT</version>
 	<name>JDI Dark REST Service</name>
 	<description>Bookstore API project for JDI Dark</description>
 	<packaging>jar</packaging>
@@ -23,7 +23,7 @@
 		<validation.api.version>2.0.0.Final</validation.api.version>
 		<start-class>com.epam.jdi.bookstore.BookstoreApiApplication</start-class>
 		<lombok.version>1.18.20</lombok.version>
-		<rest-assured.version>4.4.0</rest-assured.version>
+		<rest-assured.version>5.3.0</rest-assured.version>
 	</properties>
 
 	<dependencies>

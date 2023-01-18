@@ -7,7 +7,7 @@
     <name>JDI Dark WebSocket</name>
     <description>Test automation framework for web service testing powered by REST Assured with WebSockets.</description>
     <url>http://jdi.epam.com/</url>
-    <version>1.1.13</version>
+    <version>1.1.14-SNAPSHOT</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -101,7 +101,7 @@
         <dependency>
             <groupId>com.epam.jdi</groupId>
             <artifactId>jdi-dark</artifactId>
-            <version>1.1.13</version>
+            <version>1.1.14-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

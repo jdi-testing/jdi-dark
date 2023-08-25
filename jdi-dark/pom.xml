@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <gson.version>2.8.9</gson.version>
+        <gson.version>2.10.1</gson.version>
         <rest-assured.version>5.3.1</rest-assured.version>
         <jdi-light-saber.version>3.0.7</jdi-light-saber.version>
         <allure-rest-assured.version>2.23.0</allure-rest-assured.version>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>jakarta.xml.soap</groupId>
             <artifactId>jakarta.xml.soap-api</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -36,12 +36,12 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.3</version>
+            <version>4.0.3</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.messaging.saaj</groupId>
             <artifactId>saaj-impl</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -85,9 +85,15 @@
             <version>${log4j2.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>${log4j2.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.3.11</version>
+            <version>1.4.11</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

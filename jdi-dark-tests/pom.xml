@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.5</version>
+            <version>7.5.1</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -277,6 +277,15 @@
             <properties>
                 <domain>local=http://localhost:8080, trello=https://api.trello.com/1, google=https://google.com</domain>
                 <log.level>DEBUG</log.level>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk16</id>
+            <activation>
+                <jdk>[16, 20]</jdk>
+            </activation>
+            <properties>
+                <aspectj.args>--add-opens java.base/java.lang=ALL-UNNAMED</aspectj.args>
             </properties>
         </profile>
     </profiles>

@@ -44,20 +44,6 @@ jobs:
           java -Xmx32m -version
           env
 
-      - name: Set parameters for AspectJ
-        id: aspect_j_params
-        if: ${{ matrix.java > 15 }}
-        run: |
-          echo "ASPECT_ARGS=-Daspectj.args="\"$SUREFIRE_ARGS\" >> $GITHUB_ENV
-          echo "ASPECT_ARGS_BDD=-Daspectj.args="\"$SUREFIRE_ARGS_BDD\" >> $GITHUB_ENV
-
-      - name: Set parameters for AspectJ
-        id: aspect_j_params_empty
-        if: ${{ matrix.java < 16 }}
-        run: |
-          echo "ASPECT_ARGS=-Daspectj.args=''" >> $GITHUB_ENV
-          echo "ASPECT_ARGS_BDD=-Daspectj.args=''" >> $GITHUB_ENV
-
 # run cann't start from comment
 #  curl -o allure-${ALLURE_VERSION}.tgz -Ls https://dl.bintray.com/qameta/generic/io/qameta/allure/allure/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz
       - name: Install Allure
@@ -80,14 +66,14 @@ jobs:
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
-        run: mvn verify -pl $BDD_TESTS ${{ env.ASPECT_ARGS_BDD }} --fail-at-end
+        run: mvn verify -pl $BDD_TESTS --fail-at-end
 
       - name: Run tests - HTTP
         id: testsHttp
         if: steps.jdi-compile.outcome == 'success'
         timeout-minutes: 30 # prevent blocking
         continue-on-error: true
-        run: mvn verify -pl $HTTP_TESTS ${{ env.ASPECT_ARGS }} --fail-at-end
+        run: mvn verify -pl $HTTP_TESTS --fail-at-end
 
       - name: Collect reports
         if: steps.jdi-compile.outcome == 'success'

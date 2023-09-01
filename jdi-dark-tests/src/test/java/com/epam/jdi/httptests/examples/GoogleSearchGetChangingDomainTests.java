@@ -40,9 +40,11 @@ public class GoogleSearchGetChangingDomainTests {
         final RestResponse responseYahoo = yahoo.searchInstanceMethod.call();
         responseYahoo.isOk().body(containsString("yahoo.com"));
 
+/*      Service is available for free to debug
         final QuotesService quotesService = init(QuotesService.class);
         final RestResponse quotesServiceResp = quotesService.quoteOfTheDayCategories.call();
         quotesServiceResp.isOk();
+        */
 
         final GoogleSearch googleSearch = init(GoogleSearch.class, "https://google.com");
 

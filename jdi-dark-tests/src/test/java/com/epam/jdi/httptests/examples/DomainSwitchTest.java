@@ -4,6 +4,7 @@ import static com.epam.http.requests.ServiceInit.init;
 import static org.hamcrest.Matchers.containsString;
 
 import com.epam.http.requests.ServiceSettings;
+import com.epam.http.response.ResponseStatusType;
 import com.epam.http.response.RestResponse;
 import com.epam.jdi.httptests.support.TwoServicesInit;
 import com.epam.jdi.services.QuotesService;
@@ -41,7 +42,7 @@ public class DomainSwitchTest extends TwoServicesInit {
 
     final QuotesService quotesService = init(QuotesService.class);
     final RestResponse quotesServiceResp = quotesService.quoteOfTheDayCategories.call();
-    quotesServiceResp.isOk();
+    quotesServiceResp.isStatus(ResponseStatusType.CLIENT_ERROR);
 
     final ServiceNoDomainAnnotation googleSearch =
         init(ServiceNoDomainAnnotation.class, "https://google.com");

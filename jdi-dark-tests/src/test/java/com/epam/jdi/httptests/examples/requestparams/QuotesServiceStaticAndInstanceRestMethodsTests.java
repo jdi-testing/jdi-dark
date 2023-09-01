@@ -8,9 +8,12 @@ import com.epam.jdi.services.QuotesService;
 import java.util.HashMap;
 import java.util.Map;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /** Created by oksana_cherniavskaia on 27.08.2020. */
+// Service is avaible for free only with token and 5 requests per day are free
+@Ignore
 public class QuotesServiceStaticAndInstanceRestMethodsTests {
     @BeforeTest
     public void before() {

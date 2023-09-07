@@ -25,7 +25,7 @@ import static java.lang.String.format;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 public class PreconditionTests {
-    public static final String CSV_DATA_FILE = "src/test/resources/testWithPreconditions.csv";
+    public static final String CSV_DATA_FILE = "./testWithPreconditions.csv";
     private ArrayList<String> createdBoardsId = new ArrayList<String>();
     private static String newOrgId;
 

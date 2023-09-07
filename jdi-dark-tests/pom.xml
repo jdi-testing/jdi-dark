@@ -15,7 +15,9 @@
         <aspectj.version>1.9.5</aspectj.version>
         <suiteXML.file>general.xml</suiteXML.file>
         <jdi.dark.version>1.1.14-SNAPSHOT</jdi.dark.version>
-        <maven.dep.version>3.2.0</maven.dep.version>
+        <maven.dep.version>3.3.1</maven.dep.version>
+        <domain>local=http://localhost:8080, trello=https://api.trello.com/1, google=https://google.com</domain>
+        <log.level>INFO</log.level>
         <!-- - - add-opens java.base/java.lang=ALL-UNNAMED is needed for JDK 16+ -->
         <aspectj.args></aspectj.args>
     </properties>
@@ -262,23 +264,6 @@
     </reporting>
 
     <profiles>
-        <profile>
-            <id>info</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <domain>local=http://localhost:8080, trello=https://api.trello.com/1, google=https://google.com</domain>
-                <log.level>INFO</log.level>
-            </properties>
-        </profile>
-        <profile>
-            <id>debug</id>
-            <properties>
-                <domain>local=http://localhost:8080, trello=https://api.trello.com/1, google=https://google.com</domain>
-                <log.level>DEBUG</log.level>
-            </properties>
-        </profile>
         <profile>
             <id>jdk16</id>
             <activation>

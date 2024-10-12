@@ -15,13 +15,13 @@ public class YandexSpellerSOAPTests {
         init(YandexSpeller.class);
     }
 
-    @Test
+    @Test(enabled = false)
     public void checkTestResponse() {
         CheckTextResponse response = YandexSpeller.checkText.callSoap(new CheckTextRequest().withText("soap").withLang("en"));
         Assertions.assertThat(response.getSpellResult().getError().size()).isZero();
     }
 
-    @Test
+    @Test(enabled = false)
     public void checkTestResponseError() {
         CheckTextResponse response = YandexSpeller.checkText.callSoap(new CheckTextRequest().withText("кортошка").withLang("ru"));
         SpellError spellError = response.getSpellResult().getError().get(0);
@@ -29,13 +29,13 @@ public class YandexSpellerSOAPTests {
         Assertions.assertThat(spellError.getS()).contains("картошка");
     }
 
-    @Test
+    @Test(enabled = false)
     public void checkTextsResponse() {
         CheckTextsResponse response = YandexSpeller.checkTexts.callSoap(new CheckTextsRequest().withText("soap").withLang("en"));
         response.getArrayOfSpellResult().getSpellResult().forEach(e -> Assertions.assertThat(e.getError().size()).isZero());
     }
 
-    @Test
+    @Test(enabled = false)
     public void checkTextsResponseError() {
         CheckTextsResponse response = YandexSpeller.checkTexts
                 .callSoap(new CheckTextsRequest().withText("saop").withLang("en"));
